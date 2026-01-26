@@ -1,16 +1,18 @@
 import React, { useEffect, useCallback } from 'react';
 import useCalculatorStore from './store/useCalculatorStore';
 import Header from './components/Header';
-import Sidebar from './components/Sidebar';
-import ResultsCenter from './components/ResultsCenter';
-import PanelImpactos from './components/PanelImpactos';
+import QuickActions from './components/QuickActions';
+import ResultsSection from './components/ResultsSection';
+import ConfigSection from './components/ConfigSection';
+import ImpactsSection from './components/ImpactsSection';
 
 /**
- * App Principal - Layout 3 Colunas
- * Conforme UI-SPEC.md: Sidebar (360px) + Center (1fr) + Panel (300px)
+ * App Principal - Layout Mobile-First Responsivo
+ * Mobile: Stack vertical (Results primeiro)
+ * Desktop 900px+: 2 colunas
+ * Large 1600px+: 3 colunas
  */
 function App() {
-  const isPanelCollapsed = useCalculatorStore((state) => state.isPanelCollapsed);
   const recalculate = useCalculatorStore((state) => state.recalculate);
   const adjustRpmByPercent = useCalculatorStore((state) => state.adjustRpmByPercent);
   const adjustFeedByPercent = useCalculatorStore((state) => state.adjustFeedByPercent);
@@ -70,19 +72,12 @@ function App() {
 
   return (
     <div className="min-h-screen bg-bg-primary">
-      {/* Header - 60px */}
       <Header />
-
-      {/* Dashboard Container - 3 Colunas */}
-      <div className={`dashboard-container ${isPanelCollapsed ? 'panel-collapsed' : ''}`}>
-        {/* Coluna 1: Sidebar Configurações (360px) */}
-        <Sidebar />
-
-        {/* Coluna 2: Resultados Central (1fr) */}
-        <ResultsCenter />
-
-        {/* Coluna 3: Painel Impactos (300px / 20px colapsado) */}
-        <PanelImpactos />
+      <div className="app-container">
+        <QuickActions />
+        <ResultsSection />
+        <ConfigSection />
+        <ImpactsSection />
       </div>
     </div>
   );

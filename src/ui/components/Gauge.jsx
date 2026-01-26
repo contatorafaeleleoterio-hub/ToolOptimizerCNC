@@ -23,14 +23,12 @@ function Gauge({
   useEffect(() => {
     const startValue = prevValueRef.current;
     const endValue = value;
-    const duration = 500; // ms
+    const duration = 500;
     const startTime = performance.now();
 
     const animate = (currentTime) => {
       const elapsed = currentTime - startTime;
       const progress = Math.min(elapsed / duration, 1);
-
-      // Easing function (ease-out-cubic)
       const easeProgress = 1 - Math.pow(1 - progress, 3);
 
       const currentValue = startValue + (endValue - startValue) * easeProgress;
@@ -55,12 +53,10 @@ function Gauge({
   // Determinar status baseado no valor
   const getStatus = () => {
     if (invertColors) {
-      // Para Spindle Load: alto é ruim
       if (value > idealMax) return 'danger';
       if (value >= idealMin) return 'ok';
       return 'warning';
     } else {
-      // Normal: dentro do ideal é ok
       if (value >= idealMin && value <= idealMax) return 'ok';
       if (value < idealMin) return 'warning';
       return 'danger';
@@ -73,17 +69,29 @@ function Gauge({
   const idealStartPercent = (idealMin / max) * 100;
   const idealWidthPercent = ((idealMax - idealMin) / max) * 100;
 
+  const statusLabels = {
+    ok: 'Ideal',
+    warning: 'Atenção',
+    danger: 'Crítico'
+  };
+
   return (
-    <div className="gauge">
-      <div className="gauge-title">{title}</div>
+    <article
+      className="gauge-card"
+      role="meter"
+      aria-valuenow={displayValue}
+      aria-valuemin={0}
+      aria-valuemax={max}
+      aria-label={`${title}: ${displayValue}${unit}`}
+    >
+      <h3 className="gauge-title">{title}</h3>
 
       <div className={`gauge-value ${status}`}>
         {displayValue.toLocaleString('pt-BR')}
-        {unit && <span className="gauge-unit">{unit}</span>}
+        {unit && <span className="unit">{unit}</span>}
       </div>
 
-      <div className="gauge-bar">
-        {/* Zona ideal indicador */}
+      <div className="gauge-bar" aria-hidden="true">
         <div
           className="gauge-ideal-zone"
           style={{
@@ -92,24 +100,25 @@ function Gauge({
           }}
         />
         <div
-          className={`gauge-bar-fill ${status}`}
+          className={`gauge-fill ${status}`}
           style={{ width: `${animatedWidth}%` }}
         />
       </div>
 
-      <div className="gauge-labels">
+      <div className="gauge-labels" aria-hidden="true">
         <span>0</span>
-        <span className="gauge-ideal-label">{idealMin}-{idealMax}</span>
+        <span className="ideal">{idealMin}-{idealMax}</span>
         <span>{max}</span>
       </div>
 
-      {/* Indicador de status */}
-      <div className={`gauge-status-indicator ${status}`}>
-        {status === 'ok' && 'Ideal'}
-        {status === 'warning' && 'Atenção'}
-        {status === 'danger' && 'Crítico'}
+      <div
+        className={`gauge-status ${status}`}
+        role="status"
+        aria-live="polite"
+      >
+        {statusLabels[status]}
       </div>
-    </div>
+    </article>
   );
 }
 
