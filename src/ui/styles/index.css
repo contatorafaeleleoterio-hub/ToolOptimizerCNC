@@ -806,10 +806,18 @@
 
   .accordion-arrow {
     transition: transform var(--transition-normal);
+    color: var(--color-primary);
+    font-size: 0.75rem;
+    opacity: 0.7;
+  }
+
+  .accordion-header:hover .accordion-arrow {
+    opacity: 1;
   }
 
   .accordion.open .accordion-arrow {
     transform: rotate(180deg);
+    opacity: 1;
   }
 
   .accordion-content {

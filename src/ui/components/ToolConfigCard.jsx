@@ -105,29 +105,37 @@ function ToolConfigCard() {
       </div>
 
       {/* SETA NO CANTO INFERIOR DIREITO */}
-      <div 
+      <div
         className="tool-visor-arrow-bottom"
         onClick={() => setIsDrawerOpen(!isDrawerOpen)}
         style={{
           position: 'absolute',
-          bottom: isDrawerOpen ? 'auto' : '12px',
-          right: '12px',
+          bottom: isDrawerOpen ? 'auto' : '8px',
+          right: '8px',
           cursor: 'pointer',
           zIndex: 10,
-          transition: 'all 0.3s ease'
+          transition: 'all 0.3s ease',
+          width: '28px',
+          height: '28px',
+          borderRadius: '50%',
+          backgroundColor: 'rgba(59, 130, 246, 0.15)',
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center'
         }}
       >
         <svg
-          width="20"
-          height="20"
+          width="16"
+          height="16"
           viewBox="0 0 24 24"
           fill="none"
-          stroke="currentColor"
+          stroke="#3b82f6"
           strokeWidth="2.5"
+          strokeLinecap="round"
+          strokeLinejoin="round"
           style={{
             transform: isDrawerOpen ? 'rotate(180deg)' : 'rotate(0deg)',
-            transition: 'transform 300ms ease-in-out',
-            color: '#3b82f6'
+            transition: 'transform 300ms ease-in-out'
           }}
         >
           <polyline points="6 9 12 15 18 9"></polyline>
