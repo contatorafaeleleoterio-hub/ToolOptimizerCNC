@@ -156,8 +156,10 @@
   .app-container {
     display: flex;
     flex-direction: column;
-    min-height: calc(100vh - 60px);
-    min-height: calc(100dvh - 60px);
+    min-height: calc(100vh - 52px);
+    min-height: calc(100dvh - 52px);
+    padding-bottom: var(--space-8);
+    padding-bottom: calc(var(--space-8) + env(safe-area-inset-bottom, 0px));
   }
 
   /* ========================================
@@ -609,6 +611,7 @@
   .config-section {
     background: var(--bg-secondary);
     border-top: 1px solid var(--border-default);
+    padding-bottom: var(--space-4);
   }
 
   .config-card {
@@ -664,7 +667,7 @@
   }
 
   .config-card.open .config-card-body {
-    max-height: 1000px;
+    max-height: 2000px;
   }
 
   .config-card-content {
@@ -990,7 +993,7 @@
   }
 
   .tool-drawer.open {
-    max-height: 700px;
+    max-height: 1200px;
     opacity: 1;
   }
 
@@ -1023,6 +1026,7 @@
     background: var(--bg-secondary);
     border-top: 1px solid var(--border-default);
     padding: var(--space-4);
+    padding-bottom: var(--space-8);
   }
 
   .impacts-title {
@@ -1270,6 +1274,7 @@
       display: grid;
       grid-template-columns: 340px 1fr;
       grid-template-rows: auto 1fr;
+      padding-bottom: 0;
     }
 
     .quick-actions {
