@@ -50,12 +50,26 @@ function ResultsCenter() {
       {/* RPM - Destaque Máximo */}
       <div className="result-main">
         <div className="result-main-header">
-          <span className="result-main-title">🔄 Rotação (RPM)</span>
-          <span className="result-main-formula">n = (Vc × 1000) ÷ (π × D)</span>
+          <span className="result-main-title">Rotação</span>
+          <span className="result-main-unit">RPM</span>
         </div>
 
-        <div className={`result-main-value ${getStatus(results.rpm, 'rpm')}`}>
-          {results.rpm.toLocaleString('pt-BR')}
+        <div className="result-main-row">
+          <button
+            className="adjustment-btn negative"
+            onClick={() => store.adjustRpmByPercent(-10)}
+          >
+            -10%
+          </button>
+          <div className={`result-main-value ${getStatus(results.rpm, 'rpm')}`}>
+            {results.rpm.toLocaleString('pt-BR')}
+          </div>
+          <button
+            className="adjustment-btn positive"
+            onClick={() => store.adjustRpmByPercent(10)}
+          >
+            +10%
+          </button>
         </div>
 
         {/* Slider de ajuste percentual */}
@@ -81,59 +95,40 @@ function ResultsCenter() {
               step={5}
             />
           </div>
-          <div className="text-center text-sm text-text-muted mt-2">
-            Ajuste: {store.rpmAdjustment > 0 ? '+' : ''}{store.rpmAdjustment}%
-            {store.rpmAdjustment !== 0 && (
+          {store.rpmAdjustment !== 0 && (
+            <div className="text-center text-sm text-text-muted mt-2">
+              Ajuste: {store.rpmAdjustment > 0 ? '+' : ''}{store.rpmAdjustment}%
               <span className="ml-2 text-text-secondary">
                 (Base: {results.baseRpm.toLocaleString('pt-BR')})
               </span>
-            )}
-          </div>
-          {/* Botões de ajuste rápido */}
-          <div className="adjustment-buttons">
-            <button
-              className="adjustment-btn negative"
-              onClick={() => store.adjustRpmByPercent(-10)}
-            >
-              -10%
-            </button>
-            <button
-              className="adjustment-btn negative"
-              onClick={() => store.adjustRpmByPercent(-5)}
-            >
-              -5%
-            </button>
-            <button
-              className="adjustment-btn"
-              onClick={() => store.resetRpmAdjustment()}
-            >
-              Reset
-            </button>
-            <button
-              className="adjustment-btn positive"
-              onClick={() => store.adjustRpmByPercent(5)}
-            >
-              +5%
-            </button>
-            <button
-              className="adjustment-btn positive"
-              onClick={() => store.adjustRpmByPercent(10)}
-            >
-              +10%
-            </button>
-          </div>
+            </div>
+          )}
         </div>
       </div>
 
       {/* Feed Rate - Destaque Máximo */}
       <div className="result-main">
         <div className="result-main-header">
-          <span className="result-main-title">➡️ Avanço (F)</span>
-          <span className="result-main-formula">F = n × Z × fz</span>
+          <span className="result-main-title">Avanço</span>
+          <span className="result-main-unit">mm/min</span>
         </div>
 
-        <div className={`result-main-value ${getStatus(results.feedRate, 'feedRate')}`}>
-          {results.feedRate.toLocaleString('pt-BR')} <span className="text-lg">mm/min</span>
+        <div className="result-main-row">
+          <button
+            className="adjustment-btn negative"
+            onClick={() => store.adjustFeedByPercent(-10)}
+          >
+            -10%
+          </button>
+          <div className={`result-main-value ${getStatus(results.feedRate, 'feedRate')}`}>
+            {results.feedRate.toLocaleString('pt-BR')}
+          </div>
+          <button
+            className="adjustment-btn positive"
+            onClick={() => store.adjustFeedByPercent(10)}
+          >
+            +10%
+          </button>
         </div>
 
         {/* Slider de ajuste percentual */}
@@ -159,47 +154,14 @@ function ResultsCenter() {
               step={5}
             />
           </div>
-          <div className="text-center text-sm text-text-muted mt-2">
-            Ajuste: {store.feedAdjustment > 0 ? '+' : ''}{store.feedAdjustment}%
-            {store.feedAdjustment !== 0 && (
+          {store.feedAdjustment !== 0 && (
+            <div className="text-center text-sm text-text-muted mt-2">
+              Ajuste: {store.feedAdjustment > 0 ? '+' : ''}{store.feedAdjustment}%
               <span className="ml-2 text-text-secondary">
                 (Base: {results.baseFeedRate.toLocaleString('pt-BR')})
               </span>
-            )}
-          </div>
-          {/* Botões de ajuste rápido */}
-          <div className="adjustment-buttons">
-            <button
-              className="adjustment-btn negative"
-              onClick={() => store.adjustFeedByPercent(-10)}
-            >
-              -10%
-            </button>
-            <button
-              className="adjustment-btn negative"
-              onClick={() => store.adjustFeedByPercent(-5)}
-            >
-              -5%
-            </button>
-            <button
-              className="adjustment-btn"
-              onClick={() => store.resetFeedAdjustment()}
-            >
-              Reset
-            </button>
-            <button
-              className="adjustment-btn positive"
-              onClick={() => store.adjustFeedByPercent(5)}
-            >
-              +5%
-            </button>
-            <button
-              className="adjustment-btn positive"
-              onClick={() => store.adjustFeedByPercent(10)}
-            >
-              +10%
-            </button>
-          </div>
+            </div>
+          )}
         </div>
       </div>
 

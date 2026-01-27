@@ -54,56 +54,34 @@ function ResultCard() {
       {/* RPM - Destaque Principal */}
       <div className="result-block">
         <div className="result-header">
-          <span className="result-label">🔄 Rotação (RPM)</span>
-          <span className="result-formula">n = (Vc × 1000) ÷ (π × D)</span>
+          <span className="result-label">Rotação</span>
+          <span className="result-unit-label">RPM</span>
         </div>
-        <div className={`result-value-main ${getStatus('rpm')}`}>
-          {results.rpm.toLocaleString('pt-BR')}
+        <div className="result-value-row">
+          <button
+            className="adj-btn adj-btn-negative"
+            onClick={() => store.adjustRpmByPercent(-10)}
+          >
+            -10%
+          </button>
+          <div className={`result-value-main ${getStatus('rpm')}`}>
+            {results.rpm.toLocaleString('pt-BR')}
+          </div>
+          <button
+            className="adj-btn adj-btn-positive"
+            onClick={() => store.adjustRpmByPercent(10)}
+          >
+            +10%
+          </button>
         </div>
-
-        {/* Controles de ajuste */}
-        <div className="result-controls">
+        {store.rpmAdjustment !== 0 && (
           <div className="adjustment-info">
             Ajuste: {store.rpmAdjustment > 0 ? '+' : ''}{store.rpmAdjustment}%
-            {store.rpmAdjustment !== 0 && (
-              <span className="base-value">
-                (Base: {results.baseRpm.toLocaleString('pt-BR')})
-              </span>
-            )}
+            <span className="base-value">
+              (Base: {results.baseRpm.toLocaleString('pt-BR')})
+            </span>
           </div>
-          <div className="adjustment-buttons">
-            <button
-              className="adj-btn adj-btn-negative"
-              onClick={() => store.adjustRpmByPercent(-10)}
-            >
-              -10%
-            </button>
-            <button
-              className="adj-btn adj-btn-negative"
-              onClick={() => store.adjustRpmByPercent(-5)}
-            >
-              -5%
-            </button>
-            <button
-              className="adj-btn"
-              onClick={() => store.resetRpmAdjustment()}
-            >
-              Reset
-            </button>
-            <button
-              className="adj-btn adj-btn-positive"
-              onClick={() => store.adjustRpmByPercent(5)}
-            >
-              +5%
-            </button>
-            <button
-              className="adj-btn adj-btn-positive"
-              onClick={() => store.adjustRpmByPercent(10)}
-            >
-              +10%
-            </button>
-          </div>
-        </div>
+        )}
       </div>
 
       {/* Divider */}
@@ -112,57 +90,34 @@ function ResultCard() {
       {/* Feed Rate - Destaque Principal */}
       <div className="result-block">
         <div className="result-header">
-          <span className="result-label">➡️ Avanço (F)</span>
-          <span className="result-formula">F = n × Z × fz</span>
+          <span className="result-label">Avanço</span>
+          <span className="result-unit-label">mm/min</span>
         </div>
-        <div className={`result-value-main ${getStatus('feedRate')}`}>
-          {results.feedRate.toLocaleString('pt-BR')}
-          <span className="result-unit">mm/min</span>
+        <div className="result-value-row">
+          <button
+            className="adj-btn adj-btn-negative"
+            onClick={() => store.adjustFeedByPercent(-10)}
+          >
+            -10%
+          </button>
+          <div className={`result-value-main ${getStatus('feedRate')}`}>
+            {results.feedRate.toLocaleString('pt-BR')}
+          </div>
+          <button
+            className="adj-btn adj-btn-positive"
+            onClick={() => store.adjustFeedByPercent(10)}
+          >
+            +10%
+          </button>
         </div>
-
-        {/* Controles de ajuste */}
-        <div className="result-controls">
+        {store.feedAdjustment !== 0 && (
           <div className="adjustment-info">
             Ajuste: {store.feedAdjustment > 0 ? '+' : ''}{store.feedAdjustment}%
-            {store.feedAdjustment !== 0 && (
-              <span className="base-value">
-                (Base: {results.baseFeedRate.toLocaleString('pt-BR')})
-              </span>
-            )}
+            <span className="base-value">
+              (Base: {results.baseFeedRate.toLocaleString('pt-BR')})
+            </span>
           </div>
-          <div className="adjustment-buttons">
-            <button
-              className="adj-btn adj-btn-negative"
-              onClick={() => store.adjustFeedByPercent(-10)}
-            >
-              -10%
-            </button>
-            <button
-              className="adj-btn adj-btn-negative"
-              onClick={() => store.adjustFeedByPercent(-5)}
-            >
-              -5%
-            </button>
-            <button
-              className="adj-btn"
-              onClick={() => store.resetFeedAdjustment()}
-            >
-              Reset
-            </button>
-            <button
-              className="adj-btn adj-btn-positive"
-              onClick={() => store.adjustFeedByPercent(5)}
-            >
-              +5%
-            </button>
-            <button
-              className="adj-btn adj-btn-positive"
-              onClick={() => store.adjustFeedByPercent(10)}
-            >
-              +10%
-            </button>
-          </div>
-        </div>
+        )}
       </div>
 
       {/* Valores Secundários */}
