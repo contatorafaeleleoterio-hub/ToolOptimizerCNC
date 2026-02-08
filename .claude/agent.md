@@ -1,18 +1,19 @@
 # Agent - ToolOptimizer CNC
 
 ## Estado Atual
-- **Fase:** 5 - Zustand Store ✅
-- **Status:** Store central com 7 actions, auto-recalculation, 120 testes passando
-- **Última ação:** Criação de src/store/machining-store.ts + testes de integração
+- **Fase:** 6 - UI Components ✅
+- **Status:** Dashboard funcional com 3 colunas, 6 componentes, 142 testes passando
+- **Última ação:** Criação de UI components (App, ConfigPanel, ResultsPanel, FineTunePanel, Disclaimer, UIHelpers)
 
 ## Próxima Ação
-- Fase 6: UI Components (Layout 3 colunas, painéis de config/resultados/impactos)
+- Fase 7: Polishing, responsividade e export PDF
 
 ## Histórico de Sessões
 - Fase 2 (07/02/2026): docs/sessions/SESSION_FASE2.md
 - Fase 3 (07/02/2026): Calculation Engine com TDD
 - Fase 4 (08/02/2026): Dados Estáticos (materials, tools, operations)
 - Fase 5 (08/02/2026): Zustand Store (machining-store + integration tests)
+- Fase 6 (08/02/2026): UI Components (dashboard 3 colunas + component tests)
 
 ## Stack
 React 18 + TypeScript (strict) + Vite 6 + Zustand + Tailwind v4

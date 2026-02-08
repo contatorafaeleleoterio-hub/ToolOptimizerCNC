@@ -37,12 +37,23 @@
 - [x] tests/store/machining-store.test.ts - 31 testes de integração
 - Prompt: docs/sessions/PROMPT_FASE5.md
 
-## Fase 6: UI Components
-- [ ] Layout 3 colunas
-- [ ] Painel de configuração (inputs)
-- [ ] Painel de resultados (RPM, Avanço, Potência)
-- [ ] Painel de impactos (accordions)
-- [ ] Sistema de semáforo visual
+## Fase 6: UI Components ✅
+- [x] Layout 3 colunas (App.tsx + index.html + main.tsx + index.css)
+- [x] Painel de configuração (config-panel.tsx — material, operação, ferramenta, params, limites, safety)
+- [x] Painel de resultados (results-panel.tsx — overview, big numbers, progress, safety badge, avisos)
+- [x] Painel de ajuste fino (fine-tune-panel.tsx — 4 sliders com real-time update)
+- [x] Disclaimer (disclaimer.tsx)
+- [x] UI helpers (ui-helpers.tsx — SectionTitle, FieldGroup, NumInput)
+- [x] Tailwind v4 design tokens (index.css — cores, fontes, sombras)
+- [x] Component tests: 22 novos (config-panel: 14, results-panel: 8)
+- Prompt: docs/sessions/PROMPT_FASE6.md
+
+## Fase 7: Polishing & Export
+- [ ] Responsividade refinada (1360px+)
+- [ ] Animações e transições (hover, glow)
+- [ ] Export PDF do resultado
+- [ ] Keyboard shortcuts
+- [ ] Performance optimization
 
 ---
 
