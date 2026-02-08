@@ -9,7 +9,14 @@
       "Bash(git init:*)",
       "Bash(git branch:*)",
       "Bash(git add:*)",
-      "Bash(git commit:*)"
+      "Bash(git commit:*)",
+      "Bash(git mv:*)",
+      "Bash(git status:*)",
+      "Bash(git log:*)",
+      "Bash(git diff:*)",
+      "Bash(npx:*)",
+      "Bash(ls:*)",
+      "Bash(mkdir:*)"
     ]
   }
 }
