@@ -23,10 +23,13 @@
 - [x] src/engine/index.ts - barrel export
 - Prompt: docs/sessions/PROMPT_FASE3.md
 
-## Fase 4: Dados Estáticos
-- [ ] src/data/materials.json - 9 materiais
-- [ ] src/data/tools.json - 3 tipos de ferramenta
-- [ ] src/data/operations.json - tipos de operação
+## Fase 4: Dados Estáticos ✅
+- [x] src/data/materials.ts - 9 materiais (com Kienzle + Vc ranges)
+- [x] src/data/tools.ts - 3 tipos de ferramenta (6 diâmetros padrão)
+- [x] src/data/operations.ts - 3 tipos de operação
+- [x] src/data/index.ts - barrel export
+- [x] tests/data/ - 33 testes (materials, tools, operations)
+- Prompt: docs/sessions/PROMPT_FASE4.md
 
 ## Fase 5: Zustand Store
 - [ ] src/store/machining-store.ts

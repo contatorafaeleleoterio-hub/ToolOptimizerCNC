@@ -1,16 +1,17 @@
 # Agent - ToolOptimizer CNC
 
 ## Estado Atual
-- **Fase:** 3 - Calculation Engine ✅
-- **Status:** Engine completo com TDD (56 testes passando)
-- **Última ação:** Implementação de rpm, chip-thinning, feed, power, validators com TDD
+- **Fase:** 4 - Dados Estáticos ✅
+- **Status:** 9 materiais, 3 tipos ferramenta, 3 operações + testes (89 testes passando)
+- **Última ação:** Criação de src/data/ com materials, tools, operations + barrel export + testes
 
 ## Próxima Ação
-- Fase 4: Dados Estáticos (materials.json, tools.json, operations.json)
+- Fase 5: Zustand Store (src/store/machining-store.ts)
 
 ## Histórico de Sessões
 - Fase 2 (07/02/2026): docs/sessions/SESSION_FASE2.md
 - Fase 3 (07/02/2026): Calculation Engine com TDD
+- Fase 4 (08/02/2026): Dados Estáticos (materials, tools, operations)
 
 ## Stack
 React 18 + TypeScript (strict) + Vite 6 + Zustand + Tailwind v4
