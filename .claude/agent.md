@@ -45,3 +45,10 @@ React 18 + TypeScript (strict) + Vite 6 + Zustand + Tailwind v4
 - Conventional commits (feat:, fix:, test:, docs:, refactor:)
 - Stage arquivos específicos (nunca `git add .` sem verificar)
 - Nunca force push em main
+
+### Fim de Sessão (OBRIGATÓRIO)
+1. Atualizar **este arquivo** (agent.md): Estado Atual, Próxima Ação, Histórico de Sessões
+2. Atualizar **fixplan.md**: marcar itens concluídos com [x]
+3. Criar **prompt da próxima fase** em `docs/sessions/PROMPT_FASE{N+1}.md`
+4. Commit das atualizações de contexto
+5. Informar ao usuário o prompt pronto para a próxima sessão
