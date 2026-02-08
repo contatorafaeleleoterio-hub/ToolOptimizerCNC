@@ -55,11 +55,14 @@
 - [x] Gauge SVG (feed efficiency arc com gradient cyan→green)
 - [x] Component tests: 22 novos (gauge: 11, export-buttons: 11)
 
-## Fase 8: Deployment & Final Polish
-- [ ] Build de produção (npm run build)
+## Fase 8: Deployment & Final Polish (em progresso)
+- [x] Build de produção (npm run build) — 63KB gzip, zero warnings
+- [x] Typecheck + Tests validados (164 testes passando)
+- [x] Visual QA iniciada (layout 3 colunas, gauge, cards OK)
 - [ ] Deploy (Vercel/Netlify)
 - [ ] Performance audit (Lighthouse)
-- [ ] Final visual QA
+- [ ] README atualizado
+- [ ] Commit final
 
 ---
 

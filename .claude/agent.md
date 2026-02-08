@@ -1,12 +1,12 @@
 # Agent - ToolOptimizer CNC
 
 ## Estado Atual
-- **Fase:** 7 - Polishing & Export ✅
-- **Status:** Dashboard polido com gauge SVG, export clipboard, animated borders, 164 testes passando
-- **Última ação:** Gauge SVG, copy-to-clipboard, animated hover borders, min-width 1360px
+- **Fase:** 8 - Deployment & Final Polish (em progresso)
+- **Status:** Build OK (63KB gzip), typecheck OK, 164 testes passando, Visual QA em andamento
+- **Última ação:** Build de produção, typecheck, testes validados, Visual QA iniciada
 
 ## Próxima Ação
-- Fase 8: Deployment & Final Polish
+- Continuar Fase 8: Deploy (Vercel), Performance audit, Final validation, README
 
 ## Histórico de Sessões
 - Fase 2 (07/02/2026): docs/sessions/SESSION_FASE2.md
@@ -15,6 +15,7 @@
 - Fase 5 (08/02/2026): Zustand Store (machining-store + integration tests)
 - Fase 6 (08/02/2026): UI Components (dashboard 3 colunas + component tests)
 - Fase 7 (08/02/2026): Polishing & Export (gauge, clipboard, hover animations)
+- Fase 8 (08/02/2026): Deployment & Final Polish (em progresso — build, typecheck, tests OK)
 
 ## Stack
 React 18 + TypeScript (strict) + Vite 6 + Zustand + Tailwind v4
