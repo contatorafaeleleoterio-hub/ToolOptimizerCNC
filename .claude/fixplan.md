@@ -31,9 +31,11 @@
 - [x] tests/data/ - 33 testes (materials, tools, operations)
 - Prompt: docs/sessions/PROMPT_FASE4.md
 
-## Fase 5: Zustand Store
-- [ ] src/store/machining-store.ts
-- [ ] Testes de integração do store
+## Fase 5: Zustand Store ✅
+- [x] src/store/machining-store.ts
+- [x] src/store/index.ts - barrel export
+- [x] tests/store/machining-store.test.ts - 31 testes de integração
+- Prompt: docs/sessions/PROMPT_FASE5.md
 
 ## Fase 6: UI Components
 - [ ] Layout 3 colunas
