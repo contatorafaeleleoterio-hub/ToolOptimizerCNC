@@ -13,13 +13,15 @@
 - [x] vitest.config.ts
 - [x] npm install
 
-## Fase 3: Calculation Engine
-- [ ] src/types/ - interfaces TypeScript
-- [ ] src/engine/rpm.ts - cálculo de RPM
-- [ ] src/engine/feed.ts - cálculo de avanço
-- [ ] src/engine/kienzle.ts - força de corte Kienzle
-- [ ] src/engine/validators.ts - validação L/D, ranges
-- [ ] tests/ - testes com valores de referência
+## Fase 3: Calculation Engine ✅
+- [x] src/types/index.ts - interfaces TypeScript (baseado em docs/technical/srctypes.md)
+- [x] src/engine/rpm.ts + tests/engine/rpm.test.ts - cálculo de RPM (TDD)
+- [x] src/engine/chip-thinning.ts + tests/engine/chip-thinning.test.ts - CTF (TDD)
+- [x] src/engine/feed.ts + tests/engine/feed.test.ts - cálculo de avanço (TDD)
+- [x] src/engine/power.ts + tests/engine/power.test.ts - MRR, potência, torque (TDD)
+- [x] src/engine/validators.ts + tests/engine/validators.test.ts - L/D, ranges, limites (TDD)
+- [x] src/engine/index.ts - barrel export
+- Prompt: docs/sessions/PROMPT_FASE3.md
 
 ## Fase 4: Dados Estáticos
 - [ ] src/data/materials.json - 9 materiais

@@ -1,12 +1,16 @@
 # Agent - ToolOptimizer CNC
 
 ## Estado Atual
-- **Fase:** 2 - Toolchain ✅
-- **Status:** Toolchain configurado e validado
-- **Última ação:** Configuração de Vite 6, React 18, TypeScript strict, Zustand, Tailwind v4, Vitest
+- **Fase:** 3 - Calculation Engine ✅
+- **Status:** Engine completo com TDD (56 testes passando)
+- **Última ação:** Implementação de rpm, chip-thinning, feed, power, validators com TDD
 
 ## Próxima Ação
-- Fase 3: Calculation Engine (types, rpm, feed, kienzle, validators + testes)
+- Fase 4: Dados Estáticos (materials.json, tools.json, operations.json)
+
+## Histórico de Sessões
+- Fase 2 (07/02/2026): docs/sessions/SESSION_FASE2.md
+- Fase 3 (07/02/2026): Calculation Engine com TDD
 
 ## Stack
 React 18 + TypeScript (strict) + Vite 6 + Zustand + Tailwind v4
