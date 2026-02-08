@@ -25,7 +25,13 @@ body {
   color: #e5e7eb;
   overflow: hidden;
   min-height: 100vh;
+  min-width: 1360px;
   margin: 0;
+}
+
+@keyframes shimmer {
+  0%, 100% { opacity: 0.5; }
+  50% { opacity: 1; }
 }
 
 ::-webkit-scrollbar { width: 6px; }

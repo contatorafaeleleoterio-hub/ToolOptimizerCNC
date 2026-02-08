@@ -37,7 +37,7 @@ export function FineTunePanel() {
           const display = key === 'fz' ? val.toFixed(2) : key === 'ae' || key === 'ap' ? val.toFixed(1) : val.toFixed(0);
 
           return (
-            <div key={key} className="flex flex-col gap-2 group">
+            <div key={key} className="flex flex-col gap-2 group relative overflow-hidden">
               <div className="flex justify-between items-end mb-1">
                 <div className="flex items-baseline gap-2">
                   <span className={`text-sm font-bold font-mono text-${color}`}>{label}</span>
@@ -65,6 +65,7 @@ export function FineTunePanel() {
                 </div>
               </div>
               <p className="text-[10px] text-gray-500 leading-tight mt-1 opacity-70">{desc}</p>
+              <div className={`absolute bottom-0 left-0 w-full h-[2px] bg-${color}/50 scale-x-0 group-hover:scale-x-100 transition-transform duration-500 origin-left`} />
             </div>
           );
         })}

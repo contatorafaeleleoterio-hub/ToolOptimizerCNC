@@ -1,4 +1,5 @@
 import { useMachiningStore } from '@/store';
+import { Gauge } from './gauge';
 import type { StatusSeguranca } from '@/types';
 
 const SEG_COLORS: Record<StatusSeguranca['nivel'], string> = {
@@ -89,6 +90,9 @@ export function ResultsPanel() {
           color="secondary" glow="rgba(57,255,20,0.4)" barGlow="rgba(57,255,20,1)" icon="moving" />
       </div>
 
+      {/* Gauge: Feed Efficiency */}
+      <Gauge value={avanco} maxValue={limites.maxAvanco} label="Feed Efficiency" />
+
       {/* Progress bars: Power, MRR, Surface Speed */}
       <div className="grid grid-cols-3 gap-4">
         <ProgressCard label="Power Est." value={potenciaMotor.toFixed(2)} unit="kW" pct={powerPct}
@@ -130,7 +134,7 @@ function MetricCell({ label, value, unit, unitColor }: {
     <div className="p-4 flex flex-col gap-1">
       <span className="text-[10px] text-gray-500 font-bold uppercase tracking-wider">{label}</span>
       <div className="flex items-baseline gap-1">
-        <span className="text-2xl font-bold text-white font-mono">{value}</span>
+        <span className="text-2xl font-bold text-white font-mono transition-all duration-500">{value}</span>
         <span className={`text-[10px] ${unitColor} font-bold`}>{unit}</span>
       </div>
     </div>
@@ -176,6 +180,7 @@ function ProgressCard({ label, value, unit, pct, barColor, barShadow }: {
       <div className="h-1 w-full bg-white/10 rounded-full overflow-hidden mt-2">
         <div className={`h-full ${barColor}`} style={{ width: `${pct}%`, boxShadow: `0 0 10px ${barShadow}` }} />
       </div>
+      <div className={`absolute bottom-0 left-0 w-full h-[2px] ${barColor}/50 scale-x-0 group-hover:scale-x-100 transition-transform duration-500 origin-left`} />
     </div>
   );
 }

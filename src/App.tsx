@@ -1,6 +1,7 @@
 import { ConfigPanel } from './components/config-panel';
 import { ResultsPanel } from './components/results-panel';
 import { FineTunePanel } from './components/fine-tune-panel';
+import { ExportButtons } from './components/export-buttons';
 import { Disclaimer } from './components/disclaimer';
 
 export default function App() {
@@ -22,6 +23,7 @@ export default function App() {
             ToolOptimizer<span className="font-light text-primary">CNC</span>
           </h1>
         </div>
+        <ExportButtons />
       </header>
 
       {/* 3-column grid */}
