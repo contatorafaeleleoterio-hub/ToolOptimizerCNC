@@ -1,0 +1,36 @@
+# Dependencies
+node_modules/
+.npm/
+
+# Build
+dist/
+build/
+.cache/
+.vite/
+*.tsbuildinfo
+
+# Environment
+.env
+.env.local
+.env.*.local
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Logs
+logs/
+*.log
+
+# Tests
+coverage/
+.pytest_cache/
+
+# Claude sessions (optional)
+.claude/sessions/
