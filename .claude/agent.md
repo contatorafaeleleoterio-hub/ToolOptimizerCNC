@@ -1,12 +1,12 @@
 # Agent - ToolOptimizer CNC
 
 ## Estado Atual
-- **Fase:** 1 - Setup Inicial
-- **Status:** Estrutura base criada, documentos organizados
-- **Última ação:** Reorganização de 12 docs em docs/specs, docs/technical, docs/design
+- **Fase:** 2 - Toolchain ✅
+- **Status:** Toolchain configurado e validado
+- **Última ação:** Configuração de Vite 6, React 18, TypeScript strict, Zustand, Tailwind v4, Vitest
 
 ## Próxima Ação
-- Fase 2: Configurar toolchain (package.json, TypeScript, Vite, Vitest)
+- Fase 3: Calculation Engine (types, rpm, feed, kienzle, validators + testes)
 
 ## Stack
 React 18 + TypeScript (strict) + Vite 6 + Zustand + Tailwind v4

@@ -6,12 +6,12 @@
 - [x] Mover e organizar documentos
 - [x] Context Engineering (CLAUDE.md, agent.md, fixplan.md)
 
-## Fase 2: Toolchain (Próxima)
-- [ ] package.json (React, Zustand, Vite, Tailwind, Vitest)
-- [ ] tsconfig.json (strict mode)
-- [ ] vite.config.ts
-- [ ] vitest.config.ts
-- [ ] npm install
+## Fase 2: Toolchain ✅
+- [x] package.json (React, Zustand, Vite, Tailwind, Vitest)
+- [x] tsconfig.json (strict mode)
+- [x] vite.config.ts
+- [x] vitest.config.ts
+- [x] npm install
 
 ## Fase 3: Calculation Engine
 - [ ] src/types/ - interfaces TypeScript
