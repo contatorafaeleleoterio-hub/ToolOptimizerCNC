@@ -20,8 +20,8 @@
 }
 
 body {
-  font-family: var(--font-display);
-  background-color: var(--color-background-dark);
+  font-family: "Inter", sans-serif;
+  background-color: #0F1419;
   color: #e5e7eb;
   overflow: hidden;
   min-height: 100vh;
