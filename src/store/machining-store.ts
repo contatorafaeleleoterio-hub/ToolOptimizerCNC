@@ -10,13 +10,19 @@ import { calculateRPM, calculateEffectiveFz, calculateFeedRate, calculateMRR, ca
 import { getMaterialById } from '@/data/index';
 
 const DEFAULT_FERRAMENTA: Ferramenta = {
-  tipo: 'topo',
-  diametro: 10,
+  tipo: 'toroidal',
+  diametro: 6,
   numeroArestas: 4,
-  balanco: 30,
+  balanco: 25,
+  raioQuina: 1.0,
 };
 
 const DEFAULT_PARAMETROS: ParametrosUsinagem = { ap: 2, ae: 5, fz: 0.1, vc: 100 };
+
+interface ManualOverrides {
+  rpm?: number;
+  feed?: number;
+}
 
 interface MachiningState {
   materialId: number;
@@ -26,6 +32,7 @@ interface MachiningState {
   limitesMaquina: LimitesMaquina;
   resultado: ResultadoUsinagem | null;
   safetyFactor: number;
+  manualOverrides: ManualOverrides;
 }
 
 interface MachiningActions {
@@ -35,6 +42,9 @@ interface MachiningActions {
   setParametros: (p: Partial<ParametrosUsinagem>) => void;
   setLimitesMaquina: (l: Partial<LimitesMaquina>) => void;
   setSafetyFactor: (f: number) => void;
+  setManualRPM: (rpm: number) => void;
+  setManualFeed: (feed: number) => void;
+  clearManualOverrides: () => void;
   calcular: () => void;
   reset: () => void;
 }
@@ -47,6 +57,7 @@ const INITIAL_STATE: MachiningState = {
   limitesMaquina: LIMITES_PADRAO_MAQUINA,
   resultado: null,
   safetyFactor: 0.8,
+  manualOverrides: {},
 };
 
 export const useMachiningStore = create<MachiningState & MachiningActions>()(
@@ -54,22 +65,22 @@ export const useMachiningStore = create<MachiningState & MachiningActions>()(
     ...INITIAL_STATE,
 
     setMaterial: (id) => {
-      set({ materialId: id });
+      set({ materialId: id, manualOverrides: {} });
       get().calcular();
     },
 
     setFerramenta: (f) => {
-      set((state) => ({ ferramenta: { ...state.ferramenta, ...f } }));
+      set((state) => ({ ferramenta: { ...state.ferramenta, ...f }, manualOverrides: {} }));
       get().calcular();
     },
 
     setTipoOperacao: (tipo) => {
-      set({ tipoOperacao: tipo });
+      set({ tipoOperacao: tipo, manualOverrides: {} });
       get().calcular();
     },
 
     setParametros: (p) => {
-      set((state) => ({ parametros: { ...state.parametros, ...p } }));
+      set((state) => ({ parametros: { ...state.parametros, ...p }, manualOverrides: {} }));
       get().calcular();
     },
 
@@ -83,8 +94,23 @@ export const useMachiningStore = create<MachiningState & MachiningActions>()(
       get().calcular();
     },
 
+    setManualRPM: (rpm) => {
+      set({ manualOverrides: { ...get().manualOverrides, rpm } });
+      get().calcular();
+    },
+
+    setManualFeed: (feed) => {
+      set({ manualOverrides: { ...get().manualOverrides, feed } });
+      get().calcular();
+    },
+
+    clearManualOverrides: () => {
+      set({ manualOverrides: {} });
+      get().calcular();
+    },
+
     calcular: () => {
-      const { materialId, ferramenta, parametros, limitesMaquina, safetyFactor } = get();
+      const { materialId, ferramenta, parametros, limitesMaquina, safetyFactor, manualOverrides } = get();
       const { ap, ae, fz, vc } = parametros;
       const { diametro: D, numeroArestas: Z, balanco } = ferramenta;
 
@@ -94,9 +120,13 @@ export const useMachiningStore = create<MachiningState & MachiningActions>()(
       try { validateInputs({ d: D, ap, ae, fz, vc, z: Z }); }
       catch { set({ resultado: null }); return; }
 
-      const rpm = calculateRPM(vc, D);
+      let rpm = calculateRPM(vc, D);
       const chipResult = calculateEffectiveFz(fz, ae, D);
-      const avanco = calculateFeedRate(chipResult.fzEfetivo, Z, rpm);
+      let avanco = calculateFeedRate(chipResult.fzEfetivo, Z, rpm);
+
+      if (manualOverrides.rpm !== undefined) rpm = manualOverrides.rpm;
+      if (manualOverrides.feed !== undefined) avanco = manualOverrides.feed;
+
       const mrr = calculateMRR(ap, ae, avanco);
       const kc = material.kc1_1;
       const potenciaMotor = calculatePower(mrr, kc, limitesMaquina.eficiencia);

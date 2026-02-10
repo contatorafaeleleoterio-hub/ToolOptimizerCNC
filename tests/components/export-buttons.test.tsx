@@ -1,25 +1,35 @@
 import { render, screen, fireEvent, waitFor } from '@testing-library/react';
 import { describe, it, expect, beforeEach, vi } from 'vitest';
+import { BrowserRouter } from 'react-router-dom';
 import { ExportButtons, formatReport } from '@/components/export-buttons';
 import { useMachiningStore } from '@/store';
+
+function renderWithRouter(ui: React.ReactElement) {
+  return render(<BrowserRouter>{ui}</BrowserRouter>);
+}
 
 describe('ExportButtons', () => {
   beforeEach(() => { useMachiningStore.getState().reset(); });
 
   it('renders copy button', () => {
-    render(<ExportButtons />);
+    renderWithRouter(<ExportButtons />);
     expect(screen.getByText('Copiar')).toBeInTheDocument();
   });
 
-  it('disables button when no result', () => {
-    render(<ExportButtons />);
+  it('renders settings button', () => {
+    renderWithRouter(<ExportButtons />);
+    expect(screen.getByText('Configurações')).toBeInTheDocument();
+  });
+
+  it('disables copy button when no result', () => {
+    renderWithRouter(<ExportButtons />);
     const btn = screen.getByRole('button', { name: /copiar/i });
     expect(btn).toBeDisabled();
   });
 
-  it('enables button when result exists', () => {
+  it('enables copy button when result exists', () => {
     useMachiningStore.getState().calcular();
-    render(<ExportButtons />);
+    renderWithRouter(<ExportButtons />);
     const btn = screen.getByRole('button', { name: /copiar/i });
     expect(btn).not.toBeDisabled();
   });
@@ -28,7 +38,7 @@ describe('ExportButtons', () => {
     const writeTextMock = vi.fn().mockResolvedValue(undefined);
     Object.assign(navigator, { clipboard: { writeText: writeTextMock } });
     useMachiningStore.getState().calcular();
-    render(<ExportButtons />);
+    renderWithRouter(<ExportButtons />);
     fireEvent.click(screen.getByRole('button', { name: /copiar/i }));
     await waitFor(() => { expect(writeTextMock).toHaveBeenCalled(); });
   });
@@ -36,7 +46,7 @@ describe('ExportButtons', () => {
   it('shows success feedback after copy', async () => {
     Object.assign(navigator, { clipboard: { writeText: vi.fn().mockResolvedValue(undefined) } });
     useMachiningStore.getState().calcular();
-    render(<ExportButtons />);
+    renderWithRouter(<ExportButtons />);
     fireEvent.click(screen.getByRole('button', { name: /copiar/i }));
     await waitFor(() => { expect(screen.getByText('Copiado!')).toBeInTheDocument(); });
   });
@@ -52,39 +62,34 @@ describe('formatReport', () => {
 
   it('includes header', () => {
     useMachiningStore.getState().calcular();
-    const state = useMachiningStore.getState();
-    const text = formatReport(state);
+    const text = formatReport(useMachiningStore.getState());
     expect(text).toContain('ToolOptimizer CNC');
   });
 
   it('includes material name', () => {
     useMachiningStore.getState().calcular();
-    const state = useMachiningStore.getState();
-    const text = formatReport(state);
+    const text = formatReport(useMachiningStore.getState());
     expect(text).toContain('Material:');
   });
 
   it('includes RPM and feed values', () => {
     useMachiningStore.getState().calcular();
-    const state = useMachiningStore.getState();
-    const text = formatReport(state);
+    const text = formatReport(useMachiningStore.getState());
     expect(text).toContain('RPM:');
     expect(text).toContain('mm/min');
   });
 
   it('includes safety level', () => {
     useMachiningStore.getState().calcular();
-    const state = useMachiningStore.getState();
-    const text = formatReport(state);
-    expect(text).toContain('SEGURO');
+    const text = formatReport(useMachiningStore.getState());
+    expect(text).toContain('SEGURANÇA:');
   });
 
   it('includes warnings when present', () => {
     const store = useMachiningStore.getState();
     store.setFerramenta({ balanco: 50, diametro: 10 });
     store.calcular();
-    const state = useMachiningStore.getState();
-    const text = formatReport(state);
+    const text = formatReport(useMachiningStore.getState());
     expect(text).toContain('L/D');
   });
 });

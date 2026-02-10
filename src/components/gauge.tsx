@@ -1,16 +1,4 @@
-export function getQualityLabel(pct: number): string {
-  if (pct < 40) return 'Low';
-  if (pct < 70) return 'Good';
-  if (pct < 90) return 'High';
-  return 'Max';
-}
-
-const QUALITY_COLORS: Record<string, string> = {
-  Low: 'text-seg-vermelho',
-  Good: 'text-secondary',
-  High: 'text-primary',
-  Max: 'text-seg-amarelo',
-};
+import { useMemo } from 'react';
 
 interface GaugeProps {
   value: number;
@@ -18,68 +6,113 @@ interface GaugeProps {
   label?: string;
 }
 
+const TOTAL_SEGMENTS = 40;
+const ARC_DEG = 270;
+const START_DEG = -135;
+const MAX_PCT = 150;
+const R = 80;
+const CX = 100;
+const CY = 100;
+
+const SCALE_MARKS = [0, 20, 40, 60, 80, 100, 120, 140, 150];
+
+export function getSegmentColor(idx: number): string {
+  const pct = (idx / TOTAL_SEGMENTS) * MAX_PCT;
+  if (pct <= 50) return '#39FF14';
+  if (pct <= 100) return '#00FF88';
+  if (pct <= 120) return '#00D9FF';
+  return '#FFD700';
+}
+
+function toRad(deg: number): number {
+  return (deg * Math.PI) / 180;
+}
+
+function arcPath(startDeg: number, endDeg: number): string {
+  const x1 = CX + R * Math.cos(toRad(startDeg));
+  const y1 = CY + R * Math.sin(toRad(startDeg));
+  const x2 = CX + R * Math.cos(toRad(endDeg));
+  const y2 = CY + R * Math.sin(toRad(endDeg));
+  return `M ${x1} ${y1} A ${R} ${R} 0 0 1 ${x2} ${y2}`;
+}
+
+function markerPos(val: number): { x: number; y: number } {
+  const angle = START_DEG + (val / MAX_PCT) * ARC_DEG;
+  return {
+    x: CX + 95 * Math.cos(toRad(angle)),
+    y: CY + 95 * Math.sin(toRad(angle)),
+  };
+}
+
 export function Gauge({ value, maxValue, label = 'Efficiency' }: GaugeProps) {
-  const pct = Math.min(Math.max(Math.round((value / maxValue) * 100), 0), 100);
-  const qualityLabel = getQualityLabel(pct);
+  const pct = Math.min((value / maxValue) * 100, MAX_PCT);
+  const activeCount = Math.round((pct / MAX_PCT) * TOTAL_SEGMENTS);
+  const isCritical = pct > 120;
 
-  // Arc geometry: semi-circle from (10,50) to (90,50), radius 40, center (50,50)
-  const R = 40;
-  const CX = 50;
-  const CY = 50;
-  const totalArcLen = Math.PI * R; // ~125.66
-  const angle = (pct / 100) * Math.PI; // 0 to PI radians
-
-  // End point of filled arc (sweeping left to right on a top semi-circle)
-  const endX = CX - R * Math.cos(angle);
-  const endY = CY - R * Math.sin(angle);
-
-  // Large arc flag: 1 if angle > PI/2 (i.e., pct > 50)
-  const largeArc = pct > 50 ? 1 : 0;
-
-  const filledPath = pct === 0
-    ? ''
-    : `M ${CX - R} ${CY} A ${R} ${R} 0 ${largeArc} 1 ${endX.toFixed(2)} ${endY.toFixed(2)}`;
+  const segments = useMemo(() =>
+    Array.from({ length: TOTAL_SEGMENTS }, (_, i) => {
+      const segDeg = ARC_DEG / TOTAL_SEGMENTS;
+      const gap = 3;
+      const startAngle = START_DEG + i * segDeg;
+      const endAngle = startAngle + segDeg - gap;
+      return { startAngle, endAngle };
+    }), []);
 
   return (
     <div className="bg-surface-dark backdrop-blur-xl border border-white/5 rounded-2xl p-4 shadow-glass flex flex-col items-center">
-      {label && (
-        <span className="text-[10px] text-gray-500 font-bold uppercase tracking-wider mb-2">{label}</span>
-      )}
-      <div className="relative w-32 h-16 flex justify-center items-end">
-        <svg viewBox="0 0 100 50" className="w-32 h-16">
+      {label && <span className="text-[10px] text-gray-500 font-bold uppercase tracking-wider mb-2">{label}</span>}
+      <div className="relative w-40 h-40">
+        <svg viewBox="0 0 200 200" className="w-40 h-40" data-testid="gauge-svg">
           <defs>
-            <linearGradient id="gauge-gradient" x1="0%" x2="100%" y1="0%" y2="0%">
-              <stop offset="0%" style={{ stopColor: '#00D9FF' }} />
-              <stop offset="100%" style={{ stopColor: '#39FF14' }} />
-            </linearGradient>
+            <filter id="gauge-glow">
+              <feGaussianBlur stdDeviation="2" result="coloredBlur" />
+              <feMerge>
+                <feMergeNode in="coloredBlur" />
+                <feMergeNode in="SourceGraphic" />
+              </feMerge>
+            </filter>
           </defs>
-          {/* Background arc */}
-          <path
-            d={`M ${CX - R} ${CY} A ${R} ${R} 0 0 1 ${CX + R} ${CY}`}
-            fill="none"
-            stroke="rgba(255,255,255,0.1)"
-            strokeLinecap="round"
-            strokeWidth="6"
-          />
-          {/* Filled arc */}
-          {pct > 0 && (
-            <path
-              d={filledPath}
-              fill="none"
-              stroke="url(#gauge-gradient)"
-              strokeLinecap="round"
-              strokeWidth="6"
-              strokeDasharray={totalArcLen}
-              strokeDashoffset="0"
-              className="drop-shadow-[0_0_8px_rgba(57,255,20,0.4)]"
-            />
-          )}
+
+          {/* Inactive track */}
+          <g className="opacity-10">
+            {segments.map((seg, i) => (
+              <path key={`t-${i}`} d={arcPath(seg.startAngle, seg.endAngle)} stroke="white" fill="none" strokeWidth="8" />
+            ))}
+          </g>
+
+          {/* Active segments */}
+          <g filter="url(#gauge-glow)">
+            {segments.map((seg, i) =>
+              i < activeCount ? (
+                <path key={`a-${i}`} d={arcPath(seg.startAngle, seg.endAngle)}
+                  stroke={getSegmentColor(i)} fill="none" strokeWidth="8"
+                  className={isCritical ? 'animate-pulse' : ''}
+                  data-testid="gauge-segment-active" />
+              ) : null
+            )}
+          </g>
+
+          {/* Scale markers */}
+          {SCALE_MARKS.map((val) => {
+            const { x, y } = markerPos(val);
+            return (
+              <text key={val} x={x} y={y} textAnchor="middle" dominantBaseline="central"
+                fill={val === 100 ? '#00D9FF' : '#6b7280'}
+                fontSize={val === 100 ? 11 : 8}
+                fontWeight={val === 100 ? 'bold' : 'normal'}
+                data-testid={`scale-${val}`}>
+                {val}
+              </text>
+            );
+          })}
         </svg>
-        <div className="absolute bottom-0 flex flex-col items-center">
-          <span className="text-xl font-bold text-white font-mono leading-none tracking-tighter">{pct}</span>
-          <span className={`text-[7px] font-bold uppercase tracking-[0.2em] mb-1 ${QUALITY_COLORS[qualityLabel]}`}>
-            {qualityLabel}
-          </span>
+
+        {/* Center display */}
+        <div className="absolute inset-0 flex items-center justify-center">
+          <div className={isCritical ? 'animate-pulse' : ''}>
+            <span className="text-4xl font-bold text-white font-mono">{Math.round(pct)}</span>
+            <span className="text-lg text-gray-500">%</span>
+          </div>
         </div>
       </div>
     </div>

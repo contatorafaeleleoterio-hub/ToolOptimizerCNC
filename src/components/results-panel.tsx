@@ -3,29 +3,23 @@ import { Gauge } from './gauge';
 import type { StatusSeguranca } from '@/types';
 
 const SEG_COLORS: Record<StatusSeguranca['nivel'], string> = {
-  verde: 'text-seg-verde',
-  amarelo: 'text-seg-amarelo',
-  vermelho: 'text-seg-vermelho',
-  bloqueado: 'text-gray-500',
+  verde: 'text-seg-verde', amarelo: 'text-seg-amarelo',
+  vermelho: 'text-seg-vermelho', bloqueado: 'text-gray-500',
 };
-
 const SEG_ICONS: Record<StatusSeguranca['nivel'], string> = {
-  verde: 'check_circle',
-  amarelo: 'warning',
-  vermelho: 'error',
-  bloqueado: 'block',
+  verde: 'check_circle', amarelo: 'warning', vermelho: 'error', bloqueado: 'block',
+};
+const SEG_LABELS: Record<StatusSeguranca['nivel'], string> = {
+  verde: 'SEGURO', amarelo: 'ALERTA', vermelho: 'CRÍTICO', bloqueado: 'BLOQUEADO',
 };
 
-const SEG_LABELS: Record<StatusSeguranca['nivel'], string> = {
-  verde: 'SEGURO',
-  amarelo: 'ALERTA',
-  vermelho: 'CRÍTICO',
-  bloqueado: 'BLOQUEADO',
-};
+const EDIT_BTN = 'w-8 h-8 rounded-lg bg-black/40 border border-white/10 text-gray-400 hover:text-white hover:bg-white/10 transition-all text-sm font-bold flex items-center justify-center';
 
 export function ResultsPanel() {
   const resultado = useMachiningStore((s) => s.resultado);
   const limites = useMachiningStore((s) => s.limitesMaquina);
+  const setManualRPM = useMachiningStore((s) => s.setManualRPM);
+  const setManualFeed = useMachiningStore((s) => s.setManualFeed);
 
   if (!resultado) {
     return (
@@ -53,15 +47,13 @@ export function ResultsPanel() {
         'bg-gray-500/10 border-gray-500/30'
       }`}>
         <span className={`material-symbols-outlined ${SEG_COLORS[seguranca.nivel]}`}>{SEG_ICONS[seguranca.nivel]}</span>
-        <span className={`text-xs font-bold uppercase tracking-widest ${SEG_COLORS[seguranca.nivel]}`}>
-          {SEG_LABELS[seguranca.nivel]}
-        </span>
+        <span className={`text-xs font-bold uppercase tracking-widest ${SEG_COLORS[seguranca.nivel]}`}>{SEG_LABELS[seguranca.nivel]}</span>
         {seguranca.avisos.length > 0 && (
           <span className="text-[10px] text-gray-400 ml-2">({seguranca.avisos.length} aviso{seguranca.avisos.length > 1 ? 's' : ''})</span>
         )}
       </div>
 
-      {/* Overview cards: RPM, Feed, ap, ae */}
+      {/* Overview cards */}
       <div className="bg-surface-dark backdrop-blur-xl border border-white/5 rounded-2xl p-6 shadow-glass">
         <div className="flex items-center gap-3 mb-4">
           <div className="w-10 h-10 rounded-lg bg-white/5 flex items-center justify-center border border-white/10">
@@ -82,18 +74,22 @@ export function ResultsPanel() {
         </div>
       </div>
 
-      {/* Big numbers: RPM + Feed */}
+      {/* Big numbers: RPM + Feed (editable) */}
       <div className="grid grid-cols-2 gap-4">
         <BigNumber label="Spindle Speed" value={fmt(rpm)} unit="RPM" pct={rpmPct}
-          color="primary" glow="rgba(0,217,255,0.4)" barGlow="rgba(0,217,255,1)" icon="speed" />
+          color="primary" glow="rgba(0,217,255,0.4)" barGlow="rgba(0,217,255,1)" icon="speed"
+          isEditable currentValue={Math.round(rpm)}
+          onValueChange={(v) => setManualRPM(v)} min={100} max={limites.maxRPM} step={10} />
         <BigNumber label="Feed Rate" value={fmt(avanco)} unit="mm/min" pct={feedPct}
-          color="secondary" glow="rgba(57,255,20,0.4)" barGlow="rgba(57,255,20,1)" icon="moving" />
+          color="secondary" glow="rgba(57,255,20,0.4)" barGlow="rgba(57,255,20,1)" icon="moving"
+          isEditable currentValue={Math.round(avanco)}
+          onValueChange={(v) => setManualFeed(v)} min={10} max={limites.maxAvanco} step={10} />
       </div>
 
-      {/* Gauge: Feed Efficiency */}
+      {/* Gauge */}
       <Gauge value={avanco} maxValue={limites.maxAvanco} label="Feed Efficiency" />
 
-      {/* Progress bars: Power, MRR, Surface Speed */}
+      {/* Progress bars */}
       <div className="grid grid-cols-3 gap-4">
         <ProgressCard label="Power Est." value={potenciaMotor.toFixed(2)} unit="kW" pct={powerPct}
           barColor="bg-accent-orange" barShadow="rgba(249,115,22,0.5)" />
@@ -107,8 +103,7 @@ export function ResultsPanel() {
       {seguranca.avisos.length > 0 && (
         <div className="bg-surface-dark backdrop-blur-xl border border-white/5 rounded-2xl p-4 shadow-glass">
           <h4 className="text-xs font-bold text-gray-400 uppercase tracking-widest mb-3 flex items-center gap-2">
-            <span className="material-symbols-outlined text-seg-amarelo text-sm">warning</span>
-            Avisos
+            <span className="material-symbols-outlined text-seg-amarelo text-sm">warning</span> Avisos
           </h4>
           <ul className="space-y-2">
             {seguranca.avisos.map((a, i) => (
@@ -123,9 +118,7 @@ export function ResultsPanel() {
   );
 }
 
-function fmt(n: number): string {
-  return Math.round(n).toLocaleString('en-US');
-}
+function fmt(n: number): string { return Math.round(n).toLocaleString('en-US'); }
 
 function MetricCell({ label, value, unit, unitColor }: {
   label: string; value: string; unit: string; unitColor: string;
@@ -141,10 +134,15 @@ function MetricCell({ label, value, unit, unitColor }: {
   );
 }
 
-function BigNumber({ label, value, unit, pct, color, glow, barGlow, icon }: {
+interface BigNumberProps {
   label: string; value: string; unit: string; pct: number;
   color: string; glow: string; barGlow: string; icon: string;
-}) {
+  isEditable?: boolean; currentValue?: number;
+  onValueChange?: (v: number) => void; min?: number; max?: number; step?: number;
+}
+
+function BigNumber({ label, value, unit, pct, color, glow, barGlow, icon,
+  isEditable, currentValue, onValueChange, min = 0, max = 99999, step = 10 }: BigNumberProps) {
   return (
     <div className="relative bg-surface-dark backdrop-blur-xl border border-white/5 rounded-2xl p-6 shadow-glass flex flex-col justify-center items-center group overflow-hidden">
       <div className={`absolute inset-0 bg-gradient-to-br from-${color}/5 to-transparent opacity-50 group-hover:opacity-100 transition-opacity duration-700`} />
@@ -153,11 +151,29 @@ function BigNumber({ label, value, unit, pct, color, glow, barGlow, icon }: {
       </div>
       <h3 className={`text-xs uppercase tracking-[0.25em] text-${color} font-bold mb-2 relative z-10`}
         style={{ filter: `drop-shadow(0 0 8px ${glow})` }}>{label}</h3>
-      <div className="flex items-baseline gap-2 z-10 relative">
-        <span className="text-5xl font-mono font-bold text-white tracking-tighter"
-          style={{ filter: `drop-shadow(0 0 20px ${glow})` }}>{value}</span>
-        <span className="text-lg text-gray-400 font-medium font-mono uppercase tracking-widest">{unit}</span>
+
+      <div className="flex items-center gap-2 z-10 relative mb-2">
+        {isEditable && onValueChange && (
+          <button className={EDIT_BTN} aria-label={`Decrease ${label}`}
+            onClick={() => onValueChange(Math.max(min, (currentValue ?? 0) - step))}>−</button>
+        )}
+        {isEditable && onValueChange ? (
+          <input type="number" value={currentValue ?? 0}
+            onChange={(e) => { const v = Number(e.target.value); if (!isNaN(v)) onValueChange(Math.max(min, Math.min(max, v))); }}
+            className="w-32 bg-transparent text-center text-5xl font-mono font-bold text-white tracking-tighter outline-none [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
+            style={{ filter: `drop-shadow(0 0 20px ${glow})` }}
+            aria-label={`Edit ${label}`} />
+        ) : (
+          <span className="text-5xl font-mono font-bold text-white tracking-tighter"
+            style={{ filter: `drop-shadow(0 0 20px ${glow})` }}>{value}</span>
+        )}
+        {isEditable && onValueChange && (
+          <button className={EDIT_BTN} aria-label={`Increase ${label}`}
+            onClick={() => onValueChange(Math.min(max, (currentValue ?? 0) + step))}>+</button>
+        )}
       </div>
+
+      <span className="text-lg text-gray-400 font-medium font-mono uppercase tracking-widest z-10">{unit}</span>
       <div className="mt-4 w-full max-w-sm bg-black/40 h-1.5 rounded-full overflow-hidden relative z-10">
         <div className={`h-full bg-${color} rounded-full relative`}
           style={{ width: `${pct}%`, boxShadow: `0 0 15px ${barGlow}` }}>

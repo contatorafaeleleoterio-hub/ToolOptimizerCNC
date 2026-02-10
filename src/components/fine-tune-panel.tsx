@@ -16,12 +16,13 @@ const SLIDER_CONFIG = [
     min: 0.1, max: 50, step: 0.1 },
 ] as const;
 
+const BTN_CLS = 'w-8 h-8 rounded-lg bg-black/40 border border-white/10 text-gray-400 hover:text-white hover:bg-white/10 transition-all text-sm font-bold flex items-center justify-center';
+
 export function FineTunePanel() {
   const parametros = useMachiningStore((s) => s.parametros);
   const setParametros = useMachiningStore((s) => s.setParametros);
   const materialId = useMachiningStore((s) => s.materialId);
   const resultado = useMachiningStore((s) => s.resultado);
-
   const material = MATERIAIS.find((m) => m.id === materialId);
 
   return (
@@ -44,26 +45,36 @@ export function FineTunePanel() {
                   <span className="text-[10px] font-bold tracking-wider text-gray-500 uppercase">{fullLabel}</span>
                 </div>
                 <div className="text-right">
-                  <div className={`text-xl font-bold font-mono text-${color}`}
-                    style={{ filter: `drop-shadow(0 0 8px rgba(${rgb},0.4))` }}>{display}</div>
+                  <input type="number" value={display} step={step} min={min} max={max}
+                    onChange={(e) => {
+                      const n = Number(e.target.value);
+                      if (!isNaN(n) && n >= min && n <= max) setParametros({ [key]: n });
+                    }}
+                    className={`w-20 bg-transparent border-none text-right font-mono text-xl font-bold text-${color} outline-none [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none`}
+                    style={{ filter: `drop-shadow(0 0 8px rgba(${rgb},0.4))` }}
+                    aria-label={`${label} value`} />
                   <div className="text-[9px] text-gray-500 font-mono tracking-wider">{unit}</div>
                 </div>
               </div>
-              <div className="relative h-1.5 w-full bg-black/40 rounded-full flex items-center">
-                <div className={`absolute left-0 h-full bg-${color} rounded-full`}
-                  style={{ width: `${pct}%`, boxShadow: `0 0 10px rgba(${rgb},0.6)` }} />
-                <input
-                  type="range"
-                  min={min} max={max} step={step}
-                  value={val}
-                  onChange={(e) => setParametros({ [key]: Number(e.target.value) })}
-                  className="absolute inset-0 w-full h-full opacity-0 cursor-ew-resize z-10"
-                />
-                <div className={`absolute w-4 h-4 bg-background-dark border-2 border-${color} rounded-full cursor-ew-resize z-0 flex items-center justify-center -translate-x-1/2 pointer-events-none`}
-                  style={{ left: `${pct}%`, boxShadow: `0 0 15px rgba(${rgb},0.8)` }}>
-                  <div className={`w-1.5 h-1.5 bg-${color} rounded-full`} />
+
+              <div className="flex items-center gap-2">
+                <button className={BTN_CLS} aria-label={`Decrease ${label}`}
+                  onClick={() => setParametros({ [key]: Math.max(min, +(val - step).toFixed(4)) })}>−</button>
+                <div className="relative h-1.5 flex-1 bg-black/40 rounded-full flex items-center">
+                  <div className={`absolute left-0 h-full bg-${color} rounded-full`}
+                    style={{ width: `${pct}%`, boxShadow: `0 0 10px rgba(${rgb},0.6)` }} />
+                  <input type="range" min={min} max={max} step={step} value={val}
+                    onChange={(e) => setParametros({ [key]: Number(e.target.value) })}
+                    className="absolute inset-0 w-full h-full opacity-0 cursor-ew-resize z-10" />
+                  <div className={`absolute w-4 h-4 bg-background-dark border-2 border-${color} rounded-full cursor-ew-resize z-0 flex items-center justify-center -translate-x-1/2 pointer-events-none`}
+                    style={{ left: `${pct}%`, boxShadow: `0 0 15px rgba(${rgb},0.8)` }}>
+                    <div className={`w-1.5 h-1.5 bg-${color} rounded-full`} />
+                  </div>
                 </div>
+                <button className={BTN_CLS} aria-label={`Increase ${label}`}
+                  onClick={() => setParametros({ [key]: Math.min(max, +(val + step).toFixed(4)) })}>+</button>
               </div>
+
               <p className="text-[10px] text-gray-500 leading-tight mt-1 opacity-70">{desc}</p>
               <div className={`absolute bottom-0 left-0 w-full h-[2px] bg-${color}/50 scale-x-0 group-hover:scale-x-100 transition-transform duration-500 origin-left`} />
             </div>
@@ -86,9 +97,7 @@ export function FineTunePanel() {
             {resultado ? resultado.mrr.toFixed(1) : '—'} <span className="text-xs text-gray-600">cm³/min</span>
           </span>
         </div>
-        {material && (
-          <p className="text-[10px] text-gray-600 mt-2">{material.nome} — {material.dureza}</p>
-        )}
+        {material && <p className="text-[10px] text-gray-600 mt-2">{material.nome} — {material.dureza}</p>}
       </div>
     </div>
   );

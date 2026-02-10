@@ -18,10 +18,11 @@ describe('machining-store', () => {
 
     it('has correct default ferramenta', () => {
       const f = getState().ferramenta;
-      expect(f.tipo).toBe('topo');
-      expect(f.diametro).toBe(10);
+      expect(f.tipo).toBe('toroidal');
+      expect(f.diametro).toBe(6);
       expect(f.numeroArestas).toBe(4);
-      expect(f.balanco).toBe(30);
+      expect(f.balanco).toBe(25);
+      expect(f.raioQuina).toBe(1.0);
     });
 
     it('has correct default tipoOperacao', () => {
@@ -47,6 +48,10 @@ describe('machining-store', () => {
     it('has correct default safetyFactor', () => {
       expect(getState().safetyFactor).toBe(0.8);
     });
+
+    it('has empty manualOverrides initially', () => {
+      expect(getState().manualOverrides).toEqual({});
+    });
   });
 
   describe('setMaterial', () => {
@@ -56,7 +61,7 @@ describe('machining-store', () => {
     });
 
     it('triggers recalculation', () => {
-      getState().calcular(); // initial calc
+      getState().calcular();
       expect(getState().resultado).not.toBeNull();
       getState().setMaterial(4);
       expect(getState().resultado).not.toBeNull();
@@ -68,9 +73,9 @@ describe('machining-store', () => {
       getState().setFerramenta({ diametro: 12 });
       const f = getState().ferramenta;
       expect(f.diametro).toBe(12);
-      expect(f.numeroArestas).toBe(4); // unchanged
-      expect(f.tipo).toBe('topo'); // unchanged
-      expect(f.balanco).toBe(30); // unchanged
+      expect(f.numeroArestas).toBe(4);
+      expect(f.tipo).toBe('toroidal');
+      expect(f.balanco).toBe(25);
     });
 
     it('merges multiple fields', () => {
@@ -87,9 +92,9 @@ describe('machining-store', () => {
       getState().setParametros({ vc: 150 });
       const p = getState().parametros;
       expect(p.vc).toBe(150);
-      expect(p.ap).toBe(2); // unchanged
-      expect(p.ae).toBe(5); // unchanged
-      expect(p.fz).toBe(0.1); // unchanged
+      expect(p.ap).toBe(2);
+      expect(p.ae).toBe(5);
+      expect(p.fz).toBe(0.1);
     });
   });
 
@@ -98,7 +103,7 @@ describe('machining-store', () => {
       getState().setLimitesMaquina({ maxRPM: 8000 });
       const l = getState().limitesMaquina;
       expect(l.maxRPM).toBe(8000);
-      expect(l.maxPotencia).toBe(15); // unchanged
+      expect(l.maxPotencia).toBe(15);
     });
   });
 
@@ -110,21 +115,14 @@ describe('machining-store', () => {
   });
 
   describe('calcular() — Scenario A (Aço 1045, D=10, Vc=100)', () => {
-    // Defaults: materialId=2, D=10, Z=4, fz=0.1, vc=100, ap=2, ae=5
-    // ae/D = 5/10 = 0.5 → no chip thinning
-    // RPM = (100*1000)/(pi*10) = 3183.10
-    // Feed = 0.1 * 4 * 3183.10 = 1273.24
-    // MRR = (2*5*1273.24)/1000 = 12.7324
-    // kc = 2165 (Aço 1045 kc1_1)
-    // potenciaMotor = (12.7324 * 2165) / (60000 * 0.85) = 0.5406
-    // potenciaCorte = (12.7324 * 2165) / 60000 = 0.4595
-    // torque = (0.5406 * 9549) / 3183.10 = 1.621
+    beforeEach(() => {
+      getState().setFerramenta({ tipo: 'topo', diametro: 10, balanco: 30 });
+    });
 
     it('calculates RPM ≈ 3183', () => {
       getState().calcular();
-      const r = getState().resultado;
-      expect(r).not.toBeNull();
-      expect(Math.abs(r!.rpm - 3183)).toBeLessThanOrEqual(1);
+      const r = getState().resultado!;
+      expect(Math.abs(r.rpm - 3183)).toBeLessThanOrEqual(1);
     });
 
     it('calculates feed ≈ 1273 mm/min', () => {
@@ -143,14 +141,12 @@ describe('machining-store', () => {
     it('calculates MRR', () => {
       getState().calcular();
       const r = getState().resultado!;
-      // MRR = (2 * 5 * ~1273.24) / 1000 ≈ 12.73
       expect(r.mrr).toBeCloseTo(12.73, 1);
     });
 
     it('calculates power with safety factor applied', () => {
       getState().calcular();
       const r = getState().resultado!;
-      // potenciaMotor raw ≈ 0.5406, * 0.8 safety = 0.4325
       expect(r.potenciaMotor).toBeCloseTo(0.5406 * 0.8, 2);
       expect(r.potenciaCorte).toBeCloseTo(0.4595 * 0.8, 2);
     });
@@ -158,7 +154,6 @@ describe('machining-store', () => {
     it('calculates torque with safety factor applied', () => {
       getState().calcular();
       const r = getState().resultado!;
-      // torque raw ≈ 1.621, * 0.8 safety ≈ 1.297
       expect(r.torque).toBeCloseTo(1.621 * 0.8, 1);
     });
 
@@ -172,14 +167,13 @@ describe('machining-store', () => {
     it('computes vcReal ≈ vc input', () => {
       getState().calcular();
       const r = getState().resultado!;
-      // vcReal = (pi * 10 * rpm) / 1000 should ≈ 100
       expect(r.vcReal).toBeCloseTo(100, 0);
     });
   });
 
   describe('calcular() — invalid material', () => {
     it('sets resultado to null for non-existent material', () => {
-      getState().calcular(); // valid first
+      getState().calcular();
       expect(getState().resultado).not.toBeNull();
       getState().setMaterial(999);
       expect(getState().resultado).toBeNull();
@@ -187,22 +181,26 @@ describe('machining-store', () => {
   });
 
   describe('calcular() — L/D warnings', () => {
+    beforeEach(() => {
+      getState().setFerramenta({ diametro: 10 });
+    });
+
     it('generates amarelo warning when L/D > 3 and < 4', () => {
-      getState().setFerramenta({ balanco: 35 }); // L/D = 35/10 = 3.5
+      getState().setFerramenta({ balanco: 35, diametro: 10 }); // L/D = 3.5
       const r = getState().resultado!;
       expect(r.seguranca.nivel).toBe('amarelo');
       expect(r.seguranca.avisos.some((a) => a.includes('alerta'))).toBe(true);
     });
 
     it('generates vermelho warning when L/D = 4', () => {
-      getState().setFerramenta({ balanco: 40 }); // L/D = 40/10 = 4.0
+      getState().setFerramenta({ balanco: 40, diametro: 10 }); // L/D = 4.0
       const r = getState().resultado!;
       expect(r.seguranca.nivel).toBe('vermelho');
       expect(r.seguranca.avisos.some((a) => a.includes('crítica'))).toBe(true);
     });
 
     it('generates bloqueado when L/D > 6', () => {
-      getState().setFerramenta({ balanco: 70 }); // L/D = 70/10 = 7.0
+      getState().setFerramenta({ balanco: 70, diametro: 10 }); // L/D = 7.0
       const r = getState().resultado!;
       expect(r.seguranca.nivel).toBe('bloqueado');
       expect(r.seguranca.avisos.some((a) => a.includes('BLOQUEADO'))).toBe(true);
@@ -219,7 +217,6 @@ describe('machining-store', () => {
       const r2 = getState().resultado!;
       const power2 = r2.potenciaMotor;
 
-      // power2/power1 should be 0.7/0.8
       expect(power2 / power1).toBeCloseTo(0.7 / 0.8, 2);
     });
   });
@@ -245,6 +242,39 @@ describe('machining-store', () => {
     });
   });
 
+  describe('manual overrides', () => {
+    it('setManualRPM overrides calculated RPM', () => {
+      getState().calcular();
+      getState().setManualRPM(5000);
+      const r = getState().resultado!;
+      expect(r.rpm).toBe(5000);
+    });
+
+    it('setManualFeed overrides calculated feed', () => {
+      getState().calcular();
+      getState().setManualFeed(2000);
+      const r = getState().resultado!;
+      expect(r.avanco).toBe(2000);
+    });
+
+    it('clearManualOverrides restores calculated values', () => {
+      getState().calcular();
+      const originalRpm = getState().resultado!.rpm;
+      getState().setManualRPM(5000);
+      expect(getState().resultado!.rpm).toBe(5000);
+      getState().clearManualOverrides();
+      expect(getState().resultado!.rpm).toBeCloseTo(originalRpm, 0);
+    });
+
+    it('setParametros clears manual overrides', () => {
+      getState().calcular();
+      getState().setManualRPM(5000);
+      expect(getState().manualOverrides.rpm).toBe(5000);
+      getState().setParametros({ vc: 150 });
+      expect(getState().manualOverrides).toEqual({});
+    });
+  });
+
   describe('reset()', () => {
     it('restores initial state', () => {
       getState().setMaterial(5);
@@ -256,10 +286,11 @@ describe('machining-store', () => {
       getState().reset();
 
       expect(getState().materialId).toBe(2);
-      expect(getState().ferramenta.diametro).toBe(10);
+      expect(getState().ferramenta.diametro).toBe(6);
       expect(getState().parametros.vc).toBe(100);
       expect(getState().safetyFactor).toBe(0.8);
       expect(getState().resultado).toBeNull();
+      expect(getState().manualOverrides).toEqual({});
     });
   });
 });
