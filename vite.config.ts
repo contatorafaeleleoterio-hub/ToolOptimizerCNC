@@ -5,7 +5,10 @@ import path from 'path';
 
 export default defineConfig({
   base: '/ToolOptimizerCNC/',
-  plugins: [react(), tailwindcss()],
+  plugins: [tailwindcss(), react()],
+  build: {
+    cssMinify: false,
+  },
   resolve: {
     alias: {
       '@': path.resolve(__dirname, './src'),
