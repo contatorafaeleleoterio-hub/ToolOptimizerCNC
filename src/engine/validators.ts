@@ -9,7 +9,7 @@
  * Source: Sandvik Coromant, ISO 3685:2017
  */
 
-import type { LimitesMaquina } from '@/types/index';
+import type { LimitesMaquina, LDThresholds } from '@/types/index';
 import { REGRAS_SEGURANCA } from '@/types/index';
 
 type NivelSeguranca = 'verde' | 'amarelo' | 'vermelho' | 'bloqueado';
@@ -17,16 +17,12 @@ type NivelSeguranca = 'verde' | 'amarelo' | 'vermelho' | 'bloqueado';
 /**
  * Validate L/D ratio and return safety level.
  *
- * - L/D <= 3: verde (safe)
- * - L/D 3-4: amarelo (warning)
- * - L/D 4-6: vermelho (critical)
- * - L/D > 6: bloqueado (blocked in MVP)
- *
  * @param l - Tool overhang length (mm)
  * @param d - Tool diameter (mm)
+ * @param thresholds - Optional custom L/D thresholds (defaults to REGRAS_SEGURANCA)
  * @returns Safety level string
  */
-export function validateLDRatio(l: number, d: number): NivelSeguranca {
+export function validateLDRatio(l: number, d: number, thresholds?: LDThresholds): NivelSeguranca {
   if (d <= 0) {
     throw new Error('Tool diameter (D) must be greater than 0');
   }
@@ -35,10 +31,15 @@ export function validateLDRatio(l: number, d: number): NivelSeguranca {
   }
 
   const ratio = l / d;
+  const { seguro, alerta, critico } = thresholds ?? {
+    seguro: REGRAS_SEGURANCA.LD.SEGURO,
+    alerta: REGRAS_SEGURANCA.LD.ALERTA,
+    critico: REGRAS_SEGURANCA.LD.CRITICO,
+  };
 
-  if (ratio <= REGRAS_SEGURANCA.LD.SEGURO) return 'verde';
-  if (ratio < REGRAS_SEGURANCA.LD.ALERTA) return 'amarelo';
-  if (ratio <= REGRAS_SEGURANCA.LD.CRITICO) return 'vermelho';
+  if (ratio <= seguro) return 'verde';
+  if (ratio < alerta) return 'amarelo';
+  if (ratio <= critico) return 'vermelho';
   return 'bloqueado';
 }
 

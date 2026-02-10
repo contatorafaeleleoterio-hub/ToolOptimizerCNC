@@ -113,3 +113,55 @@ export const REGRAS_SEGURANCA = {
     [TipoUsinagem.ACABAMENTO]: 0.3,
   },
 } as const;
+
+/** Configurable L/D thresholds */
+export interface LDThresholds {
+  seguro: number;
+  alerta: number;
+  critico: number;
+}
+
+/** Configurable safety rules (stored in Zustand) */
+export interface SafetyRules {
+  ld: LDThresholds;
+  apMaxMult: Record<TipoUsinagem, number>;
+}
+
+/** User display preferences */
+export interface Preferences {
+  decimals: number;
+  machineName: string;
+}
+
+/** Custom material added by user */
+export interface CustomMaterial extends Material {
+  isCustom: true;
+}
+
+/** Custom tool config */
+export interface CustomToolConfig {
+  extraDiameters: number[];
+  extraRadii: number[];
+}
+
+/** Default preferences */
+export const PREFERENCES_PADRAO: Preferences = {
+  decimals: 2,
+  machineName: '',
+};
+
+/** Default safety rules */
+export const SAFETY_RULES_PADRAO: SafetyRules = {
+  ld: { seguro: 3, alerta: 4, critico: 6 },
+  apMaxMult: {
+    [TipoUsinagem.DESBASTE]: 1.0,
+    [TipoUsinagem.SEMI_ACABAMENTO]: 0.5,
+    [TipoUsinagem.ACABAMENTO]: 0.3,
+  },
+};
+
+/** Default custom tool config */
+export const CUSTOM_TOOL_CONFIG_PADRAO: CustomToolConfig = {
+  extraDiameters: [],
+  extraRadii: [],
+};

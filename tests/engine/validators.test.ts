@@ -86,6 +86,25 @@ describe('validateInputs', () => {
   });
 });
 
+describe('validateLDRatio with custom thresholds', () => {
+  const custom = { seguro: 2, alerta: 3, critico: 5 };
+
+  it('uses custom seguro threshold', () => {
+    expect(validateLDRatio(24, 12, custom)).toBe('verde');  // 2.0
+    expect(validateLDRatio(25, 12, custom)).toBe('amarelo'); // 2.08
+  });
+
+  it('uses custom alerta threshold', () => {
+    expect(validateLDRatio(35, 12, custom)).toBe('amarelo'); // 2.92
+    expect(validateLDRatio(36, 12, custom)).toBe('vermelho'); // 3.0
+  });
+
+  it('uses custom critico threshold', () => {
+    expect(validateLDRatio(60, 12, custom)).toBe('vermelho'); // 5.0
+    expect(validateLDRatio(61, 12, custom)).toBe('bloqueado'); // 5.08
+  });
+});
+
 describe('validateMachineLimits', () => {
   const limits = LIMITES_PADRAO_MAQUINA;
 

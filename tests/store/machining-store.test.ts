@@ -293,4 +293,193 @@ describe('machining-store', () => {
       expect(getState().manualOverrides).toEqual({});
     });
   });
+
+  describe('RPM override recalculates feed (bug fix)', () => {
+    it('feed changes when RPM is manually overridden', () => {
+      getState().calcular();
+      const originalFeed = getState().resultado!.avanco;
+
+      getState().setManualRPM(8000);
+      const newFeed = getState().resultado!.avanco;
+
+      expect(newFeed).not.toBeCloseTo(originalFeed, 0);
+      expect(getState().resultado!.rpm).toBe(8000);
+    });
+
+    it('uses manual RPM in feed calculation formula', () => {
+      getState().calcular();
+      getState().setManualRPM(6000);
+      const r = getState().resultado!;
+      const expectedFeed = r.fzEfetivo * getState().ferramenta.numeroArestas * 6000;
+      expect(Math.abs(r.avanco - expectedFeed)).toBeLessThanOrEqual(1);
+    });
+  });
+
+  describe('preferences', () => {
+    it('has default preferences', () => {
+      expect(getState().preferences.decimals).toBe(2);
+      expect(getState().preferences.machineName).toBe('');
+    });
+
+    it('setPreferences merges partial update', () => {
+      getState().setPreferences({ machineName: 'Romi D800' });
+      expect(getState().preferences.machineName).toBe('Romi D800');
+      expect(getState().preferences.decimals).toBe(2);
+    });
+
+    it('setPreferences updates decimals', () => {
+      getState().setPreferences({ decimals: 4 });
+      expect(getState().preferences.decimals).toBe(4);
+    });
+  });
+
+  describe('safetyRules', () => {
+    it('has default safety rules', () => {
+      expect(getState().safetyRules.ld.seguro).toBe(3);
+      expect(getState().safetyRules.ld.alerta).toBe(4);
+      expect(getState().safetyRules.ld.critico).toBe(6);
+    });
+
+    it('setSafetyRules updates L/D thresholds', () => {
+      getState().setSafetyRules({ ld: { seguro: 2, alerta: 3, critico: 5 } });
+      expect(getState().safetyRules.ld.seguro).toBe(2);
+      expect(getState().safetyRules.ld.alerta).toBe(3);
+      expect(getState().safetyRules.ld.critico).toBe(5);
+    });
+
+    it('custom L/D thresholds affect calcular()', () => {
+      getState().setFerramenta({ balanco: 25, diametro: 10 }); // L/D = 2.5
+      expect(getState().resultado!.seguranca.nivel).toBe('verde');
+
+      getState().setSafetyRules({ ld: { seguro: 2, alerta: 3, critico: 5 } });
+      expect(getState().resultado!.seguranca.nivel).toBe('amarelo'); // 2.5 > 2
+    });
+  });
+
+  describe('customMaterials', () => {
+    it('starts with empty custom materials', () => {
+      expect(getState().customMaterials).toEqual([]);
+    });
+
+    it('addCustomMaterial adds to list', () => {
+      getState().addCustomMaterial({
+        id: 100, nome: 'Aço 4140', iso: 'P', dureza: '200 HB',
+        kc1_1: 2100, mc: 0.25, vcRanges: {
+          [TipoUsinagem.DESBASTE]: [80, 150],
+          [TipoUsinagem.SEMI_ACABAMENTO]: [100, 180],
+          [TipoUsinagem.ACABAMENTO]: [120, 200],
+        },
+        status: 'estimado', isCustom: true,
+      });
+      expect(getState().customMaterials).toHaveLength(1);
+      expect(getState().customMaterials[0].nome).toBe('Aço 4140');
+    });
+
+    it('removeCustomMaterial removes from list', () => {
+      getState().addCustomMaterial({
+        id: 100, nome: 'Test', iso: 'P', dureza: 'N/A',
+        kc1_1: 2000, mc: 0.2, vcRanges: {
+          [TipoUsinagem.DESBASTE]: [100, 200],
+          [TipoUsinagem.SEMI_ACABAMENTO]: [100, 200],
+          [TipoUsinagem.ACABAMENTO]: [100, 200],
+        },
+        status: 'estimado', isCustom: true,
+      });
+      expect(getState().customMaterials).toHaveLength(1);
+      getState().removeCustomMaterial(100);
+      expect(getState().customMaterials).toHaveLength(0);
+    });
+
+    it('removeCustomMaterial resets materialId if selected material was removed', () => {
+      getState().addCustomMaterial({
+        id: 100, nome: 'Test', iso: 'P', dureza: 'N/A',
+        kc1_1: 2000, mc: 0.2, vcRanges: {
+          [TipoUsinagem.DESBASTE]: [100, 200],
+          [TipoUsinagem.SEMI_ACABAMENTO]: [100, 200],
+          [TipoUsinagem.ACABAMENTO]: [100, 200],
+        },
+        status: 'estimado', isCustom: true,
+      });
+      getState().setMaterial(100);
+      expect(getState().materialId).toBe(100);
+      getState().removeCustomMaterial(100);
+      expect(getState().materialId).toBe(2); // falls back to default
+    });
+  });
+
+  describe('customToolConfig', () => {
+    it('starts with empty custom tool config', () => {
+      expect(getState().customToolConfig.extraDiameters).toEqual([]);
+      expect(getState().customToolConfig.extraRadii).toEqual([]);
+    });
+
+    it('setCustomToolConfig adds extra diameters', () => {
+      getState().setCustomToolConfig({ extraDiameters: [5, 7, 9] });
+      expect(getState().customToolConfig.extraDiameters).toEqual([5, 7, 9]);
+    });
+
+    it('setCustomToolConfig adds extra radii', () => {
+      getState().setCustomToolConfig({ extraRadii: [0.3, 0.8] });
+      expect(getState().customToolConfig.extraRadii).toEqual([0.3, 0.8]);
+    });
+  });
+
+  describe('exportSettings / importSettings', () => {
+    it('exports current settings as JSON string', () => {
+      getState().setLimitesMaquina({ maxRPM: 9000 });
+      const json = getState().exportSettings();
+      const data = JSON.parse(json);
+      expect(data.version).toBe(1);
+      expect(data.limitesMaquina.maxRPM).toBe(9000);
+      expect(data.safetyFactor).toBe(0.8);
+    });
+
+    it('importSettings applies settings to store', () => {
+      const json = JSON.stringify({
+        version: 1,
+        limitesMaquina: { maxRPM: 7000, maxPotencia: 10 },
+        safetyFactor: 0.65,
+        preferences: { decimals: 3, machineName: 'Imported' },
+      });
+      const ok = getState().importSettings(json);
+      expect(ok).toBe(true);
+      expect(getState().limitesMaquina.maxRPM).toBe(7000);
+      expect(getState().safetyFactor).toBe(0.65);
+      expect(getState().preferences.decimals).toBe(3);
+      expect(getState().preferences.machineName).toBe('Imported');
+    });
+
+    it('importSettings returns false for invalid JSON', () => {
+      expect(getState().importSettings('not json')).toBe(false);
+    });
+
+    it('importSettings returns false for non-object', () => {
+      expect(getState().importSettings('"hello"')).toBe(false);
+    });
+  });
+
+  describe('resetToDefaults', () => {
+    it('resets all state to defaults', () => {
+      getState().setLimitesMaquina({ maxRPM: 5000 });
+      getState().setSafetyFactor(0.6);
+      getState().setPreferences({ machineName: 'Test', decimals: 4 });
+      getState().addCustomMaterial({
+        id: 100, nome: 'Test', iso: 'P', dureza: 'N/A',
+        kc1_1: 2000, mc: 0.2, vcRanges: {
+          [TipoUsinagem.DESBASTE]: [100, 200],
+          [TipoUsinagem.SEMI_ACABAMENTO]: [100, 200],
+          [TipoUsinagem.ACABAMENTO]: [100, 200],
+        },
+        status: 'estimado', isCustom: true,
+      });
+
+      getState().resetToDefaults();
+
+      expect(getState().limitesMaquina.maxRPM).toBe(12000);
+      expect(getState().safetyFactor).toBe(0.8);
+      expect(getState().preferences.machineName).toBe('');
+      expect(getState().preferences.decimals).toBe(2);
+      expect(getState().customMaterials).toEqual([]);
+    });
+  });
 });
