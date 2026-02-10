@@ -7,7 +7,7 @@ import './index.css';
 
 createRoot(document.getElementById('root')!).render(
   <StrictMode>
-    <BrowserRouter>
+    <BrowserRouter basename="/ToolOptimizerCNC">
       <Routes>
         <Route path="/" element={<App />} />
         <Route path="/settings" element={<SettingsPage />} />
