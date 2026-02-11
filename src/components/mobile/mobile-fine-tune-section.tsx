@@ -1,3 +1,4 @@
+import { useRef, useCallback } from 'react';
 import { useMachiningStore } from '@/store';
 import { MATERIAIS } from '@/data';
 import { SectionTitle } from '../ui-helpers';
@@ -15,12 +16,108 @@ const SLIDER_CONFIG = [
 
 const BTN_CLS = 'w-10 h-10 rounded-lg bg-black/40 border border-white/10 text-gray-400 active:bg-white/10 transition-all text-sm font-bold flex items-center justify-center';
 
+type ParamKey = typeof SLIDER_CONFIG[number]['key'];
+
+/**
+ * Touch-friendly custom slider.
+ * Uses touch events directly (not <input type="range">) to avoid
+ * the tiny hit-area problem on mobile browsers.
+ * - touch-none: prevents page scroll while dragging
+ * - 44px hit area: meets mobile accessibility guidelines
+ * - Thumb: 28px visible, centered on value
+ */
+function TouchSlider({ value, min, max, step, color, rgb, onChange, label }: {
+  value: number; min: number; max: number; step: number;
+  color: string; rgb: string; label: string;
+  onChange: (val: number) => void;
+}) {
+  const trackRef = useRef<HTMLDivElement>(null);
+  const isDragging = useRef(false);
+
+  const clampToStep = useCallback((raw: number) => {
+    const clamped = Math.max(min, Math.min(max, raw));
+    return Math.round(clamped / step) * step;
+  }, [min, max, step]);
+
+  const getValueFromX = useCallback((clientX: number) => {
+    const track = trackRef.current;
+    if (!track) return value;
+    const rect = track.getBoundingClientRect();
+    const pct = Math.max(0, Math.min(1, (clientX - rect.left) / rect.width));
+    return clampToStep(min + pct * (max - min));
+  }, [min, max, value, clampToStep]);
+
+  const handleTouchStart = useCallback((e: React.TouchEvent) => {
+    isDragging.current = true;
+    const touch = e.touches[0];
+    onChange(getValueFromX(touch.clientX));
+  }, [onChange, getValueFromX]);
+
+  const handleTouchMove = useCallback((e: React.TouchEvent) => {
+    if (!isDragging.current) return;
+    e.preventDefault(); // Prevent page scroll while dragging
+    const touch = e.touches[0];
+    onChange(getValueFromX(touch.clientX));
+  }, [onChange, getValueFromX]);
+
+  const handleTouchEnd = useCallback(() => {
+    isDragging.current = false;
+  }, []);
+
+  const handleClick = useCallback((e: React.MouseEvent) => {
+    onChange(getValueFromX(e.clientX));
+  }, [onChange, getValueFromX]);
+
+  const pct = ((value - min) / (max - min)) * 100;
+
+  return (
+    <div
+      ref={trackRef}
+      className="relative h-11 flex items-center cursor-pointer touch-none select-none"
+      onTouchStart={handleTouchStart}
+      onTouchMove={handleTouchMove}
+      onTouchEnd={handleTouchEnd}
+      onClick={handleClick}
+      role="slider"
+      aria-label={`${label} slider`}
+      aria-valuenow={value}
+      aria-valuemin={min}
+      aria-valuemax={max}
+      tabIndex={0}
+    >
+      {/* Track background */}
+      <div className="absolute left-0 right-0 h-2 bg-black/40 rounded-full" />
+      {/* Filled track */}
+      <div
+        className={`absolute left-0 h-2 bg-${color} rounded-full pointer-events-none`}
+        style={{ width: `${pct}%`, boxShadow: `0 0 8px rgba(${rgb},0.6)` }}
+      />
+      {/* Thumb */}
+      <div
+        className="absolute -translate-x-1/2 pointer-events-none"
+        style={{ left: `${pct}%` }}
+      >
+        <div
+          className={`w-7 h-7 bg-background-dark border-2 border-${color} rounded-full flex items-center justify-center`}
+          style={{ boxShadow: `0 0 12px rgba(${rgb},0.8)` }}
+        >
+          <div className={`w-2.5 h-2.5 bg-${color} rounded-full`} />
+        </div>
+      </div>
+    </div>
+  );
+}
+
 export function MobileFineTuneSection() {
   const parametros = useMachiningStore((s) => s.parametros);
   const setParametros = useMachiningStore((s) => s.setParametros);
   const materialId = useMachiningStore((s) => s.materialId);
   const resultado = useMachiningStore((s) => s.resultado);
   const material = MATERIAIS.find((m) => m.id === materialId);
+
+  const handleChange = useCallback((key: ParamKey, val: number) => {
+    setParametros({ [key]: val });
+  }, [setParametros]);
 
   return (
     <section className="flex flex-col gap-4 px-4">
@@ -29,11 +126,10 @@ export function MobileFineTuneSection() {
         <div className="flex flex-col gap-5">
           {SLIDER_CONFIG.map(({ key, label, fullLabel, unit, color, rgb, min, max, step }) => {
             const val = parametros[key];
-            const pct = ((val - min) / (max - min)) * 100;
             const display = key === 'fz' ? val.toFixed(2) : key === 'ae' || key === 'ap' ? val.toFixed(1) : val.toFixed(0);
 
             return (
-              <div key={key} className="flex flex-col gap-2">
+              <div key={key} className="flex flex-col gap-1">
                 <div className="flex justify-between items-center">
                   <div className="flex items-baseline gap-2">
                     <span className={`text-sm font-bold font-mono text-${color}`}>{label}</span>
@@ -55,17 +151,12 @@ export function MobileFineTuneSection() {
                 <div className="flex items-center gap-2">
                   <button className={BTN_CLS} aria-label={`Decrease ${label}`}
                     onClick={() => setParametros({ [key]: Math.max(min, +(val - step).toFixed(4)) })}>−</button>
-                  <div className="relative h-2 flex-1 bg-black/40 rounded-full flex items-center">
-                    <div className={`absolute left-0 h-full bg-${color} rounded-full`}
-                      style={{ width: `${pct}%`, boxShadow: `0 0 8px rgba(${rgb},0.6)` }} />
-                    <input type="range" min={min} max={max} step={step} value={val}
-                      onChange={(e) => setParametros({ [key]: Number(e.target.value) })}
-                      className="absolute inset-0 w-full h-full opacity-0 cursor-ew-resize z-10"
-                      aria-label={`${label} slider`} />
-                    <div className={`absolute w-5 h-5 bg-background-dark border-2 border-${color} rounded-full z-0 -translate-x-1/2 pointer-events-none`}
-                      style={{ left: `${pct}%`, boxShadow: `0 0 12px rgba(${rgb},0.8)` }}>
-                      <div className={`absolute inset-1 bg-${color} rounded-full`} />
-                    </div>
+                  <div className="flex-1">
+                    <TouchSlider
+                      value={val} min={min} max={max} step={step}
+                      color={color} rgb={rgb} label={label}
+                      onChange={(v) => handleChange(key, v)}
+                    />
                   </div>
                   <button className={BTN_CLS} aria-label={`Increase ${label}`}
                     onClick={() => setParametros({ [key]: Math.min(max, +(val + step).toFixed(4)) })}>+</button>
