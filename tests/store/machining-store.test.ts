@@ -184,10 +184,13 @@ describe('machining-store', () => {
   describe('calcular() — L/D warnings', () => {
     beforeEach(() => {
       getState().setFerramenta({ diametro: 10 });
+      // Set explicit safe params to isolate L/D testing from auto-populate
+      getState().setParametros({ ap: 2, ae: 5, fz: 0.1, vc: 100 });
     });
 
     it('generates amarelo warning when L/D > 3 and < 4', () => {
       getState().setFerramenta({ balanco: 35, diametro: 10 }); // L/D = 3.5
+      getState().setParametros({ ap: 2, ae: 5, fz: 0.1, vc: 100 });
       const r = getState().resultado!;
       expect(r.seguranca.nivel).toBe('amarelo');
       expect(r.seguranca.avisos.some((a) => a.includes('alerta'))).toBe(true);
@@ -195,6 +198,7 @@ describe('machining-store', () => {
 
     it('generates vermelho warning when L/D = 4', () => {
       getState().setFerramenta({ balanco: 40, diametro: 10 }); // L/D = 4.0
+      getState().setParametros({ ap: 2, ae: 5, fz: 0.1, vc: 100 });
       const r = getState().resultado!;
       expect(r.seguranca.nivel).toBe('vermelho');
       expect(r.seguranca.avisos.some((a) => a.includes('crítica'))).toBe(true);
@@ -202,6 +206,7 @@ describe('machining-store', () => {
 
     it('generates bloqueado when L/D > 6', () => {
       getState().setFerramenta({ balanco: 70, diametro: 10 }); // L/D = 7.0
+      getState().setParametros({ ap: 2, ae: 5, fz: 0.1, vc: 100 });
       const r = getState().resultado!;
       expect(r.seguranca.nivel).toBe('bloqueado');
       expect(r.seguranca.avisos.some((a) => a.includes('BLOQUEADO'))).toBe(true);
@@ -350,6 +355,7 @@ describe('machining-store', () => {
 
     it('custom L/D thresholds affect calcular()', () => {
       getState().setFerramenta({ balanco: 25, diametro: 10 }); // L/D = 2.5
+      getState().setParametros({ ap: 2, ae: 5, fz: 0.1, vc: 100 }); // safe params
       expect(getState().resultado!.seguranca.nivel).toBe('verde');
 
       getState().setSafetyRules({ ld: { seguro: 2, alerta: 3, critico: 5 } });
@@ -460,24 +466,25 @@ describe('machining-store', () => {
   });
 
   describe('auto-populate params', () => {
-    it('setMaterial auto-populates Vc to midpoint of range', () => {
-      getState().setMaterial(4); // Alumínio 6061 desbaste: [400, 600]
-      expect(getState().parametros.vc).toBe(500);
+    it('setMaterial auto-populates Vc from diameter table (clamped to vcRange)', () => {
+      getState().setMaterial(4); // Alumínio 6061, desbaste, D=6 → table Vc=900, clamped to [400,600] = 600
+      expect(getState().parametros.vc).toBe(600);
     });
 
     it('setTipoOperacao auto-populates params for new operation', () => {
       getState().setTipoOperacao(TipoUsinagem.ACABAMENTO);
       const p = getState().parametros;
-      expect(p.fz).toBe(0.04); // acabamento fz
-      expect(p.vc).toBe(240); // Aço 1045 acabamento midpoint: (200+280)/2
+      // Aço 1045 (grupo3), D=6, acabamento: fz=0.066, Vc clamped to [200,280]=280
+      expect(p.fz).toBe(0.066);
+      expect(p.vc).toBe(280);
     });
 
     it('setFerramenta with diameter change auto-populates ap/ae', () => {
       getState().setFerramenta({ diametro: 12 });
       const p = getState().parametros;
-      // desbaste: ap = 1.0×D, ae = 0.5×D
-      expect(p.ap).toBe(12);
-      expect(p.ae).toBe(6);
+      // Aço 1045, desbaste, D=12: ap=0.8×12=9.6, ae=0.45×12=5.4
+      expect(p.ap).toBe(9.6);
+      expect(p.ae).toBe(5.4);
     });
 
     it('setFerramenta without diameter change does not alter params', () => {

@@ -88,6 +88,7 @@ describe('formatReport', () => {
   it('includes warnings when present', () => {
     const store = useMachiningStore.getState();
     store.setFerramenta({ balanco: 50, diametro: 10 });
+    store.setParametros({ ap: 2, ae: 5, fz: 0.1, vc: 100 }); // explicit params
     store.calcular();
     const text = formatReport(useMachiningStore.getState());
     expect(text).toContain('L/D');

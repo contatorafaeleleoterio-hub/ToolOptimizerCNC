@@ -55,8 +55,8 @@ export const MATERIAIS = [
     nome: 'Alumínio 6061-T6',
     iso: 'N',
     dureza: '~95 HB',
-    kc1_1: 1200,
-    mc: 0.75,
+    kc1_1: 750,
+    mc: 0.23,
     vcRanges: {
       [TipoUsinagem.DESBASTE]: [400, 600],
       [TipoUsinagem.SEMI_ACABAMENTO]: [500, 800],

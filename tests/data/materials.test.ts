@@ -94,10 +94,10 @@ describe('MATERIAIS', () => {
       expect(m?.mc).toBe(0.185);
     });
 
-    it('Al 6061-T6: kc1_1=1200, mc=0.75', () => {
+    it('Al 6061-T6: kc1_1=750, mc=0.23', () => {
       const m = getMaterialById(4);
-      expect(m?.kc1_1).toBe(1200);
-      expect(m?.mc).toBe(0.75);
+      expect(m?.kc1_1).toBe(750);
+      expect(m?.mc).toBe(0.23);
     });
   });
 
