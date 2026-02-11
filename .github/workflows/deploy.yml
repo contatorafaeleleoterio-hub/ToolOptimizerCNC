@@ -24,7 +24,19 @@ jobs:
           node-version: 20
           cache: npm
       - run: npm ci
-      - run: npm run build
+      - name: TypeScript check
+        run: npm run typecheck
+      - name: Run tests
+        run: npm run test
+      - name: Build
+        run: npm run build
+      - name: Verify mobile route (404.html exists)
+        run: |
+          if [ ! -f dist/404.html ]; then
+            echo "ERROR: dist/404.html not found! Mobile route (/mobile) will fail on GitHub Pages."
+            exit 1
+          fi
+          echo "✓ 404.html present — SPA routing will work for /mobile and /settings"
       - uses: actions/upload-pages-artifact@v3
         with:
           path: dist
