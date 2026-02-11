@@ -1,14 +1,15 @@
 import { useMachiningStore } from '@/store';
-import { MATERIAIS, FERRAMENTAS_PADRAO, DIAMETROS_COMPLETOS, RAIOS_PONTA } from '@/data';
+import { MATERIAIS, FERRAMENTAS_PADRAO, DIAMETROS_COMPLETOS, RAIOS_PADRAO } from '@/data';
 import { TipoUsinagem } from '@/types';
 import { SectionTitle, FieldGroup, NumInput } from './ui-helpers';
-import { ToolSummaryViewer } from './tool-summary-viewer';
 
 const OPERACAO_LABELS: Record<TipoUsinagem, string> = {
   [TipoUsinagem.DESBASTE]: 'Desbaste',
   [TipoUsinagem.SEMI_ACABAMENTO]: 'Semi-Acab.',
   [TipoUsinagem.ACABAMENTO]: 'Acabamento',
 };
+
+const ARESTAS_OPTIONS = [2, 4] as const;
 
 export function ConfigPanel() {
   const {
@@ -41,7 +42,7 @@ export function ConfigPanel() {
           <div className="space-y-4">
             <FieldGroup label="Material da Peça">
               <select value={materialId} onChange={(e) => setMaterial(Number(e.target.value))}
-                className="w-full bg-black/40 border border-white/10 rounded-lg py-3 pl-3 pr-8 text-sm text-gray-200 focus:ring-1 focus:ring-primary focus:border-primary outline-none appearance-none transition-all hover:border-white/20">
+                className="w-full bg-black/40 border border-white/10 rounded-lg py-3 pl-3 pr-10 text-sm text-gray-200 focus:ring-1 focus:ring-primary focus:border-primary outline-none appearance-none transition-all hover:border-white/20 select-chevron">
                 {MATERIAIS.map((m) => (
                   <option key={m.id} value={m.id}>{m.nome}{m.status === 'estimado' ? ' ⚠' : ''}</option>
                 ))}
@@ -71,11 +72,11 @@ export function ConfigPanel() {
           </div>
         </div>
 
-        {/* Tool section */}
+        {/* Tool section — Flow: Tipo → Diâmetro → Raio (toroidal) → Arestas → Altura */}
         <div className="bg-card-dark rounded-xl p-4 border border-white/5 shadow-inner-glow">
           <SectionTitle color="bg-secondary" label="Ferramenta" />
-          <ToolSummaryViewer />
           <div className="space-y-4">
+            {/* 1. Tool type */}
             <FieldGroup label="Tipo">
               <div className="grid grid-cols-3 gap-2">
                 {FERRAMENTAS_PADRAO.map((f) => (
@@ -89,12 +90,23 @@ export function ConfigPanel() {
               </div>
             </FieldGroup>
 
+            {/* 2. Diameter (dropdown with chevron) */}
+            <FieldGroup label="Diâmetro (mm)">
+              <select value={ferramenta.diametro} onChange={(e) => setFerramenta({ diametro: Number(e.target.value) })}
+                className="w-full bg-black/40 border border-white/10 rounded-lg py-2 pl-3 pr-10 text-sm text-white font-mono focus:ring-1 focus:ring-primary outline-none appearance-none hover:border-white/20 select-chevron">
+                {DIAMETROS_COMPLETOS.map((d) => (
+                  <option key={d} value={d}>{d}mm</option>
+                ))}
+              </select>
+            </FieldGroup>
+
+            {/* 3. Corner radius — only for toroidal, 2 options: R0.5 and R1 */}
             {ferramenta.tipo === 'toroidal' && (
               <FieldGroup label="Raio da Ponta">
-                <div className="grid grid-cols-3 gap-2">
-                  {RAIOS_PONTA.map((raio) => (
+                <div className="grid grid-cols-2 gap-2">
+                  {RAIOS_PADRAO.map((raio) => (
                     <button key={raio} onClick={() => setFerramenta({ raioQuina: raio })}
-                      className={`py-2 rounded border text-xs font-mono transition-colors ${(ferramenta.raioQuina ?? 1.0) === raio
+                      className={`py-2.5 rounded-lg border text-xs font-mono transition-colors ${(ferramenta.raioQuina ?? 1.0) === raio
                         ? 'bg-primary text-black font-bold border-primary shadow-neon-cyan'
                         : 'bg-black/40 text-gray-400 hover:text-white hover:bg-white/5 border-white/10'}`}>
                       R{raio}
@@ -104,31 +116,30 @@ export function ConfigPanel() {
               </FieldGroup>
             )}
 
-            <FieldGroup label="Diâmetro (mm)">
-              <select value={ferramenta.diametro} onChange={(e) => setFerramenta({ diametro: Number(e.target.value) })}
-                className="w-full bg-black/40 border border-white/10 rounded-lg py-2 px-3 text-sm text-white font-mono focus:ring-1 focus:ring-primary outline-none appearance-none hover:border-white/20">
-                {DIAMETROS_COMPLETOS.map((d) => (
-                  <option key={d} value={d}>{d}mm</option>
-                ))}
-              </select>
-            </FieldGroup>
-
+            {/* 4. Flute count — 2 button options */}
             <FieldGroup label="Arestas (Z)">
-              <input type="number" value={ferramenta.numeroArestas}
-                onChange={(e) => setFerramenta({ numeroArestas: Number(e.target.value) })}
-                min={1} max={12}
-                className="w-full bg-black/40 border border-white/10 rounded-lg py-2 px-3 text-sm text-white font-mono focus:ring-1 focus:ring-primary outline-none" />
+              <div className="grid grid-cols-2 gap-2">
+                {ARESTAS_OPTIONS.map((z) => (
+                  <button key={z} onClick={() => setFerramenta({ numeroArestas: z })}
+                    className={`py-2.5 rounded-lg border text-xs font-mono transition-colors ${ferramenta.numeroArestas === z
+                      ? 'bg-primary text-black font-bold border-primary shadow-neon-cyan'
+                      : 'bg-black/40 text-gray-400 hover:text-white hover:bg-white/5 border-white/10'}`}>
+                    {z} Arestas
+                  </button>
+                ))}
+              </div>
             </FieldGroup>
 
+            {/* 5. Tool stickout height — min 15, max 150, step 5 */}
             <FieldGroup label="Altura de Fixação (mm)">
               <div className="flex gap-2">
                 <input type="number" value={ferramenta.balanco}
-                  onChange={(e) => setFerramenta({ balanco: Number(e.target.value) })} min={5} max={150}
+                  onChange={(e) => setFerramenta({ balanco: Number(e.target.value) })} min={15} max={150}
                   className="flex-1 bg-black/40 border border-white/10 rounded-lg py-2 px-3 text-sm text-white font-mono focus:ring-1 focus:ring-primary outline-none" />
-                <button onClick={() => setFerramenta({ balanco: Math.min(150, ferramenta.balanco + 0.5) })}
+                <button onClick={() => setFerramenta({ balanco: Math.min(150, ferramenta.balanco + 5) })}
                   className="w-9 rounded-lg bg-black/40 border border-white/10 text-gray-400 hover:text-white hover:bg-white/10 transition-all text-lg font-bold" aria-label="Increase height">▲</button>
-                <button onClick={() => setFerramenta({ balanco: Math.max(5, ferramenta.balanco - 0.5) })}
-                  className="w-9 rounded-lg bg-black/40 border border-white/10 text-gray-400 hover:text-white hover:bg-white/10 transition-all text-lg font-bold" aria-label="Decrease height">▼</button>
+                <button onClick={() => setFerramenta({ balanco: Math.max(15, ferramenta.balanco - 5) })}
+                  className="w-9 rounded-lg bg-black/40 border border-white/10 text-gray-400 hover:text-white hover:bg-white/10 transition-all text-lg font-bold" aria-label="Decrease height">\u25BC</button>
               </div>
             </FieldGroup>
           </div>

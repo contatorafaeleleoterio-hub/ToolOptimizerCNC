@@ -1,6 +1,7 @@
 import { useMachiningStore } from '@/store';
 import { Gauge } from './gauge';
 import { FormulaCard, Fraction } from './formula-card';
+import { ToolSummaryViewer } from './tool-summary-viewer';
 import type { StatusSeguranca } from '@/types';
 
 const SEG_COLORS: Record<StatusSeguranca['nivel'], string> = {
@@ -28,6 +29,7 @@ export function ResultsPanel() {
   if (!resultado) {
     return (
       <div className="flex flex-col gap-6 h-full items-center justify-center">
+        <ToolSummaryViewer />
         <div className="bg-surface-dark backdrop-blur-xl border border-white/5 rounded-2xl p-12 shadow-glass text-center">
           <span className="material-symbols-outlined text-6xl text-gray-600 mb-4 block">precision_manufacturing</span>
           <p className="text-gray-500 text-sm">Configure os parâmetros e clique <span className="text-primary font-bold">Simular</span></p>
@@ -43,6 +45,7 @@ export function ResultsPanel() {
 
   return (
     <div className="flex flex-col gap-6">
+      <ToolSummaryViewer />
       {/* Safety badge */}
       <div className={`flex items-center gap-2 px-4 py-2 rounded-xl border ${
         seguranca.nivel === 'verde' ? 'bg-seg-verde/10 border-seg-verde/30' :

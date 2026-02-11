@@ -17,6 +17,11 @@ describe('ResultsPanel', () => {
     expect(screen.getByText(/Configure os parâmetros/)).toBeInTheDocument();
   });
 
+  it('renders tool summary viewer', () => {
+    renderPanel();
+    expect(screen.getByTestId('tool-summary')).toBeInTheDocument();
+  });
+
   it('shows calculated results after calcular()', () => {
     useMachiningStore.getState().setFerramenta({ diametro: 10, balanco: 20 });
     useMachiningStore.getState().calcular();

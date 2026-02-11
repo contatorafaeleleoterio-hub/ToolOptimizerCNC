@@ -17,6 +17,7 @@ import {
   calculatePower, calculateTorque, validateLDRatio, validateInputs, validateMachineLimits,
 } from '@/engine/index';
 import { getMaterialById } from '@/data/index';
+import { getRecommendedParams } from '@/engine/recommendations';
 
 const DEFAULT_FERRAMENTA: Ferramenta = {
   tipo: 'toroidal',
@@ -93,6 +94,13 @@ function findMaterial(id: number, customMaterials: CustomMaterial[]) {
   return getMaterialById(id);
 }
 
+/** Auto-populate cutting parameters from recommendation engine */
+function autoPopulateParams(materialId: number, tipoOperacao: TipoUsinagem, diametro: number, customMaterials: CustomMaterial[]) {
+  const material = findMaterial(materialId, customMaterials);
+  if (!material) return undefined;
+  return getRecommendedParams(material, tipoOperacao, diametro);
+}
+
 export const useMachiningStore = create<MachiningState & MachiningActions>()(
   subscribeWithSelector(
     persist(
@@ -100,17 +108,29 @@ export const useMachiningStore = create<MachiningState & MachiningActions>()(
         ...INITIAL_STATE,
 
         setMaterial: (id) => {
-          set({ materialId: id, manualOverrides: {} });
+          const { tipoOperacao, ferramenta, customMaterials } = get();
+          const recommended = autoPopulateParams(id, tipoOperacao, ferramenta.diametro, customMaterials);
+          set({ materialId: id, manualOverrides: {}, ...(recommended && { parametros: recommended }) });
           get().calcular();
         },
 
         setFerramenta: (f) => {
-          set((state) => ({ ferramenta: { ...state.ferramenta, ...f }, manualOverrides: {} }));
+          set((state) => {
+            const newFerramenta = { ...state.ferramenta, ...f };
+            const updates: Partial<MachiningState> = { ferramenta: newFerramenta, manualOverrides: {} };
+            if (f.diametro !== undefined && f.diametro !== state.ferramenta.diametro) {
+              const recommended = autoPopulateParams(state.materialId, state.tipoOperacao, f.diametro, state.customMaterials);
+              if (recommended) updates.parametros = recommended;
+            }
+            return updates;
+          });
           get().calcular();
         },
 
         setTipoOperacao: (tipo) => {
-          set({ tipoOperacao: tipo, manualOverrides: {} });
+          const { materialId, ferramenta, customMaterials } = get();
+          const recommended = autoPopulateParams(materialId, tipo, ferramenta.diametro, customMaterials);
+          set({ tipoOperacao: tipo, manualOverrides: {}, ...(recommended && { parametros: recommended }) });
           get().calcular();
         },
 

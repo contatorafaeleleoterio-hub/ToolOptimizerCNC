@@ -25,6 +25,12 @@ describe('ConfigPanel', () => {
     expect(options.length).toBe(9);
   });
 
+  it('renders material select with chevron class', () => {
+    renderPanel();
+    const selects = screen.getAllByRole('combobox');
+    expect(selects[0].classList.contains('select-chevron')).toBe(true);
+  });
+
   it('renders 3 operation type radio buttons', () => {
     renderPanel();
     const radios = screen.getAllByRole('radio');
@@ -37,12 +43,13 @@ describe('ConfigPanel', () => {
     expect(screen.getAllByText(/^Topo/).length).toBeGreaterThanOrEqual(1);
   });
 
-  it('renders diameter dropdown with 15 options', () => {
+  it('renders diameter dropdown with chevron class and 15 options', () => {
     renderPanel();
     const selects = screen.getAllByRole('combobox');
     const diaSelect = selects[1];
     const options = diaSelect.querySelectorAll('option');
     expect(options.length).toBe(15);
+    expect(diaSelect.classList.contains('select-chevron')).toBe(true);
   });
 
   it('renders cutting parameter inputs', () => {
@@ -59,23 +66,32 @@ describe('ConfigPanel', () => {
     expect(screen.getByText('0.80')).toBeInTheDocument();
   });
 
-  it('renders tool summary viewer', () => {
-    renderPanel();
-    expect(screen.getByTestId('tool-summary')).toBeInTheDocument();
-  });
-
-  it('shows raio da ponta for toroidal (default)', () => {
+  it('shows raio da ponta for toroidal with 2 options (R0.5, R1)', () => {
     renderPanel();
     expect(screen.getByText('Raio da Ponta')).toBeInTheDocument();
-    expect(screen.getByText('R0.2')).toBeInTheDocument();
     expect(screen.getByText('R0.5')).toBeInTheDocument();
     expect(screen.getAllByText('R1').length).toBeGreaterThanOrEqual(1);
+    expect(screen.queryByText('R0.2')).not.toBeInTheDocument();
   });
 
   it('hides raio da ponta when switching to topo', () => {
     renderPanel();
     fireEvent.click(screen.getByText('Topo'));
     expect(screen.queryByText('Raio da Ponta')).not.toBeInTheDocument();
+  });
+
+  it('renders arestas as 2 button options (2 and 4)', () => {
+    renderPanel();
+    expect(screen.getByText('2 Arestas')).toBeInTheDocument();
+    expect(screen.getByText('4 Arestas')).toBeInTheDocument();
+  });
+
+  it('changes arestas when clicking button', () => {
+    renderPanel();
+    fireEvent.click(screen.getByText('2 Arestas'));
+    expect(useMachiningStore.getState().ferramenta.numeroArestas).toBe(2);
+    fireEvent.click(screen.getByText('4 Arestas'));
+    expect(useMachiningStore.getState().ferramenta.numeroArestas).toBe(4);
   });
 
   it('renders altura spinner buttons', () => {
@@ -129,17 +145,51 @@ describe('ConfigPanel', () => {
     expect(screen.getByText('Dados estimados')).toBeInTheDocument();
   });
 
-  it('increases altura on ▲ click', () => {
+  it('increases altura by step of 5 on click', () => {
     renderPanel();
     const initial = useMachiningStore.getState().ferramenta.balanco;
     fireEvent.click(screen.getByLabelText('Increase height'));
-    expect(useMachiningStore.getState().ferramenta.balanco).toBe(initial + 0.5);
+    expect(useMachiningStore.getState().ferramenta.balanco).toBe(initial + 5);
   });
 
-  it('decreases altura on ▼ click', () => {
+  it('decreases altura by step of 5 on click', () => {
     renderPanel();
     const initial = useMachiningStore.getState().ferramenta.balanco;
     fireEvent.click(screen.getByLabelText('Decrease height'));
-    expect(useMachiningStore.getState().ferramenta.balanco).toBe(initial - 0.5);
+    expect(useMachiningStore.getState().ferramenta.balanco).toBe(initial - 5);
+  });
+
+  it('renders stepper buttons for cutting parameters', () => {
+    renderPanel();
+    expect(screen.getByLabelText('Increase ap (mm)')).toBeInTheDocument();
+    expect(screen.getByLabelText('Decrease ap (mm)')).toBeInTheDocument();
+    expect(screen.getByLabelText('Increase ae (mm)')).toBeInTheDocument();
+    expect(screen.getByLabelText('Decrease ae (mm)')).toBeInTheDocument();
+    expect(screen.getByLabelText('Increase fz (mm)')).toBeInTheDocument();
+    expect(screen.getByLabelText('Decrease fz (mm)')).toBeInTheDocument();
+    expect(screen.getByLabelText('Increase Vc (m/min)')).toBeInTheDocument();
+    expect(screen.getByLabelText('Decrease Vc (m/min)')).toBeInTheDocument();
+  });
+
+  it('increments ap on stepper click', () => {
+    renderPanel();
+    const initial = useMachiningStore.getState().parametros.ap;
+    fireEvent.click(screen.getByLabelText('Increase ap (mm)'));
+    expect(useMachiningStore.getState().parametros.ap).toBeCloseTo(initial + 0.1, 1);
+  });
+
+  it('follows correct tool field order: Tipo → Diâmetro → Raio → Arestas → Altura', () => {
+    renderPanel();
+    const toolLabels = [
+      'Tipo', 'Diâmetro (mm)', 'Raio da Ponta', 'Arestas (Z)', 'Altura de Fixação (mm)',
+    ];
+    for (const label of toolLabels) {
+      expect(screen.getByText(label)).toBeInTheDocument();
+    }
+    // Verify ordering: use exact text matching to exclude "Tipo de Usinagem"
+    const allLabels = screen.getAllByText(
+      (content) => toolLabels.includes(content),
+    ).map((el) => el.textContent);
+    expect(allLabels).toEqual(toolLabels);
   });
 });

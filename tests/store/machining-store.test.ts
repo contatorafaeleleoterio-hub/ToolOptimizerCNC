@@ -117,6 +117,7 @@ describe('machining-store', () => {
   describe('calcular() — Scenario A (Aço 1045, D=10, Vc=100)', () => {
     beforeEach(() => {
       getState().setFerramenta({ tipo: 'topo', diametro: 10, balanco: 30 });
+      getState().setParametros({ ap: 2, ae: 5, fz: 0.1, vc: 100 });
     });
 
     it('calculates RPM ≈ 3183', () => {
@@ -455,6 +456,39 @@ describe('machining-store', () => {
 
     it('importSettings returns false for non-object', () => {
       expect(getState().importSettings('"hello"')).toBe(false);
+    });
+  });
+
+  describe('auto-populate params', () => {
+    it('setMaterial auto-populates Vc to midpoint of range', () => {
+      getState().setMaterial(4); // Alumínio 6061 desbaste: [400, 600]
+      expect(getState().parametros.vc).toBe(500);
+    });
+
+    it('setTipoOperacao auto-populates params for new operation', () => {
+      getState().setTipoOperacao(TipoUsinagem.ACABAMENTO);
+      const p = getState().parametros;
+      expect(p.fz).toBe(0.04); // acabamento fz
+      expect(p.vc).toBe(240); // Aço 1045 acabamento midpoint: (200+280)/2
+    });
+
+    it('setFerramenta with diameter change auto-populates ap/ae', () => {
+      getState().setFerramenta({ diametro: 12 });
+      const p = getState().parametros;
+      // desbaste: ap = 1.0×D, ae = 0.5×D
+      expect(p.ap).toBe(12);
+      expect(p.ae).toBe(6);
+    });
+
+    it('setFerramenta without diameter change does not alter params', () => {
+      getState().setParametros({ vc: 999 });
+      getState().setFerramenta({ balanco: 40 }); // no diametro change
+      expect(getState().parametros.vc).toBe(999);
+    });
+
+    it('setParametros does not trigger auto-populate', () => {
+      getState().setParametros({ vc: 42 });
+      expect(getState().parametros.vc).toBe(42);
     });
   });
 

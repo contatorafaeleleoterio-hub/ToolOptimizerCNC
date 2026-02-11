@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import { FERRAMENTAS_PADRAO, DIAMETROS_PADRAO } from '../../src/data/tools';
+import { FERRAMENTAS_PADRAO, DIAMETROS_PADRAO, RAIOS_PADRAO, RAIOS_PONTA } from '../../src/data/tools';
 
 describe('FERRAMENTAS_PADRAO', () => {
   it('should have 3 tool types', () => {
@@ -40,6 +40,22 @@ describe('FERRAMENTAS_PADRAO', () => {
   it('should have Portuguese descriptions', () => {
     for (const f of FERRAMENTAS_PADRAO) {
       expect(f.descricao.length).toBeGreaterThan(0);
+    }
+  });
+});
+
+describe('RAIOS_PADRAO', () => {
+  it('should have 2 standard radii for UI buttons', () => {
+    expect(RAIOS_PADRAO).toHaveLength(2);
+  });
+
+  it('should match [0.5, 1.0]', () => {
+    expect([...RAIOS_PADRAO]).toEqual([0.5, 1.0]);
+  });
+
+  it('should be a subset of RAIOS_PONTA', () => {
+    for (const r of RAIOS_PADRAO) {
+      expect([...RAIOS_PONTA]).toContain(r);
     }
   });
 });
