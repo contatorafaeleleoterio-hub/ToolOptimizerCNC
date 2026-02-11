@@ -139,7 +139,7 @@ export function ConfigPanel() {
                 <button onClick={() => setFerramenta({ balanco: Math.min(150, ferramenta.balanco + 5) })}
                   className="w-9 rounded-lg bg-black/40 border border-white/10 text-gray-400 hover:text-white hover:bg-white/10 transition-all text-lg font-bold" aria-label="Increase height">▲</button>
                 <button onClick={() => setFerramenta({ balanco: Math.max(15, ferramenta.balanco - 5) })}
-                  className="w-9 rounded-lg bg-black/40 border border-white/10 text-gray-400 hover:text-white hover:bg-white/10 transition-all text-lg font-bold" aria-label="Decrease height">\u25BC</button>
+                  className="w-9 rounded-lg bg-black/40 border border-white/10 text-gray-400 hover:text-white hover:bg-white/10 transition-all text-lg font-bold" aria-label="Decrease height">&#9660;</button>
               </div>
             </FieldGroup>
           </div>
