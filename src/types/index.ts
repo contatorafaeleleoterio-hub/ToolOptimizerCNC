@@ -165,3 +165,23 @@ export const CUSTOM_TOOL_CONFIG_PADRAO: CustomToolConfig = {
   extraDiameters: [],
   extraRadii: [],
 };
+
+/** Operator feedback on a calculation result */
+export type FeedbackOperador = 'sucesso' | 'quebra' | 'acabamento_ruim' | null;
+
+/** A single history entry saved after each simulation */
+export interface HistoricoCalculo {
+  id: string;
+  timestamp: number;
+  materialNome: string;
+  materialId: number;
+  ferramenta: Ferramenta;
+  tipoOperacao: TipoUsinagem;
+  parametros: ParametrosUsinagem;
+  resultado: ResultadoUsinagem;
+  feedback: FeedbackOperador;
+  notas: string;
+}
+
+/** Maximum history entries stored */
+export const HISTORICO_MAX_ENTRIES = 50;

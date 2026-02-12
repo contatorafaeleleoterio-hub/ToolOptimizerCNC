@@ -15,7 +15,7 @@ export function ConfigPanel() {
   const {
     materialId, ferramenta, tipoOperacao, parametros, safetyFactor,
     setMaterial, setFerramenta, setTipoOperacao, setParametros,
-    setSafetyFactor, calcular, reset,
+    setSafetyFactor, simular, reset,
   } = useMachiningStore();
 
   const material = MATERIAIS.find((m) => m.id === materialId);
@@ -25,7 +25,7 @@ export function ConfigPanel() {
     <div className="flex flex-col gap-6">
       <div className="bg-surface-dark backdrop-blur-xl border border-white/5 rounded-2xl p-5 shadow-glass flex flex-col gap-5">
         <div className="flex gap-3">
-          <button onClick={calcular}
+          <button onClick={simular}
             className="flex-1 py-3 px-4 rounded-xl bg-gradient-to-r from-cyan-600 to-cyan-500 text-white font-bold tracking-wide shadow-neon-cyan hover:brightness-110 transition-all active:scale-[0.98] flex items-center justify-center gap-2 text-sm uppercase">
             <span className="material-symbols-outlined text-lg">play_arrow</span>
             Simular

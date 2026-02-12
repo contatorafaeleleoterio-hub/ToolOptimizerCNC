@@ -18,6 +18,7 @@ import {
 } from '@/engine/index';
 import { getMaterialById } from '@/data/index';
 import { getRecommendedParams } from '@/engine/recommendations';
+import { useHistoryStore } from './history-store';
 
 const DEFAULT_FERRAMENTA: Ferramenta = {
   tipo: 'toroidal',
@@ -69,6 +70,7 @@ interface MachiningActions {
   importSettings: (json: string) => boolean;
   resetToDefaults: () => void;
   calcular: () => void;
+  simular: () => void;
   reset: () => void;
 }
 
@@ -300,6 +302,21 @@ export const useMachiningStore = create<MachiningState & MachiningActions>()(
               forcaCorte: kc * ae * ap,
               seguranca: { nivel, avisos, razaoLD, ctf: chipResult.ctfFactor },
             },
+          });
+        },
+
+        simular: () => {
+          get().calcular();
+          const { resultado, materialId, ferramenta, tipoOperacao, parametros, customMaterials } = get();
+          if (!resultado) return;
+          const material = findMaterial(materialId, customMaterials);
+          useHistoryStore.getState().addEntry({
+            materialNome: material?.nome ?? 'Desconhecido',
+            materialId,
+            ferramenta: { ...ferramenta },
+            tipoOperacao,
+            parametros: { ...parametros },
+            resultado: { ...resultado },
           });
         },
 

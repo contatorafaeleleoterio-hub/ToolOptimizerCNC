@@ -19,10 +19,11 @@ function setupSafeCalc(balanco = 20) {
 describe('ResultsPanel', () => {
   beforeEach(() => { useMachiningStore.getState().reset(); });
 
-  it('shows placeholder when no result', () => {
+  it('shows zeroed results when no simulation yet', () => {
     renderPanel();
-    expect(screen.getByText('Simular')).toBeInTheDocument();
-    expect(screen.getByText(/Configure os parâmetros/)).toBeInTheDocument();
+    expect(screen.getByText('Spindle')).toBeInTheDocument();
+    expect(screen.getByText('Parâmetros Calculados')).toBeInTheDocument();
+    expect(screen.getByText('SEGURO')).toBeInTheDocument();
   });
 
   it('renders tool summary viewer', () => {

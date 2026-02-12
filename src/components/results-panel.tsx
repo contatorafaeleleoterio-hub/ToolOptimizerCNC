@@ -1,11 +1,25 @@
 import { useMachiningStore } from '@/store';
+import type { ResultadoUsinagem } from '@/types/index';
 import { Gauge } from './gauge';
 import { FormulaCard, Fraction } from './formula-card';
 import { ToolSummaryViewer } from './tool-summary-viewer';
 import { fmt, SafetyBadge, MetricCell, BigNumber, ProgressCard, WarningsSection } from './shared-result-parts';
 
+const EMPTY_RESULTADO: ResultadoUsinagem = {
+  rpm: 0,
+  avanco: 0,
+  potenciaCorte: 0,
+  potenciaMotor: 0,
+  torque: 0,
+  mrr: 0,
+  vcReal: 0,
+  fzEfetivo: 0,
+  forcaCorte: 0,
+  seguranca: { nivel: 'verde', avisos: [], razaoLD: 0, ctf: 1 },
+};
+
 export function ResultsPanel() {
-  const resultado = useMachiningStore((s) => s.resultado);
+  const storeResultado = useMachiningStore((s) => s.resultado);
   const limites = useMachiningStore((s) => s.limitesMaquina);
   const parametros = useMachiningStore((s) => s.parametros);
   const ferramenta = useMachiningStore((s) => s.ferramenta);
@@ -13,17 +27,7 @@ export function ResultsPanel() {
   const setManualRPM = useMachiningStore((s) => s.setManualRPM);
   const setManualFeed = useMachiningStore((s) => s.setManualFeed);
 
-  if (!resultado) {
-    return (
-      <div className="flex flex-col gap-6 h-full items-center justify-center">
-        <ToolSummaryViewer />
-        <div className="bg-surface-dark backdrop-blur-xl border border-white/5 rounded-2xl p-12 shadow-glass text-center">
-          <span className="material-symbols-outlined text-6xl text-gray-600 mb-4 block">precision_manufacturing</span>
-          <p className="text-gray-500 text-sm">Configure os parâmetros e clique <span className="text-primary font-bold">Simular</span></p>
-        </div>
-      </div>
-    );
-  }
+  const resultado = storeResultado ?? EMPTY_RESULTADO;
 
   const { rpm, avanco, potenciaMotor, mrr, vcReal, seguranca } = resultado;
   const rpmPct = Math.min((rpm / limites.maxRPM) * 100, 100);

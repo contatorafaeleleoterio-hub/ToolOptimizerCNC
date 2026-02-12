@@ -83,6 +83,11 @@ export function ExportButtons() {
         <span className="material-symbols-outlined text-lg">{copied ? 'check_circle' : 'content_copy'}</span>
         <span className="text-xs font-medium">{copied ? 'Copiado!' : 'Copiar'}</span>
       </button>
+      <button onClick={() => navigate('/history')}
+        className="flex items-center gap-2 px-4 py-2 rounded-lg bg-white/5 border border-white/10 text-gray-400 hover:bg-white/10 hover:text-white transition-all active:scale-[0.98]">
+        <span className="material-symbols-outlined text-lg">history</span>
+        <span className="text-xs font-medium">Histórico</span>
+      </button>
       <button onClick={() => navigate('/settings')}
         className="flex items-center gap-2 px-4 py-2 rounded-lg bg-white/5 border border-white/10 text-gray-400 hover:bg-white/10 hover:text-white transition-all active:scale-[0.98]">
         <span className="material-symbols-outlined text-lg">settings</span>
