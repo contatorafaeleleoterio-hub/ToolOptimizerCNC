@@ -1,75 +1,80 @@
-# PRÓXIMA SESSÃO: Limpeza Técnica + Deploy
+# PRÓXIMA SESSÃO: Story-002 Deploy Cloudflare
 
 **Data atualização:** 15/02/2026
-**Status:** Corrigido — pronto para implementação
+**Status:** Story-001 concluída — pronto para Story-002
+
+---
+
+## O QUE FOI FEITO (sessão 15/02/2026)
+
+### Story-001: Limpeza Técnica + ADRs — CONCLUÍDA
+1. **Fase 1:** Remoção de código morto (-5666 linhas)
+   - Deletado `src/ui/` (18 arquivos JSX legados, protótipo pré-TypeScript)
+   - Deletado `src/cnc-engine/` (2 arquivos JS, engine antigo)
+   - Deletado `src/ui/styles/index.css` (2324 linhas CSS Tailwind v3, nunca importado)
+   - Limpeza de artefatos: `nul`, `plan.md`, `~$OXIMA_SESSAO.md`
+2. **Fase 2:** 3 ADRs criados em `docs/architecture/`
+   - ADR-001: Stack tecnológica
+   - ADR-002: Estratégia CSS (Tailwind v4, CSS Modules descartado)
+   - ADR-003: Separação desktop/mobile
+3. **Fase 3:** Removida story-001-css-isolado.md (obsoleta)
+4. **Fase 4:** Build + testes + typecheck validados, push feito
+
+### Correções de documentação:
+- PROXIMA_SESSAO.md reescrito (removia info errada: Electron, Vite 5, CSS global)
+- GUIA-USO-CLAUDE-CODE.md simplificado e adicionada diretriz de prompt de continuação
+- Story-001 original (CSS Modules) cancelada e substituída por Limpeza Técnica
+
+### Commits desta sessão:
+- `37fb817` refactor: remove legacy JSX app and old engine code, update project docs
+- `a5e1ce6` docs: add ADR-001 stack, ADR-002 CSS strategy, ADR-003 mobile separation
+- `75a4984` docs: remove obsolete CSS Modules story (replaced by limpeza-tecnica)
 
 ---
 
 ## RESUMO DO PROJETO
 
-### Stack Real (verificada):
-- **Framework:** React 18.3 + TypeScript 5.7 (strict, zero `any`)
-- **Build:** Vite 6.1
-- **State:** Zustand 5.0
-- **Styling:** Tailwind CSS v4.0 (dark theme, glassmorphism)
-- **Routing:** react-router-dom 7.13
-- **Testing:** Vitest 3.0 + Testing Library
-- **Storage:** localStorage (sem backend)
-- **Deploy:** GitHub Pages (SPA redirect configurado)
-- **NÃO usa:** Electron, CSS Modules, CSS global customizado
+### Stack:
+- React 18.3 + TypeScript 5.7 (strict) + Vite 6.1
+- Zustand 5.0 + react-router-dom 7.13
+- Tailwind CSS v4.0 (@theme tokens, dark glassmorphism)
+- Vitest 3.0 + Testing Library
+- localStorage, GitHub Pages, sem backend
 
 ### Estado Atual:
-- **Localização:** C:\Users\USUARIO\Desktop\INICIO_TOOLOPTIMIZERCNC
-- **Branch:** main
-- **Testes:** 272 passing (31 arquivos de teste)
-- **Bundle:** ~87KB gzip (77KB JS + 10KB CSS)
-- **GitHub:** contatorafaeleleoterio-hub/ToolOptimizerCNC
-- **Mobile:** Página separada /mobile com auto-detect
-- **Histórico:** Página /history com feedback de operador
-- **Tempo disponível:** 10h/semana
-- **Ferramenta:** Claude Code (CLI)
-
-### Metodologia:
-- Synkra AIOS como referência metodológica (stories, validação, fases)
-- Localização AIOS: C:\Users\USUARIO\Desktop\Synkra_AIOS\aios-core\
-- Implementação via Claude Code Desktop
-- Custo: R$0 (sem API, só Claude Pro)
+- **Branch:** main (up to date com origin)
+- **Último commit:** `75a4984` docs: remove obsolete CSS Modules story
+- **Testes:** 325 passing (23 arquivos)
+- **Bundle:** ~96KB gzip (JS 85KB + CSS 11KB)
+- **GitHub:** https://github.com/contatorafaeleleoterio-hub/ToolOptimizerCNC
+- **Rotas:** `/` (desktop), `/mobile` (auto-detect), `/settings`, `/history`
 
 ---
 
-## ERROS CORRIGIDOS NESTA REVISÃO
-
-| Erro no doc anterior | Realidade |
-|---------------------|-----------|
-| "Electron 28+" | NÃO usa Electron — é web app puro |
-| "Vite 5" | Vite 6.1.0 |
-| "CSS global" | Tailwind v4 com @theme tokens |
-| "Build ~2.5MB" | ~87KB gzip |
-| "Story-001: CSS Modules" | Desnecessário — Tailwind já resolve isolamento |
-| "TailwindCSS (verificar se já usa)" | Sim, é a base de toda UI |
-
----
-
-## PRÓXIMA STORY: Story-001 — Limpeza Técnica
+## PRÓXIMA STORY: Story-002 — Deploy Cloudflare + Domínio
 
 ### Objetivo:
-Remover código morto, criar ADRs com decisões arquiteturais, e preparar codebase para deploy profissional.
+Migrar deploy de GitHub Pages para Cloudflare Pages. Comprar e configurar domínio .com.br.
 
-### Entregáveis:
-1. Remoção de src/ui/styles/index.css (2324 linhas mortas)
-2. Remoção de src/cnc-engine/ (engine legado substituído por src/engine/)
-3. ADR-001: Stack e arquitetura escolhida
-4. ADR-002: Tailwind v4 como estratégia CSS
-5. Testes passando, build limpo
+### A definir (decisões para início da story):
+- Domínio escolhido? (ex: tooloptimizer.com.br, mestrecnc.com.br)
+- Manter GitHub Pages como fallback ou desativar?
+- Cloudflare free tier é suficiente?
 
-### Tempo estimado: 2-3h
+### Fases previstas:
+1. Setup Cloudflare Pages (connect GitHub repo)
+2. Configurar build (Vite, SPA redirect)
+3. Comprar domínio (Registro.br)
+4. Apontar DNS para Cloudflare
+5. SSL + cache headers
+6. Validar: desktop + mobile + todas as rotas
 
 ---
 
-## ROADMAP ATUALIZADO
+## ROADMAP
 
 ### Semana 1 (10h):
-- [ ] Story-001: Limpeza técnica + ADRs (2-3h)
+- [x] Story-001: Limpeza técnica + ADRs — CONCLUÍDA
 - [ ] Story-002: Deploy Cloudflare + domínio (3-4h)
 - [ ] Story-003: CI/CD GitHub Actions (2h)
 - [ ] Buffer/ajustes (2h)
@@ -85,47 +90,9 @@ Remover código morto, criar ADRs com decisões arquiteturais, e preparar codeba
 ## REGRAS PARA SESSÕES CLAUDE
 
 ### Claude Code deve:
-1. Ler CLAUDE.md para convenções do projeto
-2. Rodar testes após cada mudança (`npm test`)
-3. Usar conventional commits (feat:, fix:, refactor:, docs:)
-4. Implementar incrementalmente (commit por fase)
-5. Validar build antes de finalizar (`npm run build`)
-
-### Rafael deve:
-1. Commitar antes de sessões Claude Code
-2. Validar cada fase (não deixar fazer tudo de vez)
-3. Ler story completa antes de implementar
-
----
-
-## NOTAS TÉCNICAS
-
-### Arquitetura CSS (decisão final):
-- Tailwind v4 utility classes = abordagem correta para este projeto
-- CSS Modules NÃO necessários (sem conflitos de classe)
-- Design tokens via @theme em src/index.css
-- Inline styles APENAS para valores dinâmicos (cores, larguras calculadas)
-
-### Código morto identificado:
-- `src/ui/styles/index.css` — 2324 linhas, nunca importado (Tailwind v3 legado)
-- `src/cnc-engine/` — engine antigo, substituído por `src/engine/`
-- `docs/~$OXIMA_SESSAO.md` — arquivo temp do Word
-- `nul` — artefato Windows
-
----
-
-## COMO INICIAR PRÓXIMA SESSÃO
-
-**Use este prompt:**
-
-```
-Continuar projeto ToolOptimizer CNC.
-Contexto: Leia docs/PROXIMA_SESSAO.md e docs/stories/story-001-limpeza-tecnica.md
-Tarefa: Implementar Story-001 (limpeza técnica + ADRs)
-```
-
----
-
-**Atualizado:** 15/02/2026
-**Próxima atividade:** Story-001 Limpeza Técnica
-**Status:** Pronto para implementar
+1. Ler CLAUDE.md + docs/PROXIMA_SESSAO.md para contexto
+2. Rodar testes após cada mudança em src/
+3. Conventional commits (feat:, fix:, refactor:, docs:)
+4. Commit após cada fase
+5. Validar build antes de finalizar
+6. **AO FINAL: gerar prompt de continuação** (ver docs/stories/GUIA-USO-CLAUDE-CODE.md)

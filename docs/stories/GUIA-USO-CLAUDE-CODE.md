@@ -1,7 +1,6 @@
 # Guia: Implementar Stories com Claude Code
 
-**Versão:** 2.0 (15/02/2026)
-**Atualizado:** Corrigido para stack real (React + Vite 6 + Tailwind v4)
+**Versão:** 2.1 (15/02/2026)
 
 ---
 
@@ -25,6 +24,7 @@
 2. Colar output dos comandos de validação
 3. Commit final com mensagem conventional
 4. Atualizar docs/PROXIMA_SESSAO.md com próxima tarefa
+5. **OBRIGATÓRIO: Gerar prompt de continuação** (ver seção abaixo)
 
 ---
 
@@ -36,6 +36,66 @@
 4. **Conventional commits** — feat:, fix:, refactor:, docs:, test:
 5. **Não invente features** — faça apenas o que a story pede
 6. **Validação obrigatória** — execute os comandos de validação da story antes de dizer que terminou
+
+---
+
+## DIRETRIZ OBRIGATÓRIA: Prompt de Continuação
+
+**Ao final de TODA sessão, ANTES de encerrar, Claude Code DEVE:**
+
+1. **Atualizar `docs/PROXIMA_SESSAO.md`** com:
+   - O que foi feito nesta sessão (stories/fases concluídas)
+   - Estado atual (testes, build, bundle size)
+   - Último commit (hash + mensagem)
+   - Próxima story/fase pendente
+   - Qualquer decisão pendente ou bloqueio
+
+2. **Atualizar `docs/PROMPT_PROXIMA_SESSAO.md`** com prompt pronto copiar/colar contendo:
+   - Localização do projeto
+   - GitHub remote
+   - Estado resumido (último commit, testes, o que falta)
+   - Arquivos de contexto para ler
+   - Tarefa específica com fases
+   - Regras
+
+3. **Commitar e pushar** as atualizações dos docs
+
+4. **Exibir o prompt final na tela** para o usuário copiar
+
+**Formato do prompt gerado:**
+
+```
+Continuar projeto ToolOptimizer CNC.
+Localização: C:\Users\USUARIO\Desktop\INICIO_TOOLOPTIMIZERCNC
+GitHub: https://github.com/contatorafaeleleoterio-hub/ToolOptimizerCNC
+
+ESTADO ATUAL:
+- Último commit: [hash] [mensagem]
+- Testes: [X] passing
+- Build: [X]KB gzip
+- Story anterior: [concluída/parcial]
+
+CONTEXTO — leia estes arquivos:
+1. CLAUDE.md (convenções)
+2. docs/PROXIMA_SESSAO.md (estado do projeto)
+3. docs/stories/story-XXX-nome.md (tarefa atual)
+
+TAREFA: [descrição clara]
+
+Fases:
+1. [fase 1]
+2. [fase 2]
+...
+
+REGRAS:
+- Commit após cada fase
+- npm test após mudanças em src/
+- Conventional commits
+- Não fazer mudanças fora do escopo
+- AO FINAL: gerar prompt de continuação (ver docs/stories/GUIA-USO-CLAUDE-CODE.md)
+```
+
+**Esta diretriz garante continuidade entre sessões sem perda de contexto.**
 
 ---
 
@@ -57,6 +117,7 @@ Regras:
 3. Rodar npm test após mudanças em src/
 4. Executar validações no final
 5. NÃO fazer mudanças além do escopo da story
+6. AO FINAL: gerar prompt de continuação
 ```
 
 ---
@@ -70,8 +131,3 @@ Regras:
 | Arquivo não encontrado | Usar `Glob` ou `Grep` para localizar |
 | Claude perdeu contexto | Reler story + CLAUDE.md |
 | Mudança afetou outro componente | Rodar `npm test` completo, investigar falhas |
-
----
-
-**Versão anterior:** 1.0 (focava em CSS Modules — obsoleta)
-**Esta versão:** Genérica para qualquer story
