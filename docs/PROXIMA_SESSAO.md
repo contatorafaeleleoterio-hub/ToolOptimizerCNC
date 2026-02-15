@@ -1,34 +1,39 @@
-# PRÓXIMA SESSÃO: Story-002 Deploy Cloudflare
+# PRÓXIMA SESSÃO: Validar Deploy Cloudflare + Domínio
 
 **Data atualização:** 15/02/2026
-**Status:** Story-001 concluída — pronto para Story-002
+**Status:** Story-002 Fase 1 concluída (código) — aguardando setup manual Cloudflare + Registro.br
 
 ---
 
-## O QUE FOI FEITO (sessão 15/02/2026)
+## O QUE FOI FEITO (sessão 15/02/2026 — segunda)
 
-### Story-001: Limpeza Técnica + ADRs — CONCLUÍDA
-1. **Fase 1:** Remoção de código morto (-5666 linhas)
-   - Deletado `src/ui/` (18 arquivos JSX legados, protótipo pré-TypeScript)
-   - Deletado `src/cnc-engine/` (2 arquivos JS, engine antigo)
-   - Deletado `src/ui/styles/index.css` (2324 linhas CSS Tailwind v3, nunca importado)
-   - Limpeza de artefatos: `nul`, `plan.md`, `~$OXIMA_SESSAO.md`
-2. **Fase 2:** 3 ADRs criados em `docs/architecture/`
-   - ADR-001: Stack tecnológica
-   - ADR-002: Estratégia CSS (Tailwind v4, CSS Modules descartado)
-   - ADR-003: Separação desktop/mobile
-3. **Fase 3:** Removida story-001-css-isolado.md (obsoleta)
-4. **Fase 4:** Build + testes + typecheck validados, push feito
+### Story-002: Deploy Cloudflare + Domínio — EM PROGRESSO
 
-### Correções de documentação:
-- PROXIMA_SESSAO.md reescrito (removia info errada: Electron, Vite 5, CSS global)
-- GUIA-USO-CLAUDE-CODE.md simplificado e adicionada diretriz de prompt de continuação
-- Story-001 original (CSS Modules) cancelada e substituída por Limpeza Técnica
+**Fase 1: Build condicional dual deploy — CONCLUÍDA**
+1. `vite.config.ts`: base lê de `VITE_BASE_URL` env var (default: `/ToolOptimizerCNC/`)
+2. `src/main.tsx`: BrowserRouter basename derivado de `import.meta.env.BASE_URL`
+3. `public/_redirects`: SPA catch-all para Cloudflare Pages
+4. Story doc: `docs/stories/story-002-deploy-cloudflare.md`
+5. Testes: 325 passing, build OK
+
+**Decisões tomadas:**
+- Domínio: `tooloptimizercnc.com.br`
+- Cloudflare free tier (R$0/mês)
+- Manter GitHub Pages como fallback
+- Custo total: ~R$40/ano (só domínio)
+
+**Fases pendentes (manuais — usuário):**
+- Fase 2: Criar conta Cloudflare
+- Fase 3: Setup Cloudflare Pages (connect GitHub, env var `VITE_BASE_URL=/`)
+- Fase 4: Registrar domínio `tooloptimizercnc.com.br` no Registro.br
+- Fase 5: Apontar DNS → Cloudflare nameservers
+- Fase 6: Validar todas as rotas no domínio
+
+### Sessão anterior (Story-001): CONCLUÍDA
+- Commits: `37fb817`, `a5e1ce6`, `75a4984`, `ed6529f`
 
 ### Commits desta sessão:
-- `37fb817` refactor: remove legacy JSX app and old engine code, update project docs
-- `a5e1ce6` docs: add ADR-001 stack, ADR-002 CSS strategy, ADR-003 mobile separation
-- `75a4984` docs: remove obsolete CSS Modules story (replaced by limpeza-tecnica)
+- `577a8e5` feat: support dual deploy with conditional base URL
 
 ---
 
@@ -39,11 +44,12 @@
 - Zustand 5.0 + react-router-dom 7.13
 - Tailwind CSS v4.0 (@theme tokens, dark glassmorphism)
 - Vitest 3.0 + Testing Library
-- localStorage, GitHub Pages, sem backend
+- localStorage, sem backend
+- **Deploy:** GitHub Pages (fallback) + Cloudflare Pages (principal, pendente setup)
 
 ### Estado Atual:
 - **Branch:** main (up to date com origin)
-- **Último commit:** `75a4984` docs: remove obsolete CSS Modules story
+- **Último commit:** `577a8e5` feat: support dual deploy with conditional base URL
 - **Testes:** 325 passing (23 arquivos)
 - **Bundle:** ~96KB gzip (JS 85KB + CSS 11KB)
 - **GitHub:** https://github.com/contatorafaeleleoterio-hub/ToolOptimizerCNC
@@ -51,23 +57,20 @@
 
 ---
 
-## PRÓXIMA STORY: Story-002 — Deploy Cloudflare + Domínio
+## PRÓXIMA TAREFA: Completar Story-002 (Fases 2-6)
 
-### Objetivo:
-Migrar deploy de GitHub Pages para Cloudflare Pages. Comprar e configurar domínio .com.br.
+### Pré-requisito (manual pelo usuário):
+1. Conta Cloudflare + projeto Pages conectado ao GitHub
+2. Env var no Cloudflare: `VITE_BASE_URL=/` e `NODE_VERSION=20`
+3. Domínio `tooloptimizercnc.com.br` registrado no Registro.br
+4. DNS apontado para Cloudflare nameservers
 
-### A definir (decisões para início da story):
-- Domínio escolhido? (ex: tooloptimizer.com.br, mestrecnc.com.br)
-- Manter GitHub Pages como fallback ou desativar?
-- Cloudflare free tier é suficiente?
-
-### Fases previstas:
-1. Setup Cloudflare Pages (connect GitHub repo)
-2. Configurar build (Vite, SPA redirect)
-3. Comprar domínio (Registro.br)
-4. Apontar DNS para Cloudflare
-5. SSL + cache headers
-6. Validar: desktop + mobile + todas as rotas
+### O que Claude valida na próxima sessão:
+1. Verificar deploy no `*.pages.dev`
+2. Verificar 4 rotas + refresh (SPA redirect)
+3. Verificar GitHub Pages continua como fallback
+4. Verificar HTTPS no domínio .com.br
+5. Fechar Story-002, atualizar docs
 
 ---
 
@@ -75,7 +78,7 @@ Migrar deploy de GitHub Pages para Cloudflare Pages. Comprar e configurar domín
 
 ### Semana 1 (10h):
 - [x] Story-001: Limpeza técnica + ADRs — CONCLUÍDA
-- [ ] Story-002: Deploy Cloudflare + domínio (3-4h)
+- [~] Story-002: Deploy Cloudflare + domínio — Fase 1 OK, setup manual pendente
 - [ ] Story-003: CI/CD GitHub Actions (2h)
 - [ ] Buffer/ajustes (2h)
 
