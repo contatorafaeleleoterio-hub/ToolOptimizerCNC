@@ -4,7 +4,7 @@ import tailwindcss from '@tailwindcss/vite';
 import path from 'path';
 
 export default defineConfig({
-  base: '/ToolOptimizerCNC/',
+  base: process.env.VITE_BASE_URL || '/ToolOptimizerCNC/',
   plugins: [tailwindcss(), react()],
   build: {
     cssMinify: false,
