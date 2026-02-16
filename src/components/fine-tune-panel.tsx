@@ -13,7 +13,7 @@ const SLIDER_CONFIG = [
     min: 0.1, max: 50, step: 0.1 },
   { key: 'ap' as const, label: 'ap', fullLabel: 'AXIAL DEPTH', unit: 'MM', color: 'accent-orange',
     rgb: '249,115,22', desc: 'Depth of cut along tool axis. Primary driver for material removal rate.',
-    min: 0.1, max: 50, step: 0.1 },
+    min: 0.05, max: 6, step: 0.05 },
 ] as const;
 
 const BTN_CLS = 'w-8 h-8 rounded-lg bg-black/40 border border-white/10 text-gray-400 hover:text-white hover:bg-white/10 transition-all text-sm font-bold flex items-center justify-center';
@@ -35,10 +35,10 @@ export function FineTunePanel() {
         {SLIDER_CONFIG.map(({ key, label, fullLabel, unit, color, rgb, desc, min, max, step }) => {
           const val = parametros[key];
           const pct = ((val - min) / (max - min)) * 100;
-          const display = key === 'fz' ? val.toFixed(2) : key === 'ae' || key === 'ap' ? val.toFixed(1) : val.toFixed(0);
+          const display = key === 'fz' || key === 'ap' ? val.toFixed(2) : key === 'ae' ? val.toFixed(1) : val.toFixed(0);
 
           return (
-            <div key={key} className="flex flex-col gap-2 group relative overflow-hidden">
+            <div key={key} className="flex flex-col gap-2 group relative">
               <div className="flex justify-between items-end mb-1">
                 <div className="flex items-baseline gap-2">
                   <span className={`text-sm font-bold font-mono text-${color}`}>{label}</span>
@@ -60,23 +60,23 @@ export function FineTunePanel() {
               <div className="flex items-center gap-2">
                 <button className={BTN_CLS} aria-label={`Decrease ${label}`}
                   onClick={() => setParametros({ [key]: Math.max(min, +(val - step).toFixed(4)) })}>−</button>
-                <div className="relative h-1.5 flex-1 bg-black/40 rounded-full flex items-center">
-                  <div className={`absolute left-0 h-full bg-${color} rounded-full`}
-                    style={{ width: `${pct}%`, boxShadow: `0 0 10px rgba(${rgb},0.6)` }} />
+                <div className="relative h-6 flex-1 flex items-center">
                   <input type="range" min={min} max={max} step={step} value={val}
                     onChange={(e) => setParametros({ [key]: Number(e.target.value) })}
-                    className="absolute inset-0 w-full h-full opacity-0 cursor-ew-resize z-10" />
-                  <div className={`absolute w-4 h-4 bg-background-dark border-2 border-${color} rounded-full cursor-ew-resize z-0 flex items-center justify-center -translate-x-1/2 pointer-events-none`}
-                    style={{ left: `${pct}%`, boxShadow: `0 0 15px rgba(${rgb},0.8)` }}>
-                    <div className={`w-1.5 h-1.5 bg-${color} rounded-full`} />
-                  </div>
+                    className="w-full h-1.5 rounded-full appearance-none cursor-pointer"
+                    style={{
+                      background: `linear-gradient(to right, rgba(${rgb},1) 0%, rgba(${rgb},1) ${pct}%, rgba(0,0,0,0.4) ${pct}%, rgba(0,0,0,0.4) 100%)`,
+                      '--thumb-color': `rgba(${rgb},1)`,
+                      '--thumb-glow': `0 0 15px rgba(${rgb},0.8)`,
+                    } as React.CSSProperties}
+                    aria-label={`${label} slider`} />
                 </div>
                 <button className={BTN_CLS} aria-label={`Increase ${label}`}
                   onClick={() => setParametros({ [key]: Math.min(max, +(val + step).toFixed(4)) })}>+</button>
               </div>
 
               <p className="text-[10px] text-gray-500 leading-tight mt-1 opacity-70">{desc}</p>
-              <div className={`absolute bottom-0 left-0 w-full h-[2px] bg-${color}/50 scale-x-0 group-hover:scale-x-100 transition-transform duration-500 origin-left`} />
+              <div className={`absolute bottom-0 left-0 w-full h-[2px] bg-${color}/50 scale-x-0 group-hover:scale-x-100 transition-transform duration-500 origin-left overflow-clip`} />
             </div>
           );
         })}
