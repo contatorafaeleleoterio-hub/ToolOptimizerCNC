@@ -4,6 +4,7 @@ import { Gauge } from './gauge';
 import { FormulaCard, Fraction } from './formula-card';
 import { ToolSummaryViewer } from './tool-summary-viewer';
 import { fmt, SafetyBadge, MetricCell, BigNumber, ProgressCard, WarningsSection } from './shared-result-parts';
+import { useSimulationAnimation } from '@/hooks/use-simulation-animation';
 
 const EMPTY_RESULTADO: ResultadoUsinagem = {
   rpm: 0,
@@ -27,6 +28,8 @@ export function ResultsPanel() {
   const setManualRPM = useMachiningStore((s) => s.setManualRPM);
   const setManualFeed = useMachiningStore((s) => s.setManualFeed);
 
+  const { triggerPulse, safetyLevel } = useSimulationAnimation();
+
   const resultado = storeResultado ?? EMPTY_RESULTADO;
 
   const { rpm, avanco, potenciaMotor, mrr, vcReal, seguranca } = resultado;
@@ -34,13 +37,21 @@ export function ResultsPanel() {
   const feedPct = Math.min((avanco / limites.maxAvanco) * 100, 100);
   const powerPct = Math.min((potenciaMotor / limites.maxPotencia) * 100, 100);
 
+  const pulseClass = triggerPulse && safetyLevel === 'verde'
+    ? 'animate-[subtlePulse_0.6s_ease-in-out]'
+    : triggerPulse && (safetyLevel === 'vermelho' || safetyLevel === 'bloqueado')
+    ? 'animate-[subtlePulse_0.3s_ease-in-out_2]'
+    : '';
+
   return (
     <div className="flex flex-col gap-3">
       <ToolSummaryViewer />
-      <SafetyBadge nivel={seguranca.nivel} avisosCount={seguranca.avisos.length} />
+      <div className={pulseClass}>
+        <SafetyBadge nivel={seguranca.nivel} avisosCount={seguranca.avisos.length} />
+      </div>
 
       {/* Overview cards */}
-      <div className="bg-surface-dark backdrop-blur-xl border border-white/5 rounded-2xl p-6 shadow-glass">
+      <div className={`bg-surface-dark backdrop-blur-xl border border-white/5 rounded-2xl p-6 shadow-glass transition-all duration-300 ${pulseClass}`}>
         <div className="flex items-center gap-3 mb-4">
           <div className="w-10 h-10 rounded-lg bg-white/5 flex items-center justify-center border border-white/10">
             <span className="material-symbols-outlined text-gray-400">analytics</span>

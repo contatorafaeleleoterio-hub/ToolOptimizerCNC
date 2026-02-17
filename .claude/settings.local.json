@@ -16,7 +16,28 @@
       "Bash(git diff:*)",
       "Bash(npx:*)",
       "Bash(ls:*)",
-      "Bash(mkdir:*)"
+      "Bash(mkdir:*)",
+      "Bash(gh api:*)",
+      "Bash(git push:*)",
+      "WebFetch(domain:github.com)",
+      "Bash(findstr:*)",
+      "Bash(DEBUG=*)",
+      "Bash(gh run list:*)",
+      "Bash(git rm:*)",
+      "WebFetch(domain:contatorafaeleleoterio-hub.github.io)",
+      "Bash(du:*)",
+      "mcp__Control_Chrome__open_url",
+      "mcp__Windows-MCP__Shell",
+      "mcp__Windows-MCP__Snapshot",
+      "mcp__Windows-MCP__App",
+      "mcp__Windows-MCP__Click",
+      "Bash(powershell:*)",
+      "Bash(git remote get-url:*)",
+      "Bash(echo:*)",
+      "Bash(set:*)",
+      "Bash(cmd /c \"set VITE_BASE_URL=/ && node -e \"\"console.log\\(process.env.VITE_BASE_URL\\)\"\"\")",
+      "Bash(VITE_BASE_URL=/ npm run build:*)",
+      "Bash(start:*)"
     ]
   }
 }

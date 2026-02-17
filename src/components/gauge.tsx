@@ -1,4 +1,5 @@
 import { useMemo } from 'react';
+import { useSimulationAnimation } from '@/hooks/use-simulation-animation';
 
 interface GaugeProps {
   value: number;
@@ -45,6 +46,7 @@ function markerPos(val: number): { x: number; y: number } {
 }
 
 export function Gauge({ value, maxValue, label = 'Efficiency' }: GaugeProps) {
+  const { gaugeAnimating } = useSimulationAnimation();
   const pct = Math.min((value / maxValue) * 100, MAX_PCT);
   const activeCount = Math.round((pct / MAX_PCT) * TOTAL_SEGMENTS);
   const isCritical = pct > 120;
@@ -109,7 +111,7 @@ export function Gauge({ value, maxValue, label = 'Efficiency' }: GaugeProps) {
 
         {/* Center display */}
         <div className="absolute inset-0 flex items-center justify-center">
-          <div className={isCritical ? 'animate-pulse' : ''}>
+          <div className={`transition-all duration-300 ${gaugeAnimating ? 'scale-110' : ''} ${isCritical ? 'animate-pulse' : ''}`}>
             <span className="text-4xl font-bold text-white font-mono">{Math.round(pct)}</span>
             <span className="text-lg text-gray-500">%</span>
           </div>

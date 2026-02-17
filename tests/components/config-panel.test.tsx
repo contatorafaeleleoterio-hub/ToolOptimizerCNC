@@ -121,9 +121,11 @@ describe('ConfigPanel', () => {
     expect(useMachiningStore.getState().ferramenta.diametro).toBe(10);
   });
 
-  it('calculates on Simular click', () => {
+  it('calculates on Simular click', async () => {
     renderPanel();
     fireEvent.click(screen.getByText('Simular'));
+    // Wait for animation to complete (200ms + a bit more)
+    await new Promise((resolve) => setTimeout(resolve, 300));
     expect(useMachiningStore.getState().resultado).not.toBeNull();
   });
 

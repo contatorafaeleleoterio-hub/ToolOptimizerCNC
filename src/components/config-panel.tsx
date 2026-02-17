@@ -2,6 +2,7 @@ import { useMachiningStore } from '@/store';
 import { MATERIAIS, FERRAMENTAS_PADRAO, DIAMETROS_COMPLETOS, RAIOS_PADRAO } from '@/data';
 import { TipoUsinagem } from '@/types';
 import { SectionTitle, FieldGroup, NumInput } from './ui-helpers';
+import { useSimulationAnimation } from '@/hooks/use-simulation-animation';
 
 const OPERACAO_LABELS: Record<TipoUsinagem, string> = {
   [TipoUsinagem.DESBASTE]: 'Desbaste',
@@ -18,17 +19,30 @@ export function ConfigPanel() {
     setSafetyFactor, simular, reset,
   } = useMachiningStore();
 
+  const { isCalculating, runSimulation } = useSimulationAnimation();
+
   const material = MATERIAIS.find((m) => m.id === materialId);
   const vcRange = material?.vcRanges[tipoOperacao];
+
+  const handleSimulate = () => runSimulation(simular);
 
   return (
     <div className="flex flex-col gap-3">
       <div className="bg-surface-dark backdrop-blur-xl border border-white/5 rounded-2xl p-4 shadow-glass flex flex-col gap-3">
         <div className="flex gap-3">
-          <button onClick={simular}
-            className="flex-1 py-2 px-4 rounded-xl bg-gradient-to-r from-cyan-600 to-cyan-500 text-white font-bold tracking-wide shadow-neon-cyan hover:brightness-110 transition-all active:scale-[0.98] flex items-center justify-center gap-2 text-sm uppercase">
-            <span className="material-symbols-outlined text-lg">play_arrow</span>
-            Simular
+          <button onClick={handleSimulate} disabled={isCalculating}
+            className="flex-1 py-2 px-4 rounded-xl bg-gradient-to-r from-cyan-600 to-cyan-500 text-white font-bold tracking-wide shadow-neon-cyan hover:brightness-110 transition-all active:scale-[0.98] flex items-center justify-center gap-2 text-sm uppercase disabled:opacity-70 disabled:cursor-not-allowed">
+            {isCalculating ? (
+              <>
+                <span className="material-symbols-outlined text-lg animate-[spinner_0.6s_linear_infinite]">refresh</span>
+                Calculando...
+              </>
+            ) : (
+              <>
+                <span className="material-symbols-outlined text-lg">play_arrow</span>
+                Simular
+              </>
+            )}
           </button>
           <button onClick={reset}
             className="w-12 rounded-xl bg-white/5 border border-white/10 text-gray-400 hover:bg-white/10 hover:text-white transition-all flex items-center justify-center active:scale-[0.98]">

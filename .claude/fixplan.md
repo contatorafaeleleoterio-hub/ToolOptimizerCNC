@@ -1,4 +1,4 @@
-# Roadmap ToolOptimizer CNC
+﻿# Roadmap ToolOptimizer CNC
 
 ## Fase 1: Setup ✅
 - [x] Git + .gitignore
@@ -81,3 +81,26 @@
 - **TypeScript strict errors:** Definir tipos corretos, nunca usar `as any`
 - **Zustand não atualiza UI:** Verificar se está retornando novo objeto (imutabilidade)
 - **Teste passa local mas valores diferentes:** Usar toBeCloseTo, não toBe
+
+
+## Fase 9: Evolução Web + SEO (Synkra AIOS guided)
+
+**Framework:** Synkra AIOS (Architect-First) — ver `docs/AIOS_INTEGRATION.md`
+**Estratégia:** Dual-Domain SEO — ver `docs/ESTRATEGIA_DUAL_DOMAIN_SEO_TOOLOPTIMIZER.md`
+
+### Workflow obrigatório:
+1. Criar story → 2. Design doc (se arquitetural) → 3. Implementar TDD → 4. Quality gate → 5. Commit
+
+### Stories planejadas:
+- [ ] Story-003: Registro domínio + Cloudflare DNS
+- [ ] Story-004: Landing page (www.tooloptimizercnc.com.br)
+- [ ] Story-005: Email profissional (Zoho Mail)
+- [ ] Story-006: Blog Hugo (blog.tooloptimizercnc.com.br)
+- [ ] Story-007: Schema.org + SEO foundation
+- [ ] Story-008: Google Search Console + Bing Webmaster
+- [ ] Story-009: Primeiro artigo MestreCNC → ToolOptimizer backlink
+
+### Decisões pendentes (aguardando Rafael):
+- Registrar .com agora ou esperar mês 6?
+- Manter 5 subdomínios ou simplificar para www + app?
+- Cadência realista de artigos (1-2/semana vs 2-3/semana)?
