@@ -1,4 +1,4 @@
-import { useRef, useCallback } from 'react';
+import { useRef, useCallback, useState } from 'react';
 import { useMachiningStore } from '@/store';
 import { MATERIAIS } from '@/data';
 import { SectionTitle } from '../ui-helpers';
@@ -11,20 +11,22 @@ const SLIDER_CONFIG = [
   { key: 'ae' as const, label: 'ae', fullLabel: 'Eng. Radial', unit: 'mm', color: 'accent-purple',
     rgb: '168,85,247', min: 0.1, max: 50, step: 0.1 },
   { key: 'ap' as const, label: 'ap', fullLabel: 'Prof. Axial', unit: 'mm', color: 'accent-orange',
-    rgb: '249,115,22', min: 0.1, max: 50, step: 0.1 },
+    rgb: '249,115,22', min: 0.05, max: 6, step: 0.05 },
 ] as const;
 
 const BTN_CLS = 'w-10 h-10 rounded-lg bg-black/40 border border-white/10 text-gray-400 active:bg-white/10 transition-all text-sm font-bold flex items-center justify-center';
 
+/** Maximum number of visible tick marks on the slider track */
+const MAX_TICKS = 20;
+
 type ParamKey = typeof SLIDER_CONFIG[number]['key'];
 
 /**
- * Touch-friendly custom slider.
- * Uses touch events directly (not <input type="range">) to avoid
- * the tiny hit-area problem on mobile browsers.
- * - touch-none: prevents page scroll while dragging
- * - 44px hit area: meets mobile accessibility guidelines
- * - Thumb: 28px visible, centered on value
+ * Touch-friendly custom slider with hold-to-activate and snap behavior.
+ *
+ * Hold the thumb for 1 second to activate dragging (prevents accidental moves
+ * while scrolling). Visual ring animation shows activation progress.
+ * Snaps to discrete step values with visible tick marks.
  */
 function TouchSlider({ value, min, max, step, color, rgb, onChange, label }: {
   value: number; min: number; max: number; step: number;
@@ -32,7 +34,18 @@ function TouchSlider({ value, min, max, step, color, rgb, onChange, label }: {
   onChange: (val: number) => void;
 }) {
   const trackRef = useRef<HTMLDivElement>(null);
-  const isDragging = useRef(false);
+  const holdTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const [activated, setActivated] = useState(false);
+  const [holding, setHolding] = useState(false);
+  const activatedRef = useRef(false);
+
+  const totalSteps = Math.round((max - min) / step);
+  const tickInterval = totalSteps <= MAX_TICKS ? 1 : Math.ceil(totalSteps / MAX_TICKS);
+  const ticks: number[] = [];
+  for (let i = 0; i <= totalSteps; i += tickInterval) {
+    ticks.push(i / totalSteps * 100);
+  }
+  if (ticks[ticks.length - 1] !== 100) ticks.push(100);
 
   const clampToStep = useCallback((raw: number) => {
     const clamped = Math.max(min, Math.min(max, raw));
@@ -47,37 +60,58 @@ function TouchSlider({ value, min, max, step, color, rgb, onChange, label }: {
     return clampToStep(min + pct * (max - min));
   }, [min, max, value, clampToStep]);
 
+  const clearHold = useCallback(() => {
+    if (holdTimer.current) {
+      clearTimeout(holdTimer.current);
+      holdTimer.current = null;
+    }
+    setHolding(false);
+  }, []);
+
+  const deactivate = useCallback(() => {
+    activatedRef.current = false;
+    setActivated(false);
+    clearHold();
+  }, [clearHold]);
+
   const handleTouchStart = useCallback((e: React.TouchEvent) => {
-    isDragging.current = true;
-    const touch = e.touches[0];
-    onChange(getValueFromX(touch.clientX));
+    // Start hold timer — user must hold 1s before dragging activates
+    setHolding(true);
+    holdTimer.current = setTimeout(() => {
+      activatedRef.current = true;
+      setActivated(true);
+      setHolding(false);
+      // Snap to touch position on activation
+      const touch = e.touches[0];
+      if (touch) onChange(getValueFromX(touch.clientX));
+    }, 800);
   }, [onChange, getValueFromX]);
 
   const handleTouchMove = useCallback((e: React.TouchEvent) => {
-    if (!isDragging.current) return;
-    e.preventDefault(); // Prevent page scroll while dragging
+    if (!activatedRef.current) {
+      // If user moves finger before activation, cancel the hold (they're scrolling)
+      clearHold();
+      return;
+    }
+    e.preventDefault();
     const touch = e.touches[0];
     onChange(getValueFromX(touch.clientX));
-  }, [onChange, getValueFromX]);
+  }, [onChange, getValueFromX, clearHold]);
 
   const handleTouchEnd = useCallback(() => {
-    isDragging.current = false;
-  }, []);
-
-  const handleClick = useCallback((e: React.MouseEvent) => {
-    onChange(getValueFromX(e.clientX));
-  }, [onChange, getValueFromX]);
+    deactivate();
+  }, [deactivate]);
 
   const pct = ((value - min) / (max - min)) * 100;
 
   return (
     <div
       ref={trackRef}
-      className="relative h-11 flex items-center cursor-pointer touch-none select-none"
+      className="relative h-12 flex items-center cursor-pointer touch-none select-none"
       onTouchStart={handleTouchStart}
       onTouchMove={handleTouchMove}
       onTouchEnd={handleTouchEnd}
-      onClick={handleClick}
+      onTouchCancel={deactivate}
       role="slider"
       aria-label={`${label} slider`}
       aria-valuenow={value}
@@ -87,23 +121,55 @@ function TouchSlider({ value, min, max, step, color, rgb, onChange, label }: {
     >
       {/* Track background */}
       <div className="absolute left-0 right-0 h-2 bg-black/40 rounded-full" />
+
+      {/* Tick marks */}
+      {ticks.map((t, i) => (
+        <div
+          key={i}
+          className="absolute w-px h-3 bg-white/15 pointer-events-none"
+          style={{ left: `${t}%`, top: '50%', transform: 'translateY(-50%)' }}
+        />
+      ))}
+
       {/* Filled track */}
       <div
-        className={`absolute left-0 h-2 bg-${color} rounded-full pointer-events-none`}
+        className={`absolute left-0 h-2 bg-${color} rounded-full pointer-events-none transition-all duration-75`}
         style={{ width: `${pct}%`, boxShadow: `0 0 8px rgba(${rgb},0.6)` }}
       />
+
       {/* Thumb */}
       <div
         className="absolute -translate-x-1/2 pointer-events-none"
         style={{ left: `${pct}%` }}
       >
+        {/* Hold progress ring (animated border) */}
         <div
-          className={`w-7 h-7 bg-background-dark border-2 border-${color} rounded-full flex items-center justify-center`}
-          style={{ boxShadow: `0 0 12px rgba(${rgb},0.8)` }}
+          className={`w-9 h-9 rounded-full flex items-center justify-center transition-all duration-200
+            ${activated
+              ? `border-2 border-${color} scale-110`
+              : holding
+                ? `border-2 border-${color}/50 animate-pulse scale-105`
+                : 'border-2 border-transparent'
+            }`}
+          style={activated ? { boxShadow: `0 0 20px rgba(${rgb},0.9)` } : undefined}
         >
-          <div className={`w-2.5 h-2.5 bg-${color} rounded-full`} />
+          <div
+            className={`w-7 h-7 bg-background-dark border-2 border-${color} rounded-full flex items-center justify-center`}
+            style={{ boxShadow: `0 0 12px rgba(${rgb},0.8)` }}
+          >
+            <div className={`w-2.5 h-2.5 bg-${color} rounded-full ${holding ? 'animate-ping' : ''}`} />
+          </div>
         </div>
       </div>
+
+      {/* Activation hint */}
+      {activated && (
+        <div
+          className="absolute -top-6 left-1/2 -translate-x-1/2 text-[9px] text-white/80 bg-black/70 px-2 py-0.5 rounded whitespace-nowrap pointer-events-none"
+        >
+          Arraste para ajustar
+        </div>
+      )}
     </div>
   );
 }
@@ -123,10 +189,11 @@ export function MobileFineTuneSection() {
     <section className="flex flex-col gap-4 px-4">
       <div className="bg-card-dark rounded-xl p-4 border border-white/5">
         <SectionTitle color="bg-primary" label="Fine Tune" />
+        <p className="text-[9px] text-gray-500 mb-3">Segure o controle por 1s para ativar o ajuste</p>
         <div className="flex flex-col gap-5">
           {SLIDER_CONFIG.map(({ key, label, fullLabel, unit, color, rgb, min, max, step }) => {
             const val = parametros[key];
-            const display = key === 'fz' ? val.toFixed(2) : key === 'ae' || key === 'ap' ? val.toFixed(1) : val.toFixed(0);
+            const display = key === 'fz' || key === 'ap' ? val.toFixed(2) : key === 'ae' ? val.toFixed(1) : val.toFixed(0);
 
             return (
               <div key={key} className="flex flex-col gap-1">
