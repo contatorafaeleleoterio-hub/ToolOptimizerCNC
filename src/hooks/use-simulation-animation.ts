@@ -24,15 +24,15 @@ export function useSimulationAnimation() {
     setIsCalculating(true);
     setGaugeAnimating(true);
 
-    // Brief loading state (200ms → 300ms, +50%)
-    await new Promise((resolve) => setTimeout(resolve, 300));
+    // Brief loading state (300ms → 450ms, +50%)
+    await new Promise((resolve) => setTimeout(resolve, 450));
 
     originalSimular();
 
     setIsCalculating(false);
 
-    // Gauge animation completes (600ms → 900ms, +50%)
-    setTimeout(() => setGaugeAnimating(false), 900);
+    // Gauge animation completes (900ms → 1350ms, +50%)
+    setTimeout(() => setGaugeAnimating(false), 1350);
   };
 
   return {

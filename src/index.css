@@ -60,6 +60,11 @@ body {
   100% { transform: rotate(1440deg); }
 }
 
+@keyframes fadeOut {
+  from { opacity: 1; }
+  to { opacity: 0.3; }
+}
+
 ::-webkit-scrollbar { width: 6px; }
 ::-webkit-scrollbar-track { background: #0F1419; }
 ::-webkit-scrollbar-thumb { background: #333; border-radius: 4px; }

@@ -127,14 +127,14 @@ export const useMachiningStore = create<MachiningState & MachiningActions>()(
         setMaterial: (id) => {
           const { tipoOperacao, ferramenta, customMaterials } = get();
           const recommended = autoPopulateParams(id, tipoOperacao, ferramenta.diametro, customMaterials);
-          set({ materialId: id, manualOverrides: {}, ...(recommended && { parametros: recommended, baseParams: recommended }) });
-          get().calcular();
+          set({ materialId: id, resultado: null, manualOverrides: {}, ...(recommended && { parametros: recommended, baseParams: recommended }) });
+          // Don't auto-calculate on material change - user must click Simular
         },
 
         setFerramenta: (f) => {
           set((state) => {
             const newFerramenta = { ...state.ferramenta, ...f };
-            const updates: Partial<MachiningState> = { ferramenta: newFerramenta, manualOverrides: {} };
+            const updates: Partial<MachiningState> = { ferramenta: newFerramenta, resultado: null, manualOverrides: {} };
             if (f.diametro !== undefined && f.diametro !== state.ferramenta.diametro) {
               const recommended = autoPopulateParams(state.materialId, state.tipoOperacao, f.diametro, state.customMaterials);
               if (recommended) {
@@ -144,19 +144,19 @@ export const useMachiningStore = create<MachiningState & MachiningActions>()(
             }
             return updates;
           });
-          get().calcular();
+          // Don't auto-calculate on tool change - user must click Simular
         },
 
         setTipoOperacao: (tipo) => {
           const { materialId, ferramenta, customMaterials } = get();
           const recommended = autoPopulateParams(materialId, tipo, ferramenta.diametro, customMaterials);
-          set({ tipoOperacao: tipo, manualOverrides: {}, ...(recommended && { parametros: recommended, baseParams: recommended }) });
-          get().calcular();
+          set({ tipoOperacao: tipo, resultado: null, manualOverrides: {}, ...(recommended && { parametros: recommended, baseParams: recommended }) });
+          // Don't auto-calculate on operation change - user must click Simular
         },
 
         setParametros: (p) => {
-          set((state) => ({ parametros: { ...state.parametros, ...p }, manualOverrides: {} }));
-          get().calcular();
+          set((state) => ({ parametros: { ...state.parametros, ...p }, resultado: null, manualOverrides: {} }));
+          // Don't auto-calculate on parameter change - user must click Simular
         },
 
         setLimitesMaquina: (l) => {
@@ -165,8 +165,8 @@ export const useMachiningStore = create<MachiningState & MachiningActions>()(
         },
 
         setSafetyFactor: (f) => {
-          set({ safetyFactor: f });
-          get().calcular();
+          set({ safetyFactor: f, resultado: null });
+          // Don't auto-calculate on safety factor change - user must click Simular
         },
 
         setManualRPM: (rpm) => {

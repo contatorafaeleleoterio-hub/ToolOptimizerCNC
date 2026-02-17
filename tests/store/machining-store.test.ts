@@ -60,11 +60,12 @@ describe('machining-store', () => {
       expect(getState().materialId).toBe(3);
     });
 
-    it('triggers recalculation', () => {
+    it('clears resultado on material change', () => {
       getState().calcular();
       expect(getState().resultado).not.toBeNull();
       getState().setMaterial(4);
-      expect(getState().resultado).not.toBeNull();
+      // After changing material, resultado should be null until user clicks Simular
+      expect(getState().resultado).toBeNull();
     });
   });
 
@@ -191,6 +192,7 @@ describe('machining-store', () => {
     it('generates amarelo warning when L/D > 3 and < 4', () => {
       getState().setFerramenta({ balanco: 35, diametro: 10 }); // L/D = 3.5
       getState().setParametros({ ap: 2, ae: 5, fz: 0.1, vc: 100 });
+      getState().calcular(); // Need to calculate after setting parameters
       const r = getState().resultado!;
       expect(r.seguranca.nivel).toBe('amarelo');
       expect(r.seguranca.avisos.some((a) => a.includes('alerta'))).toBe(true);
@@ -199,6 +201,7 @@ describe('machining-store', () => {
     it('generates vermelho warning when L/D = 4', () => {
       getState().setFerramenta({ balanco: 40, diametro: 10 }); // L/D = 4.0
       getState().setParametros({ ap: 2, ae: 5, fz: 0.1, vc: 100 });
+      getState().calcular(); // Need to calculate after setting parameters
       const r = getState().resultado!;
       expect(r.seguranca.nivel).toBe('vermelho');
       expect(r.seguranca.avisos.some((a) => a.includes('crítica'))).toBe(true);
@@ -207,6 +210,7 @@ describe('machining-store', () => {
     it('generates bloqueado when L/D > 6', () => {
       getState().setFerramenta({ balanco: 70, diametro: 10 }); // L/D = 7.0
       getState().setParametros({ ap: 2, ae: 5, fz: 0.1, vc: 100 });
+      getState().calcular(); // Need to calculate after setting parameters
       const r = getState().resultado!;
       expect(r.seguranca.nivel).toBe('bloqueado');
       expect(r.seguranca.avisos.some((a) => a.includes('BLOQUEADO'))).toBe(true);
@@ -220,6 +224,7 @@ describe('machining-store', () => {
       const power1 = r1.potenciaMotor;
 
       getState().setSafetyFactor(0.7);
+      getState().calcular(); // Need to recalculate after changing safety factor
       const r2 = getState().resultado!;
       const power2 = r2.potenciaMotor;
 
@@ -356,9 +361,11 @@ describe('machining-store', () => {
     it('custom L/D thresholds affect calcular()', () => {
       getState().setFerramenta({ balanco: 25, diametro: 10 }); // L/D = 2.5
       getState().setParametros({ ap: 2, ae: 5, fz: 0.1, vc: 100 }); // safe params
+      getState().calcular(); // Need to calculate after setting parameters
       expect(getState().resultado!.seguranca.nivel).toBe('verde');
 
       getState().setSafetyRules({ ld: { seguro: 2, alerta: 3, critico: 5 } });
+      getState().calcular(); // Need to recalculate after changing safety rules
       expect(getState().resultado!.seguranca.nivel).toBe('amarelo'); // 2.5 > 2
     });
   });

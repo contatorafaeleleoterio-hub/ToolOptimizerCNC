@@ -5,6 +5,7 @@ import { FormulaCard, Fraction } from './formula-card';
 import { ToolSummaryViewer } from './tool-summary-viewer';
 import { fmt, SafetyBadge, MetricCell, BigNumber, ProgressCard, WarningsSection } from './shared-result-parts';
 import { useSimulationAnimation } from '@/hooks/use-simulation-animation';
+import { useResetFeedback } from '@/hooks/use-reset-feedback';
 
 const EMPTY_RESULTADO: ResultadoUsinagem = {
   rpm: 0,
@@ -32,6 +33,7 @@ export function ResultsPanel() {
   const setManualFeedPercent = useMachiningStore((s) => s.setManualFeedPercent);
 
   const { triggerPulse, safetyLevel } = useSimulationAnimation();
+  const { isResetting } = useResetFeedback();
 
   const resultado = storeResultado ?? EMPTY_RESULTADO;
 
@@ -46,15 +48,32 @@ export function ResultsPanel() {
     ? 'animate-[subtlePulse_0.45s_ease-in-out_2]' // 0.3s → 0.45s (+50%)
     : '';
 
+  const resetFeedbackClass = isResetting ? 'animate-[fadeOut_0.4s_ease-out]' : '';
+  const showResetMessage = storeResultado === null;
+
   return (
     <div className="flex flex-col gap-3">
       <ToolSummaryViewer />
+
+      {/* Reset feedback message */}
+      {showResetMessage && (
+        <div className="bg-yellow-500/10 border border-yellow-500/30 rounded-xl p-4 animate-[fadeInUp_0.4s_ease-out]">
+          <div className="flex items-center gap-3">
+            <span className="material-symbols-outlined text-yellow-400 animate-pulse">refresh</span>
+            <div>
+              <p className="text-sm font-semibold text-yellow-300">Parâmetros Alterados</p>
+              <p className="text-xs text-yellow-400/80 mt-0.5">Clique em "SIMULAR" para recalcular os resultados</p>
+            </div>
+          </div>
+        </div>
+      )}
+
       <div className={pulseClass}>
         <SafetyBadge nivel={seguranca.nivel} avisosCount={seguranca.avisos.length} />
       </div>
 
       {/* Overview cards */}
-      <div className={`bg-surface-dark backdrop-blur-xl border border-white/5 rounded-2xl p-6 shadow-glass transition-all duration-300 ${pulseClass}`}>
+      <div className={`bg-surface-dark backdrop-blur-xl border border-white/5 rounded-2xl p-6 shadow-glass transition-all duration-300 ${pulseClass} ${resetFeedbackClass}`}>
         <div className="flex items-center gap-3 mb-4">
           <div className="w-10 h-10 rounded-lg bg-white/5 flex items-center justify-center border border-white/10">
             <span className="material-symbols-outlined text-gray-400">analytics</span>
