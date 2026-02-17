@@ -1,4 +1,4 @@
-# ToolOptimizer CNC - Contexto do Projeto
+﻿# ToolOptimizer CNC - Contexto do Projeto
 
 ## Stack
 - **Framework:** React 18 + TypeScript (strict mode, zero `any`)
@@ -82,3 +82,24 @@ scripts/          # Scripts auxiliares
 - Dashboard UI: `docs/design/DASHBOARD.md`
 - UI spec: `docs/design/UI_DESIGN_SPEC_FINAL.md`
 - Branding: `docs/design/UI_BRANDING.md`
+
+
+## Framework de Desenvolvimento: Synkra AIOS (Adaptado)
+
+Este projeto segue princípios do Synkra AIOS Framework. Detalhes completos em `docs/AIOS_INTEGRATION.md`.
+
+### Regras Obrigatórias
+1. **Story-Driven:** Toda feature tem story em `docs/stories/`
+2. **Architect-First:** Documentar antes de codar
+3. **Quality Gates:** build + test + typecheck ANTES de commit
+4. **No Invention:** Não inventar — pesquisar ou perguntar
+5. **Map Before Modify:** Documentar estado atual antes de alterar
+6. **Sem arquivos fora do projeto:** Tudo dentro de `INICIO_TOOLOPTIMIZERCNC/`
+
+### ADRs (Architecture Decision Records)
+Decisões arquiteturais documentadas em `docs/architecture/ADR-NNN-*.md`
+
+### Referência AIOS Completa
+- Repositório: `C:\Users\USUARIO\Desktop\Synkra_AIOS\aios-core\`
+- Integração: `docs/AIOS_INTEGRATION.md`
+- ADR de adoção: `docs/architecture/ADR-004-adocao-synkra-aios.md`
