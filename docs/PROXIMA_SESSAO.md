@@ -1,326 +1,229 @@
-# PROXIMA SESSAO: Sliders Bidirecionais Implementados
+# PROXIMA SESSAO: Pronto para CI/CD (Story-003)
 
-**Data atualizacao:** 17/02/2026 - 20:45
-**Status:** Sliders bidirecionais implementados, 333 testes passando — pronto para CI/CD (Story-003) e Cloudflare setup
-
----
-
-## O QUE FOI FEITO (sessao 17/02/2026 - NOITE)
-
-### 🎯 Sliders Bidirecionais — CONCLUÍDO
-Implementação completa de controle manual bidirecional (-150% a +150%) para 6 parâmetros:
-
-1. **RPM (Results Panel)**
-   - Range: -150% a +150%
-   - Centro (0%) = valor calculado
-   - Cor: RGB(0, 217, 255) — cyan
-   - Override manual persistente até mudança de parâmetros
-
-2. **Feed Rate (Results Panel)**
-   - Range: -150% a +150%
-   - Centro (0%) = valor calculado
-   - Cor: RGB(57, 255, 20) — green
-   - Override manual persistente até mudança de parâmetros
-
-3. **Vc - Cutting Speed (Fine Tune Panel)**
-   - Range: -150% a +150%
-   - Centro (0%) = valor recomendado
-   - Cor: RGB(0, 217, 255) — cyan
-
-4. **fz - Feed per Tooth (Fine Tune Panel)**
-   - Range: -150% a +150%
-   - Centro (0%) = valor recomendado
-   - Cor: RGB(57, 255, 20) — green
-
-5. **ae - Radial Engagement (Fine Tune Panel)**
-   - Range: -150% a +150%
-   - Centro (0%) = valor recomendado
-   - Cor: RGB(168, 85, 247) — purple
-
-6. **ap - Axial Depth (Fine Tune Panel)**
-   - Range: -150% a +150%
-   - Centro (0%) = valor recomendado
-   - Cor: RGB(249, 115, 22) — orange
-
-### Componente BidirectionalSlider
-**Arquivo:** `src/components/bidirectional-slider.tsx`
-
-Novo componente reutilizável com:
-- Interface unificada para todos os sliders
-- Marca central (0%) destacada
-- Labels min/max dinâmicos
-- RGB personalizado por parâmetro
-- Glow effect no thumb
-- Tooltip com valor atual
-
-### Testes
-- ✅ **333 testes passando** (24 arquivos)
-- Novo: `tests/components/bidirectional-slider.test.tsx`
-- Atualizados: results-panel, fine-tune-panel
-
-### Commits (pendentes):
-```bash
-# A fazer:
-git add .
-git commit -m "feat: add bidirectional sliders for manual parameter control"
-git push origin main
-```
+**Data atualizacao:** 17/02/2026 - 21:30
+**Status:** Sliders bidirecionais + Reset feedback + Animações implementados e commitados — 333 testes passando
 
 ---
 
-## SESSÕES ANTERIORES (17/02/2026 - TARDE)
+## ESTADO ATUAL DO PROJETO
 
-### ✨ Sistema de Animações Profissionais — CONCLUÍDO
-1. **Botão "Simular" com feedback visual:**
-   - Loading state com spinner rotativo
-   - Texto "Calculando..." durante processamento
-   - Botão desabilitado durante execução
-   - Delay de 300ms para UX profissional
-
-2. **Gauge animado:**
-   - Centro escala sutilmente (1.1x) durante animação
-   - Transição suave de 450ms
-
-3. **Pulse nos resultados:**
-   - **Verde**: Pulse suave 0.9s quando parâmetros seguros
-   - **Vermelho/Bloqueado**: Pulse rápido 0.45s (x2) para alertar
-   - Badge de segurança também pulsa
-
-4. **Código profissional:**
-   - Hook customizado: `use-simulation-animation.ts`
-   - CSS puro (zero dependências)
-   - Timeouts com cleanup adequado
-   - Keyframes: `spinner`, `fadeInUp`, `subtlePulse`, `gaugeRoll`
-
-### Commits das animações:
-- `0c2dd85` feat: add professional feedback animations on simulate button
-- `cd37310` perf: increase animation durations by 50% for smoother UX
-
-### Sessoes anteriores:
-- `2bde84a` docs: session summary, update PROXIMA_SESSAO, organize root docs
-- `6e3a198` fix: mobile sliders hold-to-activate + tick marks snap behavior
-- `1522f76` fix: compact layout to fit normal screen without zoom out
-- Story-001 (limpeza tecnica + ADRs): CONCLUIDA
-- Story-002 Fase 1 (dual deploy code): CONCLUIDA — setup manual pendente
-
----
-
-## RESUMO DO PROJETO
-
-### Stack:
-- React 18.3 + TypeScript 5.7 (strict) + Vite 6.1
-- Zustand 5.0 + react-router-dom 7.13
-- Tailwind CSS v4.0 (@theme tokens, dark glassmorphism)
-- Vitest 3.0 + Testing Library
-- localStorage, sem backend
-
-### Estado Atual:
-- **Branch:** main (local ahead - sliders bidirecionais implementados)
-- **Ultimo commit:** `cd37310` perf: increase animation durations by 50% for smoother UX (próximo: bidirectional sliders)
+### Branch e Commits
+- **Branch:** main — sincronizado com `origin/main`, working tree clean
+- **Ultimo commit:** `1a09e33` feat: reset panel on input change + increase simulate animation by 50%
 - **Testes:** 333 passing (24 arquivos)
-- **Bundle:** ~96KB gzip (JS 85KB + CSS 11KB) — sem mudança significativa
+- **Bundle:** ~97KB gzip (JS 86KB + CSS 11KB)
 - **GitHub:** https://github.com/contatorafaeleleoterio-hub/ToolOptimizerCNC
 - **Deploy:** GitHub Pages ativo
-- **Rotas:** `/` (desktop), `/mobile` (auto-detect), `/settings`, `/history`
 
-### Estrutura principal:
+### Commits Recentes
+```
+1a09e33  feat: reset panel on input change + increase simulate animation by 50%
+d6e5e48  feat: add bidirectional sliders for manual parameter control
+47e90dd  docs: session summary, update PROXIMA_SESSAO, organize root docs
+cd37310  perf: increase animation durations by 50% for smoother UX
+0c2dd85  feat: add professional feedback animations on simulate button
+```
+
+---
+
+## O QUE FOI IMPLEMENTADO (sessão 17/02/2026)
+
+### ✅ 1. Sistema de Animações Profissionais
+- Botão "Simular" com loading state (spinner + "Calculando...")
+- Gauge anima (scale 1.1x) durante simulação
+- Pulse verde (0.9s) em parâmetros seguros
+- Pulse vermelho (0.45s ×2) em alerta/bloqueado
+- Hook: `use-simulation-animation.ts`
+- **Timings atuais:** Loading 450ms, Gauge 1350ms (+50% vs original)
+
+### ✅ 2. Sliders Bidirecionais (6 parâmetros)
+Controle manual de -150% a +150% do valor calculado/recomendado:
+
+| Painel | Parâmetro | Cor |
+|--------|-----------|-----|
+| Results Panel | RPM | Cyan `0,217,255` |
+| Results Panel | Feed Rate | Green `57,255,20` |
+| Fine Tune Panel | Vc (Cutting Speed) | Cyan `0,217,255` |
+| Fine Tune Panel | fz (Feed per Tooth) | Green `57,255,20` |
+| Fine Tune Panel | ae (Radial Engagement) | Purple `168,85,247` |
+| Fine Tune Panel | ap (Axial Depth) | Orange `249,115,22` |
+
+**Componente:** `src/components/bidirectional-slider.tsx` (155 linhas)
+- Range: -150% a +150% (centro 0% = valor base)
+- Botões +/- (step 10%)
+- Tick marks, centro destacado, glow RGB
+
+### ✅ 3. Reset Feedback ao Alterar Parâmetros
+Quando qualquer input muda (material, ferramenta, operação, ap/ae/fz/vc, safety factor):
+- `resultado` é zerado no store (`null`)
+- **Não recalcula automaticamente** — usuário deve clicar em "SIMULAR"
+- Banner amarelo animado aparece: *"Parâmetros Alterados — Clique em SIMULAR para recalcular"*
+- Hook: `use-reset-feedback.ts` (66 linhas)
+- Keyframe `fadeOut` em `index.css` para dimming dos cards
+
+---
+
+## ESTRUTURA DE ARQUIVOS ATUAL
+
 ```
 src/
-  App.tsx                    — 3-column grid + header
-  main.tsx                   — BrowserRouter + Routes
-  index.css                  — Tailwind v4 @theme + range input styling + animation keyframes
-  types/index.ts             — TS types, enums, constants
-  engine/                    — rpm, chip-thinning, feed, power, validators
-  data/                      — materials, tools, operations
-  store/                     — machining-store (Zustand), history-store
+  App.tsx                     — 3-column grid + header
+  main.tsx                    — BrowserRouter + Routes
+  index.css                   — Tailwind v4 @theme + range input + keyframes (spinner, fadeInUp, subtlePulse, gaugeRoll, fadeOut)
+  types/index.ts              — TS types, enums, constants
+  engine/                     — rpm, chip-thinning, feed, power, validators, recommendations
+  data/                       — materials, tools, operations
+  store/
+    machining-store.ts        — Zustand (NO auto-recalc on input change — resultado=null)
+    history-store.ts          — histórico de simulações
   hooks/
-    use-is-mobile.ts         — Mobile detection hook
-    use-simulation-animation.ts — Animation state management
+    use-is-mobile.ts          — Mobile detection
+    use-simulation-animation.ts — Animation state (loading 450ms, gauge 1350ms)
+    use-reset-feedback.ts     — Detecta mudança de params, trigger animação 800ms
   components/
-    bidirectional-slider.tsx — Slider bidirecional reutilizável (NOVO)
-    config-panel.tsx         — Material, ferramenta, parametros (col 1) + botão Simular animado
-    results-panel.tsx        — RPM, Feed, Power, formulas, gauge (col 2) + sliders RPM/Feed
-    fine-tune-panel.tsx      — Sliders Vc/fz/ae/ap + MRR (col 3) + sliders bidirecionais
-    gauge.tsx                — SVG gauge 40 segments + animação scale
-    formula-card.tsx         — Expandable formula explanation cards
-    shared-result-parts.tsx  — MetricCell, BigNumber, ProgressCard, etc
-    mobile/                  — mobile-fine-tune-section, mobile-config, etc
-  pages/                     — settings-page, history-page, mobile-page
-tests/                       — 24 test files (333 tests)
+    bidirectional-slider.tsx  — Slider -150% a +150%, botões +/-, tick marks, RGB glow
+    config-panel.tsx          — Material, ferramenta, parametros (col 1) + botão Simular animado
+    results-panel.tsx         — RPM, Feed, Power (col 2) + sliders RPM/Feed + reset warning
+    fine-tune-panel.tsx       — Sliders Vc/fz/ae/ap + MRR (col 3) + BidirectionalSlider
+    gauge.tsx                 — SVG gauge 40 segments + animação scale
+    formula-card.tsx          — Cards expansíveis com fórmulas
+    shared-result-parts.tsx   — MetricCell, BigNumber (suporta useBidirectionalSlider), ProgressCard, etc
+    mobile/                   — mobile-fine-tune-section, mobile-config, etc
+  pages/                      — settings-page, history-page, mobile-page
+tests/                        — 24 arquivos (333 testes)
 ```
 
 ---
 
-## PROXIMAS TAREFAS (em ordem de prioridade)
+## PROXIMAS TAREFAS
 
-### 1. Story-003: CI/CD GitHub Actions ⭐ PRÓXIMA
-**Status:** NAO INICIADA
-**Estimativa:** 2h
+### 1. ⭐ Story-003: CI/CD GitHub Actions — PRÓXIMA
+**Status:** NÃO INICIADA | **Estimativa:** 2h
 **Escopo:**
-- Workflow: test + typecheck + build on push/PR
+- Workflow: test + typecheck + build em push/PR
 - Badge no README
+- Cache de node_modules
 - Branch protection (opcional)
-- Cache de node_modules para performance
-- Matriz de testes (opcional)
 
-**Arquivo de referência:** `docs/stories/story-003-ci-cd-github-actions.md` (criar se não existir)
+**Arquivo:** `docs/stories/story-003-ci-cd-github-actions.md` (criar)
 
-### 2. Story-002 Fases 2-6: Deploy Cloudflare + Dominio (MANUAL)
-**Status:** Fase 1 (codigo) concluida. Fases 2-6 sao manuais pelo usuario.
+### 2. Story-002 Fases 2-6: Deploy Cloudflare (MANUAL pelo usuário)
+**Status:** Fase 1 (código) concluída — Fases 2-6 requerem ação manual
 **Doc:** `docs/stories/story-002-deploy-cloudflare.md`
 
-Pre-requisitos (usuario):
+Pre-requisitos (usuário):
 - Conta Cloudflare + projeto Pages conectado ao GitHub
 - Env var: `VITE_BASE_URL=/` e `NODE_VERSION=20`
-- Dominio `tooloptimizercnc.com.br` registrado no Registro.br
+- Domínio `tooloptimizercnc.com.br` no Registro.br
 - DNS apontado para Cloudflare nameservers
 
-Validacao (Claude na proxima sessao):
-- Verificar deploy no `*.pages.dev`
-- Verificar 4 rotas + refresh (SPA redirect)
-- Verificar HTTPS no dominio
-- Fechar Story-002
+### 3. Story-004: SEO Schema.org + meta tags
 
-### 3. Polimento UI/UX (backlog)
-- Testar app em diferentes resolucoes desktop (1366, 1920, 2560)
-- Validar que sliders do Safety Factor (config-panel) tambem funcionam bem
+### 4. Polimento UI/UX (backlog)
+- Testar em resoluções: 1366, 1920, 2560
 - Testar mobile em dispositivos reais
-- Avaliar se formula cards precisam de collapse/expand melhorado
-- Adicionar mais micro-interações (opcional)
+- Avaliar collapse/expand dos formula cards
 
 ---
 
-## DETALHES TECNICOS IMPORTANTES
+## DETALHES TÉCNICOS IMPORTANTES
 
-### BidirectionalSlider Component (NOVO)
-**Arquivo:** `src/components/bidirectional-slider.tsx`
+### Store: Novo comportamento (CRÍTICO)
+```typescript
+// ANTES: setParametros → calcular() automático
+// AGORA: setParametros → resultado=null, SEM calcular()
+// Usuário DEVE clicar em "Simular" para ver resultados
 
-**Props:**
+// Setters que ZERAM resultado (sem auto-calcular):
+setMaterial(id)          // resultado=null
+setFerramenta(f)         // resultado=null
+setTipoOperacao(tipo)    // resultado=null
+setParametros(p)         // resultado=null
+setSafetyFactor(f)       // resultado=null
+
+// Setter que AINDA auto-calcula:
+setLimitesMaquina(l)     // → calcular() (exceção intencional)
+
+// Para calcular manualmente (testes/engine):
+getState().calcular()
+```
+
+### BidirectionalSlider Props
 ```tsx
 interface BidirectionalSliderProps {
-  label: string;          // "RPM", "Avanço", "Vc", etc
-  value: number;          // Valor atual
-  baseValue: number;      // Valor central (0%)
-  unit: string;           // "rpm", "mm/min", "m/min", "mm"
-  rgb: string;            // "0,217,255" para cyan
-  onChange: (percent: number) => void; // Callback com percentual -150 a +150
+  baseValue: number;       // valor central (0%)
+  currentPercent: number;  // -150 a +150
+  onChange: (percent: number) => void;
+  color: string;           // Tailwind color name: "primary", "secondary"
+  rgb: string;             // "0,217,255"
+  label: string;           // "RPM", "Vc", etc
+  unit: string;            // "rpm", "mm/min", "m/min"
 }
 ```
 
-**Ranges:**
-- Min: -150% (baseValue × 0.5)
-- Center: 0% (baseValue)
-- Max: +150% (baseValue × 2.5)
-
-**Visual:**
-- Marca central (0%) destacada visualmente
-- Labels min/max nos extremos
-- Glow effect com cor RGB personalizada
-- Tooltip com valor atual + unidade
-
-**Cores por parâmetro:**
-- RPM / Vc: cyan `rgb(0, 217, 255)`
-- Feed / fz: green `rgb(57, 255, 20)`
-- ae: purple `rgb(168, 85, 247)`
-- ap: orange `rgb(249, 115, 22)`
-
-### Sistema de Animações
-**Hook:** `src/hooks/use-simulation-animation.ts`
-
-**Timings:**
-- Loading state: 300ms
-- Gauge animation: 900ms
-- Pulse total: 1500ms
-- Spinner rotation: 0.9s (infinite)
-- Verde pulse: 0.9s
-- Vermelho pulse: 0.45s (x2)
-- Gauge center transition: 450ms
-
-**Keyframes CSS (src/index.css):**
-```css
-@keyframes spinner { to { transform: rotate(360deg); } }
-@keyframes fadeInUp { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
-@keyframes subtlePulse { 0%, 100% { transform: scale(1); opacity: 1; } 50% { transform: scale(1.02); opacity: 0.95; } }
-@keyframes gaugeRoll { 0% { transform: rotate(0deg); } 100% { transform: rotate(1440deg); } }
-```
-
-**Uso:**
+### Integração no ResultsPanel (via BigNumber)
 ```tsx
-const { isCalculating, triggerPulse, gaugeAnimating, safetyLevel, runSimulation } = useSimulationAnimation();
+<BigNumber
+  useBidirectionalSlider
+  baseValue={baseRPM}
+  currentPercent={manualOverrides.rpmPercent ?? 0}
+  onPercentChange={setManualRPMPercent}
+  rgb="0,217,255"
+  // ... demais props
+/>
 ```
 
-**Cleanup:**
-- Todos os timeouts têm `clearTimeout()` no cleanup do useEffect
-- Testes assíncronos aguardam 400ms para animação completar
-
-### Slider Implementation (desktop)
-O slider do Fine Tune usa `<input type="range">` nativo com CSS custom properties:
+### Integração no FineTunePanel (direto)
 ```tsx
-// fine-tune-panel.tsx (linhas 64-72)
-<input type="range" ... style={{
-  background: `linear-gradient(to right, rgba(${rgb},1) ... ${pct}%, rgba(0,0,0,0.4) ...)`,
-  '--thumb-color': `rgba(${rgb},1)`,
-  '--thumb-glow': `0 0 15px rgba(${rgb},0.8)`,
-}} />
-```
-O thumb e estilizado globalmente em `src/index.css` (linhas 42-53) com:
-```css
-input[type=range]::-webkit-slider-thumb {
-  width: 16px; height: 16px; border-radius: 50%;
-  background: var(--thumb-color, #fff);
-  box-shadow: var(--thumb-glow, none);
-}
+<BidirectionalSlider
+  baseValue={baseVal}
+  currentPercent={currentPercent}
+  onChange={(percent) => setParamPercent(key, percent)}
+  color={color}
+  rgb={rgb}
+  label={label}
+  unit={unit}
+/>
 ```
 
-### Mobile Slider Implementation
-`mobile-fine-tune-section.tsx` usa TouchSlider customizado:
-- Hold 800ms para ativar (previne conflito com scroll)
-- `activatedRef` (useRef) + `activated` (useState) para evitar stale closures
-- Tick marks (MAX_TICKS=20) + snap via `clampToStep()`
+### CSS Range Input (LIÇÃO CRÍTICA)
+**NUNCA** usar `-webkit-appearance: none` sem definir dimensões do thumb.
+Sem width/height o thumb fica 0x0px = invisível e não-clicável.
+Ver `src/index.css` linhas 42-53.
 
-### Zustand Auto-recalc Pattern
-Cada setter chama `get().calcular()` apos `set()`:
-- `setParametros()` → recalcula
-- `setFerramenta()` → auto-populate + recalcula
-- `setMaterial()` → auto-populate + recalcula
-- Manual overrides: `setManualRPM()` / `setManualFeed()`
-
-### CSS Range Input Lesson
-**CRITICO:** Nunca use `-webkit-appearance: none` sem definir dimensoes do thumb.
-Sem width/height o thumb fica 0x0px = invisivel e nao-clicavel.
+### Zustand Auto-populate
+- `setFerramenta(diametro)` → auto-populate params
+- `setMaterial(id)` → auto-populate params
+- `setTipoOperacao(tipo)` → auto-populate params
+- Mas NENHUM deles chama `calcular()` — resultado permanece null
 
 ---
 
-## REGRAS PARA SESSOES CLAUDE
+## REGRAS PARA SESSÕES CLAUDE
 
-### Claude Code deve:
-1. **PRIMEIRA AÇÃO:** Ler `docs/PROXIMA_SESSAO.md` + `CLAUDE.md` para contexto completo
-2. Rodar testes apos cada mudanca em `src/`
+1. **PRIMEIRA AÇÃO:** Ler `docs/PROXIMA_SESSAO.md` para contexto completo
+2. Rodar testes após cada mudança em `src/`
 3. Conventional commits (`feat:`, `fix:`, `refactor:`, `docs:`, `perf:`)
-4. Commit apos cada fase concluída
+4. Commit após cada fase concluída + push
 5. Validar build antes de finalizar sessão
-6. Usar apenas terminal interno (Bash) — NAO usar Windows-MCP browser tools
+6. Usar apenas terminal interno (Bash) — NÃO usar Windows-MCP browser tools
 7. **AO FINAL:** Atualizar `docs/PROXIMA_SESSAO.md` com resumo e próximas tarefas
-
-### Padrão de Trabalho:
-- TDD: Escrever testes ANTES do código (usar `docs/technical/CASOS_TESTE_REFERENCIA.md`)
-- Tolerâncias: RPM ±1, Feed ±1 mm/min, Power ±0.01 kW, Torque ±0.01 Nm
-- Commits frequentes (1 commit por feature/fix)
-- Push para GitHub após cada sessão
+8. **TESTES:** usar `calcular()` explicitamente nos testes do store (não depender de auto-recalc)
 
 ---
 
 ## ROADMAP
 
-### Semana 1 (10h):
-- [x] Story-001: Limpeza tecnica + ADRs — CONCLUIDA
-- [~] Story-002: Deploy Cloudflare + dominio — Fase 1 OK, setup manual pendente
-- [x] Animações profissionais no botão Simular — CONCLUIDA
-- [ ] Story-003: CI/CD GitHub Actions (2h) — PRÓXIMA
+### Semana 1:
+- [x] Story-001: Limpeza técnica + ADRs
+- [~] Story-002: Deploy Cloudflare — Fase 1 OK, setup manual pendente
+- [x] Animações profissionais (0c2dd85, cd37310)
+- [x] Sliders bidirecionais (d6e5e48)
+- [x] Reset feedback ao alterar parâmetros (1a09e33)
+- [ ] **Story-003: CI/CD GitHub Actions ← PRÓXIMA**
 
 ### Semana 2-3:
 - [ ] Story-004: SEO Schema.org + meta tags
-- [ ] Story-005: Conteudo MestreCNC (templates artigos)
 - [ ] Polimento UI/UX
 - [ ] Testes em dispositivos reais
 
@@ -331,12 +234,3 @@ Sem width/height o thumb fica 0x0px = invisivel e nao-clicavel.
 ```
 Leia o arquivo docs/PROXIMA_SESSAO.md para entender o contexto completo do projeto e continue de onde paramos.
 ```
-
-Esse documento contém:
-- ✅ Histórico completo de todas as sessões
-- ✅ Estado atual do projeto (stack, testes, bundle, deploy)
-- ✅ Próximas tarefas priorizadas (Story-003 CI/CD é a próxima)
-- ✅ Detalhes técnicos importantes (animações, sliders, patterns)
-- ✅ Regras de trabalho e padrões de commits
-
-**Próxima prioridade:** Story-003 CI/CD GitHub Actions (2h estimado)
