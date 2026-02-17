@@ -14,7 +14,7 @@ export function useSimulationAnimation() {
   useEffect(() => {
     if (safetyLevel && safetyLevel !== prevSafetyRef.current) {
       setTriggerPulse(true);
-      const timer = setTimeout(() => setTriggerPulse(false), 1000);
+      const timer = setTimeout(() => setTriggerPulse(false), 1500); // 1000ms → 1500ms (+50%)
       prevSafetyRef.current = safetyLevel;
       return () => clearTimeout(timer);
     }
@@ -24,15 +24,15 @@ export function useSimulationAnimation() {
     setIsCalculating(true);
     setGaugeAnimating(true);
 
-    // Brief loading state (200ms)
-    await new Promise((resolve) => setTimeout(resolve, 200));
+    // Brief loading state (200ms → 300ms, +50%)
+    await new Promise((resolve) => setTimeout(resolve, 300));
 
     originalSimular();
 
     setIsCalculating(false);
 
-    // Gauge animation completes
-    setTimeout(() => setGaugeAnimating(false), 600);
+    // Gauge animation completes (600ms → 900ms, +50%)
+    setTimeout(() => setGaugeAnimating(false), 900);
   };
 
   return {

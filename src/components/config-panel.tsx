@@ -34,7 +34,7 @@ export function ConfigPanel() {
             className="flex-1 py-2 px-4 rounded-xl bg-gradient-to-r from-cyan-600 to-cyan-500 text-white font-bold tracking-wide shadow-neon-cyan hover:brightness-110 transition-all active:scale-[0.98] flex items-center justify-center gap-2 text-sm uppercase disabled:opacity-70 disabled:cursor-not-allowed">
             {isCalculating ? (
               <>
-                <span className="material-symbols-outlined text-lg animate-[spinner_0.6s_linear_infinite]">refresh</span>
+                <span className="material-symbols-outlined text-lg animate-[spinner_0.9s_linear_infinite]">refresh</span>
                 Calculando...
               </>
             ) : (

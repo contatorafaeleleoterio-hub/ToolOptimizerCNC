@@ -124,8 +124,8 @@ describe('ConfigPanel', () => {
   it('calculates on Simular click', async () => {
     renderPanel();
     fireEvent.click(screen.getByText('Simular'));
-    // Wait for animation to complete (200ms + a bit more)
-    await new Promise((resolve) => setTimeout(resolve, 300));
+    // Wait for animation to complete (300ms + a bit more)
+    await new Promise((resolve) => setTimeout(resolve, 400));
     expect(useMachiningStore.getState().resultado).not.toBeNull();
   });
 

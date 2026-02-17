@@ -38,9 +38,9 @@ export function ResultsPanel() {
   const powerPct = Math.min((potenciaMotor / limites.maxPotencia) * 100, 100);
 
   const pulseClass = triggerPulse && safetyLevel === 'verde'
-    ? 'animate-[subtlePulse_0.6s_ease-in-out]'
+    ? 'animate-[subtlePulse_0.9s_ease-in-out]' // 0.6s → 0.9s (+50%)
     : triggerPulse && (safetyLevel === 'vermelho' || safetyLevel === 'bloqueado')
-    ? 'animate-[subtlePulse_0.3s_ease-in-out_2]'
+    ? 'animate-[subtlePulse_0.45s_ease-in-out_2]' // 0.3s → 0.45s (+50%)
     : '';
 
   return (

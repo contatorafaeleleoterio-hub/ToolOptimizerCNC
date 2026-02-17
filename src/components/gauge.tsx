@@ -111,7 +111,7 @@ export function Gauge({ value, maxValue, label = 'Efficiency' }: GaugeProps) {
 
         {/* Center display */}
         <div className="absolute inset-0 flex items-center justify-center">
-          <div className={`transition-all duration-300 ${gaugeAnimating ? 'scale-110' : ''} ${isCritical ? 'animate-pulse' : ''}`}>
+          <div className={`transition-all duration-450 ${gaugeAnimating ? 'scale-110' : ''} ${isCritical ? 'animate-pulse' : ''}`}>
             <span className="text-4xl font-bold text-white font-mono">{Math.round(pct)}</span>
             <span className="text-lg text-gray-500">%</span>
           </div>
