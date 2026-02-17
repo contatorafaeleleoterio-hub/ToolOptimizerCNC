@@ -1,5 +1,6 @@
 import { useMachiningStore } from '@/store';
 import { MATERIAIS } from '@/data';
+import { BidirectionalSlider } from './bidirectional-slider';
 
 const SLIDER_CONFIG = [
   { key: 'vc' as const, label: 'Vc', fullLabel: 'CUTTING SPEED', unit: 'M/MIN', color: 'primary',
@@ -16,11 +17,11 @@ const SLIDER_CONFIG = [
     min: 0.05, max: 6, step: 0.05 },
 ] as const;
 
-const BTN_CLS = 'w-6 h-6 rounded bg-black/40 border border-white/10 text-gray-400 hover:text-white hover:bg-white/10 transition-all text-xs font-bold flex items-center justify-center';
-
 export function FineTunePanel() {
   const parametros = useMachiningStore((s) => s.parametros);
-  const setParametros = useMachiningStore((s) => s.setParametros);
+  const baseParams = useMachiningStore((s) => s.baseParams);
+  const manualOverrides = useMachiningStore((s) => s.manualOverrides);
+  const setParamPercent = useMachiningStore((s) => s.setParamPercent);
   const materialId = useMachiningStore((s) => s.materialId);
   const resultado = useMachiningStore((s) => s.resultado);
   const material = MATERIAIS.find((m) => m.id === materialId);
@@ -32,48 +33,38 @@ export function FineTunePanel() {
       </h2>
 
       <div className="flex-1 flex flex-col justify-between gap-3 px-1">
-        {SLIDER_CONFIG.map(({ key, label, fullLabel, unit, color, rgb, min, max, step }) => {
+        {SLIDER_CONFIG.map(({ key, label, fullLabel, unit, color, rgb }) => {
           const val = parametros[key];
-          const pct = ((val - min) / (max - min)) * 100;
+          const baseVal = baseParams[key];
+          const percentKey = `${key}Percent` as keyof typeof manualOverrides;
+          const currentPercent = (manualOverrides[percentKey] as number) ?? 0;
           const display = key === 'fz' || key === 'ap' ? val.toFixed(2) : key === 'ae' ? val.toFixed(1) : val.toFixed(0);
 
           return (
             <div key={key} className="flex flex-col gap-1 group relative">
-              <div className="flex justify-between items-end">
+              <div className="flex justify-between items-end mb-1">
                 <div className="flex items-baseline gap-2">
                   <span className={`text-xs font-bold font-mono text-${color}`}>{label}</span>
                   <span className="text-[9px] font-bold tracking-wider text-gray-500 uppercase">{fullLabel}</span>
                 </div>
                 <div className="text-right">
-                  <input type="number" value={display} step={step} min={min} max={max}
-                    onChange={(e) => {
-                      const n = Number(e.target.value);
-                      if (!isNaN(n) && n >= min && n <= max) setParametros({ [key]: n });
-                    }}
-                    className={`w-16 bg-transparent border-none text-right font-mono text-lg font-bold text-${color} outline-none [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none`}
-                    style={{ filter: `drop-shadow(0 0 8px rgba(${rgb},0.4))` }}
-                    aria-label={`${label} value`} />
+                  <span className={`font-mono text-lg font-bold text-${color}`}
+                    style={{ filter: `drop-shadow(0 0 8px rgba(${rgb},0.4))` }}>
+                    {display}
+                  </span>
                   <div className="text-[8px] text-gray-500 font-mono tracking-wider">{unit}</div>
                 </div>
               </div>
 
-              <div className="flex items-center gap-1.5">
-                <button className={BTN_CLS} aria-label={`Decrease ${label}`}
-                  onClick={() => setParametros({ [key]: Math.max(min, +(val - step).toFixed(4)) })}>−</button>
-                <div className="relative h-6 flex-1 flex items-center">
-                  <input type="range" min={min} max={max} step={step} value={val}
-                    onChange={(e) => setParametros({ [key]: Number(e.target.value) })}
-                    className="w-full h-1.5 rounded-full appearance-none cursor-pointer"
-                    style={{
-                      background: `linear-gradient(to right, rgba(${rgb},1) 0%, rgba(${rgb},1) ${pct}%, rgba(0,0,0,0.4) ${pct}%, rgba(0,0,0,0.4) 100%)`,
-                      '--thumb-color': `rgba(${rgb},1)`,
-                      '--thumb-glow': `0 0 15px rgba(${rgb},0.8)`,
-                    } as React.CSSProperties}
-                    aria-label={`${label} slider`} />
-                </div>
-                <button className={BTN_CLS} aria-label={`Increase ${label}`}
-                  onClick={() => setParametros({ [key]: Math.min(max, +(val + step).toFixed(4)) })}>+</button>
-              </div>
+              <BidirectionalSlider
+                baseValue={baseVal}
+                currentPercent={currentPercent}
+                onChange={(percent) => setParamPercent(key, percent)}
+                color={color}
+                rgb={rgb}
+                label={label}
+                unit={unit}
+              />
 
               <div className={`absolute bottom-0 left-0 w-full h-[1px] bg-${color}/30 scale-x-0 group-hover:scale-x-100 transition-transform duration-500 origin-left overflow-clip`} />
             </div>

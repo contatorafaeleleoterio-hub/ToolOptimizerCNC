@@ -1,11 +1,74 @@
-# PROXIMA SESSAO: Pronto para CI/CD e Deploy
+# PROXIMA SESSAO: Sliders Bidirecionais Implementados
 
-**Data atualizacao:** 17/02/2026 - 04:10
-**Status:** Animações profissionais implementadas, 325 testes passando — pronto para CI/CD (Story-003) e Cloudflare setup
+**Data atualizacao:** 17/02/2026 - 20:45
+**Status:** Sliders bidirecionais implementados, 333 testes passando — pronto para CI/CD (Story-003) e Cloudflare setup
 
 ---
 
-## O QUE FOI FEITO (sessao 17/02/2026 - TARDE)
+## O QUE FOI FEITO (sessao 17/02/2026 - NOITE)
+
+### 🎯 Sliders Bidirecionais — CONCLUÍDO
+Implementação completa de controle manual bidirecional (-150% a +150%) para 6 parâmetros:
+
+1. **RPM (Results Panel)**
+   - Range: -150% a +150%
+   - Centro (0%) = valor calculado
+   - Cor: RGB(0, 217, 255) — cyan
+   - Override manual persistente até mudança de parâmetros
+
+2. **Feed Rate (Results Panel)**
+   - Range: -150% a +150%
+   - Centro (0%) = valor calculado
+   - Cor: RGB(57, 255, 20) — green
+   - Override manual persistente até mudança de parâmetros
+
+3. **Vc - Cutting Speed (Fine Tune Panel)**
+   - Range: -150% a +150%
+   - Centro (0%) = valor recomendado
+   - Cor: RGB(0, 217, 255) — cyan
+
+4. **fz - Feed per Tooth (Fine Tune Panel)**
+   - Range: -150% a +150%
+   - Centro (0%) = valor recomendado
+   - Cor: RGB(57, 255, 20) — green
+
+5. **ae - Radial Engagement (Fine Tune Panel)**
+   - Range: -150% a +150%
+   - Centro (0%) = valor recomendado
+   - Cor: RGB(168, 85, 247) — purple
+
+6. **ap - Axial Depth (Fine Tune Panel)**
+   - Range: -150% a +150%
+   - Centro (0%) = valor recomendado
+   - Cor: RGB(249, 115, 22) — orange
+
+### Componente BidirectionalSlider
+**Arquivo:** `src/components/bidirectional-slider.tsx`
+
+Novo componente reutilizável com:
+- Interface unificada para todos os sliders
+- Marca central (0%) destacada
+- Labels min/max dinâmicos
+- RGB personalizado por parâmetro
+- Glow effect no thumb
+- Tooltip com valor atual
+
+### Testes
+- ✅ **333 testes passando** (24 arquivos)
+- Novo: `tests/components/bidirectional-slider.test.tsx`
+- Atualizados: results-panel, fine-tune-panel
+
+### Commits (pendentes):
+```bash
+# A fazer:
+git add .
+git commit -m "feat: add bidirectional sliders for manual parameter control"
+git push origin main
+```
+
+---
+
+## SESSÕES ANTERIORES (17/02/2026 - TARDE)
 
 ### ✨ Sistema de Animações Profissionais — CONCLUÍDO
 1. **Botão "Simular" com feedback visual:**
@@ -29,7 +92,7 @@
    - Timeouts com cleanup adequado
    - Keyframes: `spinner`, `fadeInUp`, `subtlePulse`, `gaugeRoll`
 
-### Commits desta sessao:
+### Commits das animações:
 - `0c2dd85` feat: add professional feedback animations on simulate button
 - `cd37310` perf: increase animation durations by 50% for smoother UX
 
@@ -52,10 +115,10 @@
 - localStorage, sem backend
 
 ### Estado Atual:
-- **Branch:** main (up to date com origin)
-- **Ultimo commit:** `cd37310` perf: increase animation durations by 50% for smoother UX
-- **Testes:** 325 passing (23 arquivos)
-- **Bundle:** ~96KB gzip (JS 85KB + CSS 11KB)
+- **Branch:** main (local ahead - sliders bidirecionais implementados)
+- **Ultimo commit:** `cd37310` perf: increase animation durations by 50% for smoother UX (próximo: bidirectional sliders)
+- **Testes:** 333 passing (24 arquivos)
+- **Bundle:** ~96KB gzip (JS 85KB + CSS 11KB) — sem mudança significativa
 - **GitHub:** https://github.com/contatorafaeleleoterio-hub/ToolOptimizerCNC
 - **Deploy:** GitHub Pages ativo
 - **Rotas:** `/` (desktop), `/mobile` (auto-detect), `/settings`, `/history`
@@ -72,17 +135,18 @@ src/
   store/                     — machining-store (Zustand), history-store
   hooks/
     use-is-mobile.ts         — Mobile detection hook
-    use-simulation-animation.ts — Animation state management (NOVO)
+    use-simulation-animation.ts — Animation state management
   components/
+    bidirectional-slider.tsx — Slider bidirecional reutilizável (NOVO)
     config-panel.tsx         — Material, ferramenta, parametros (col 1) + botão Simular animado
-    results-panel.tsx        — RPM, Feed, Power, formulas, gauge (col 2) + pulse feedback
-    fine-tune-panel.tsx      — Sliders Vc/fz/ae/ap + MRR (col 3)
+    results-panel.tsx        — RPM, Feed, Power, formulas, gauge (col 2) + sliders RPM/Feed
+    fine-tune-panel.tsx      — Sliders Vc/fz/ae/ap + MRR (col 3) + sliders bidirecionais
     gauge.tsx                — SVG gauge 40 segments + animação scale
     formula-card.tsx         — Expandable formula explanation cards
     shared-result-parts.tsx  — MetricCell, BigNumber, ProgressCard, etc
     mobile/                  — mobile-fine-tune-section, mobile-config, etc
   pages/                     — settings-page, history-page, mobile-page
-tests/                       — 23 test files (325 tests)
+tests/                       — 24 test files (333 tests)
 ```
 
 ---
@@ -128,7 +192,39 @@ Validacao (Claude na proxima sessao):
 
 ## DETALHES TECNICOS IMPORTANTES
 
-### Sistema de Animações (NOVO)
+### BidirectionalSlider Component (NOVO)
+**Arquivo:** `src/components/bidirectional-slider.tsx`
+
+**Props:**
+```tsx
+interface BidirectionalSliderProps {
+  label: string;          // "RPM", "Avanço", "Vc", etc
+  value: number;          // Valor atual
+  baseValue: number;      // Valor central (0%)
+  unit: string;           // "rpm", "mm/min", "m/min", "mm"
+  rgb: string;            // "0,217,255" para cyan
+  onChange: (percent: number) => void; // Callback com percentual -150 a +150
+}
+```
+
+**Ranges:**
+- Min: -150% (baseValue × 0.5)
+- Center: 0% (baseValue)
+- Max: +150% (baseValue × 2.5)
+
+**Visual:**
+- Marca central (0%) destacada visualmente
+- Labels min/max nos extremos
+- Glow effect com cor RGB personalizada
+- Tooltip com valor atual + unidade
+
+**Cores por parâmetro:**
+- RPM / Vc: cyan `rgb(0, 217, 255)`
+- Feed / fz: green `rgb(57, 255, 20)`
+- ae: purple `rgb(168, 85, 247)`
+- ap: orange `rgb(249, 115, 22)`
+
+### Sistema de Animações
 **Hook:** `src/hooks/use-simulation-animation.ts`
 
 **Timings:**

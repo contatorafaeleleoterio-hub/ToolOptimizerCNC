@@ -25,8 +25,11 @@ export function ResultsPanel() {
   const parametros = useMachiningStore((s) => s.parametros);
   const ferramenta = useMachiningStore((s) => s.ferramenta);
   const safetyFactor = useMachiningStore((s) => s.safetyFactor);
-  const setManualRPM = useMachiningStore((s) => s.setManualRPM);
-  const setManualFeed = useMachiningStore((s) => s.setManualFeed);
+  const baseRPM = useMachiningStore((s) => s.baseRPM);
+  const baseFeed = useMachiningStore((s) => s.baseFeed);
+  const manualOverrides = useMachiningStore((s) => s.manualOverrides);
+  const setManualRPMPercent = useMachiningStore((s) => s.setManualRPMPercent);
+  const setManualFeedPercent = useMachiningStore((s) => s.setManualFeedPercent);
 
   const { triggerPulse, safetyLevel } = useSimulationAnimation();
 
@@ -71,16 +74,22 @@ export function ResultsPanel() {
         </div>
       </div>
 
-      {/* Big numbers: RPM + Feed (editable) */}
+      {/* Big numbers: RPM + Feed (bidirectional sliders) */}
       <div className="grid grid-cols-2 gap-3">
         <BigNumber label="Spindle Speed" value={fmt(rpm)} unit="RPM" pct={rpmPct}
           color="primary" glow="rgba(0,217,255,0.4)" barGlow="rgba(0,217,255,1)" icon="speed"
-          isEditable currentValue={Math.round(rpm)}
-          onValueChange={(v) => setManualRPM(v)} min={100} max={limites.maxRPM} step={10} />
+          useBidirectionalSlider
+          baseValue={baseRPM}
+          currentPercent={manualOverrides.rpmPercent ?? 0}
+          onPercentChange={setManualRPMPercent}
+          rgb="0,217,255" />
         <BigNumber label="Feed Rate" value={fmt(avanco)} unit="mm/min" pct={feedPct}
           color="secondary" glow="rgba(57,255,20,0.4)" barGlow="rgba(57,255,20,1)" icon="moving"
-          isEditable currentValue={Math.round(avanco)}
-          onValueChange={(v) => setManualFeed(v)} min={10} max={limites.maxAvanco} step={10} />
+          useBidirectionalSlider
+          baseValue={baseFeed}
+          currentPercent={manualOverrides.feedPercent ?? 0}
+          onPercentChange={setManualFeedPercent}
+          rgb="57,255,20" />
       </div>
 
       {/* Gauge */}

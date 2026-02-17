@@ -37,7 +37,9 @@
       "Bash(set:*)",
       "Bash(cmd /c \"set VITE_BASE_URL=/ && node -e \"\"console.log\\(process.env.VITE_BASE_URL\\)\"\"\")",
       "Bash(VITE_BASE_URL=/ npm run build:*)",
-      "Bash(start:*)"
+      "Bash(start:*)",
+      "Bash(pkill:*)",
+      "Bash(taskkill:*)"
     ]
   }
 }

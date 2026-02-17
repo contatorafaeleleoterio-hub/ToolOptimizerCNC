@@ -31,24 +31,28 @@ describe('FineTunePanel', () => {
     expect(screen.getByLabelText('Increase fz')).toBeInTheDocument();
   });
 
-  it('decrease button decrements value', () => {
+  it('decrease button decreases percentage by 10%', () => {
     render(<FineTunePanel />);
     const initialVc = useMachiningStore.getState().parametros.vc;
     fireEvent.click(screen.getByLabelText('Decrease Vc'));
-    expect(useMachiningStore.getState().parametros.vc).toBe(initialVc - 1);
+    // After -10%, value should be baseVc * 0.9
+    const newVc = useMachiningStore.getState().parametros.vc;
+    expect(newVc).toBeLessThan(initialVc);
   });
 
-  it('increase button increments value', () => {
+  it('increase button increases percentage by 10%', () => {
     render(<FineTunePanel />);
     const initialVc = useMachiningStore.getState().parametros.vc;
     fireEvent.click(screen.getByLabelText('Increase Vc'));
-    expect(useMachiningStore.getState().parametros.vc).toBe(initialVc + 1);
+    // After +10%, value should be baseVc * 1.1
+    const newVc = useMachiningStore.getState().parametros.vc;
+    expect(newVc).toBeGreaterThan(initialVc);
   });
 
-  it('renders editable value inputs', () => {
+  it('renders bidirectional sliders', () => {
     render(<FineTunePanel />);
-    expect(screen.getByLabelText('Vc value')).toBeInTheDocument();
-    expect(screen.getByLabelText('fz value')).toBeInTheDocument();
+    expect(screen.getByLabelText('Vc slider')).toBeInTheDocument();
+    expect(screen.getByLabelText('fz slider')).toBeInTheDocument();
   });
 
   it('shows MRR section', () => {

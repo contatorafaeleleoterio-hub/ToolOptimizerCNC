@@ -33,6 +33,12 @@ const DEFAULT_PARAMETROS: ParametrosUsinagem = { ap: 2, ae: 5, fz: 0.1, vc: 100 
 interface ManualOverrides {
   rpm?: number;
   feed?: number;
+  rpmPercent?: number; // -150 to +150
+  feedPercent?: number; // -150 to +150
+  vcPercent?: number; // -150 to +150
+  fzPercent?: number; // -150 to +150
+  aePercent?: number; // -150 to +150
+  apPercent?: number; // -150 to +150
 }
 
 interface MachiningState {
@@ -44,6 +50,9 @@ interface MachiningState {
   resultado: ResultadoUsinagem | null;
   safetyFactor: number;
   manualOverrides: ManualOverrides;
+  baseRPM: number; // Calculated RPM before adjustments
+  baseFeed: number; // Calculated feed before adjustments
+  baseParams: ParametrosUsinagem; // Recommended params before adjustments
   preferences: Preferences;
   safetyRules: SafetyRules;
   customMaterials: CustomMaterial[];
@@ -59,6 +68,9 @@ interface MachiningActions {
   setSafetyFactor: (f: number) => void;
   setManualRPM: (rpm: number) => void;
   setManualFeed: (feed: number) => void;
+  setManualRPMPercent: (percent: number) => void;
+  setManualFeedPercent: (percent: number) => void;
+  setParamPercent: (key: keyof ParametrosUsinagem, percent: number) => void;
   clearManualOverrides: () => void;
   setPreferences: (p: Partial<Preferences>) => void;
   setSafetyRules: (r: Partial<SafetyRules>) => void;
@@ -83,6 +95,9 @@ const INITIAL_STATE: MachiningState = {
   resultado: null,
   safetyFactor: 0.8,
   manualOverrides: {},
+  baseRPM: 0,
+  baseFeed: 0,
+  baseParams: DEFAULT_PARAMETROS,
   preferences: PREFERENCES_PADRAO,
   safetyRules: SAFETY_RULES_PADRAO,
   customMaterials: [],
@@ -112,7 +127,7 @@ export const useMachiningStore = create<MachiningState & MachiningActions>()(
         setMaterial: (id) => {
           const { tipoOperacao, ferramenta, customMaterials } = get();
           const recommended = autoPopulateParams(id, tipoOperacao, ferramenta.diametro, customMaterials);
-          set({ materialId: id, manualOverrides: {}, ...(recommended && { parametros: recommended }) });
+          set({ materialId: id, manualOverrides: {}, ...(recommended && { parametros: recommended, baseParams: recommended }) });
           get().calcular();
         },
 
@@ -122,7 +137,10 @@ export const useMachiningStore = create<MachiningState & MachiningActions>()(
             const updates: Partial<MachiningState> = { ferramenta: newFerramenta, manualOverrides: {} };
             if (f.diametro !== undefined && f.diametro !== state.ferramenta.diametro) {
               const recommended = autoPopulateParams(state.materialId, state.tipoOperacao, f.diametro, state.customMaterials);
-              if (recommended) updates.parametros = recommended;
+              if (recommended) {
+                updates.parametros = recommended;
+                updates.baseParams = recommended;
+              }
             }
             return updates;
           });
@@ -132,7 +150,7 @@ export const useMachiningStore = create<MachiningState & MachiningActions>()(
         setTipoOperacao: (tipo) => {
           const { materialId, ferramenta, customMaterials } = get();
           const recommended = autoPopulateParams(materialId, tipo, ferramenta.diametro, customMaterials);
-          set({ tipoOperacao: tipo, manualOverrides: {}, ...(recommended && { parametros: recommended }) });
+          set({ tipoOperacao: tipo, manualOverrides: {}, ...(recommended && { parametros: recommended, baseParams: recommended }) });
           get().calcular();
         },
 
@@ -158,6 +176,34 @@ export const useMachiningStore = create<MachiningState & MachiningActions>()(
 
         setManualFeed: (feed) => {
           set({ manualOverrides: { ...get().manualOverrides, feed } });
+          get().calcular();
+        },
+
+        setManualRPMPercent: (percent) => {
+          const { baseRPM } = get();
+          if (baseRPM === 0) return;
+          const newRPM = Math.round(baseRPM * (1 + percent / 100));
+          set({ manualOverrides: { ...get().manualOverrides, rpm: newRPM, rpmPercent: percent } });
+          get().calcular();
+        },
+
+        setManualFeedPercent: (percent) => {
+          const { baseFeed } = get();
+          if (baseFeed === 0) return;
+          const newFeed = Math.round(baseFeed * (1 + percent / 100));
+          set({ manualOverrides: { ...get().manualOverrides, feed: newFeed, feedPercent: percent } });
+          get().calcular();
+        },
+
+        setParamPercent: (key, percent) => {
+          const { baseParams } = get();
+          const baseValue = baseParams[key];
+          const newValue = baseValue * (1 + percent / 100);
+          const percentKey = `${key}Percent` as keyof ManualOverrides;
+          set((state) => ({
+            parametros: { ...state.parametros, [key]: newValue },
+            manualOverrides: { ...state.manualOverrides, [percentKey]: percent },
+          }));
           get().calcular();
         },
 
@@ -256,12 +302,31 @@ export const useMachiningStore = create<MachiningState & MachiningActions>()(
           try { validateInputs({ d: D, ap, ae, fz, vc, z: Z }); }
           catch { set({ resultado: null }); return; }
 
-          let rpm = calculateRPM(vc, D);
-          if (manualOverrides.rpm !== undefined) rpm = manualOverrides.rpm;
-
+          // Calculate base values
+          const baseRPM = calculateRPM(vc, D);
           const chipResult = calculateEffectiveFz(fz, ae, D);
-          let avanco = calculateFeedRate(chipResult.fzEfetivo, Z, rpm);
-          if (manualOverrides.feed !== undefined) avanco = manualOverrides.feed;
+          const baseFeed = calculateFeedRate(chipResult.fzEfetivo, Z, baseRPM);
+
+          // Apply manual overrides or use base values
+          let rpm = baseRPM;
+          let avanco = baseFeed;
+
+          // Apply RPM override
+          if (manualOverrides.rpm !== undefined) {
+            rpm = manualOverrides.rpm;
+            // If RPM is overridden but feed is NOT, recalculate feed with manual RPM
+            if (manualOverrides.feed === undefined) {
+              avanco = calculateFeedRate(chipResult.fzEfetivo, Z, rpm);
+            }
+          }
+
+          // Apply feed override (takes priority over recalculated feed)
+          if (manualOverrides.feed !== undefined) {
+            avanco = manualOverrides.feed;
+          }
+
+          // Store base values for bidirectional slider
+          set({ baseRPM, baseFeed });
 
           const mrr = calculateMRR(ap, ae, avanco);
           const kc = material.kc1_1;

@@ -1,5 +1,6 @@
 /** Shared sub-components used by both desktop ResultsPanel and MobilePage */
 import type { StatusSeguranca } from '@/types';
+import { BidirectionalSlider } from './bidirectional-slider';
 
 export function fmt(n: number): string { return Math.round(n).toLocaleString('en-US'); }
 
@@ -21,8 +22,6 @@ export const SEG_BG: Record<StatusSeguranca['nivel'], string> = {
   bloqueado: 'bg-gray-500/10 border-gray-500/30',
 };
 
-const EDIT_BTN = 'w-8 h-8 rounded-lg bg-black/40 border border-white/10 text-gray-400 hover:text-white hover:bg-white/10 transition-all text-sm font-bold flex items-center justify-center';
-
 export function MetricCell({ label, value, unit, unitColor }: {
   label: string; value: string; unit: string; unitColor: string;
 }) {
@@ -42,12 +41,18 @@ export interface BigNumberProps {
   color: string; glow: string; barGlow: string; icon: string;
   isEditable?: boolean; currentValue?: number;
   onValueChange?: (v: number) => void; min?: number; max?: number; step?: number;
+  // Bidirectional slider props
+  useBidirectionalSlider?: boolean;
+  baseValue?: number; // Calculated value (center = 0%)
+  currentPercent?: number; // Current adjustment percentage (-150 to +150)
+  onPercentChange?: (percent: number) => void;
+  rgb?: string; // RGB values for slider color
 }
 
 export function BigNumber({ label, value, unit, pct, color, glow, barGlow, icon,
-  isEditable, currentValue, onValueChange, min = 0, max = 99999, step = 10 }: BigNumberProps) {
+  useBidirectionalSlider, baseValue, currentPercent = 0, onPercentChange, rgb }: BigNumberProps) {
   return (
-    <div className="relative bg-surface-dark backdrop-blur-xl border border-white/5 rounded-2xl p-6 shadow-glass flex flex-col justify-center items-center group overflow-hidden">
+    <div className="relative bg-surface-dark backdrop-blur-xl border border-white/5 rounded-2xl p-6 shadow-glass flex flex-col justify-center group overflow-hidden">
       <div className={`absolute inset-0 bg-gradient-to-br from-${color}/5 to-transparent opacity-50 group-hover:opacity-100 transition-opacity duration-700`} />
       <div className="absolute top-4 right-4 opacity-30 group-hover:opacity-100 transition-opacity duration-500">
         <span className={`material-symbols-outlined text-3xl text-${color}`}>{icon}</span>
@@ -55,34 +60,35 @@ export function BigNumber({ label, value, unit, pct, color, glow, barGlow, icon,
       <h3 className={`text-xs uppercase tracking-[0.25em] text-${color} font-bold mb-2 relative z-10`}
         style={{ filter: `drop-shadow(0 0 8px ${glow})` }}>{label}</h3>
 
+      {/* Big number display */}
       <div className="flex items-center gap-2 z-10 relative mb-2">
-        {isEditable && onValueChange && (
-          <button className={EDIT_BTN} aria-label={`Decrease ${label}`}
-            onClick={() => onValueChange(Math.max(min, (currentValue ?? 0) - step))}>−</button>
-        )}
-        {isEditable && onValueChange ? (
-          <input type="number" value={currentValue ?? 0}
-            onChange={(e) => { const v = Number(e.target.value); if (!isNaN(v)) onValueChange(Math.max(min, Math.min(max, v))); }}
-            className="w-32 bg-transparent text-center text-5xl font-mono font-bold text-white tracking-tighter outline-none [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
-            style={{ filter: `drop-shadow(0 0 20px ${glow})` }}
-            aria-label={`Edit ${label}`} />
-        ) : (
-          <span className="text-5xl font-mono font-bold text-white tracking-tighter"
-            style={{ filter: `drop-shadow(0 0 20px ${glow})` }}>{value}</span>
-        )}
-        {isEditable && onValueChange && (
-          <button className={EDIT_BTN} aria-label={`Increase ${label}`}
-            onClick={() => onValueChange(Math.min(max, (currentValue ?? 0) + step))}>+</button>
-        )}
+        <span className="text-5xl font-mono font-bold text-white tracking-tighter"
+          style={{ filter: `drop-shadow(0 0 20px ${glow})` }}>{value}</span>
       </div>
 
       <span className="text-lg text-gray-400 font-medium font-mono uppercase tracking-widest z-10">{unit}</span>
-      <div className="mt-4 w-full max-w-sm bg-black/40 h-1.5 rounded-full overflow-hidden relative z-10">
-        <div className={`h-full bg-${color} rounded-full relative`}
-          style={{ width: `${pct}%`, boxShadow: `0 0 15px ${barGlow}` }}>
-          <div className="absolute right-0 top-1/2 -translate-y-1/2 w-1.5 h-3 bg-white rounded-full shadow-[0_0_5px_white]" />
+
+      {/* Bidirectional slider OR simple progress bar */}
+      {useBidirectionalSlider && onPercentChange && baseValue !== undefined && rgb ? (
+        <div className="mt-4 w-full z-10">
+          <BidirectionalSlider
+            baseValue={baseValue}
+            currentPercent={currentPercent}
+            onChange={onPercentChange}
+            color={color}
+            rgb={rgb}
+            label={label}
+            unit={unit}
+          />
         </div>
-      </div>
+      ) : (
+        <div className="mt-4 w-full max-w-sm bg-black/40 h-1.5 rounded-full overflow-hidden relative z-10">
+          <div className={`h-full bg-${color} rounded-full relative`}
+            style={{ width: `${pct}%`, boxShadow: `0 0 15px ${barGlow}` }}>
+            <div className="absolute right-0 top-1/2 -translate-y-1/2 w-1.5 h-3 bg-white rounded-full shadow-[0_0_5px_white]" />
+          </div>
+        </div>
+      )}
     </div>
   );
 }

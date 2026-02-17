@@ -48,7 +48,7 @@ describe('ResultsPanel', () => {
   it('shows big numbers section', () => {
     setupSafeCalc();
     renderPanel();
-    expect(screen.getByText('Spindle Speed')).toBeInTheDocument();
+    expect(screen.getAllByText('Spindle Speed').length).toBeGreaterThan(0);
     expect(screen.getAllByText('Feed Rate').length).toBeGreaterThanOrEqual(2);
   });
 
@@ -82,16 +82,16 @@ describe('ResultsPanel', () => {
     expect(screen.getByText('BLOQUEADO')).toBeInTheDocument();
   });
 
-  it('renders editable RPM input', () => {
+  it('renders bidirectional slider for RPM', () => {
     setupSafeCalc();
     renderPanel();
-    expect(screen.getByLabelText('Edit Spindle Speed')).toBeInTheDocument();
+    expect(screen.getByLabelText('Spindle Speed slider')).toBeInTheDocument();
   });
 
-  it('renders editable Feed input', () => {
+  it('renders bidirectional slider for Feed', () => {
     setupSafeCalc();
     renderPanel();
-    expect(screen.getByLabelText('Edit Feed Rate')).toBeInTheDocument();
+    expect(screen.getByLabelText('Feed Rate slider')).toBeInTheDocument();
   });
 
   it('renders +/- buttons for RPM', () => {
