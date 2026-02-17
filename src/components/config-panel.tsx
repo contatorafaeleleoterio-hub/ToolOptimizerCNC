@@ -22,11 +22,11 @@ export function ConfigPanel() {
   const vcRange = material?.vcRanges[tipoOperacao];
 
   return (
-    <div className="flex flex-col gap-6">
-      <div className="bg-surface-dark backdrop-blur-xl border border-white/5 rounded-2xl p-5 shadow-glass flex flex-col gap-5">
+    <div className="flex flex-col gap-3">
+      <div className="bg-surface-dark backdrop-blur-xl border border-white/5 rounded-2xl p-4 shadow-glass flex flex-col gap-3">
         <div className="flex gap-3">
           <button onClick={simular}
-            className="flex-1 py-3 px-4 rounded-xl bg-gradient-to-r from-cyan-600 to-cyan-500 text-white font-bold tracking-wide shadow-neon-cyan hover:brightness-110 transition-all active:scale-[0.98] flex items-center justify-center gap-2 text-sm uppercase">
+            className="flex-1 py-2 px-4 rounded-xl bg-gradient-to-r from-cyan-600 to-cyan-500 text-white font-bold tracking-wide shadow-neon-cyan hover:brightness-110 transition-all active:scale-[0.98] flex items-center justify-center gap-2 text-sm uppercase">
             <span className="material-symbols-outlined text-lg">play_arrow</span>
             Simular
           </button>
@@ -37,9 +37,9 @@ export function ConfigPanel() {
         </div>
 
         {/* Material + operation */}
-        <div className="bg-card-dark rounded-xl p-4 border border-white/5 shadow-inner-glow">
+        <div className="bg-card-dark rounded-xl p-3 border border-white/5 shadow-inner-glow">
           <SectionTitle color="bg-primary" label="Configuração Base" />
-          <div className="space-y-4">
+          <div className="space-y-3">
             <FieldGroup label="Material da Peça">
               <select value={materialId} onChange={(e) => setMaterial(Number(e.target.value))}
                 className="w-full bg-black/40 border border-white/10 rounded-lg py-3 pl-3 pr-10 text-sm text-gray-200 focus:ring-1 focus:ring-primary focus:border-primary outline-none appearance-none transition-all hover:border-white/20 select-chevron">
@@ -62,7 +62,7 @@ export function ConfigPanel() {
                 {Object.values(TipoUsinagem).map((t) => (
                   <label key={t} className="cursor-pointer group">
                     <input type="radio" name="tipo_usinagem" className="peer sr-only" checked={tipoOperacao === t} onChange={() => setTipoOperacao(t)} />
-                    <div className="py-2.5 px-1 rounded-lg bg-black/40 border border-white/5 text-gray-400 peer-checked:bg-primary/10 peer-checked:border-primary peer-checked:text-primary transition-all text-center text-[11px] font-medium hover:bg-white/5">
+                    <div className="py-2 px-1 rounded-lg bg-black/40 border border-white/5 text-gray-400 peer-checked:bg-primary/10 peer-checked:border-primary peer-checked:text-primary transition-all text-center text-[11px] font-medium hover:bg-white/5">
                       {OPERACAO_LABELS[t]}
                     </div>
                   </label>
@@ -73,9 +73,9 @@ export function ConfigPanel() {
         </div>
 
         {/* Tool section — Flow: Tipo → Diâmetro → Raio (toroidal) → Arestas → Altura */}
-        <div className="bg-card-dark rounded-xl p-4 border border-white/5 shadow-inner-glow">
+        <div className="bg-card-dark rounded-xl p-3 border border-white/5 shadow-inner-glow">
           <SectionTitle color="bg-secondary" label="Ferramenta" />
-          <div className="space-y-4">
+          <div className="space-y-3">
             {/* 1. Tool type */}
             <FieldGroup label="Tipo">
               <div className="grid grid-cols-3 gap-2">
@@ -106,7 +106,7 @@ export function ConfigPanel() {
                 <div className="grid grid-cols-2 gap-2">
                   {RAIOS_PADRAO.map((raio) => (
                     <button key={raio} onClick={() => setFerramenta({ raioQuina: raio })}
-                      className={`py-2.5 rounded-lg border text-xs font-mono transition-colors ${(ferramenta.raioQuina ?? 1.0) === raio
+                      className={`py-2 rounded-lg border text-xs font-mono transition-colors ${(ferramenta.raioQuina ?? 1.0) === raio
                         ? 'bg-primary text-black font-bold border-primary shadow-neon-cyan'
                         : 'bg-black/40 text-gray-400 hover:text-white hover:bg-white/5 border-white/10'}`}>
                       R{raio}
@@ -121,7 +121,7 @@ export function ConfigPanel() {
               <div className="grid grid-cols-2 gap-2">
                 {ARESTAS_OPTIONS.map((z) => (
                   <button key={z} onClick={() => setFerramenta({ numeroArestas: z })}
-                    className={`py-2.5 rounded-lg border text-xs font-mono transition-colors ${ferramenta.numeroArestas === z
+                    className={`py-2 rounded-lg border text-xs font-mono transition-colors ${ferramenta.numeroArestas === z
                       ? 'bg-primary text-black font-bold border-primary shadow-neon-cyan'
                       : 'bg-black/40 text-gray-400 hover:text-white hover:bg-white/5 border-white/10'}`}>
                     {z} Arestas
@@ -146,7 +146,7 @@ export function ConfigPanel() {
         </div>
 
         {/* Cutting parameters */}
-        <div className="bg-card-dark rounded-xl p-4 border border-white/5 shadow-inner-glow">
+        <div className="bg-card-dark rounded-xl p-3 border border-white/5 shadow-inner-glow">
           <SectionTitle color="bg-accent-orange" label="Parâmetros de Corte" />
           <div className="grid grid-cols-2 gap-3">
             <NumInput label="ap (mm)" value={parametros.ap} onChange={(v) => setParametros({ ap: v })} min={0.1} max={50} step={0.1} />
@@ -157,7 +157,7 @@ export function ConfigPanel() {
         </div>
 
         {/* Safety factor slider */}
-        <div className="bg-card-dark rounded-xl p-4 border border-white/5 shadow-inner-glow">
+        <div className="bg-card-dark rounded-xl p-3 border border-white/5 shadow-inner-glow">
           <SectionTitle color="bg-seg-verde" label="Fator de Segurança" />
           <div className="flex items-center gap-4">
             <input type="range" min={0.5} max={1} step={0.05} value={safetyFactor}

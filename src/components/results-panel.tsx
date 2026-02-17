@@ -35,7 +35,7 @@ export function ResultsPanel() {
   const powerPct = Math.min((potenciaMotor / limites.maxPotencia) * 100, 100);
 
   return (
-    <div className="flex flex-col gap-6">
+    <div className="flex flex-col gap-3">
       <ToolSummaryViewer />
       <SafetyBadge nivel={seguranca.nivel} avisosCount={seguranca.avisos.length} />
 
@@ -61,7 +61,7 @@ export function ResultsPanel() {
       </div>
 
       {/* Big numbers: RPM + Feed (editable) */}
-      <div className="grid grid-cols-2 gap-4">
+      <div className="grid grid-cols-2 gap-3">
         <BigNumber label="Spindle Speed" value={fmt(rpm)} unit="RPM" pct={rpmPct}
           color="primary" glow="rgba(0,217,255,0.4)" barGlow="rgba(0,217,255,1)" icon="speed"
           isEditable currentValue={Math.round(rpm)}
@@ -76,7 +76,7 @@ export function ResultsPanel() {
       <Gauge value={avanco} maxValue={limites.maxAvanco} label="Feed Efficiency" />
 
       {/* Progress bars */}
-      <div className="grid grid-cols-3 gap-4">
+      <div className="grid grid-cols-3 gap-3">
         <ProgressCard label="Power Est." value={potenciaMotor.toFixed(2)} unit="kW" pct={powerPct}
           barColor="bg-accent-orange" barShadow="rgba(249,115,22,0.5)" />
         <ProgressCard label="MRR" value={mrr.toFixed(1)} unit="cm³/min" pct={Math.min(mrr / 100 * 100, 100)}

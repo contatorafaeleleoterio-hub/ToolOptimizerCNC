@@ -6,7 +6,7 @@ import { Disclaimer } from './components/disclaimer';
 
 export default function App() {
   return (
-    <div className="flex flex-col h-screen max-w-[1500px] mx-auto p-4 md:p-6 gap-6 relative">
+    <div className="flex flex-col h-screen mx-auto p-3 gap-3 relative">
       {/* Background gradient orbs */}
       <div className="fixed top-0 left-0 w-full h-full overflow-hidden -z-10 pointer-events-none">
         <div className="absolute top-[-20%] left-[-10%] w-[50%] h-[50%] bg-primary/10 rounded-full blur-[150px] opacity-40" />
@@ -14,7 +14,7 @@ export default function App() {
       </div>
 
       {/* Header */}
-      <header className="flex items-center justify-between py-4 px-6 rounded-2xl bg-surface-dark backdrop-blur-xl border border-white/5 shadow-glass">
+      <header className="flex items-center justify-between py-2 px-6 rounded-2xl bg-surface-dark backdrop-blur-xl border border-white/5 shadow-glass">
         <div className="flex items-center gap-3">
           <span className="material-symbols-outlined text-primary text-4xl drop-shadow-[0_0_12px_rgba(0,217,255,0.8)]">
             precision_manufacturing
@@ -27,7 +27,7 @@ export default function App() {
       </header>
 
       {/* 3-column grid */}
-      <main className="flex-1 grid grid-cols-12 gap-6 min-h-0">
+      <main className="flex-1 grid grid-cols-12 gap-3 min-h-0">
         <section className="col-span-3 overflow-y-auto pr-1">
           <ConfigPanel />
         </section>
