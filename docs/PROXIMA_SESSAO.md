@@ -1,7 +1,7 @@
-# PROXIMA SESSAO: Pronto para CI/CD (Story-003)
+# PROXIMA SESSAO: CI/CD Ativo — Pronto para Story-004
 
-**Data atualizacao:** 18/02/2026 - 04:10
-**Status:** Sticky actions + Styled sliders + Formatação numérica — 333 testes passando
+**Data atualizacao:** 18/02/2026
+**Status:** CI/CD GitHub Actions implementado — 333 testes passando
 
 ---
 
@@ -9,54 +9,40 @@
 
 ### Branch e Commits
 - **Branch:** main — sincronizado com `origin/main`, working tree clean
-- **Ultimo commit:** `7384722` feat: sticky action bar, styled sliders, number formatting fixes
+- **Ultimo commit:** `496705b` ci: add GitHub Actions CI workflow with quality gates
 - **Testes:** 333 passing (24 arquivos)
 - **Bundle:** ~98KB gzip (JS 87KB + CSS 11KB)
 - **GitHub:** https://github.com/contatorafaeleleoterio-hub/ToolOptimizerCNC
-- **Deploy:** GitHub Pages ativo
+- **Deploy:** GitHub Pages ativo + CI pipeline ativo
 
 ### Commits Recentes
 ```
+496705b  ci: add GitHub Actions CI workflow with quality gates
+f70a484  docs: session summary 18/02 - sticky actions, styled sliders, toFixed(2)
 7384722  feat: sticky action bar, styled sliders, number formatting fixes
 d14c07f  docs: complete documentation audit and fill all gaps
-14bcda9  docs: sync PROXIMA_SESSAO and MEMORY with real project state
 1a09e33  feat: reset panel on input change + increase simulate animation by 50%
-d6e5e48  feat: add bidirectional sliders for manual parameter control
 ```
 
 ---
 
-## O QUE FOI IMPLEMENTADO (sessão 18/02/2026)
+## O QUE FOI IMPLEMENTADO (sessão 18/02/2026 — sessão 2)
 
-### ✅ 1. Formatação Numérica no Tool Summary Viewer
-- Vc, fz, ae, ap exibidos com `toFixed(2)` — sem floats `2.00000000000000018`
-- Teste atualizado para `'100.00'` e `'0.10'`
+### ✅ Story-003: CI/CD GitHub Actions
 
-### ✅ 2. Fine Tune Panel — Slider com Thumb Estilizado (desktop)
-- Componente `StyledSlider` customizado, igual visual ao mobile (`TouchSlider`)
-- Thumb: círculo com borda colorida + ponto interno + glow RGB
-- Ao pressionar: scale 1.15x + glow intensificado (feedback visual)
-- Track preenchido com cor neon + sombra
-- Suporte a teclado (←/→)
-- Lógica original mantida: botões +/-, input numérico editável
+**Arquivo criado:** `.github/workflows/ci.yml`
+- Dispara em todo push e PR para `main`
+- 3 quality gates em sequência: `typecheck` → `test` → `build`
+- Cache npm via `actions/setup-node@v4 cache: 'npm'`
+- Jobs separados do deploy (deploy.yml inalterado)
 
-### ✅ 3. Fine Tune Panel — Restaurado para Sliders Unidirecionais
-- Revertido de BidirectionalSlider para sliders simples (0% a 100%)
-- Vc, fz, ae, ap não têm sentido com valores negativos
-- BidirectionalSlider permanece apenas em RPM e Feed (results-panel)
+**README atualizado:**
+- Badge CI: `![CI](https://github.com/.../ci.yml/badge.svg)`
+- Badge Deploy: `![Deploy](https://github.com/.../deploy.yml/badge.svg)`
 
-### ✅ 4. Botões Simular + Reset Fixos no Topo (sticky)
-
-**Desktop (`config-panel.tsx`):**
-- Barra `sticky top-0 z-10` com `backdrop-blur`
-- Fica visível ao rolar a coluna de configuração
-
-**Mobile (`mobile-page.tsx`):**
-- Componente `MobileStickyActions` com `sticky top-0 z-20`
-- Posicionado entre `MobileHeader` e `main`
-- Fica fixo ao rolar qualquer seção (resultados, config, fine tune)
-- Botão Simular com `useSimulationAnimation` (spinner + "Calculando..." + disabled)
-- Removidos do `MobileConfigSection` (sem duplicação)
+**Validação local antes do commit:**
+- `npm run typecheck` — zero erros TS
+- `npm test` — 333/333 testes passando
 
 ---
 
@@ -94,31 +80,39 @@ src/
     mobile-page.tsx           — MobileStickyActions sticky + useSimulationAnimation
     settings-page.tsx
     history-page.tsx
+.github/
+  workflows/
+    ci.yml                    — CI: typecheck + test + build em push/PR
+    deploy.yml                — Deploy: build + GitHub Pages em push para main
 tests/                        — 24 arquivos (333 testes)
+README.md                     — Badges CI + Deploy
 ```
 
 ---
 
 ## PROXIMAS TAREFAS
 
-### 1. ⭐ Story-003: CI/CD GitHub Actions — PRÓXIMA
-**Status:** NÃO INICIADA
-**Escopo:**
-- Workflow: test + typecheck + build em push/PR
-- Badge no README
-- Cache de node_modules
-- Branch protection (opcional)
-
-**Arquivo:** `docs/stories/story-003-ci-cd-github-actions.md` (criar)
-
-### 2. Story-002 Fases 2-6: Deploy Cloudflare (MANUAL pelo usuário)
+### 1. Story-002 Fases 2-6: Deploy Cloudflare (MANUAL pelo usuário)
 **Status:** Fase 1 (código) concluída — Fases 2-6 requerem ação manual
 Pre-requisitos:
 - Conta Cloudflare + projeto Pages conectado ao GitHub
 - Env var: `VITE_BASE_URL=/` e `NODE_VERSION=20`
 - Domínio `tooloptimizercnc.com.br` no Registro.br
 
-### 3. Story-004: SEO Schema.org + meta tags
+### 2. ⭐ Story-004: SEO Schema.org + meta tags — PRÓXIMA
+**Status:** NÃO INICIADA
+**Escopo:**
+- `<meta>` tags: description, keywords, og:*, twitter:*
+- Schema.org JSON-LD para SoftwareApplication
+- `<title>` dinâmico por rota
+- sitemap.xml + robots.txt
+
+**Arquivo:** `docs/stories/story-004-seo-schema.md` (criar)
+
+### 3. Branch Protection (GitHub Settings — manual)
+- Settings → Branches → Add rule para `main`
+- ☑ Require status checks to pass: `TypeCheck + Tests + Build`
+- ☑ Require branches to be up to date
 
 ### 4. Polimento UI/UX (backlog)
 - Testar em resoluções: 1366, 1920, 2560
@@ -128,29 +122,35 @@ Pre-requisitos:
 
 ## DETALHES TÉCNICOS IMPORTANTES
 
-### StyledSlider (desktop Fine Tune)
-```tsx
-// Componente interno em fine-tune-panel.tsx
-// - Mouse down → captura eventos globais (mousemove/mouseup)
-// - pressed state → scale 1.15x + glow intenso
-// - Suporte teclado: ArrowLeft/ArrowRight
-// - NÃO usa <input type="range"> — div customizada com cálculo de posição
+### CI Workflow (ci.yml)
+```yaml
+on:
+  push: { branches: [main] }
+  pull_request: { branches: [main] }
+jobs:
+  quality-gates:
+    runs-on: ubuntu-latest
+    steps:
+      - checkout@v4
+      - setup-node@v4 (node 20, cache npm)
+      - npm ci
+      - npm run typecheck  # tsc --noEmit
+      - npm test           # vitest run
+      - npm run build      # tsc -b && vite build
 ```
 
-### MobileStickyActions
-```tsx
-// Em mobile-page.tsx — sticky top-0 z-20
-// Usa useSimulationAnimation igual ao desktop
-// reset() direto do store (sem animação — correto)
+### Scripts npm disponíveis
+```
+typecheck  → tsc --noEmit
+test       → vitest run
+build      → tsc -b && vite build
+validate   → typecheck + test + lint
 ```
 
 ### Sliders por Contexto
-- **RPM/Feed (results-panel):** BidirectionalSlider (-150% a +150%) — faz sentido operacional
-- **Vc/fz/ae/ap (fine-tune desktop):** StyledSlider (0% a 100%) — só positivos
-- **Vc/fz/ae/ap (fine-tune mobile):** TouchSlider (hold-to-activate, 0% a 100%)
-
-### Tool Summary Viewer — Formatação
-- Vc/fz/ae/ap: `toFixed(2)` em todos os campos
+- **RPM/Feed (results-panel):** BidirectionalSlider (-150% a +150%)
+- **Vc/fz/ae/ap (fine-tune desktop):** StyledSlider (0% a 100%)
+- **Vc/fz/ae/ap (fine-tune mobile):** TouchSlider (hold-to-activate)
 
 ---
 
@@ -158,7 +158,7 @@ Pre-requisitos:
 
 1. **PRIMEIRA AÇÃO:** Ler `docs/PROXIMA_SESSAO.md` para contexto completo
 2. Rodar testes após cada mudança em `src/`
-3. Conventional commits (`feat:`, `fix:`, `refactor:`, `docs:`, `perf:`)
+3. Conventional commits (`feat:`, `fix:`, `refactor:`, `docs:`, `ci:`, `perf:`)
 4. Commit após cada fase concluída + push
 5. Validar build antes de finalizar sessão
 6. Usar apenas terminal interno (Bash) — NÃO usar Windows-MCP browser tools
@@ -178,12 +178,13 @@ Pre-requisitos:
 - [x] Sticky Simular/Reset (desktop + mobile)
 - [x] StyledSlider com thumb estilizado (desktop Fine Tune)
 - [x] Formatação numérica (toFixed(2))
-- [ ] **Story-003: CI/CD GitHub Actions ← PRÓXIMA**
+- [x] **Story-003: CI/CD GitHub Actions ← FEITO**
 
 ### Semana 2-3:
-- [ ] Story-004: SEO Schema.org + meta tags
+- [ ] **Story-004: SEO Schema.org + meta tags ← PRÓXIMA**
 - [ ] Polimento UI/UX
 - [ ] Testes em dispositivos reais
+- [ ] Branch protection no GitHub (manual)
 
 ---
 
