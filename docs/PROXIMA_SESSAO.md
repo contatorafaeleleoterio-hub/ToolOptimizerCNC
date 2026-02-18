@@ -1,7 +1,7 @@
-# PROXIMA SESSAO: CI/CD Ativo — Pronto para Story-004
+# PROXIMA SESSAO: Mobile fixes feitos — Pronto para Story-004
 
 **Data atualizacao:** 18/02/2026
-**Status:** CI/CD GitHub Actions implementado — 333 testes passando
+**Status:** Settings Page responsiva + touch targets + CI/CD — 333 testes passando
 
 ---
 
@@ -9,40 +9,40 @@
 
 ### Branch e Commits
 - **Branch:** main — sincronizado com `origin/main`, working tree clean
-- **Ultimo commit:** `496705b` ci: add GitHub Actions CI workflow with quality gates
+- **Ultimo commit:** `d74804e` fix: mobile responsiveness for settings page and touch targets
 - **Testes:** 333 passing (24 arquivos)
-- **Bundle:** ~98KB gzip (JS 87KB + CSS 11KB)
+- **Bundle:** JS 87KB gzip + CSS 11KB gzip = ~98KB total
 - **GitHub:** https://github.com/contatorafaeleleoterio-hub/ToolOptimizerCNC
 - **Deploy:** GitHub Pages ativo + CI pipeline ativo
 
 ### Commits Recentes
 ```
+d74804e  fix: mobile responsiveness for settings page and touch targets
+ca95afe  docs: session summary 18/02 session 2 - Story-003 CI/CD done
 496705b  ci: add GitHub Actions CI workflow with quality gates
 f70a484  docs: session summary 18/02 - sticky actions, styled sliders, toFixed(2)
 7384722  feat: sticky action bar, styled sliders, number formatting fixes
-d14c07f  docs: complete documentation audit and fill all gaps
-1a09e33  feat: reset panel on input change + increase simulate animation by 50%
 ```
 
 ---
 
-## O QUE FOI IMPLEMENTADO (sessão 18/02/2026 — sessão 2)
+## O QUE FOI IMPLEMENTADO (sessão 18/02/2026 — sessão 3)
 
-### ✅ Story-003: CI/CD GitHub Actions
+### ✅ Settings Page responsiva (mobile)
+- Sidebar `w-64 shrink-0` → nav horizontal com scroll (`overflow-x-auto`) em mobile
+- Desktop mantém sidebar vertical (`sm:flex-col sm:w-56 sm:sticky`)
+- Todos os `grid-cols-2` e `grid-cols-3` → `grid-cols-1 sm:grid-cols-2/3`
+- Padding `p-6` → `p-3 sm:p-6` em cards e container
+- Botão Voltar: usa `useIsMobile()` → navega para `/mobile` em celular, `/` em desktop
+- Label "Voltar" oculto em mobile (só ícone `arrow_back`)
 
-**Arquivo criado:** `.github/workflows/ci.yml`
-- Dispara em todo push e PR para `main`
-- 3 quality gates em sequência: `typecheck` → `test` → `build`
-- Cache npm via `actions/setup-node@v4 cache: 'npm'`
-- Jobs separados do deploy (deploy.yml inalterado)
+### ✅ NumInput — touch targets corrigidos
+- Botões `+`/`−`: `w-7` (28px) → `w-9` (36px)
+- Input com `min-h-[44px]` (padrão 44px Apple HIG / Google Material)
+- Adicionado `active:bg-white/10` para feedback visual no toque
 
-**README atualizado:**
-- Badge CI: `![CI](https://github.com/.../ci.yml/badge.svg)`
-- Badge Deploy: `![Deploy](https://github.com/.../deploy.yml/badge.svg)`
-
-**Validação local antes do commit:**
-- `npm run typecheck` — zero erros TS
-- `npm test` — 333/333 testes passando
+### ✅ TouchSlider — texto corrigido
+- `"Segure por 1s"` → `"Segure por 0.8s"` (consistente com `setTimeout(..., 800)`)
 
 ---
 
@@ -50,41 +50,43 @@ d14c07f  docs: complete documentation audit and fill all gaps
 
 ```
 src/
-  App.tsx                     — 3-column grid + header
-  main.tsx                    — BrowserRouter + Routes
-  index.css                   — Tailwind v4 @theme + range input + keyframes
-  types/index.ts              — TS types, enums, constants
+  App.tsx
+  main.tsx
+  index.css                   — Tailwind v4 @theme + keyframes + body.mobile-active
+  types/index.ts
   engine/                     — rpm, chip-thinning, feed, power, validators, recommendations
   data/                       — materials, tools, operations
   store/
-    machining-store.ts        — Zustand (NO auto-recalc on input change)
-    history-store.ts          — histórico de simulações
+    machining-store.ts
+    history-store.ts
   hooks/
-    use-is-mobile.ts
-    use-simulation-animation.ts — Loading 450ms, Gauge 1350ms
+    use-is-mobile.ts          — breakpoint 768px
+    use-simulation-animation.ts
     use-reset-feedback.ts
   components/
-    bidirectional-slider.tsx  — Slider -150% a +150% (apenas RPM/Feed)
-    config-panel.tsx          — Sticky Simular/Reset + Material/Ferramenta/Params
-    results-panel.tsx         — RPM, Feed, Power + sliders RPM/Feed + reset warning
-    fine-tune-panel.tsx       — StyledSlider customizado (ring+dot+glow) para Vc/fz/ae/ap
-    tool-summary-viewer.tsx   — Vc/fz/ae/ap com toFixed(2)
-    gauge.tsx                 — SVG gauge 40 segments + animação
-    shared-result-parts.tsx   — MetricCell, BigNumber, ProgressCard, etc
+    ui-helpers.tsx            — NumInput com min-h-[44px] + botões w-9
+    bidirectional-slider.tsx
+    config-panel.tsx
+    results-panel.tsx
+    fine-tune-panel.tsx
+    tool-summary-viewer.tsx
+    gauge.tsx
+    shared-result-parts.tsx
+    viewport-redirect.tsx
     mobile/
       mobile-header.tsx
-      mobile-config-section.tsx — Sem botões (movidos para MobileStickyActions)
+      mobile-config-section.tsx
       mobile-results-section.tsx
-      mobile-fine-tune-section.tsx — TouchSlider original (hold-to-activate)
+      mobile-fine-tune-section.tsx  — texto "0.8s" corrigido
   pages/
-    mobile-page.tsx           — MobileStickyActions sticky + useSimulationAnimation
-    settings-page.tsx
+    mobile-page.tsx
+    settings-page.tsx         — RESPONSIVA: nav horizontal mobile, grids colapsados
     history-page.tsx
 .github/
   workflows/
-    ci.yml                    — CI: typecheck + test + build em push/PR
-    deploy.yml                — Deploy: build + GitHub Pages em push para main
-tests/                        — 24 arquivos (333 testes)
+    ci.yml                    — TypeCheck + Test + Build em push/PR
+    deploy.yml                — Deploy GitHub Pages em push main
+tests/                        — 24 arquivos, 333 testes
 README.md                     — Badges CI + Deploy
 ```
 
@@ -92,78 +94,43 @@ README.md                     — Badges CI + Deploy
 
 ## PROXIMAS TAREFAS
 
-### 1. Story-002 Fases 2-6: Deploy Cloudflare (MANUAL pelo usuário)
-**Status:** Fase 1 (código) concluída — Fases 2-6 requerem ação manual
-Pre-requisitos:
-- Conta Cloudflare + projeto Pages conectado ao GitHub
-- Env var: `VITE_BASE_URL=/` e `NODE_VERSION=20`
-- Domínio `tooloptimizercnc.com.br` no Registro.br
-
-### 2. ⭐ Story-004: SEO Schema.org + meta tags — PRÓXIMA
+### 1. ⭐ Story-004: SEO Schema.org + meta tags — PRÓXIMA
 **Status:** NÃO INICIADA
 **Escopo:**
 - `<meta>` tags: description, keywords, og:*, twitter:*
 - Schema.org JSON-LD para SoftwareApplication
-- `<title>` dinâmico por rota
-- sitemap.xml + robots.txt
+- `<title>` dinâmico por rota (`react-helmet-async` ou `document.title`)
+- sitemap.xml + robots.txt (gerado no build)
 
 **Arquivo:** `docs/stories/story-004-seo-schema.md` (criar)
 
-### 3. Branch Protection (GitHub Settings — manual)
+### 2. Story-002 Fases 2-6: Deploy Cloudflare (MANUAL pelo usuário)
+- Conta Cloudflare + projeto Pages conectado ao GitHub
+- Env var: `VITE_BASE_URL=/` e `NODE_VERSION=20`
+- Domínio `tooloptimizercnc.com.br` no Registro.br
+
+### 3. Branch Protection no GitHub (MANUAL)
 - Settings → Branches → Add rule para `main`
-- ☑ Require status checks to pass: `TypeCheck + Tests + Build`
-- ☑ Require branches to be up to date
+- ☑ Require status checks: `TypeCheck + Tests + Build`
 
-### 4. Polimento UI/UX (backlog)
-- Testar em resoluções: 1366, 1920, 2560
-- Testar mobile em dispositivos reais
+### 4. HistoryPage responsiva (backlog)
+- Mesmo padrão da Settings Page (verificar se tem issues mobile)
 
----
-
-## DETALHES TÉCNICOS IMPORTANTES
-
-### CI Workflow (ci.yml)
-```yaml
-on:
-  push: { branches: [main] }
-  pull_request: { branches: [main] }
-jobs:
-  quality-gates:
-    runs-on: ubuntu-latest
-    steps:
-      - checkout@v4
-      - setup-node@v4 (node 20, cache npm)
-      - npm ci
-      - npm run typecheck  # tsc --noEmit
-      - npm test           # vitest run
-      - npm run build      # tsc -b && vite build
-```
-
-### Scripts npm disponíveis
-```
-typecheck  → tsc --noEmit
-test       → vitest run
-build      → tsc -b && vite build
-validate   → typecheck + test + lint
-```
-
-### Sliders por Contexto
-- **RPM/Feed (results-panel):** BidirectionalSlider (-150% a +150%)
-- **Vc/fz/ae/ap (fine-tune desktop):** StyledSlider (0% a 100%)
-- **Vc/fz/ae/ap (fine-tune mobile):** TouchSlider (hold-to-activate)
+### 5. Polimento UI/UX (backlog)
+- Testar em resoluções reais: 1366, 1920, 2560
+- Testar mobile em dispositivos físicos
 
 ---
 
 ## REGRAS PARA SESSÕES CLAUDE
 
-1. **PRIMEIRA AÇÃO:** Ler `docs/PROXIMA_SESSAO.md` para contexto completo
+1. **PRIMEIRA AÇÃO:** Ler `docs/PROXIMA_SESSAO.md`
 2. Rodar testes após cada mudança em `src/`
-3. Conventional commits (`feat:`, `fix:`, `refactor:`, `docs:`, `ci:`, `perf:`)
-4. Commit após cada fase concluída + push
-5. Validar build antes de finalizar sessão
-6. Usar apenas terminal interno (Bash) — NÃO usar Windows-MCP browser tools
-7. **AO FINAL:** Atualizar `docs/PROXIMA_SESSAO.md` com resumo e próximas tarefas
-8. **TESTES:** usar `calcular()` explicitamente nos testes do store
+3. Conventional commits + push após cada fase
+4. Validar: `typecheck` + `test` + `build` antes de finalizar
+5. Usar apenas terminal interno (Bash)
+6. **AO FINAL:** Atualizar `docs/PROXIMA_SESSAO.md` + `memory/MEMORY.md`
+7. **TESTES store:** chamar `calcular()` explicitamente
 
 ---
 
@@ -176,15 +143,16 @@ validate   → typecheck + test + lint
 - [x] Sliders bidirecionais (RPM/Feed)
 - [x] Reset feedback ao alterar parâmetros
 - [x] Sticky Simular/Reset (desktop + mobile)
-- [x] StyledSlider com thumb estilizado (desktop Fine Tune)
+- [x] StyledSlider thumb estilizado (desktop Fine Tune)
 - [x] Formatação numérica (toFixed(2))
-- [x] **Story-003: CI/CD GitHub Actions ← FEITO**
+- [x] Story-003: CI/CD GitHub Actions
+- [x] Mobile fixes: Settings responsiva + touch targets
 
 ### Semana 2-3:
 - [ ] **Story-004: SEO Schema.org + meta tags ← PRÓXIMA**
+- [ ] HistoryPage responsiva
 - [ ] Polimento UI/UX
-- [ ] Testes em dispositivos reais
-- [ ] Branch protection no GitHub (manual)
+- [ ] Branch protection GitHub (manual)
 
 ---
 
