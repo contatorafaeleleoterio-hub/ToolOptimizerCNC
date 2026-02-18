@@ -1,7 +1,7 @@
 # PROXIMA SESSAO: Pronto para CI/CD (Story-003)
 
-**Data atualizacao:** 17/02/2026 - 21:30
-**Status:** Sliders bidirecionais + Reset feedback + Animações implementados e commitados — 333 testes passando
+**Data atualizacao:** 18/02/2026 - 04:10
+**Status:** Sticky actions + Styled sliders + Formatação numérica — 333 testes passando
 
 ---
 
@@ -9,57 +9,54 @@
 
 ### Branch e Commits
 - **Branch:** main — sincronizado com `origin/main`, working tree clean
-- **Ultimo commit:** `1a09e33` feat: reset panel on input change + increase simulate animation by 50%
+- **Ultimo commit:** `7384722` feat: sticky action bar, styled sliders, number formatting fixes
 - **Testes:** 333 passing (24 arquivos)
-- **Bundle:** ~97KB gzip (JS 86KB + CSS 11KB)
+- **Bundle:** ~98KB gzip (JS 87KB + CSS 11KB)
 - **GitHub:** https://github.com/contatorafaeleleoterio-hub/ToolOptimizerCNC
 - **Deploy:** GitHub Pages ativo
 
 ### Commits Recentes
 ```
+7384722  feat: sticky action bar, styled sliders, number formatting fixes
+d14c07f  docs: complete documentation audit and fill all gaps
+14bcda9  docs: sync PROXIMA_SESSAO and MEMORY with real project state
 1a09e33  feat: reset panel on input change + increase simulate animation by 50%
 d6e5e48  feat: add bidirectional sliders for manual parameter control
-47e90dd  docs: session summary, update PROXIMA_SESSAO, organize root docs
-cd37310  perf: increase animation durations by 50% for smoother UX
-0c2dd85  feat: add professional feedback animations on simulate button
 ```
 
 ---
 
-## O QUE FOI IMPLEMENTADO (sessão 17/02/2026)
+## O QUE FOI IMPLEMENTADO (sessão 18/02/2026)
 
-### ✅ 1. Sistema de Animações Profissionais
-- Botão "Simular" com loading state (spinner + "Calculando...")
-- Gauge anima (scale 1.1x) durante simulação
-- Pulse verde (0.9s) em parâmetros seguros
-- Pulse vermelho (0.45s ×2) em alerta/bloqueado
-- Hook: `use-simulation-animation.ts`
-- **Timings atuais:** Loading 450ms, Gauge 1350ms (+50% vs original)
+### ✅ 1. Formatação Numérica no Tool Summary Viewer
+- Vc, fz, ae, ap exibidos com `toFixed(2)` — sem floats `2.00000000000000018`
+- Teste atualizado para `'100.00'` e `'0.10'`
 
-### ✅ 2. Sliders Bidirecionais (6 parâmetros)
-Controle manual de -150% a +150% do valor calculado/recomendado:
+### ✅ 2. Fine Tune Panel — Slider com Thumb Estilizado (desktop)
+- Componente `StyledSlider` customizado, igual visual ao mobile (`TouchSlider`)
+- Thumb: círculo com borda colorida + ponto interno + glow RGB
+- Ao pressionar: scale 1.15x + glow intensificado (feedback visual)
+- Track preenchido com cor neon + sombra
+- Suporte a teclado (←/→)
+- Lógica original mantida: botões +/-, input numérico editável
 
-| Painel | Parâmetro | Cor |
-|--------|-----------|-----|
-| Results Panel | RPM | Cyan `0,217,255` |
-| Results Panel | Feed Rate | Green `57,255,20` |
-| Fine Tune Panel | Vc (Cutting Speed) | Cyan `0,217,255` |
-| Fine Tune Panel | fz (Feed per Tooth) | Green `57,255,20` |
-| Fine Tune Panel | ae (Radial Engagement) | Purple `168,85,247` |
-| Fine Tune Panel | ap (Axial Depth) | Orange `249,115,22` |
+### ✅ 3. Fine Tune Panel — Restaurado para Sliders Unidirecionais
+- Revertido de BidirectionalSlider para sliders simples (0% a 100%)
+- Vc, fz, ae, ap não têm sentido com valores negativos
+- BidirectionalSlider permanece apenas em RPM e Feed (results-panel)
 
-**Componente:** `src/components/bidirectional-slider.tsx` (155 linhas)
-- Range: -150% a +150% (centro 0% = valor base)
-- Botões +/- (step 10%)
-- Tick marks, centro destacado, glow RGB
+### ✅ 4. Botões Simular + Reset Fixos no Topo (sticky)
 
-### ✅ 3. Reset Feedback ao Alterar Parâmetros
-Quando qualquer input muda (material, ferramenta, operação, ap/ae/fz/vc, safety factor):
-- `resultado` é zerado no store (`null`)
-- **Não recalcula automaticamente** — usuário deve clicar em "SIMULAR"
-- Banner amarelo animado aparece: *"Parâmetros Alterados — Clique em SIMULAR para recalcular"*
-- Hook: `use-reset-feedback.ts` (66 linhas)
-- Keyframe `fadeOut` em `index.css` para dimming dos cards
+**Desktop (`config-panel.tsx`):**
+- Barra `sticky top-0 z-10` com `backdrop-blur`
+- Fica visível ao rolar a coluna de configuração
+
+**Mobile (`mobile-page.tsx`):**
+- Componente `MobileStickyActions` com `sticky top-0 z-20`
+- Posicionado entre `MobileHeader` e `main`
+- Fica fixo ao rolar qualquer seção (resultados, config, fine tune)
+- Botão Simular com `useSimulationAnimation` (spinner + "Calculando..." + disabled)
+- Removidos do `MobileConfigSection` (sem duplicação)
 
 ---
 
@@ -69,27 +66,34 @@ Quando qualquer input muda (material, ferramenta, operação, ap/ae/fz/vc, safet
 src/
   App.tsx                     — 3-column grid + header
   main.tsx                    — BrowserRouter + Routes
-  index.css                   — Tailwind v4 @theme + range input + keyframes (spinner, fadeInUp, subtlePulse, gaugeRoll, fadeOut)
+  index.css                   — Tailwind v4 @theme + range input + keyframes
   types/index.ts              — TS types, enums, constants
   engine/                     — rpm, chip-thinning, feed, power, validators, recommendations
   data/                       — materials, tools, operations
   store/
-    machining-store.ts        — Zustand (NO auto-recalc on input change — resultado=null)
+    machining-store.ts        — Zustand (NO auto-recalc on input change)
     history-store.ts          — histórico de simulações
   hooks/
-    use-is-mobile.ts          — Mobile detection
-    use-simulation-animation.ts — Animation state (loading 450ms, gauge 1350ms)
-    use-reset-feedback.ts     — Detecta mudança de params, trigger animação 800ms
+    use-is-mobile.ts
+    use-simulation-animation.ts — Loading 450ms, Gauge 1350ms
+    use-reset-feedback.ts
   components/
-    bidirectional-slider.tsx  — Slider -150% a +150%, botões +/-, tick marks, RGB glow
-    config-panel.tsx          — Material, ferramenta, parametros (col 1) + botão Simular animado
-    results-panel.tsx         — RPM, Feed, Power (col 2) + sliders RPM/Feed + reset warning
-    fine-tune-panel.tsx       — Sliders Vc/fz/ae/ap + MRR (col 3) + BidirectionalSlider
-    gauge.tsx                 — SVG gauge 40 segments + animação scale
-    formula-card.tsx          — Cards expansíveis com fórmulas
-    shared-result-parts.tsx   — MetricCell, BigNumber (suporta useBidirectionalSlider), ProgressCard, etc
-    mobile/                   — mobile-fine-tune-section, mobile-config, etc
-  pages/                      — settings-page, history-page, mobile-page
+    bidirectional-slider.tsx  — Slider -150% a +150% (apenas RPM/Feed)
+    config-panel.tsx          — Sticky Simular/Reset + Material/Ferramenta/Params
+    results-panel.tsx         — RPM, Feed, Power + sliders RPM/Feed + reset warning
+    fine-tune-panel.tsx       — StyledSlider customizado (ring+dot+glow) para Vc/fz/ae/ap
+    tool-summary-viewer.tsx   — Vc/fz/ae/ap com toFixed(2)
+    gauge.tsx                 — SVG gauge 40 segments + animação
+    shared-result-parts.tsx   — MetricCell, BigNumber, ProgressCard, etc
+    mobile/
+      mobile-header.tsx
+      mobile-config-section.tsx — Sem botões (movidos para MobileStickyActions)
+      mobile-results-section.tsx
+      mobile-fine-tune-section.tsx — TouchSlider original (hold-to-activate)
+  pages/
+    mobile-page.tsx           — MobileStickyActions sticky + useSimulationAnimation
+    settings-page.tsx
+    history-page.tsx
 tests/                        — 24 arquivos (333 testes)
 ```
 
@@ -98,7 +102,7 @@ tests/                        — 24 arquivos (333 testes)
 ## PROXIMAS TAREFAS
 
 ### 1. ⭐ Story-003: CI/CD GitHub Actions — PRÓXIMA
-**Status:** NÃO INICIADA | **Estimativa:** 2h
+**Status:** NÃO INICIADA
 **Escopo:**
 - Workflow: test + typecheck + build em push/PR
 - Badge no README
@@ -109,93 +113,44 @@ tests/                        — 24 arquivos (333 testes)
 
 ### 2. Story-002 Fases 2-6: Deploy Cloudflare (MANUAL pelo usuário)
 **Status:** Fase 1 (código) concluída — Fases 2-6 requerem ação manual
-**Doc:** `docs/stories/story-002-deploy-cloudflare.md`
-
-Pre-requisitos (usuário):
+Pre-requisitos:
 - Conta Cloudflare + projeto Pages conectado ao GitHub
 - Env var: `VITE_BASE_URL=/` e `NODE_VERSION=20`
 - Domínio `tooloptimizercnc.com.br` no Registro.br
-- DNS apontado para Cloudflare nameservers
 
 ### 3. Story-004: SEO Schema.org + meta tags
 
 ### 4. Polimento UI/UX (backlog)
 - Testar em resoluções: 1366, 1920, 2560
 - Testar mobile em dispositivos reais
-- Avaliar collapse/expand dos formula cards
 
 ---
 
 ## DETALHES TÉCNICOS IMPORTANTES
 
-### Store: Novo comportamento (CRÍTICO)
-```typescript
-// ANTES: setParametros → calcular() automático
-// AGORA: setParametros → resultado=null, SEM calcular()
-// Usuário DEVE clicar em "Simular" para ver resultados
-
-// Setters que ZERAM resultado (sem auto-calcular):
-setMaterial(id)          // resultado=null
-setFerramenta(f)         // resultado=null
-setTipoOperacao(tipo)    // resultado=null
-setParametros(p)         // resultado=null
-setSafetyFactor(f)       // resultado=null
-
-// Setter que AINDA auto-calcula:
-setLimitesMaquina(l)     // → calcular() (exceção intencional)
-
-// Para calcular manualmente (testes/engine):
-getState().calcular()
-```
-
-### BidirectionalSlider Props
+### StyledSlider (desktop Fine Tune)
 ```tsx
-interface BidirectionalSliderProps {
-  baseValue: number;       // valor central (0%)
-  currentPercent: number;  // -150 a +150
-  onChange: (percent: number) => void;
-  color: string;           // Tailwind color name: "primary", "secondary"
-  rgb: string;             // "0,217,255"
-  label: string;           // "RPM", "Vc", etc
-  unit: string;            // "rpm", "mm/min", "m/min"
-}
+// Componente interno em fine-tune-panel.tsx
+// - Mouse down → captura eventos globais (mousemove/mouseup)
+// - pressed state → scale 1.15x + glow intenso
+// - Suporte teclado: ArrowLeft/ArrowRight
+// - NÃO usa <input type="range"> — div customizada com cálculo de posição
 ```
 
-### Integração no ResultsPanel (via BigNumber)
+### MobileStickyActions
 ```tsx
-<BigNumber
-  useBidirectionalSlider
-  baseValue={baseRPM}
-  currentPercent={manualOverrides.rpmPercent ?? 0}
-  onPercentChange={setManualRPMPercent}
-  rgb="0,217,255"
-  // ... demais props
-/>
+// Em mobile-page.tsx — sticky top-0 z-20
+// Usa useSimulationAnimation igual ao desktop
+// reset() direto do store (sem animação — correto)
 ```
 
-### Integração no FineTunePanel (direto)
-```tsx
-<BidirectionalSlider
-  baseValue={baseVal}
-  currentPercent={currentPercent}
-  onChange={(percent) => setParamPercent(key, percent)}
-  color={color}
-  rgb={rgb}
-  label={label}
-  unit={unit}
-/>
-```
+### Sliders por Contexto
+- **RPM/Feed (results-panel):** BidirectionalSlider (-150% a +150%) — faz sentido operacional
+- **Vc/fz/ae/ap (fine-tune desktop):** StyledSlider (0% a 100%) — só positivos
+- **Vc/fz/ae/ap (fine-tune mobile):** TouchSlider (hold-to-activate, 0% a 100%)
 
-### CSS Range Input (LIÇÃO CRÍTICA)
-**NUNCA** usar `-webkit-appearance: none` sem definir dimensões do thumb.
-Sem width/height o thumb fica 0x0px = invisível e não-clicável.
-Ver `src/index.css` linhas 42-53.
-
-### Zustand Auto-populate
-- `setFerramenta(diametro)` → auto-populate params
-- `setMaterial(id)` → auto-populate params
-- `setTipoOperacao(tipo)` → auto-populate params
-- Mas NENHUM deles chama `calcular()` — resultado permanece null
+### Tool Summary Viewer — Formatação
+- Vc/fz/ae/ap: `toFixed(2)` em todos os campos
 
 ---
 
@@ -208,7 +163,7 @@ Ver `src/index.css` linhas 42-53.
 5. Validar build antes de finalizar sessão
 6. Usar apenas terminal interno (Bash) — NÃO usar Windows-MCP browser tools
 7. **AO FINAL:** Atualizar `docs/PROXIMA_SESSAO.md` com resumo e próximas tarefas
-8. **TESTES:** usar `calcular()` explicitamente nos testes do store (não depender de auto-recalc)
+8. **TESTES:** usar `calcular()` explicitamente nos testes do store
 
 ---
 
@@ -217,9 +172,12 @@ Ver `src/index.css` linhas 42-53.
 ### Semana 1:
 - [x] Story-001: Limpeza técnica + ADRs
 - [~] Story-002: Deploy Cloudflare — Fase 1 OK, setup manual pendente
-- [x] Animações profissionais (0c2dd85, cd37310)
-- [x] Sliders bidirecionais (d6e5e48)
-- [x] Reset feedback ao alterar parâmetros (1a09e33)
+- [x] Animações profissionais
+- [x] Sliders bidirecionais (RPM/Feed)
+- [x] Reset feedback ao alterar parâmetros
+- [x] Sticky Simular/Reset (desktop + mobile)
+- [x] StyledSlider com thumb estilizado (desktop Fine Tune)
+- [x] Formatação numérica (toFixed(2))
 - [ ] **Story-003: CI/CD GitHub Actions ← PRÓXIMA**
 
 ### Semana 2-3:
