@@ -1,5 +1,14 @@
 ﻿# ToolOptimizer CNC - Contexto do Projeto
 
+## ⚡ Regra de Início de Sessão (OBRIGATÓRIO)
+**PRIMEIRA AÇÃO de toda sessão:** Ler o arquivo abaixo antes de qualquer outra coisa:
+```
+C:\Users\USUARIO\Desktop\INICIO_TOOLOPTIMIZERCNC\docs\PROXIMA_SESSAO.md
+```
+Este arquivo contém: estado atual do projeto, último commit, tarefas pendentes e regras da sessão.
+
+---
+
 ## Stack
 - **Framework:** React 18 + TypeScript (strict mode, zero `any`)
 - **Build:** Vite 6

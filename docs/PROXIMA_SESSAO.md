@@ -124,7 +124,8 @@ README.md                     — Badges CI + Deploy
 
 ## REGRAS PARA SESSÕES CLAUDE
 
-1. **PRIMEIRA AÇÃO:** Ler `docs/PROXIMA_SESSAO.md`
+1. **PRIMEIRA AÇÃO:** Ler o arquivo de contexto completo:
+   `C:\Users\USUARIO\Desktop\INICIO_TOOLOPTIMIZERCNC\docs\PROXIMA_SESSAO.md`
 2. Rodar testes após cada mudança em `src/`
 3. Conventional commits + push após cada fase
 4. Validar: `typecheck` + `test` + `build` antes de finalizar
@@ -159,5 +160,7 @@ README.md                     — Badges CI + Deploy
 ## PROMPT PARA PRÓXIMA SESSÃO
 
 ```
-Leia o arquivo docs/PROXIMA_SESSAO.md para entender o contexto completo do projeto e continue de onde paramos.
+Leia o arquivo abaixo e continue de onde paramos:
+
+C:\Users\USUARIO\Desktop\INICIO_TOOLOPTIMIZERCNC\docs\PROXIMA_SESSAO.md
 ```
