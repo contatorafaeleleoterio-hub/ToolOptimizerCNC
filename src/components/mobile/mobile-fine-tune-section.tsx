@@ -189,7 +189,7 @@ export function MobileFineTuneSection() {
     <section className="flex flex-col gap-4 px-4">
       <div className="bg-card-dark rounded-xl p-4 border border-white/5">
         <SectionTitle color="bg-primary" label="Fine Tune" />
-        <p className="text-[9px] text-gray-500 mb-3">Segure o controle por 1s para ativar o ajuste</p>
+        <p className="text-[9px] text-gray-500 mb-3">Segure o controle por 0.8s para ativar o ajuste</p>
         <div className="flex flex-col gap-5">
           {SLIDER_CONFIG.map(({ key, label, fullLabel, unit, color, rgb, min, max, step }) => {
             const val = parametros[key];
