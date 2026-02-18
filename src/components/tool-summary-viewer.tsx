@@ -37,10 +37,10 @@ export function ToolSummaryViewer() {
         <ValueCell label="Altura Fix." value={`${ferramenta.balanco}mm`} />
       </div>
       <div className="grid grid-cols-4 gap-3">
-        <ValueCell label="Vc" value={`${parametros.vc}`} color="text-primary" />
-        <ValueCell label="fz" value={`${parametros.fz}`} color="text-secondary" />
-        <ValueCell label="ae" value={`${parametros.ae}`} color="text-accent-orange" />
-        <ValueCell label="ap" value={`${parametros.ap}`} color="text-accent-orange" />
+        <ValueCell label="Vc" value={`${parametros.vc.toFixed(2)}`} color="text-primary" />
+        <ValueCell label="fz" value={`${parametros.fz.toFixed(2)}`} color="text-secondary" />
+        <ValueCell label="ae" value={`${parametros.ae.toFixed(2)}`} color="text-accent-orange" />
+        <ValueCell label="ap" value={`${parametros.ap.toFixed(2)}`} color="text-accent-orange" />
       </div>
     </div>
   );

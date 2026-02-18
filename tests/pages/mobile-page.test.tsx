@@ -1,5 +1,5 @@
 import { describe, it, expect, beforeEach } from 'vitest';
-import { render, screen, fireEvent } from '@testing-library/react';
+import { render, screen, fireEvent, waitFor } from '@testing-library/react';
 import { BrowserRouter } from 'react-router-dom';
 import { MobilePage } from '@/pages/mobile-page';
 import { useMachiningStore } from '@/store';
@@ -77,10 +77,12 @@ describe('MobilePage', () => {
     expect(screen.getByText(/Configure os parâmetros/)).toBeInTheDocument();
   });
 
-  it('shows results after simulation', () => {
+  it('shows results after simulation', async () => {
     renderMobile();
     fireEvent.click(screen.getByRole('button', { name: /simular/i }));
-    expect(screen.getByText(/SEGURO|ALERTA|CRÍTICO|BLOQUEADO/)).toBeInTheDocument();
+    await waitFor(() => {
+      expect(screen.getByText(/SEGURO|ALERTA|CRÍTICO|BLOQUEADO/)).toBeInTheDocument();
+    }, { timeout: 2000 });
   });
 
   it('renders operation type radio buttons', () => {

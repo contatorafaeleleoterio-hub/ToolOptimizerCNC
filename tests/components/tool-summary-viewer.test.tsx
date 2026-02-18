@@ -50,7 +50,7 @@ describe('ToolSummaryViewer', () => {
 
   it('shows cutting parameters', () => {
     renderViewer();
-    expect(screen.getByText('100')).toBeInTheDocument(); // Vc
-    expect(screen.getByText('0.1')).toBeInTheDocument(); // fz
+    expect(screen.getByText('100.00')).toBeInTheDocument(); // Vc (toFixed(2))
+    expect(screen.getByText('0.10')).toBeInTheDocument(); // fz (toFixed(2))
   });
 });

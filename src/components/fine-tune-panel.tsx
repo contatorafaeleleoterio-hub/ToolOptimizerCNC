@@ -1,6 +1,6 @@
+import { useState, useRef, useCallback } from 'react';
 import { useMachiningStore } from '@/store';
 import { MATERIAIS } from '@/data';
-import { BidirectionalSlider } from './bidirectional-slider';
 
 const SLIDER_CONFIG = [
   { key: 'vc' as const, label: 'Vc', fullLabel: 'CUTTING SPEED', unit: 'M/MIN', color: 'primary',
@@ -17,11 +17,104 @@ const SLIDER_CONFIG = [
     min: 0.05, max: 6, step: 0.05 },
 ] as const;
 
+const BTN_CLS = 'w-6 h-6 rounded bg-black/40 border border-white/10 text-gray-400 hover:text-white hover:bg-white/10 active:scale-90 transition-all text-xs font-bold flex items-center justify-center';
+
+/** Custom styled slider with mobile-style thumb (ring + inner dot + glow) */
+function StyledSlider({ value, min, max, step, color, rgb, label, onChange }: {
+  value: number; min: number; max: number; step: number;
+  color: string; rgb: string; label: string;
+  onChange: (val: number) => void;
+}) {
+  const [pressed, setPressed] = useState(false);
+  const trackRef = useRef<HTMLDivElement>(null);
+  const pct = ((value - min) / (max - min)) * 100;
+
+  const getValueFromX = useCallback((clientX: number) => {
+    const track = trackRef.current;
+    if (!track) return value;
+    const rect = track.getBoundingClientRect();
+    const p = Math.max(0, Math.min(1, (clientX - rect.left) / rect.width));
+    const raw = min + p * (max - min);
+    return Math.max(min, Math.min(max, Math.round(raw / step) * step));
+  }, [min, max, step, value]);
+
+  const handleMouseDown = useCallback((e: React.MouseEvent) => {
+    setPressed(true);
+    onChange(getValueFromX(e.clientX));
+
+    const onMove = (ev: MouseEvent) => onChange(getValueFromX(ev.clientX));
+    const onUp = () => {
+      setPressed(false);
+      window.removeEventListener('mousemove', onMove);
+      window.removeEventListener('mouseup', onUp);
+    };
+    window.addEventListener('mousemove', onMove);
+    window.addEventListener('mouseup', onUp);
+  }, [onChange, getValueFromX]);
+
+  return (
+    <div
+      ref={trackRef}
+      className="relative h-10 flex items-center cursor-pointer select-none"
+      onMouseDown={handleMouseDown}
+      role="slider"
+      aria-label={`${label} slider`}
+      aria-valuenow={value}
+      aria-valuemin={min}
+      aria-valuemax={max}
+      tabIndex={0}
+      onKeyDown={(e) => {
+        if (e.key === 'ArrowRight') onChange(Math.min(max, +(value + step).toFixed(4)));
+        if (e.key === 'ArrowLeft') onChange(Math.max(min, +(value - step).toFixed(4)));
+      }}
+    >
+      {/* Track background */}
+      <div className="absolute left-0 right-0 h-1.5 bg-black/40 rounded-full" />
+
+      {/* Filled track */}
+      <div
+        className="absolute left-0 h-1.5 rounded-full pointer-events-none"
+        style={{
+          width: `${pct}%`,
+          background: `rgba(${rgb},1)`,
+          boxShadow: `0 0 8px rgba(${rgb},0.6)`,
+        }}
+      />
+
+      {/* Thumb */}
+      <div
+        className="absolute -translate-x-1/2 pointer-events-none transition-transform duration-100"
+        style={{ left: `${pct}%`, transform: `translateX(-50%) scale(${pressed ? 1.15 : 1})` }}
+      >
+        {/* Outer ring (glow on press) */}
+        <div
+          className={`w-7 h-7 rounded-full flex items-center justify-center transition-all duration-150 border-2 border-${color}`}
+          style={{
+            boxShadow: pressed
+              ? `0 0 20px rgba(${rgb},0.9), 0 0 8px rgba(${rgb},0.5)`
+              : `0 0 10px rgba(${rgb},0.4)`,
+            background: 'rgba(15,20,25,0.9)',
+          }}
+        >
+          {/* Inner dot */}
+          <div
+            className={`rounded-full transition-all duration-150`}
+            style={{
+              width: pressed ? '10px' : '8px',
+              height: pressed ? '10px' : '8px',
+              background: `rgba(${rgb},1)`,
+              boxShadow: `0 0 6px rgba(${rgb},0.8)`,
+            }}
+          />
+        </div>
+      </div>
+    </div>
+  );
+}
+
 export function FineTunePanel() {
   const parametros = useMachiningStore((s) => s.parametros);
-  const baseParams = useMachiningStore((s) => s.baseParams);
-  const manualOverrides = useMachiningStore((s) => s.manualOverrides);
-  const setParamPercent = useMachiningStore((s) => s.setParamPercent);
+  const setParametros = useMachiningStore((s) => s.setParametros);
   const materialId = useMachiningStore((s) => s.materialId);
   const resultado = useMachiningStore((s) => s.resultado);
   const material = MATERIAIS.find((m) => m.id === materialId);
@@ -33,38 +126,43 @@ export function FineTunePanel() {
       </h2>
 
       <div className="flex-1 flex flex-col justify-between gap-3 px-1">
-        {SLIDER_CONFIG.map(({ key, label, fullLabel, unit, color, rgb }) => {
+        {SLIDER_CONFIG.map(({ key, label, fullLabel, unit, color, rgb, min, max, step }) => {
           const val = parametros[key];
-          const baseVal = baseParams[key];
-          const percentKey = `${key}Percent` as keyof typeof manualOverrides;
-          const currentPercent = (manualOverrides[percentKey] as number) ?? 0;
           const display = key === 'fz' || key === 'ap' ? val.toFixed(2) : key === 'ae' ? val.toFixed(1) : val.toFixed(0);
 
           return (
             <div key={key} className="flex flex-col gap-1 group relative">
-              <div className="flex justify-between items-end mb-1">
+              <div className="flex justify-between items-end">
                 <div className="flex items-baseline gap-2">
                   <span className={`text-xs font-bold font-mono text-${color}`}>{label}</span>
                   <span className="text-[9px] font-bold tracking-wider text-gray-500 uppercase">{fullLabel}</span>
                 </div>
                 <div className="text-right">
-                  <span className={`font-mono text-lg font-bold text-${color}`}
-                    style={{ filter: `drop-shadow(0 0 8px rgba(${rgb},0.4))` }}>
-                    {display}
-                  </span>
+                  <input type="number" value={display} step={step} min={min} max={max}
+                    onChange={(e) => {
+                      const n = Number(e.target.value);
+                      if (!isNaN(n) && n >= min && n <= max) setParametros({ [key]: n });
+                    }}
+                    className={`w-16 bg-transparent border-none text-right font-mono text-lg font-bold text-${color} outline-none [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none`}
+                    style={{ filter: `drop-shadow(0 0 8px rgba(${rgb},0.4))` }}
+                    aria-label={`${label} value`} />
                   <div className="text-[8px] text-gray-500 font-mono tracking-wider">{unit}</div>
                 </div>
               </div>
 
-              <BidirectionalSlider
-                baseValue={baseVal}
-                currentPercent={currentPercent}
-                onChange={(percent) => setParamPercent(key, percent)}
-                color={color}
-                rgb={rgb}
-                label={label}
-                unit={unit}
-              />
+              <div className="flex items-center gap-1.5">
+                <button className={BTN_CLS} aria-label={`Decrease ${label}`}
+                  onClick={() => setParametros({ [key]: Math.max(min, +(val - step).toFixed(4)) })}>−</button>
+                <div className="flex-1">
+                  <StyledSlider
+                    value={val} min={min} max={max} step={step}
+                    color={color} rgb={rgb} label={label}
+                    onChange={(v) => setParametros({ [key]: v })}
+                  />
+                </div>
+                <button className={BTN_CLS} aria-label={`Increase ${label}`}
+                  onClick={() => setParametros({ [key]: Math.min(max, +(val + step).toFixed(4)) })}>+</button>
+              </div>
 
               <div className={`absolute bottom-0 left-0 w-full h-[1px] bg-${color}/30 scale-x-0 group-hover:scale-x-100 transition-transform duration-500 origin-left overflow-clip`} />
             </div>

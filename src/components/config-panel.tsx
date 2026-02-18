@@ -28,7 +28,8 @@ export function ConfigPanel() {
 
   return (
     <div className="flex flex-col gap-3">
-      <div className="bg-surface-dark backdrop-blur-xl border border-white/5 rounded-2xl p-4 shadow-glass flex flex-col gap-3">
+      {/* Sticky Simular + Reset bar */}
+      <div className="sticky top-0 z-10 bg-background-dark/90 backdrop-blur-md pt-0 pb-2">
         <div className="flex gap-3">
           <button onClick={handleSimulate} disabled={isCalculating}
             className="flex-1 py-2 px-4 rounded-xl bg-gradient-to-r from-cyan-600 to-cyan-500 text-white font-bold tracking-wide shadow-neon-cyan hover:brightness-110 transition-all active:scale-[0.98] flex items-center justify-center gap-2 text-sm uppercase disabled:opacity-70 disabled:cursor-not-allowed">
@@ -49,6 +50,9 @@ export function ConfigPanel() {
             <span className="material-symbols-outlined text-xl">restart_alt</span>
           </button>
         </div>
+      </div>
+
+      <div className="bg-surface-dark backdrop-blur-xl border border-white/5 rounded-2xl p-4 shadow-glass flex flex-col gap-3">
 
         {/* Material + operation */}
         <div className="bg-card-dark rounded-xl p-3 border border-white/5 shadow-inner-glow">
