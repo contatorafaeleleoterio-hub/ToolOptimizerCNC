@@ -70,6 +70,28 @@ scripts/          # Scripts auxiliares
 4. Safety factor 0.7-0.8 em todos os valores calculados
 5. Materiais "Estimado" devem mostrar badge de warning
 6. O sistema RECOMENDA, o operador DECIDE (disclaimer obrigatório)
+7. **Store NÃO auto-recalcula:** `setMaterial/setFerramenta/setTipoOperacao/setParametros/setSafetyFactor` zerão `resultado=null` mas NÃO chamam `calcular()`. Usuário deve clicar em "Simular". Exceção: `setLimitesMaquina` ainda chama `calcular()`.
+8. **Testes do store:** chamar `getState().calcular()` explicitamente após `setParametros/setFerramenta` nos testes — NÃO depender de auto-recalc.
+
+## Estado Atual do Código (atualizado 17/02/2026)
+
+### Componentes Implementados
+- `bidirectional-slider.tsx` — Slider -150% a +150%, botões +/-, tick marks, RGB glow
+- `results-panel.tsx` — Inclui sliders RPM/Feed via BigNumber + reset warning amarelo
+- `fine-tune-panel.tsx` — Inclui BidirectionalSlider para Vc, fz, ae, ap
+- `config-panel.tsx` — Botão Simular com spinner animado (450ms loading)
+
+### Hooks Implementados
+- `use-simulation-animation.ts` — Loading 450ms, Gauge 1350ms, Pulse 1500ms
+- `use-reset-feedback.ts` — Detecta mudança de params, aciona aviso visual 800ms
+- `use-is-mobile.ts` — Detecção de viewport mobile
+
+### Animações CSS (`src/index.css`)
+- `spinner` — rotação do ícone no botão Simular
+- `fadeInUp` — entrada suave de elementos
+- `subtlePulse` — pulse nos resultados pós-simulação
+- `gaugeRoll` — gauge durante animação
+- `fadeOut` — opacidade reduzida ao zerar painel
 
 ## Documentos de Referência
 - PRD completo: `docs/specs/PRD_TOOLOPTIMIZER_CNC_MVP.md`

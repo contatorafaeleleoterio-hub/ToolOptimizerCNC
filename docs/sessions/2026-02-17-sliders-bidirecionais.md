@@ -2,7 +2,7 @@
 
 **Data:** 17/02/2026 - Noite
 **Duração:** ~2h
-**Status:** ✅ CONCLUÍDO (pendente commit/push)
+**Status:** ✅ CONCLUÍDO e PUBLICADO — Commit `d6e5e48`
 
 ---
 
@@ -181,14 +181,10 @@ M  tests/components/results-panel.test.tsx       (cobertura sliders)
 
 ## Próximos Passos
 
-### Imediato
+### Concluído
 1. ✅ Documentação atualizada (PROXIMA_SESSAO.md, MEMORY.md)
-2. ⏳ Commit pendente:
-   ```bash
-   git add .
-   git commit -m "feat: add bidirectional sliders for manual parameter control"
-   git push origin main
-   ```
+2. ✅ Commit realizado: `d6e5e48` feat: add bidirectional sliders for manual parameter control
+3. ✅ Push para GitHub — publicado no GitHub Pages
 
 ### Backlog
 - [ ] Testar sliders em diferentes resoluções desktop
@@ -215,9 +211,9 @@ M  tests/components/results-panel.test.tsx       (cobertura sliders)
 
 ## Commits Relacionados
 
-### Esta Sessão (pendente)
+### Esta Sessão — PUBLICADO
 ```
-feat: add bidirectional sliders for manual parameter control
+d6e5e48  feat: add bidirectional sliders for manual parameter control
 
 - New BidirectionalSlider component (reusable)
 - Integrated in Results Panel (RPM, Feed)
