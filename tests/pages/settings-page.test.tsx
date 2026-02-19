@@ -98,14 +98,16 @@ describe('SettingsPage', () => {
     expect(useMachiningStore.getState().preferences.machineName).toBe('Romi D800');
   });
 
-  it('changes safety factor via slider', () => {
+  it('changes safety factor via − button (styled slider)', () => {
     renderPage();
     const navButtons = screen.getAllByRole('button');
     const segBtn = navButtons.find((b) => b.textContent?.includes('Segurança'));
     fireEvent.click(segBtn!);
-    const slider = screen.getByRole('slider');
-    fireEvent.change(slider, { target: { value: '0.70' } });
-    expect(useMachiningStore.getState().safetyFactor).toBe(0.70);
+    // Default safetyFactor is 0.80 — click − twice to reach 0.70
+    const minusBtn = screen.getByRole('button', { name: /Diminuir fator de segurança/i });
+    fireEvent.click(minusBtn);
+    fireEvent.click(minusBtn);
+    expect(useMachiningStore.getState().safetyFactor).toBeCloseTo(0.70, 2);
   });
 
   it('changes decimal precision in Exibição section', () => {

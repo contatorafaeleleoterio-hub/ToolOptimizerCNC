@@ -1,4 +1,4 @@
-import { useState, useRef } from 'react';
+import { useState, useRef, useCallback } from 'react';
 import { useMachiningStore } from '@/store';
 import { useNavigate } from 'react-router-dom';
 import { useIsMobile } from '@/hooks/use-is-mobile';
@@ -126,6 +126,87 @@ function MaquinaSection() {
   );
 }
 
+/* ── StyledSlider (same as fine-tune-panel) ── */
+const BTN_CLS = 'w-6 h-6 rounded bg-black/40 border border-white/10 text-gray-400 hover:text-white hover:bg-white/10 active:scale-90 transition-all text-xs font-bold flex items-center justify-center';
+
+function StyledSlider({ value, min, max, step, color, rgb, label, onChange }: {
+  value: number; min: number; max: number; step: number;
+  color: string; rgb: string; label: string;
+  onChange: (val: number) => void;
+}) {
+  const [pressed, setPressed] = useState(false);
+  const trackRef = useRef<HTMLDivElement>(null);
+  const pct = ((value - min) / (max - min)) * 100;
+
+  const getValueFromX = useCallback((clientX: number) => {
+    const track = trackRef.current;
+    if (!track) return value;
+    const rect = track.getBoundingClientRect();
+    const p = Math.max(0, Math.min(1, (clientX - rect.left) / rect.width));
+    const raw = min + p * (max - min);
+    return Math.max(min, Math.min(max, Math.round(raw / step) * step));
+  }, [min, max, step, value]);
+
+  const handleMouseDown = useCallback((e: React.MouseEvent) => {
+    setPressed(true);
+    onChange(getValueFromX(e.clientX));
+    const onMove = (ev: MouseEvent) => onChange(getValueFromX(ev.clientX));
+    const onUp = () => {
+      setPressed(false);
+      window.removeEventListener('mousemove', onMove);
+      window.removeEventListener('mouseup', onUp);
+    };
+    window.addEventListener('mousemove', onMove);
+    window.addEventListener('mouseup', onUp);
+  }, [onChange, getValueFromX]);
+
+  return (
+    <div
+      ref={trackRef}
+      className="relative h-10 flex items-center cursor-pointer select-none"
+      onMouseDown={handleMouseDown}
+      role="slider"
+      aria-label={`${label} slider`}
+      aria-valuenow={value}
+      aria-valuemin={min}
+      aria-valuemax={max}
+      tabIndex={0}
+      onKeyDown={(e) => {
+        if (e.key === 'ArrowRight') onChange(Math.min(max, +(value + step).toFixed(4)));
+        if (e.key === 'ArrowLeft') onChange(Math.max(min, +(value - step).toFixed(4)));
+      }}
+    >
+      {/* Track background */}
+      <div className="absolute left-0 right-0 h-1.5 bg-black/40 rounded-full" />
+      {/* Filled track */}
+      <div
+        className="absolute left-0 h-1.5 rounded-full pointer-events-none"
+        style={{ width: `${pct}%`, background: `rgba(${rgb},1)`, boxShadow: `0 0 8px rgba(${rgb},0.6)` }}
+      />
+      {/* Thumb */}
+      <div
+        className="absolute -translate-x-1/2 pointer-events-none transition-transform duration-100"
+        style={{ left: `${pct}%`, transform: `translateX(-50%) scale(${pressed ? 1.15 : 1})` }}
+      >
+        <div
+          className={`w-7 h-7 rounded-full flex items-center justify-center transition-all duration-150 border-2 border-${color}`}
+          style={{
+            boxShadow: pressed
+              ? `0 0 20px rgba(${rgb},0.9), 0 0 8px rgba(${rgb},0.5)`
+              : `0 0 10px rgba(${rgb},0.4)`,
+            background: 'rgba(15,20,25,0.9)',
+          }}
+        >
+          <div
+            className="rounded-full transition-all duration-150"
+            style={{ width: pressed ? '10px' : '8px', height: pressed ? '10px' : '8px', background: `rgba(${rgb},1)`, boxShadow: `0 0 6px rgba(${rgb},0.8)` }}
+          />
+        </div>
+      </div>
+    </div>
+  );
+}
+
 /* ── Segurança ── */
 function SegurancaSection() {
   const safetyFactor = useMachiningStore((s) => s.safetyFactor);
@@ -142,11 +223,30 @@ function SegurancaSection() {
           <span className="w-1 h-3 bg-seg-verde rounded-full" />
           Fator de Segurança
         </h3>
-        <div className="flex items-center gap-4">
-          <input type="range" min={0.5} max={1.0} step={0.05} value={safetyFactor}
-            onChange={(e) => setSafetyFactor(Number(e.target.value))}
-            className="flex-1 accent-primary h-2" />
-          <span className="text-lg font-mono font-bold text-primary w-16 text-right">{safetyFactor.toFixed(2)}</span>
+        <div className="flex items-center gap-2">
+          <button
+            className={BTN_CLS}
+            onClick={() => setSafetyFactor(Math.max(0.5, +(safetyFactor - 0.05).toFixed(2)))}
+            aria-label="Diminuir fator de segurança"
+          >−</button>
+          <div className="flex-1">
+            <StyledSlider
+              value={safetyFactor}
+              min={0.5}
+              max={1.0}
+              step={0.05}
+              color="primary"
+              rgb="0,217,255"
+              label="Fator de Segurança"
+              onChange={(v) => setSafetyFactor(+(v.toFixed(2)))}
+            />
+          </div>
+          <button
+            className={BTN_CLS}
+            onClick={() => setSafetyFactor(Math.min(1.0, +(safetyFactor + 0.05).toFixed(2)))}
+            aria-label="Aumentar fator de segurança"
+          >+</button>
+          <span className="text-lg font-mono font-bold text-primary w-14 text-right">{safetyFactor.toFixed(2)}</span>
         </div>
         <p className="text-[10px] text-gray-500 mt-2">Aplicado a Potência, Torque. Valores mais baixos = mais conservador.</p>
       </div>
