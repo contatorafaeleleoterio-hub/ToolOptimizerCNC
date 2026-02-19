@@ -1,22 +1,25 @@
-# PROXIMA SESSAO: Mobile fixes feitos — Pronto para Story-004
+# PROXIMA SESSAO: Desktop .exe feito + Docs atualizados — Pronto para Story-004
 
-**Data atualizacao:** 18/02/2026
-**Status:** Settings Page responsiva + touch targets + CI/CD — 333 testes passando
+**Data atualizacao:** 19/02/2026
+**Status:** Desktop portable .exe + ADRs versionamento — 333 testes passando
 
 ---
 
 ## ESTADO ATUAL DO PROJETO
 
 ### Branch e Commits
-- **Branch:** main — sincronizado com `origin/main`, working tree clean
-- **Ultimo commit:** `d74804e` fix: mobile responsiveness for settings page and touch targets
+- **Branch:** main
+- **Ultimo commit:** verificar `git log --oneline -1`
 - **Testes:** 333 passing (24 arquivos)
 - **Bundle:** JS 87KB gzip + CSS 11KB gzip = ~98KB total
 - **GitHub:** https://github.com/contatorafaeleleoterio-hub/ToolOptimizerCNC
 - **Deploy:** GitHub Pages ativo + CI pipeline ativo
+- **Desktop:** `Sistema_Desktop_Pen_driver/` — .exe portátil 85MB (Electron v40.4.1)
+- **Versão:** `0.2.0` (SemVer — ver ADR-006)
 
 ### Commits Recentes
 ```
+(sessão 19/02)  docs: add ADR-005 Electron desktop build guide and ADR-006 versioning strategy
 d74804e  fix: mobile responsiveness for settings page and touch targets
 ca95afe  docs: session summary 18/02 session 2 - Story-003 CI/CD done
 496705b  ci: add GitHub Actions CI workflow with quality gates
@@ -26,23 +29,34 @@ f70a484  docs: session summary 18/02 - sticky actions, styled sliders, toFixed(2
 
 ---
 
-## O QUE FOI IMPLEMENTADO (sessão 18/02/2026 — sessão 3)
+## O QUE FOI IMPLEMENTADO (sessão 19/02/2026)
 
-### ✅ Settings Page responsiva (mobile)
-- Sidebar `w-64 shrink-0` → nav horizontal com scroll (`overflow-x-auto`) em mobile
-- Desktop mantém sidebar vertical (`sm:flex-col sm:w-56 sm:sticky`)
-- Todos os `grid-cols-2` e `grid-cols-3` → `grid-cols-1 sm:grid-cols-2/3`
-- Padding `p-6` → `p-3 sm:p-6` em cards e container
-- Botão Voltar: usa `useIsMobile()` → navega para `/mobile` em celular, `/` em desktop
-- Label "Voltar" oculto em mobile (só ícone `arrow_back`)
+### ✅ Desktop Portable .exe (Electron)
+- Clonado projeto para `Sistema_Desktop_Pen_driver/` (isolado do web)
+- Electron v40.4.1 + electron-builder v26.8.1
+- HashRouter (substitui BrowserRouter para protocolo file://)
+- Vite base relativo `'./'` + outDir `dist/renderer` condicional
+- Fallback de fontes offline (system-ui, Segoe UI)
+- Content-Security-Policy no index.html
+- 333 testes passando na cópia desktop
+- **Resultado:** `ToolOptimizer-CNC-0.1.0-portable.exe` (85MB)
+- **Guia completo:** `docs/architecture/ADR-005-electron-desktop-build.md`
 
-### ✅ NumInput — touch targets corrigidos
-- Botões `+`/`−`: `w-7` (28px) → `w-9` (36px)
-- Input com `min-h-[44px]` (padrão 44px Apple HIG / Google Material)
-- Adicionado `active:bg-white/10` para feedback visual no toque
+### ✅ ADR-005: Electron Desktop Build
+- Guia passo-a-passo com 14 passos
+- Tabela de problemas e soluções (7 issues documentados)
+- Tabela de arquivos modificados (13+ arquivos)
+- Melhorias futuras documentadas
 
-### ✅ TouchSlider — texto corrigido
-- `"Segure por 1s"` → `"Segure por 0.8s"` (consistente com `setTimeout(..., 800)`)
+### ✅ ADR-006: Estratégia de Versionamento (SemVer)
+- Formato MAJOR.MINOR.PATCH definido
+- Regras: Story = MINOR, Fix = PATCH, MVP completo = MAJOR
+- Histórico retroativo de versões
+- Versão bumped para 0.2.0
+
+### ✅ CLAUDE.md atualizado
+- Seção "Build Desktop (.exe Portátil — Electron)" com referência ao ADR-005
+- Seção "Versionamento (SemVer)" com referência ao ADR-006
 
 ---
 
@@ -77,16 +91,27 @@ src/
       mobile-header.tsx
       mobile-config-section.tsx
       mobile-results-section.tsx
-      mobile-fine-tune-section.tsx  — texto "0.8s" corrigido
+      mobile-fine-tune-section.tsx
   pages/
     mobile-page.tsx
-    settings-page.tsx         — RESPONSIVA: nav horizontal mobile, grids colapsados
+    settings-page.tsx         — RESPONSIVA
     history-page.tsx
+  app/
+    main.js                   — Electron main process (CJS)
+    preload.js                — Electron preload (CJS)
 .github/
   workflows/
     ci.yml                    — TypeCheck + Test + Build em push/PR
     deploy.yml                — Deploy GitHub Pages em push main
+docs/
+  architecture/
+    ADR-001 a ADR-004         — Stack, CSS, Desktop/Mobile, AIOS
+    ADR-005-electron-desktop-build.md  — Guia build .exe
+    ADR-006-estrategia-versionamento.md — SemVer
+  stories/
+    story-001 a story-003     — Limpeza, Cloudflare, CI/CD
 tests/                        — 24 arquivos, 333 testes
+Sistema_Desktop_Pen_driver/   — Clone isolado para build desktop .exe
 README.md                     — Badges CI + Deploy
 ```
 
@@ -104,21 +129,31 @@ README.md                     — Badges CI + Deploy
 
 **Arquivo:** `docs/stories/story-004-seo-schema.md` (criar)
 
-### 2. Story-002 Fases 2-6: Deploy Cloudflare (MANUAL pelo usuário)
+### 2. Bumpar versão para 0.2.0
+- Editar `package.json` → `"version": "0.2.0"`
+- `git tag v0.2.0`
+- Rebuild desktop .exe com nova versão (se necessário)
+
+### 3. Story-002 Fases 2-6: Deploy Cloudflare (MANUAL pelo usuário)
 - Conta Cloudflare + projeto Pages conectado ao GitHub
 - Env var: `VITE_BASE_URL=/` e `NODE_VERSION=20`
 - Domínio `tooloptimizercnc.com.br` no Registro.br
 
-### 3. Branch Protection no GitHub (MANUAL)
+### 4. Branch Protection no GitHub (MANUAL)
 - Settings → Branches → Add rule para `main`
 - ☑ Require status checks: `TypeCheck + Tests + Build`
 
-### 4. HistoryPage responsiva (backlog)
+### 5. HistoryPage responsiva (backlog)
 - Mesmo padrão da Settings Page (verificar se tem issues mobile)
 
-### 5. Polimento UI/UX (backlog)
+### 6. Polimento UI/UX (backlog)
 - Testar em resoluções reais: 1366, 1920, 2560
 - Testar mobile em dispositivos físicos
+
+### 7. Desktop .exe melhorias (backlog)
+- Ícone customizado (`build/icon.ico`)
+- Material Symbols font offline (~300KB woff2)
+- Code signing (SmartScreen)
 
 ---
 
@@ -132,6 +167,8 @@ README.md                     — Badges CI + Deploy
 5. Usar apenas terminal interno (Bash)
 6. **AO FINAL:** Atualizar `docs/PROXIMA_SESSAO.md` + `memory/MEMORY.md`
 7. **TESTES store:** chamar `calcular()` explicitamente
+8. **VERSIONAMENTO:** Bumpar `package.json` version após story completa (ver ADR-006)
+9. **BUILD DESKTOP:** Se pedido, seguir `docs/architecture/ADR-005-electron-desktop-build.md`
 
 ---
 
@@ -148,12 +185,16 @@ README.md                     — Badges CI + Deploy
 - [x] Formatação numérica (toFixed(2))
 - [x] Story-003: CI/CD GitHub Actions
 - [x] Mobile fixes: Settings responsiva + touch targets
+- [x] Desktop portable (.exe Electron) para pen drive
+- [x] ADR-005 + ADR-006: Documentação desktop build + versionamento
 
 ### Semana 2-3:
 - [ ] **Story-004: SEO Schema.org + meta tags ← PRÓXIMA**
+- [ ] Bumpar versão para 0.2.0
 - [ ] HistoryPage responsiva
 - [ ] Polimento UI/UX
 - [ ] Branch protection GitHub (manual)
+- [ ] Desktop melhorias: ícone, fontes offline, code signing
 
 ---
 

@@ -114,6 +114,21 @@ scripts/          # Scripts auxiliares
 - UI spec: `docs/design/UI_DESIGN_SPEC_FINAL.md`
 - Branding: `docs/design/UI_BRANDING.md`
 
+## Build Desktop (.exe Portátil — Electron)
+- **Guia completo:** `docs/architecture/ADR-005-electron-desktop-build.md`
+- **Pasta de trabalho:** `Sistema_Desktop_Pen_driver/` (clone isolado, NUNCA alterar projeto web)
+- **Comando:** `npm run electron-build` (dentro da pasta desktop)
+- **Resultado:** `dist-electron/ToolOptimizer-CNC-{version}-portable.exe`
+- **REGRA:** Sempre clonar fresh do repo antes de rebuild
+- **Problemas comuns e soluções:** Ver tabela "Quick Reference" no ADR-005
+
+## Versionamento (SemVer)
+- **Estratégia:** `docs/architecture/ADR-006-estrategia-versionamento.md`
+- **Formato:** `MAJOR.MINOR.PATCH` (ex: `0.2.0`)
+- **Regra:** Story completa = MINOR bump, fix = PATCH bump, MVP completo = MAJOR bump
+- **Versão atual:** verificar `package.json` → `"version"`
+- **Desktop .exe herda** a versão do package.json automaticamente
+- **Como bumpar:** Editar `"version"` no `package.json` → commit → opcional: `git tag vX.Y.Z`
 
 ## Framework de Desenvolvimento: Synkra AIOS (Adaptado)
 
