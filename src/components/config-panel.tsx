@@ -16,7 +16,7 @@ export function ConfigPanel() {
   const {
     materialId, ferramenta, tipoOperacao, parametros, safetyFactor,
     setMaterial, setFerramenta, setTipoOperacao, setParametros,
-    setSafetyFactor, simular, reset,
+    simular, reset,
   } = useMachiningStore();
 
   const { isCalculating, runSimulation } = useSimulationAnimation();
@@ -165,23 +165,18 @@ export function ConfigPanel() {
 
         {/* Cutting parameters */}
         <div className="bg-card-dark rounded-xl p-3 border border-white/5 shadow-inner-glow">
-          <SectionTitle color="bg-accent-orange" label="Parâmetros de Corte" />
+          <div className="flex items-center justify-between mb-2">
+            <SectionTitle color="bg-accent-orange" label="Parâmetros de Corte" />
+            <span className="text-[10px] text-gray-500 font-mono flex items-center gap-1" title="Fator de Segurança — ajuste em Configurações">
+              <span className="material-symbols-outlined" style={{ fontSize: '11px' }}>shield</span>
+              SF: {safetyFactor.toFixed(2)}
+            </span>
+          </div>
           <div className="grid grid-cols-2 gap-3">
             <NumInput label="ap (mm)" value={parametros.ap} onChange={(v) => setParametros({ ap: v })} min={0.1} max={50} step={0.1} />
             <NumInput label="ae (mm)" value={parametros.ae} onChange={(v) => setParametros({ ae: v })} min={0.1} max={50} step={0.1} />
             <NumInput label="fz (mm)" value={parametros.fz} onChange={(v) => setParametros({ fz: v })} min={0.01} max={1} step={0.01} />
             <NumInput label="Vc (m/min)" value={parametros.vc} onChange={(v) => setParametros({ vc: v })} min={1} max={1200} step={1} />
-          </div>
-        </div>
-
-        {/* Safety factor slider */}
-        <div className="bg-card-dark rounded-xl p-3 border border-white/5 shadow-inner-glow">
-          <SectionTitle color="bg-seg-verde" label="Fator de Segurança" />
-          <div className="flex items-center gap-4">
-            <input type="range" min={0.5} max={1} step={0.05} value={safetyFactor}
-              onChange={(e) => setSafetyFactor(Number(e.target.value))}
-              className="flex-1 h-1.5 bg-black/40 rounded-full appearance-none cursor-pointer [&::-webkit-slider-thumb]:w-4 [&::-webkit-slider-thumb]:h-4 [&::-webkit-slider-thumb]:rounded-full [&::-webkit-slider-thumb]:bg-seg-verde [&::-webkit-slider-thumb]:appearance-none [&::-webkit-slider-thumb]:shadow-[0_0_10px_rgba(46,204,113,0.6)]" />
-            <span className="text-sm font-mono text-white w-10 text-right">{safetyFactor.toFixed(2)}</span>
           </div>
         </div>
       </div>

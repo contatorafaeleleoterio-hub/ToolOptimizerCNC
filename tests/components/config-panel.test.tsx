@@ -61,10 +61,9 @@ describe('ConfigPanel', () => {
     expect(screen.getByText('Vc (m/min)')).toBeInTheDocument();
   });
 
-  it('renders safety factor slider', () => {
+  it('renders safety factor badge (read-only, moved to Settings)', () => {
     renderPanel();
-    expect(screen.getByText('Fator de Segurança')).toBeInTheDocument();
-    expect(screen.getByText('0.80')).toBeInTheDocument();
+    expect(screen.getByText('SF: 0.80')).toBeInTheDocument();
   });
 
   it('shows raio da ponta for toroidal with 2 options (R0.5, R1)', () => {
