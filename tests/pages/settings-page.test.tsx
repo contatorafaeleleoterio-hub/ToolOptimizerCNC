@@ -52,8 +52,8 @@ describe('SettingsPage', () => {
     const navButtons = screen.getAllByRole('button');
     const materiaisBtn = navButtons.find((b) => b.textContent?.includes('Materiais'));
     fireEvent.click(materiaisBtn!);
-    expect(screen.getByText('Materiais Base (somente leitura)')).toBeInTheDocument();
-    expect(screen.getByText('Materiais Personalizados')).toBeInTheDocument();
+    expect(screen.getByText('Todos os Materiais')).toBeInTheDocument();
+    expect(screen.getByText('Aço 1020')).toBeInTheDocument();
   });
 
   it('navigates to Ferramentas section', () => {

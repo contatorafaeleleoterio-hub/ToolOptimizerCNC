@@ -4,7 +4,7 @@ import { useNavigate } from 'react-router-dom';
 import { useIsMobile } from '@/hooks/use-is-mobile';
 import { MATERIAIS } from '@/data';
 import { TipoUsinagem } from '@/types';
-import type { CustomMaterial, ClasseISO } from '@/types';
+import type { Material, CustomMaterial, ClasseISO } from '@/types';
 import { NumInput } from '@/components/ui-helpers';
 
 type Section = 'maquina' | 'seguranca' | 'materiais' | 'ferramentas' | 'exibicao' | 'dados';
@@ -213,96 +213,183 @@ function SegurancaSection() {
 function MateriaisSection() {
   const customMaterials = useMachiningStore((s) => s.customMaterials);
   const addCustomMaterial = useMachiningStore((s) => s.addCustomMaterial);
+  const updateCustomMaterial = useMachiningStore((s) => s.updateCustomMaterial);
   const removeCustomMaterial = useMachiningStore((s) => s.removeCustomMaterial);
   const [showForm, setShowForm] = useState(false);
+  // editingId: ID of the material being edited (base or custom)
+  const [editingId, setEditingId] = useState<number | null>(null);
 
-  const handleAdd = (m: CustomMaterial) => {
-    addCustomMaterial(m);
-    setShowForm(false);
+  // Returns the effective material to display: custom override takes precedence over base
+  const getEffective = (baseId: number): Material | CustomMaterial => {
+    const override = customMaterials.find((c) => c.id === baseId);
+    return override ?? (MATERIAIS.find((m) => m.id === baseId) as Material);
   };
+
+  // Custom materials that are NOT overrides of base materials (IDs > 9)
+  const extraCustom = customMaterials.filter((c) => !MATERIAIS.some((m) => m.id === c.id));
+
+  const handleSave = (m: CustomMaterial) => {
+    const existingCustom = customMaterials.find((c) => c.id === m.id);
+    if (existingCustom) {
+      updateCustomMaterial(m.id, m);
+    } else {
+      addCustomMaterial(m);
+    }
+    setShowForm(false);
+    setEditingId(null);
+  };
+
+  const handleEditClick = (id: number) => {
+    setShowForm(false);
+    setEditingId(id);
+  };
+
+  const handleAddClick = () => {
+    setEditingId(null);
+    setShowForm((v) => !v);
+  };
+
+  const isOverride = (id: number) => customMaterials.some((c) => c.id === id);
 
   return (
     <div>
-      <SectionHeader icon="category" title="Materiais" desc="Banco de materiais padrão e personalizados" />
+      <SectionHeader icon="category" title="Materiais" desc="Banco de materiais com edição personalizada" />
 
-      {/* Built-in materials */}
-      <div className={CARD}>
-        <h3 className="text-xs font-bold text-gray-400 uppercase tracking-widest mb-4 flex items-center gap-2">
-          <span className="w-1 h-3 bg-primary rounded-full" />
-          Materiais Base (somente leitura)
-        </h3>
-        <div className="space-y-2">
-          {MATERIAIS.map((m) => (
-            <div key={m.id} className="flex flex-wrap items-center justify-between gap-2 px-3 py-2 bg-black/30 rounded-lg border border-white/5">
-              <div className="flex items-center gap-2 flex-wrap">
-                <span className={`text-[10px] font-bold px-2 py-0.5 rounded shrink-0 ${
-                  m.iso === 'P' ? 'bg-blue-500/20 text-blue-400' :
-                  m.iso === 'M' ? 'bg-yellow-500/20 text-yellow-400' :
-                  m.iso === 'N' ? 'bg-green-500/20 text-green-400' :
-                  'bg-red-500/20 text-red-400'
-                }`}>ISO {m.iso}</span>
-                <span className="text-sm text-gray-200">{m.nome}</span>
-                {m.status === 'estimado' && <span className="text-[10px] text-seg-amarelo">⚠ Estimado</span>}
-              </div>
-              <div className="flex items-center gap-3 text-[10px] text-gray-500 font-mono">
-                <span>Kc={m.kc1_1}</span>
-                <span className="hidden sm:inline">{m.dureza}</span>
-              </div>
-            </div>
-          ))}
-        </div>
-      </div>
-
-      {/* Custom materials */}
       <div className={CARD}>
         <div className="flex items-center justify-between mb-4">
           <h3 className="text-xs font-bold text-gray-400 uppercase tracking-widest flex items-center gap-2">
-            <span className="w-1 h-3 bg-secondary rounded-full" />
-            Materiais Personalizados
+            <span className="w-1 h-3 bg-primary rounded-full" />
+            Todos os Materiais
           </h3>
-          <button onClick={() => setShowForm(!showForm)}
+          <button onClick={handleAddClick}
             className="min-h-[44px] px-3 py-2 rounded-lg bg-primary/10 border border-primary/30 text-primary text-xs font-bold active:bg-primary/20 hover:bg-primary/20 transition-all flex items-center gap-1">
             <span className="material-symbols-outlined text-sm">add</span>
             Adicionar
           </button>
         </div>
 
-        {showForm && <MaterialForm onSave={handleAdd} onCancel={() => setShowForm(false)} />}
-
-        {customMaterials.length === 0 && !showForm && (
-          <p className="text-sm text-gray-500 text-center py-4">Nenhum material personalizado adicionado</p>
+        {showForm && (
+          <MaterialForm onSave={handleSave} onCancel={() => setShowForm(false)} />
         )}
-        {customMaterials.map((m) => (
-          <div key={m.id} className="flex items-center justify-between px-3 py-2 bg-black/30 rounded-lg border border-white/5 mb-2">
-            <div className="flex items-center gap-3">
-              <span className="text-[10px] font-bold px-2 py-0.5 rounded bg-secondary/20 text-secondary">Custom</span>
-              <span className="text-sm text-gray-200">{m.nome}</span>
-            </div>
-            <button onClick={() => removeCustomMaterial(m.id)}
-              className="min-h-[44px] min-w-[44px] flex items-center justify-center text-gray-500 hover:text-seg-vermelho transition-colors">
-              <span className="material-symbols-outlined text-sm">delete</span>
-            </button>
-          </div>
-        ))}
+
+        <div className="space-y-2">
+          {/* Base materials (IDs 1-9) — show override if exists */}
+          {MATERIAIS.map((base) => {
+            const mat = getEffective(base.id);
+            const custom = isOverride(base.id);
+            if (editingId === base.id) {
+              return (
+                <div key={base.id}>
+                  <MaterialForm
+                    initialValues={{ ...mat, isCustom: true } as CustomMaterial}
+                    onSave={handleSave}
+                    onCancel={() => setEditingId(null)}
+                  />
+                </div>
+              );
+            }
+            return (
+              <div key={base.id} className={`flex flex-wrap items-center justify-between gap-2 px-3 py-2 rounded-lg border ${custom ? 'bg-accent-orange/5 border-accent-orange/20' : 'bg-black/30 border-white/5'}`}>
+                <div className="flex items-center gap-2 flex-wrap">
+                  {custom ? (
+                    <span className="text-[10px] font-bold px-2 py-0.5 rounded bg-accent-orange/20 text-accent-orange shrink-0">Custom</span>
+                  ) : (
+                    <span className={`text-[10px] font-bold px-2 py-0.5 rounded shrink-0 ${
+                      mat.iso === 'P' ? 'bg-blue-500/20 text-blue-400' :
+                      mat.iso === 'M' ? 'bg-yellow-500/20 text-yellow-400' :
+                      mat.iso === 'N' ? 'bg-green-500/20 text-green-400' :
+                      'bg-red-500/20 text-red-400'
+                    }`}>ISO {mat.iso}</span>
+                  )}
+                  <span className="text-sm text-gray-200">{mat.nome}</span>
+                  {mat.status === 'estimado' && !custom && <span className="text-[10px] text-seg-amarelo">⚠ Estimado</span>}
+                  <span className="text-[10px] text-gray-500 font-mono hidden sm:inline">Kc={mat.kc1_1} | {mat.dureza}</span>
+                </div>
+                <div className="flex items-center">
+                  <button onClick={() => handleEditClick(base.id)}
+                    className="min-h-[44px] min-w-[44px] flex items-center justify-center text-gray-500 hover:text-primary transition-colors">
+                    <span className="material-symbols-outlined text-sm">edit</span>
+                  </button>
+                  {custom && (
+                    <button onClick={() => removeCustomMaterial(base.id)}
+                      title="Restaurar padrão"
+                      className="min-h-[44px] min-w-[44px] flex items-center justify-center text-gray-500 hover:text-seg-vermelho transition-colors">
+                      <span className="material-symbols-outlined text-sm">restart_alt</span>
+                    </button>
+                  )}
+                </div>
+              </div>
+            );
+          })}
+
+          {/* Extra custom materials (IDs > 9) */}
+          {extraCustom.map((m) => {
+            if (editingId === m.id) {
+              return (
+                <div key={m.id}>
+                  <MaterialForm
+                    initialValues={m}
+                    onSave={handleSave}
+                    onCancel={() => setEditingId(null)}
+                  />
+                </div>
+              );
+            }
+            return (
+              <div key={m.id} className="flex items-center justify-between px-3 py-2 bg-black/30 rounded-lg border border-white/5">
+                <div className="flex items-center gap-2 flex-wrap">
+                  <span className="text-[10px] font-bold px-2 py-0.5 rounded bg-secondary/20 text-secondary shrink-0">Custom</span>
+                  <span className="text-sm text-gray-200">{m.nome}</span>
+                  <span className="text-[10px] text-gray-500 font-mono hidden sm:inline">Kc={m.kc1_1} | ISO {m.iso}</span>
+                </div>
+                <div className="flex items-center">
+                  <button onClick={() => handleEditClick(m.id)}
+                    className="min-h-[44px] min-w-[44px] flex items-center justify-center text-gray-500 hover:text-primary transition-colors">
+                    <span className="material-symbols-outlined text-sm">edit</span>
+                  </button>
+                  <button onClick={() => removeCustomMaterial(m.id)}
+                    className="min-h-[44px] min-w-[44px] flex items-center justify-center text-gray-500 hover:text-seg-vermelho transition-colors">
+                    <span className="material-symbols-outlined text-sm">delete</span>
+                  </button>
+                </div>
+              </div>
+            );
+          })}
+        </div>
       </div>
     </div>
   );
 }
 
-function MaterialForm({ onSave, onCancel }: { onSave: (m: CustomMaterial) => void; onCancel: () => void }) {
-  const [nome, setNome] = useState('');
-  const [iso, setIso] = useState<ClasseISO>('P');
-  const [dureza, setDureza] = useState('');
-  const [kc, setKc] = useState(2000);
-  const [mc, setMc] = useState(0.2);
-  const [vcDes, setVcDes] = useState<[number, number]>([100, 200]);
-  const [vcSemi, setVcSemi] = useState<[number, number]>([120, 240]);
-  const [vcAcab, setVcAcab] = useState<[number, number]>([150, 280]);
+function MaterialForm({
+  onSave,
+  onCancel,
+  initialValues,
+}: {
+  onSave: (m: CustomMaterial) => void;
+  onCancel: () => void;
+  initialValues?: CustomMaterial;
+}) {
+  const isEditing = !!initialValues;
+  const [nome, setNome] = useState(initialValues?.nome ?? '');
+  const [iso, setIso] = useState<ClasseISO>(initialValues?.iso ?? 'P');
+  const [dureza, setDureza] = useState(initialValues?.dureza ?? '');
+  const [kc, setKc] = useState(initialValues?.kc1_1 ?? 2000);
+  const [mc, setMc] = useState(initialValues?.mc ?? 0.2);
+  const [vcDes, setVcDes] = useState<[number, number]>(
+    initialValues?.vcRanges[TipoUsinagem.DESBASTE] ?? [100, 200]
+  );
+  const [vcSemi, setVcSemi] = useState<[number, number]>(
+    initialValues?.vcRanges[TipoUsinagem.SEMI_ACABAMENTO] ?? [120, 240]
+  );
+  const [vcAcab, setVcAcab] = useState<[number, number]>(
+    initialValues?.vcRanges[TipoUsinagem.ACABAMENTO] ?? [150, 280]
+  );
 
   const handleSubmit = () => {
     if (!nome.trim()) return;
     onSave({
-      id: Date.now(),
+      id: initialValues?.id ?? Date.now(),
       nome: nome.trim(),
       iso,
       dureza: dureza || 'N/A',
@@ -319,7 +406,13 @@ function MaterialForm({ onSave, onCancel }: { onSave: (m: CustomMaterial) => voi
   };
 
   return (
-    <div className="bg-black/30 rounded-lg border border-primary/20 p-4 mb-4 space-y-3">
+    <div className={`bg-black/30 rounded-lg border p-4 mb-4 space-y-3 ${isEditing ? 'border-accent-orange/30' : 'border-primary/20'}`}>
+      {isEditing && (
+        <p className="text-[10px] font-semibold text-accent-orange uppercase tracking-wide flex items-center gap-1">
+          <span className="material-symbols-outlined text-sm">edit</span>
+          Editando material
+        </p>
+      )}
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
         <div>
           <label className={LABEL}>Nome do Material</label>
@@ -381,8 +474,12 @@ function MaterialForm({ onSave, onCancel }: { onSave: (m: CustomMaterial) => voi
       </div>
       <div className="flex gap-2 pt-2">
         <button onClick={handleSubmit}
-          className="min-h-[44px] px-4 py-2 rounded-lg bg-primary/20 border border-primary/40 text-primary text-xs font-bold active:bg-primary/30 hover:bg-primary/30 transition-all">
-          Salvar Material
+          className={`min-h-[44px] px-4 py-2 rounded-lg text-xs font-bold transition-all ${
+            isEditing
+              ? 'bg-accent-orange/20 border border-accent-orange/40 text-accent-orange active:bg-accent-orange/30 hover:bg-accent-orange/30'
+              : 'bg-primary/20 border border-primary/40 text-primary active:bg-primary/30 hover:bg-primary/30'
+          }`}>
+          {isEditing ? 'Salvar Alterações' : 'Salvar Material'}
         </button>
         <button onClick={onCancel}
           className="min-h-[44px] px-4 py-2 rounded-lg bg-white/5 border border-white/10 text-gray-400 text-xs active:bg-white/10 hover:bg-white/10 transition-all">
