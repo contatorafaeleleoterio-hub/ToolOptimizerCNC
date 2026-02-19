@@ -31,10 +31,11 @@ describe('ConfigPanel', () => {
     expect(selects[0].classList.contains('select-chevron')).toBe(true);
   });
 
-  it('renders 3 operation type radio buttons', () => {
+  it('renders 3 operation type buttons', () => {
     renderPanel();
-    const radios = screen.getAllByRole('radio');
-    expect(radios.length).toBe(3);
+    expect(screen.getByRole('button', { name: 'Desbaste' })).toBeInTheDocument();
+    expect(screen.getByRole('button', { name: 'Semi-Acab.' })).toBeInTheDocument();
+    expect(screen.getByRole('button', { name: 'Acabamento' })).toBeInTheDocument();
   });
 
   it('renders tool type buttons', () => {
@@ -107,10 +108,9 @@ describe('ConfigPanel', () => {
     expect(useMachiningStore.getState().materialId).toBe(4);
   });
 
-  it('changes operation type on radio click', () => {
+  it('changes operation type on button click', () => {
     renderPanel();
-    const radios = screen.getAllByRole('radio');
-    fireEvent.click(radios[2]);
+    fireEvent.click(screen.getByRole('button', { name: 'Acabamento' }));
     expect(useMachiningStore.getState().tipoOperacao).toBe('acabamento');
   });
 

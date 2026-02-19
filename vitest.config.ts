@@ -7,6 +7,7 @@ export default defineConfig({
     environment: 'jsdom',
     setupFiles: ['./tests/setup.ts'],
     passWithNoTests: true,
+    exclude: ['Sistema_Desktop_Pen_driver/**', 'node_modules/**'],
   },
   resolve: {
     alias: {
