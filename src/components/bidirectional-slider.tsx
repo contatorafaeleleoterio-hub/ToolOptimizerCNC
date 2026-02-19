@@ -4,9 +4,12 @@
  * Slider that adjusts values from -150% to +150% of a base (calculated) value.
  * Center position (0%) = base value.
  * Used for manual RPM and Feed Rate adjustments.
+ *
+ * Visual design matches StyledSlider from fine-tune-panel:
+ * ring + inner dot + glow on press + scale(1.15) animation.
  */
 
-import { useState } from 'react';
+import { useState, useRef, useCallback } from 'react';
 
 interface BidirectionalSliderProps {
   baseValue: number;
@@ -18,7 +21,7 @@ interface BidirectionalSliderProps {
   unit: string;
 }
 
-const BTN_CLS = 'w-8 h-8 rounded-lg bg-black/40 border border-white/10 text-gray-400 hover:text-white hover:bg-white/10 transition-all text-sm font-bold flex items-center justify-center';
+const BTN_CLS = 'w-6 h-6 rounded bg-black/40 border border-white/10 text-gray-400 hover:text-white hover:bg-white/10 active:scale-90 transition-all text-xs font-bold flex items-center justify-center';
 
 export function BidirectionalSlider({
   baseValue,
@@ -29,7 +32,8 @@ export function BidirectionalSlider({
   label,
   unit,
 }: BidirectionalSliderProps) {
-  const [isDragging, setIsDragging] = useState(false);
+  const [pressed, setPressed] = useState(false);
+  const trackRef = useRef<HTMLDivElement>(null);
 
   // Calculate actual value from percentage
   const actualValue = Math.round(baseValue * (1 + currentPercent / 100));
@@ -37,30 +41,64 @@ export function BidirectionalSlider({
   // Clamp percentage to -150% to +150%
   const clampPercent = (p: number) => Math.max(-150, Math.min(150, p));
 
-  // Handle slider change (range input is 0-300, we map to -150 to +150)
-  const handleSliderChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const rawValue = Number(e.target.value); // 0 to 300
-    const percent = rawValue - 150; // -150 to +150
-    onChange(clampPercent(percent));
+  // Convert currentPercent (-150 to +150) to slider position (0% to 100%)
+  const progressPercent = ((currentPercent + 150) / 300) * 100;
+
+  // Get percent from mouse X position on track
+  const getPercentFromX = useCallback((clientX: number) => {
+    const track = trackRef.current;
+    if (!track) return currentPercent;
+    const rect = track.getBoundingClientRect();
+    const p = Math.max(0, Math.min(1, (clientX - rect.left) / rect.width));
+    const rawValue = Math.round(p * 300); // 0-300
+    return clampPercent(rawValue - 150);  // -150 to +150
+  }, [currentPercent]);
+
+  const handleMouseDown = useCallback((e: React.MouseEvent) => {
+    setPressed(true);
+    onChange(getPercentFromX(e.clientX));
+
+    const onMove = (ev: MouseEvent) => onChange(getPercentFromX(ev.clientX));
+    const onUp = () => {
+      setPressed(false);
+      window.removeEventListener('mousemove', onMove);
+      window.removeEventListener('mouseup', onUp);
+    };
+    window.addEventListener('mousemove', onMove);
+    window.addEventListener('mouseup', onUp);
+  }, [onChange, getPercentFromX]);
+
+  const handleKeyDown = (e: React.KeyboardEvent) => {
+    if (e.key === 'ArrowRight') onChange(clampPercent(currentPercent + 10));
+    if (e.key === 'ArrowLeft') onChange(clampPercent(currentPercent - 10));
   };
 
   // Handle increment/decrement buttons (step = 10%)
   const handleIncrement = () => onChange(clampPercent(currentPercent + 10));
   const handleDecrement = () => onChange(clampPercent(currentPercent - 10));
 
-  // Convert currentPercent (-150 to +150) to slider value (0 to 300)
-  const sliderValue = currentPercent + 150;
-
-  // Calculate progress for visual gradient (0% to 100%)
-  // Left side: -150% to 0% → fills from left
-  // Right side: 0% to +150% → fills from center
-  const progressPercent = ((sliderValue) / 300) * 100;
-
   // Tick marks: -150%, -140%, ..., -10%, 0%, +10%, ..., +140%, +150%
   const ticks = [];
   for (let i = -150; i <= 150; i += 10) {
     ticks.push(i);
   }
+
+  // Filled track style: bidirecional fill from center or edge
+  const filledTrackStyle = (() => {
+    if (currentPercent === 0) return { width: 0, left: '50%' };
+    if (currentPercent < 0) {
+      // Fill from thumb to center (left side)
+      return {
+        width: `${50 - progressPercent}%`,
+        left: `${progressPercent}%`,
+      };
+    }
+    // Fill from center to thumb (right side)
+    return {
+      width: `${progressPercent - 50}%`,
+      left: '50%',
+    };
+  })();
 
   return (
     <div className="space-y-2">
@@ -87,12 +125,37 @@ export function BidirectionalSlider({
       <div className="flex items-center gap-2">
         <button className={BTN_CLS} aria-label={`Decrease ${label}`} onClick={handleDecrement}>−</button>
 
-        <div className="relative h-8 flex-1 flex items-center">
-          {/* Base value indicator (center line) */}
-          <div className="absolute left-1/2 top-0 bottom-0 w-[2px] bg-white/20 -translate-x-1/2 z-10 pointer-events-none" />
+        {/* Custom div-based slider track */}
+        <div
+          ref={trackRef}
+          className="relative h-10 flex-1 flex items-center cursor-pointer select-none"
+          onMouseDown={handleMouseDown}
+          role="slider"
+          aria-label={`${label} slider`}
+          aria-valuenow={currentPercent}
+          aria-valuemin={-150}
+          aria-valuemax={150}
+          tabIndex={0}
+          onKeyDown={handleKeyDown}
+        >
+          {/* Track background */}
+          <div className="absolute left-0 right-0 h-1.5 bg-black/40 rounded-full" />
+
+          {/* Filled track (bidirectional fill) */}
+          {currentPercent !== 0 && (
+            <div
+              className="absolute h-1.5 rounded-full pointer-events-none"
+              style={{
+                left: filledTrackStyle.left,
+                width: filledTrackStyle.width,
+                background: `rgba(${rgb},1)`,
+                boxShadow: `0 0 8px rgba(${rgb},0.6)`,
+              }}
+            />
+          )}
 
           {/* Tick marks */}
-          <div className="absolute inset-0 flex justify-between px-2">
+          <div className="absolute inset-0 flex justify-between px-2 pointer-events-none">
             {ticks.map((tick) => {
               const isCenter = tick === 0;
               const isMajor = tick % 50 === 0;
@@ -112,36 +175,42 @@ export function BidirectionalSlider({
             })}
           </div>
 
-          {/* Range input */}
-          <input
-            type="range"
-            min={0}
-            max={300}
-            step={1}
-            value={sliderValue}
-            onChange={handleSliderChange}
-            onMouseDown={() => setIsDragging(true)}
-            onMouseUp={() => setIsDragging(false)}
-            onTouchStart={() => setIsDragging(true)}
-            onTouchEnd={() => setIsDragging(false)}
-            className="w-full h-2 rounded-full appearance-none cursor-pointer relative z-30"
+          {/* Thumb — same as StyledSlider: ring + inner dot + glow */}
+          <div
+            className="absolute -translate-x-1/2 pointer-events-none transition-transform duration-100 z-30"
             style={{
-              background: currentPercent < 0
-                ? `linear-gradient(to right, rgba(${rgb},0.3) 0%, rgba(${rgb},1) ${progressPercent}%, rgba(0,0,0,0.4) ${progressPercent}%, rgba(0,0,0,0.4) 100%)`
-                : currentPercent > 0
-                ? `linear-gradient(to right, rgba(0,0,0,0.4) 0%, rgba(0,0,0,0.4) 50%, rgba(${rgb},1) 50%, rgba(${rgb},1) ${progressPercent}%, rgba(0,0,0,0.4) ${progressPercent}%, rgba(0,0,0,0.4) 100%)`
-                : `linear-gradient(to right, rgba(0,0,0,0.4) 0%, rgba(0,0,0,0.4) 100%)`,
-              '--thumb-color': `rgba(${rgb},1)`,
-              '--thumb-glow': isDragging ? `0 0 20px rgba(${rgb},1)` : `0 0 12px rgba(${rgb},0.6)`,
-            } as React.CSSProperties}
-            aria-label={`${label} slider`}
-          />
+              left: `${progressPercent}%`,
+              transform: `translateX(-50%) scale(${pressed ? 1.15 : 1})`,
+            }}
+          >
+            {/* Outer ring */}
+            <div
+              className={`w-7 h-7 rounded-full flex items-center justify-center transition-all duration-150 border-2 border-${color}`}
+              style={{
+                boxShadow: pressed
+                  ? `0 0 20px rgba(${rgb},0.9), 0 0 8px rgba(${rgb},0.5)`
+                  : `0 0 10px rgba(${rgb},0.4)`,
+                background: 'rgba(15,20,25,0.9)',
+              }}
+            >
+              {/* Inner dot */}
+              <div
+                className="rounded-full transition-all duration-150"
+                style={{
+                  width: pressed ? '10px' : '8px',
+                  height: pressed ? '10px' : '8px',
+                  background: `rgba(${rgb},1)`,
+                  boxShadow: `0 0 6px rgba(${rgb},0.8)`,
+                }}
+              />
+            </div>
+          </div>
         </div>
 
         <button className={BTN_CLS} aria-label={`Increase ${label}`} onClick={handleIncrement}>+</button>
       </div>
 
-      {/* Tick labels (optional, only major ticks) */}
+      {/* Tick labels */}
       <div className="relative h-3 px-10">
         <div className="absolute inset-0 flex justify-between text-[8px] text-gray-600 font-mono">
           <span>-150%</span>

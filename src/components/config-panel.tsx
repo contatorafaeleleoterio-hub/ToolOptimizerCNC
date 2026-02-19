@@ -78,12 +78,12 @@ export function ConfigPanel() {
             <FieldGroup label="Tipo de Usinagem">
               <div className="grid grid-cols-3 gap-2">
                 {Object.values(TipoUsinagem).map((t) => (
-                  <label key={t} className="cursor-pointer group">
-                    <input type="radio" name="tipo_usinagem" className="peer sr-only" checked={tipoOperacao === t} onChange={() => setTipoOperacao(t)} />
-                    <div className="py-2 px-1 rounded-lg bg-black/40 border border-white/5 text-gray-400 peer-checked:bg-primary/10 peer-checked:border-primary peer-checked:text-primary transition-all text-center text-[11px] font-medium hover:bg-white/5">
-                      {OPERACAO_LABELS[t]}
-                    </div>
-                  </label>
+                  <button key={t} onClick={() => setTipoOperacao(t)}
+                    className={`py-2 rounded border text-xs transition-colors ${tipoOperacao === t
+                      ? 'bg-primary text-black font-bold border-primary shadow-neon-cyan'
+                      : 'bg-black/40 text-gray-400 hover:text-white hover:bg-white/5 border-white/10'}`}>
+                    {OPERACAO_LABELS[t]}
+                  </button>
                 ))}
               </div>
             </FieldGroup>
