@@ -1,7 +1,7 @@
-# PROXIMA SESSAO: Design unificado sliders + botões — Pronto para Story-004
+# PROXIMA SESSAO: Tool Correction Factor + Slider Fixes — Pronto para Story-004
 
-**Data atualizacao:** 19/02/2026
-**Status:** Design padronizado + 333 testes passando limpo (sem clone desktop)
+**Data atualizacao:** 19/02/2026 (sessão 3)
+**Status:** 333 testes passando — features de configurações expandidas
 
 ---
 
@@ -9,101 +9,75 @@
 
 ### Branch e Commits
 - **Branch:** main
-- **Ultimo commit:** `8fa2545` fix: exclude desktop clone from vitest and update operation type tests
-- **Testes:** 333 passing (24 arquivos) — LIMPOS, sem ruído do clone desktop
-- **Bundle:** JS 87KB gzip + CSS 12KB gzip = ~99KB total
+- **Ultimo commit:** `4b194d9` style: redesign tool correction factor UI with modal drawer + compact table
+- **Testes:** 333 passing (24 arquivos) — LIMPOS
+- **Bundle:** ~99KB total (JS 87KB gzip + CSS 12KB gzip)
 - **GitHub:** https://github.com/contatorafaeleleoterio-hub/ToolOptimizerCNC
 - **Deploy:** GitHub Pages ativo + CI pipeline ativo
 - **Desktop:** `Sistema_Desktop_Pen_driver/` — .exe portátil 85MB (Electron v40.4.1)
 - **Versão:** `0.2.0` (SemVer — ver ADR-006)
 
-### Commits Recentes
+### Commits Recentes (sessão 19/02 s3)
 ```
+4b194d9  style: redesign tool correction factor UI with modal drawer + compact table
+3c9dbf1  feat: add tool correction factor (coating/geometry multiplier) per tool type + diameter
+a6f66b4  style: replace native SF slider with StyledSlider + ±buttons in Settings
+16d2212  refactor: move safety factor from dashboard to Settings page
+f6162bf  docs: session summary 19/02 session 2 - unified slider/button design
 8fa2545  fix: exclude desktop clone from vitest and update operation type tests
-d8597dd  style: unify slider thumb and button design across RPM/Feed and Fine Tune
-5daac0e  docs: add ADR-005 Electron desktop build guide and ADR-006 versioning strategy
-d74804e  fix: mobile responsiveness for settings page and touch targets
-ca95afe  docs: session summary 18/02 session 2 - Story-003 CI/CD done
 ```
 
 ---
 
-## O QUE FOI IMPLEMENTADO (sessão 19/02/2026 — sessão 2)
+## O QUE FOI IMPLEMENTADO (sessão 19/02/2026 — sessão 3)
 
-### ✅ Design Unificado: Sliders RPM/Feed iguais ao Fine Tune
-**Arquivo:** `src/components/bidirectional-slider.tsx`
-- Substituído `<input type="range">` nativo por `<div>` customizado com mouse events
-- Thumb agora tem: anel colorido (`border-2 border-${color}`) + ponto interno (8px normal, 10px pressed)
-- Glow intenso ao pressionar: `0 0 20px rgba(rgb, 0.9)`
-- Scale animation: `scale(1.15)` ao arrastar — igual ao `StyledSlider` do Fine Tune
-- Botões `−/+` agora `w-6 h-6 rounded active:scale-90` — iguais ao Fine Tune
-- Keyboard support: ArrowLeft/ArrowRight (±10%)
-- Lógica bidirecional -150% a +150% mantida
+### ✅ Slider Fator de Segurança (Configurações → Segurança)
+**Arquivo:** `src/pages/settings-page.tsx`
+- Substituído `<input type="range">` nativo por `StyledSlider` customizado
+- Adicionados botões − e + nas extremidades (mesmo `BTN_CLS`)
+- Ring + dot + glow + scale(1.15) — idêntico ao Fine Tune e BidirectionalSlider
+- Teste atualizado: usa botão click em vez de `fireEvent.change`
 
-### ✅ Design Unificado: Botões Tipo de Usinagem
-**Arquivo:** `src/components/config-panel.tsx`
-- Convertido de `<label>+<input type="radio" sr-only>+<div>` para `<button>` simples
-- Quando selecionado: `bg-primary text-black font-bold border-primary shadow-neon-cyan`
-- Visual idêntico aos botões de Tipo Ferramenta, Raio Ponta e Arestas
+### ✅ Fator de Correção por Ferramenta (novo feature completo)
+**Arquivos:** `src/types/index.ts`, `src/store/machining-store.ts`, `src/pages/settings-page.tsx`
 
-### ✅ Fix: Vitest exclui clone desktop
-**Arquivo:** `vitest.config.ts`
-- Adicionado `exclude: ['Sistema_Desktop_Pen_driver/**', 'node_modules/**']`
-- Testes agora rodam LIMPOS: 333/333 passando, sem ruído do clone
+**Tipo:**
+```ts
+interface ToolCorrectionFactor {
+  tipo: 'toroidal' | 'esferica' | 'topo';
+  diametro: number;
+  fator: number;        // 0.5 a 1.5, default 1.0
+  descricao?: string;   // ex: "TiAlN", "DLC"
+}
+```
 
-### ✅ Testes atualizados
-**Arquivo:** `tests/components/config-panel.test.tsx`
-- 2 testes atualizados: de `role="radio"` para `role="button"` após refatoração
+**Store:**
+- `toolCorrectionFactors: ToolCorrectionFactor[]` no state
+- `setToolCorrectionFactor(tcf)` — upsert por (tipo, diametro)
+- `removeToolCorrectionFactor(tipo, diametro)` — remove
+- Persiste em localStorage via `partialize`
+- Aplicado em `calcular()`: `vc = parametros.vc * corrFactor` e `fz = parametros.fz * corrFactor`
+
+**UI (Configurações → Ferramentas):**
+- Tabela compacta por tipo de ferramenta — todos os diâmetros padrão + customizados
+- Linhas com fator ativo destacadas em cyan + badge "N ativos"
+- Botão **Editar** → abre `CorrectionModal` (drawer/modal)
+- `CorrectionModal`: fixed overlay + backdrop-blur, slide-from-bottom mobile, centralizado desktop
+  - Slider com botões −/+ (0.50 a 1.50, step 0.05)
+  - Campo de descrição opcional
+  - Botões: Salvar / Resetar (volta a 1.00) / Cancelar
 
 ---
 
-## ESTRUTURA DE ARQUIVOS ATUAL
+## ESTRUTURA DE ARQUIVOS (atualizada)
 
 ```
 src/
-  App.tsx
-  main.tsx
-  index.css                   — Tailwind v4 @theme + keyframes + body.mobile-active
-  types/index.ts
-  engine/                     — rpm, chip-thinning, feed, power, validators, recommendations
-  data/                       — materials, tools, operations
-  store/
-    machining-store.ts
-    history-store.ts
-  hooks/
-    use-is-mobile.ts          — breakpoint 768px
-    use-simulation-animation.ts
-    use-reset-feedback.ts
-  components/
-    ui-helpers.tsx
-    bidirectional-slider.tsx  — ATUALIZADO: div customizado, thumb ring+dot+glow
-    config-panel.tsx          — ATUALIZADO: Tipo Usinagem como <button>
-    results-panel.tsx
-    fine-tune-panel.tsx
-    tool-summary-viewer.tsx
-    gauge.tsx
-    shared-result-parts.tsx
-    viewport-redirect.tsx
-    mobile/
-  pages/
-    mobile-page.tsx
-    settings-page.tsx
-    history-page.tsx
-  app/
-    main.js
-    preload.js
-.github/
-  workflows/
-    ci.yml
-    deploy.yml
-docs/
-  architecture/
-    ADR-001 a ADR-006
-  stories/
-    story-001 a story-003
-tests/                        — 24 arquivos, 333 testes
-vitest.config.ts              — ATUALIZADO: exclude Sistema_Desktop_Pen_driver/**
-Sistema_Desktop_Pen_driver/   — Clone isolado para build desktop .exe
+  types/index.ts              — ATUALIZADO: +ToolCorrectionFactor
+  store/machining-store.ts    — ATUALIZADO: +toolCorrectionFactors, setToolCorrectionFactor, removeToolCorrectionFactor, aplica fator no calcular()
+  pages/settings-page.tsx     — ATUALIZADO: StyledSlider SF + CorrectionModal + tabela ferramentas
+tests/
+  pages/settings-page.test.tsx — ATUALIZADO: SF test usa button click
 ```
 
 ---
@@ -154,23 +128,43 @@ Sistema_Desktop_Pen_driver/   — Clone isolado para build desktop .exe
 
 ## PADRÕES DE DESIGN CONSOLIDADOS
 
+### Slider padrão (ÚNICO em todo o app — exceto BidirectionalSlider que é bidirecional)
+`StyledSlider` — div customizado com:
+- Track: `h-1.5 bg-black/40 rounded-full` + filled com glow
+- Thumb: outer ring `border-2 border-${color}` + inner dot + glow on press + `scale(1.15)`
+- Botões −/+ nas extremidades: `BTN_CLS = 'w-6 h-6 rounded bg-black/40 border border-white/10 ...'`
+- Usado em: Fine Tune (Vc/fz/ae/ap), Fator de Segurança (Settings), CorrectionModal
+
 ### Botões de seleção (toggle/radio-like)
-**PADRÃO ÚNICO:** `<button>` simples com className condicional:
+**PADRÃO ÚNICO:** `<button>` com className condicional:
 ```tsx
-className={`py-2 rounded border text-xs transition-colors ${selected
+className={`... ${selected
   ? 'bg-primary text-black font-bold border-primary shadow-neon-cyan'
   : 'bg-black/40 text-gray-400 hover:text-white hover:bg-white/5 border-white/10'}`}
 ```
 Usado em: Tipo Usinagem, Tipo Ferramenta, Raio Ponta, Arestas
 
-### Botões +/−
-**PADRÃO ÚNICO:** `w-6 h-6 rounded bg-black/40 border border-white/10 text-gray-400 hover:text-white hover:bg-white/10 active:scale-90 transition-all text-xs font-bold flex items-center justify-center`
-Usado em: Fine Tune (Vc/fz/ae/ap) E RPM/Feed (BidirectionalSlider)
+### Modal/Drawer padrão (CorrectionModal é o exemplo)
+```tsx
+<div className="fixed inset-0 z-50 flex items-end sm:items-center justify-center">
+  <div className="absolute inset-0 bg-black/60 backdrop-blur-sm" /> {/* backdrop */}
+  <div className="relative w-full sm:max-w-md bg-surface-dark border border-white/10 rounded-t-2xl sm:rounded-2xl shadow-glass p-5 pb-8 sm:pb-5">
+    <div className="w-10 h-1 bg-white/20 rounded-full mx-auto mb-4 sm:hidden" /> {/* handle */}
+    ...
+  </div>
+</div>
+```
 
-### Sliders
-- **Vc/fz/ae/ap:** `StyledSlider` (unidirecional, div customizado, ring+dot+glow)
-- **RPM/Feed:** `BidirectionalSlider` (bidirecional -150%/+150%, div customizado, ring+dot+glow)
-- **Safety Factor:** `<input type="range">` nativo (único slider que mantém nativo — OK por ser simples)
+---
+
+## Fator de Correção — Detalhe Técnico
+
+- **Onde é aplicado:** `calcular()` no store, ANTES de computar RPM/Feed/Power
+- `vc = parametros.vc * corrFactor` — afeta RPM e toda a cadeia de cálculo
+- `fz = parametros.fz * corrFactor` — afeta Feed, MRR, Power
+- **Não afeta:** ap, ae (só multiplica velocidade de corte e avanço por dente)
+- **Fator 1.0 = sem correção** (padrão para todas as ferramentas)
+- **Persistência:** localStorage via Zustand partialize
 
 ---
 
@@ -192,6 +186,9 @@ Usado em: Fine Tune (Vc/fz/ae/ap) E RPM/Feed (BidirectionalSlider)
 - [x] Design unificado: sliders RPM/Feed = Fine Tune (ring+dot+glow)
 - [x] Design unificado: botões Tipo Usinagem = Tipo Ferramenta
 - [x] Fix vitest: excluir clone desktop do scan
+- [x] Edit materiais (base + custom) com override pattern
+- [x] Fator de Segurança movido para Settings + StyledSlider
+- [x] Fator de Correção por Ferramenta (coating/revestimento)
 
 ### Semana 2-3:
 - [ ] **Story-004: SEO Schema.org + meta tags ← PRÓXIMA**
