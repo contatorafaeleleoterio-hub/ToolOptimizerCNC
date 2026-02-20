@@ -1,207 +1,367 @@
-# PROXIMA SESSAO: Tool Correction Factor + Slider Fixes — Pronto para Story-004
+# PROXIMA SESSAO — ToolOptimizer CNC
 
-**Data atualizacao:** 19/02/2026 (sessão 3)
-**Status:** 333 testes passando — features de configurações expandidas
+> **📌 PARA O PRÓXIMO ASSISTENTE:**
+> Este é o documento principal de continuidade. Leia do início ao fim antes de qualquer ação.
+> Contém: estado do projeto, commits, o que foi feito, o que vem a seguir, padrões obrigatórios.
 
 ---
 
-## ESTADO ATUAL DO PROJETO
+**Data:** 19/02/2026 — Sessão 3
+**Versão:** 0.2.0
 
-### Branch e Commits
-- **Branch:** main
-- **Ultimo commit:** `4b194d9` style: redesign tool correction factor UI with modal drawer + compact table
-- **Testes:** 333 passing (24 arquivos) — LIMPOS
-- **Bundle:** ~99KB total (JS 87KB gzip + CSS 12KB gzip)
-- **GitHub:** https://github.com/contatorafaeleleoterio-hub/ToolOptimizerCNC
-- **Deploy:** GitHub Pages ativo + CI pipeline ativo
-- **Desktop:** `Sistema_Desktop_Pen_driver/` — .exe portátil 85MB (Electron v40.4.1)
-- **Versão:** `0.2.0` (SemVer — ver ADR-006)
+---
 
-### Commits Recentes (sessão 19/02 s3)
+## ⚡ ESTADO ATUAL (início da próxima sessão)
+
+| Item | Estado |
+|------|--------|
+| Branch | `main` |
+| Último commit | `bcfdf16` docs: session summary 19/02 session 3 |
+| Testes | **333/333 passando** (24 arquivos, zero falhas) |
+| TypeScript | **zero erros** (`npx tsc --noEmit`) |
+| Build | **limpo** (`npx vite build`) |
+| GitHub | pushado — `contatorafaeleleoterio-hub/ToolOptimizerCNC` |
+| Deploy | GitHub Pages ativo + CI pipeline ativo |
+| Desktop | `Sistema_Desktop_Pen_driver/` — .exe 85MB (Electron v40.4.1) |
+| Versão | `0.2.0` |
+
+---
+
+## 📋 COMMITS DESTA SESSÃO (19/02 sessão 3)
+
 ```
+bcfdf16  docs: session summary 19/02 session 3
 4b194d9  style: redesign tool correction factor UI with modal drawer + compact table
 3c9dbf1  feat: add tool correction factor (coating/geometry multiplier) per tool type + diameter
 a6f66b4  style: replace native SF slider with StyledSlider + ±buttons in Settings
 16d2212  refactor: move safety factor from dashboard to Settings page
-f6162bf  docs: session summary 19/02 session 2 - unified slider/button design
-8fa2545  fix: exclude desktop clone from vitest and update operation type tests
+d343101  feat: unify materials list with edit support for all materials
 ```
 
 ---
 
-## O QUE FOI IMPLEMENTADO (sessão 19/02/2026 — sessão 3)
+## ✅ O QUE FOI FEITO NESTA SESSÃO
 
-### ✅ Slider Fator de Segurança (Configurações → Segurança)
-**Arquivo:** `src/pages/settings-page.tsx`
-- Substituído `<input type="range">` nativo por `StyledSlider` customizado
-- Adicionados botões − e + nas extremidades (mesmo `BTN_CLS`)
-- Ring + dot + glow + scale(1.15) — idêntico ao Fine Tune e BidirectionalSlider
-- Teste atualizado: usa botão click em vez de `fireEvent.change`
+### 1. Lista de Materiais Unificada (Configurações → Materiais)
+- Removida separação "Base (somente leitura)" / "Personalizados"
+- **Todos os materiais** em uma lista única com botão **Editar**
+- Materiais base editados criam um **override** (CustomMaterial com mesmo ID)
+- Override tem badge laranja "Custom" + botão `restart_alt` para restaurar original
+- Materiais extras (IDs > 9): edit + delete
+- Padrão de upsert: `updateCustomMaterial` se ID existe, `addCustomMaterial` se novo
 
-### ✅ Fator de Correção por Ferramenta (novo feature completo)
-**Arquivos:** `src/types/index.ts`, `src/store/machining-store.ts`, `src/pages/settings-page.tsx`
+### 2. Fator de Segurança movido para Configurações
+- **Removido** slider SF do `config-panel.tsx` (dashboard)
+- **Adicionado** badge de leitura `SF: 0.80` no dashboard (hint visual)
+- SF agora só é editável em Configurações → Segurança
+- Motivo: `setSafetyFactor` zera `resultado=null` → UX confusa no dashboard
 
-**Tipo:**
+### 3. Slider Fator de Segurança redesenhado
+- Era: `<input type="range">` nativo (sem estilo)
+- Agora: `StyledSlider` idêntico ao Fine Tune
+  - Ring + inner dot + glow + scale(1.15) ao pressionar
+  - Botões − e + nas extremidades (`BTN_CLS`)
+  - Range: 0.50 a 1.00, step 0.05
+
+### 4. Fator de Correção por Ferramenta (feature novo completo)
+**Propósito:** Compensar revestimentos de ferramentas (TiAlN, DLC, etc)
+
+**Tipo novo** (`src/types/index.ts`):
 ```ts
 interface ToolCorrectionFactor {
   tipo: 'toroidal' | 'esferica' | 'topo';
   diametro: number;
-  fator: number;        // 0.5 a 1.5, default 1.0
+  fator: number;        // 0.5–1.5, default 1.0
   descricao?: string;   // ex: "TiAlN", "DLC"
 }
 ```
 
-**Store:**
+**Store** (`src/store/machining-store.ts`):
 - `toolCorrectionFactors: ToolCorrectionFactor[]` no state
 - `setToolCorrectionFactor(tcf)` — upsert por (tipo, diametro)
-- `removeToolCorrectionFactor(tipo, diametro)` — remove
+- `removeToolCorrectionFactor(tipo, diametro)`
+- Aplicado em `calcular()`:
+  ```ts
+  const corrFactor = tcf?.fator ?? 1.0;
+  const vc = parametros.vc * corrFactor;
+  const fz = parametros.fz * corrFactor;
+  ```
 - Persiste em localStorage via `partialize`
-- Aplicado em `calcular()`: `vc = parametros.vc * corrFactor` e `fz = parametros.fz * corrFactor`
 
-**UI (Configurações → Ferramentas):**
-- Tabela compacta por tipo de ferramenta — todos os diâmetros padrão + customizados
-- Linhas com fator ativo destacadas em cyan + badge "N ativos"
-- Botão **Editar** → abre `CorrectionModal` (drawer/modal)
-- `CorrectionModal`: fixed overlay + backdrop-blur, slide-from-bottom mobile, centralizado desktop
-  - Slider com botões −/+ (0.50 a 1.50, step 0.05)
-  - Campo de descrição opcional
-  - Botões: Salvar / Resetar (volta a 1.00) / Cancelar
+**UI** (`src/pages/settings-page.tsx`):
+- Tabela compacta por tipo de ferramenta
+- Badge "N ativos" quando há correções configuradas
+- Botão **Editar** → abre `CorrectionModal`
+- `CorrectionModal`: drawer/modal com padrão do projeto
+  - Mobile: slide-from-bottom com handle bar
+  - Desktop: modal centralizado
+  - Slider 0.50–1.50 com botões −/+
+  - Campo descrição opcional
+  - Botões: Salvar / Resetar (→ 1.00) / Cancelar
 
 ---
 
-## ESTRUTURA DE ARQUIVOS (atualizada)
+## 🎯 PRÓXIMA TAREFA: Story-004 — SEO + Schema.org
 
+### O que implementar:
 ```
-src/
-  types/index.ts              — ATUALIZADO: +ToolCorrectionFactor
-  store/machining-store.ts    — ATUALIZADO: +toolCorrectionFactors, setToolCorrectionFactor, removeToolCorrectionFactor, aplica fator no calcular()
-  pages/settings-page.tsx     — ATUALIZADO: StyledSlider SF + CorrectionModal + tabela ferramentas
-tests/
-  pages/settings-page.test.tsx — ATUALIZADO: SF test usa button click
+1. <meta> tags dinâmicas:
+   - description, keywords
+   - og:title, og:description, og:image, og:url
+   - twitter:card, twitter:title, twitter:description
+
+2. Schema.org JSON-LD (SoftwareApplication):
+   {
+     "@type": "SoftwareApplication",
+     "name": "ToolOptimizer CNC",
+     "applicationCategory": "DesignApplication",
+     "operatingSystem": "Web",
+     "description": "...",
+     "url": "https://...",
+     "offers": { "@type": "Offer", "price": "0" }
+   }
+
+3. <title> dinâmico por rota (sem biblioteca externa, document.title):
+   "/" → "ToolOptimizer CNC — Calculadora de Parâmetros de Corte"
+   "/settings" → "Configurações — ToolOptimizer CNC"
+   "/history" → "Histórico — ToolOptimizer CNC"
+   "/mobile" → "ToolOptimizer CNC Mobile"
+
+4. sitemap.xml em /public/
+5. robots.txt em /public/
 ```
 
----
+### Como implementar (sem biblioteca extra):
+```tsx
+// src/hooks/use-page-title.ts — hook simples
+import { useEffect } from 'react';
+export function usePageTitle(title: string) {
+  useEffect(() => { document.title = title; }, [title]);
+}
 
-## PROXIMAS TAREFAS
+// src/components/seo-head.tsx — injeta meta tags via JS
+// src/App.tsx — adiciona Schema.org via <script type="application/ld+json">
+```
 
-### 1. ⭐ Story-004: SEO Schema.org + meta tags — PRÓXIMA
-**Status:** NÃO INICIADA
-**Escopo:**
-- `<meta>` tags: description, keywords, og:*, twitter:*
-- Schema.org JSON-LD para SoftwareApplication
-- `<title>` dinâmico por rota (`react-helmet-async` ou `document.title`)
-- sitemap.xml + robots.txt (gerado no build)
+### Arquivo story (criar antes de codar):
+`docs/stories/story-004-seo-schema.md`
 
-**Arquivo:** `docs/stories/story-004-seo-schema.md` (criar)
-
-### 2. Story-002 Fases 2-6: Deploy Cloudflare (MANUAL pelo usuário)
-- Conta Cloudflare + projeto Pages conectado ao GitHub
-- Env var: `VITE_BASE_URL=/` e `NODE_VERSION=20`
-- Domínio `tooloptimizercnc.com.br` no Registro.br
-
-### 3. Branch Protection no GitHub (MANUAL)
-- Settings → Branches → Add rule para `main`
-- ☑ Require status checks: `TypeCheck + Tests + Build`
-
-### 4. HistoryPage responsiva (backlog)
-
-### 5. Desktop .exe melhorias (backlog)
-- Ícone customizado (`build/icon.ico`)
-- Material Symbols font offline (~300KB woff2)
-- Code signing (SmartScreen)
+### Critério de conclusão:
+- Lighthouse SEO ≥ 90
+- Schema validado em: https://validator.schema.org
+- `npx vite build` limpo
+- Todos 333 testes ainda passando
 
 ---
 
-## REGRAS PARA SESSÕES CLAUDE
+## 📐 PADRÕES OBRIGATÓRIOS (não mudar sem ADR)
 
-1. **PRIMEIRA AÇÃO:** Ler este arquivo completo
-2. Rodar testes após cada mudança em `src/`
-3. Conventional commits + push após cada fase
-4. Validar: `typecheck` + `test` + `build` antes de finalizar
-5. Usar apenas terminal interno (Bash)
-6. **AO FINAL:** Atualizar `docs/PROXIMA_SESSAO.md` + `memory/MEMORY.md`
-7. **TESTES store:** chamar `calcular()` explicitamente
-8. **VERSIONAMENTO:** Bumpar `package.json` version após story completa (ver ADR-006)
-9. **BUILD DESKTOP:** Se pedido, seguir `docs/architecture/ADR-005-electron-desktop-build.md`
+### Stack
+```
+React 18.3 + TypeScript 5.7 (strict, zero any)
+Vite 6.1 + @tailwindcss/vite 4.0
+Zustand 5.0 + react-router-dom 7.13
+Vitest 3.0 + Testing Library
+SEM backend, SEM CSS Modules
+```
 
----
-
-## PADRÕES DE DESIGN CONSOLIDADOS
-
-### Slider padrão (ÚNICO em todo o app — exceto BidirectionalSlider que é bidirecional)
+### Slider padrão (ÚNICO em todo app)
 `StyledSlider` — div customizado com:
-- Track: `h-1.5 bg-black/40 rounded-full` + filled com glow
-- Thumb: outer ring `border-2 border-${color}` + inner dot + glow on press + `scale(1.15)`
-- Botões −/+ nas extremidades: `BTN_CLS = 'w-6 h-6 rounded bg-black/40 border border-white/10 ...'`
-- Usado em: Fine Tune (Vc/fz/ae/ap), Fator de Segurança (Settings), CorrectionModal
+- Track `h-1.5 bg-black/40 rounded-full` + filled com glow
+- Thumb: outer ring `border-2 border-${color}` + inner dot + scale(1.15) on press
+- Botões −/+ nas extremidades: `BTN_CLS = 'w-6 h-6 rounded bg-black/40 ...'`
+- **Usado em:** Fine Tune (Vc/fz/ae/ap), SF (Settings), CorrectionModal
 
-### Botões de seleção (toggle/radio-like)
-**PADRÃO ÚNICO:** `<button>` com className condicional:
+### Modal/Drawer padrão (CorrectionModal como referência)
+```tsx
+<div className="fixed inset-0 z-50 flex items-end sm:items-center justify-center">
+  <div className="absolute inset-0 bg-black/60 backdrop-blur-sm" />
+  <div className="relative w-full sm:max-w-md bg-surface-dark border border-white/10
+                  rounded-t-2xl sm:rounded-2xl shadow-glass p-5 pb-8 sm:pb-5">
+    <div className="w-10 h-1 bg-white/20 rounded-full mx-auto mb-4 sm:hidden" />
+    {/* conteúdo */}
+  </div>
+</div>
+```
+
+### Botões seleção (toggle-like)
 ```tsx
 className={`... ${selected
   ? 'bg-primary text-black font-bold border-primary shadow-neon-cyan'
   : 'bg-black/40 text-gray-400 hover:text-white hover:bg-white/5 border-white/10'}`}
 ```
-Usado em: Tipo Usinagem, Tipo Ferramenta, Raio Ponta, Arestas
 
-### Modal/Drawer padrão (CorrectionModal é o exemplo)
-```tsx
-<div className="fixed inset-0 z-50 flex items-end sm:items-center justify-center">
-  <div className="absolute inset-0 bg-black/60 backdrop-blur-sm" /> {/* backdrop */}
-  <div className="relative w-full sm:max-w-md bg-surface-dark border border-white/10 rounded-t-2xl sm:rounded-2xl shadow-glass p-5 pb-8 sm:pb-5">
-    <div className="w-10 h-1 bg-white/20 rounded-full mx-auto mb-4 sm:hidden" /> {/* handle */}
-    ...
-  </div>
-</div>
+### Store — regras críticas
+- `setMaterial / setFerramenta / setTipoOperacao / setParametros / setSafetyFactor` → zeram `resultado=null`, NÃO chamam `calcular()`
+- `setLimitesMaquina` → chama `calcular()` automaticamente (exceção)
+- Testes do store: chamar `getState().calcular()` explicitamente
+- Safety factor aplicado em: `potenciaCorte`, `potenciaMotor`, `torque` (NÃO em RPM, feed, MRR)
+- Tool Correction Factor aplicado em: `vc` e `fz` (ANTES do cálculo, em `calcular()`)
+
+### Design tokens
+```
+Primary:    #00D9FF (cyan neon)   → rgb: 0,217,255
+Secondary:  #39FF14 (green neon)  → rgb: 57,255,20
+Background: #0F1419 (dark)
+Verde:      #2ecc71   Amarelo: #f39c12   Vermelho: #e74c3c
+```
+
+### Commits (conventional)
+```
+feat:     nova funcionalidade
+fix:      correção de bug
+style:    mudança visual sem lógica
+refactor: refatoração sem mudança de comportamento
+test:     testes
+docs:     documentação
 ```
 
 ---
 
-## Fator de Correção — Detalhe Técnico
+## 📁 ESTRUTURA DE ARQUIVOS RELEVANTE
 
-- **Onde é aplicado:** `calcular()` no store, ANTES de computar RPM/Feed/Power
-- `vc = parametros.vc * corrFactor` — afeta RPM e toda a cadeia de cálculo
-- `fz = parametros.fz * corrFactor` — afeta Feed, MRR, Power
-- **Não afeta:** ap, ae (só multiplica velocidade de corte e avanço por dente)
-- **Fator 1.0 = sem correção** (padrão para todas as ferramentas)
-- **Persistência:** localStorage via Zustand partialize
+```
+src/
+  types/index.ts              ← ToolCorrectionFactor, CustomMaterial, etc
+  store/machining-store.ts    ← estado central (Zustand)
+  engine/                     ← rpm, feed, power, chip-thinning, validators, recommendations
+  data/                       ← materials, tools, operations
+  components/
+    config-panel.tsx          ← painel esquerdo dashboard (Simular, parâmetros)
+    results-panel.tsx         ← painel direito (RPM, Feed, Potência, gauge)
+    fine-tune-panel.tsx       ← sliders Vc/fz/ae/ap + StyledSlider
+    bidirectional-slider.tsx  ← slider bidirecional RPM/Feed (-150% a +150%)
+    gauge.tsx                 ← gauge semicircular animado
+    export-buttons.tsx        ← exportar PDF/Excel
+    tool-summary-viewer.tsx   ← visualizador da ferramenta selecionada
+    disclaimer.tsx            ← aviso legal obrigatório
+    formula-card.tsx          ← cards educativos de fórmulas
+    viewport-redirect.tsx     ← redireciona mobile para /mobile
+    mobile/                   ← componentes exclusivos mobile
+  pages/
+    settings-page.tsx         ← Configurações (6 seções)
+    history-page.tsx          ← Histórico de simulações
+    mobile-page.tsx           ← versão mobile completa
+  hooks/
+    use-is-mobile.ts
+    use-simulation-animation.ts
+    use-reset-feedback.ts
+  App.tsx                     ← layout 3 colunas + header
+  main.tsx                    ← BrowserRouter + Routes
+  index.css                   ← Tailwind v4 @theme + keyframes
+
+tests/                        ← 24 arquivos de teste (Vitest)
+  engine/                     ← rpm, feed, power, chip-thinning, validators, recommendations
+  store/                      ← machining-store, history-store, history-integration
+  data/                       ← materials, tools, operations
+  components/                 ← config-panel, results-panel, fine-tune-panel, gauge, etc
+  pages/                      ← settings-page, history-page, mobile-page
+  hooks/                      ← use-is-mobile
+
+docs/
+  specs/                      ← PRDs
+  technical/                  ← dados Kienzle, velocidades, casos teste
+  design/                     ← UI specs, branding
+  architecture/               ← ADR-001 a ADR-006
+  stories/                    ← features documentadas
+  PROXIMA_SESSAO.md           ← ESTE ARQUIVO
+  AIOS_INTEGRATION.md         ← framework de desenvolvimento
+
+Sistema_Desktop_Pen_driver/   ← clone Electron (NUNCA editar aqui)
+```
 
 ---
 
-## ROADMAP
+## 🔧 COMANDOS ÚTEIS
 
-### Semana 1: ✅ CONCLUÍDO
-- [x] Story-001: Limpeza técnica + ADRs
-- [~] Story-002: Deploy Cloudflare — Fase 1 OK, setup manual pendente
-- [x] Animações profissionais
-- [x] Sliders bidirecionais (RPM/Feed)
-- [x] Reset feedback ao alterar parâmetros
-- [x] Sticky Simular/Reset (desktop + mobile)
-- [x] StyledSlider thumb estilizado (desktop Fine Tune)
-- [x] Formatação numérica (toFixed(2))
-- [x] Story-003: CI/CD GitHub Actions
-- [x] Mobile fixes: Settings responsiva + touch targets
-- [x] Desktop portable (.exe Electron) para pen drive
-- [x] ADR-005 + ADR-006: Documentação desktop build + versionamento
-- [x] Design unificado: sliders RPM/Feed = Fine Tune (ring+dot+glow)
-- [x] Design unificado: botões Tipo Usinagem = Tipo Ferramenta
-- [x] Fix vitest: excluir clone desktop do scan
-- [x] Edit materiais (base + custom) com override pattern
-- [x] Fator de Segurança movido para Settings + StyledSlider
-- [x] Fator de Correção por Ferramenta (coating/revestimento)
+```bash
+# Desenvolvimento
+npm run dev                   # servidor local (localhost:5173/ToolOptimizerCNC/)
 
-### Semana 2-3:
-- [ ] **Story-004: SEO Schema.org + meta tags ← PRÓXIMA**
-- [ ] HistoryPage responsiva
-- [ ] Branch protection GitHub (manual)
-- [ ] Desktop melhorias: ícone, fontes offline, code signing
+# Qualidade (rodar ANTES de qualquer commit)
+npx vitest run                # todos os testes
+npx tsc --noEmit              # TypeScript check
+npx vite build                # build de produção
+
+# Testes rápidos por arquivo
+npx vitest run tests/store/machining-store.test.ts
+npx vitest run tests/pages/settings-page.test.tsx
+
+# Git
+git log --oneline -10         # histórico
+git status                    # estado atual
+git push origin main          # push
+
+# Contar testes (ignora warnings ANSI)
+npx vitest run --reporter=json 2>/dev/null | python3 -c "
+import sys,json; d=json.load(sys.stdin)
+passed=sum(1 for s in d['testResults'] for t in s['assertionResults'] if t['status']=='passed')
+failed=sum(1 for s in d['testResults'] for t in s['assertionResults'] if t['status']=='failed')
+print(f'passed={passed} failed={failed}')"
+```
 
 ---
 
-## PROMPT PARA PRÓXIMA SESSÃO
+## ⚠️ ARMADILHAS CONHECIDAS
+
+| Problema | Causa | Solução |
+|----------|-------|---------|
+| `exit code 1` em vitest | Warnings ANSI no stderr | Usar `--reporter=json` para confirmar real contagem |
+| `toBeCloseTo(x, 0)` | Margem ±0.5, não ±1 | Usar `Math.abs(val - expected) <= 1` para tolerância ±1 |
+| SF slider "não funciona" | Zera resultado sem recalcular | É design intencional — usuário clica Simular |
+| Teste `fireEvent.change` em StyledSlider | Não tem `value setter` (div, não input) | Testar via `fireEvent.click` nos botões +/− |
+| Clone desktop em testes | Vitest encontra arquivos do clone | `exclude: ['Sistema_Desktop_Pen_driver/**']` no vitest.config.ts |
+| Tailwind class dinâmica | Classes com interpolação não geram CSS | Usar classes completas ou `style={}` inline |
+
+---
+
+## 📊 ROADMAP COMPLETO
 
 ```
-Leia o arquivo abaixo e continue de onde paramos:
+[x] Story-001: Limpeza técnica + ADRs
+[~] Story-002: Deploy Cloudflare (fase 1 OK, setup manual pendente)
+[x] Animações profissionais (spinner, gauge, pulse)
+[x] Sliders bidirecionais RPM/Feed
+[x] Reset feedback ao alterar parâmetros
+[x] Sticky Simular/Reset (desktop + mobile)
+[x] StyledSlider unificado (Fine Tune, SF, CorrectionModal)
+[x] Story-003: CI/CD GitHub Actions
+[x] Mobile fixes: Settings responsiva + touch targets
+[x] Desktop .exe portátil (Electron v40.4.1)
+[x] ADR-005: Guia build Electron
+[x] ADR-006: Estratégia versionamento SemVer
+[x] Design unificado: sliders RPM/Feed = Fine Tune
+[x] Design unificado: botões Tipo Usinagem = Tipo Ferramenta
+[x] Edit materiais (base + custom) com override pattern
+[x] SF movido para Settings + StyledSlider
+[x] Tool Correction Factor (Vc/fz multiplier por tipo+diâmetro)
+[x] CorrectionModal (drawer mobile + modal desktop)
 
-C:\Users\USUARIO\Desktop\INICIO_TOOLOPTIMIZERCNC\docs\PROXIMA_SESSAO.md
+[ ] Story-004: SEO Schema.org + meta tags ← PRÓXIMA
+[ ] Branch protection GitHub (manual pelo usuário)
+[ ] Cloudflare Pages (manual pelo usuário)
+[ ] HistoryPage responsiva
+[ ] Desktop: ícone customizado, fontes offline, code signing
+[ ] Story-005: ... (a definir)
+[ ] MVP v1.0.0: feature-complete
 ```
+
+---
+
+## 🚀 PARA INICIAR A PRÓXIMA SESSÃO
+
+O próximo assistente deve:
+
+1. **Ler este arquivo** (já está fazendo isso)
+2. Confirmar estado:
+   ```bash
+   git log --oneline -5
+   npx vitest run --reporter=json 2>/dev/null | python3 -c "..."
+   ```
+3. Iniciar **Story-004** criando primeiro o arquivo de story:
+   `docs/stories/story-004-seo-schema.md`
+4. Seguir o fluxo: **document → test → implement → commit**
+
+---
+
+*Documento gerado em 19/02/2026 — Sessão 3*
