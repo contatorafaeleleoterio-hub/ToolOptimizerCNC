@@ -598,6 +598,110 @@ const TIPOS_FERRAMENTA: { tipo: TipoFerramenta; label: string }[] = [
 ];
 const DIAMETROS_TABELA = [0.2, 0.5, 0.75, 0.8, 1, 1.5, 2, 3, 4, 6, 8, 10, 12, 14, 16] as const;
 
+/* ── Tool Correction Modal ── */
+function CorrectionModal({ tipo, diametro, initial, onSave, onReset, onClose }: {
+  tipo: TipoFerramenta;
+  diametro: number;
+  initial: { fator: number; descricao?: string };
+  onSave: (fator: number, descricao?: string) => void;
+  onReset: () => void;
+  onClose: () => void;
+}) {
+  const [fator, setFator] = useState(initial.fator);
+  const [desc, setDesc] = useState(initial.descricao ?? '');
+  const tipoLabel = TIPOS_FERRAMENTA.find((t) => t.tipo === tipo)?.label ?? tipo;
+  const hasCorrection = initial.fator !== 1.0;
+
+  return (
+    <div className="fixed inset-0 z-50 flex items-end sm:items-center justify-center" onClick={onClose}>
+      {/* Backdrop */}
+      <div className="absolute inset-0 bg-black/60 backdrop-blur-sm" />
+      {/* Panel */}
+      <div
+        className="relative w-full sm:max-w-md bg-surface-dark border border-white/10 rounded-t-2xl sm:rounded-2xl shadow-glass p-5 pb-8 sm:pb-5"
+        onClick={(e) => e.stopPropagation()}
+      >
+        {/* Handle bar (mobile) */}
+        <div className="w-10 h-1 bg-white/20 rounded-full mx-auto mb-4 sm:hidden" />
+
+        {/* Header */}
+        <div className="flex items-start justify-between mb-4">
+          <div>
+            <p className="text-[10px] text-gray-500 uppercase tracking-widest">Fator de Correção</p>
+            <h4 className="text-sm font-bold text-white mt-0.5">{tipoLabel}</h4>
+            <p className="text-xs text-primary font-mono mt-0.5">Ø{diametro}mm</p>
+          </div>
+          <button onClick={onClose} className="text-gray-500 hover:text-white transition-colors p-1">
+            <span className="material-symbols-outlined text-lg">close</span>
+          </button>
+        </div>
+
+        {/* Slider */}
+        <div className="mb-1">
+          <div className="flex items-center justify-between mb-1">
+            <span className="text-[10px] text-gray-500 uppercase tracking-wide">Multiplicador (Vc × fz)</span>
+            <span className="text-xl font-mono font-bold text-primary">{fator.toFixed(2)}</span>
+          </div>
+          <div className="flex items-center gap-2">
+            <button className={BTN_CLS} onClick={() => setFator(Math.max(0.5, +(fator - 0.05).toFixed(2)))}>−</button>
+            <div className="flex-1">
+              <StyledSlider
+                value={fator}
+                min={0.5}
+                max={1.5}
+                step={0.05}
+                color="primary"
+                rgb="0,217,255"
+                label="Fator de correção"
+                onChange={(v) => setFator(+(v.toFixed(2)))}
+              />
+            </div>
+            <button className={BTN_CLS} onClick={() => setFator(Math.min(1.5, +(fator + 0.05).toFixed(2)))}>+</button>
+          </div>
+          <div className="flex justify-between text-[9px] text-gray-600 font-mono mt-1 px-1">
+            <span>0.50 (conservador)</span>
+            <span>1.00</span>
+            <span>1.50 (agressivo)</span>
+          </div>
+        </div>
+
+        {/* Description */}
+        <div className="mt-4 mb-5">
+          <label className={LABEL}>Descrição (opcional)</label>
+          <input
+            type="text"
+            value={desc}
+            onChange={(e) => setDesc(e.target.value)}
+            placeholder="Ex: TiAlN, DLC, sem revestimento..."
+            className="w-full min-h-[40px] bg-black/40 border border-white/10 rounded-lg py-2 px-3 text-sm text-white font-mono focus:ring-1 focus:ring-primary outline-none"
+          />
+        </div>
+
+        {/* Actions */}
+        <div className="flex gap-2">
+          <button
+            onClick={() => { onSave(fator, desc || undefined); onClose(); }}
+            className="flex-1 min-h-[44px] rounded-xl bg-primary text-black text-sm font-bold active:scale-95 hover:brightness-110 transition-all"
+          >Salvar</button>
+          {hasCorrection && (
+            <button
+              onClick={() => { onReset(); onClose(); }}
+              className="px-4 min-h-[44px] rounded-xl bg-black/40 border border-white/10 text-gray-400 text-xs hover:text-seg-vermelho hover:border-seg-vermelho/30 transition-all"
+              title="Remover correção (voltar a 1.00)"
+            >
+              <span className="material-symbols-outlined text-sm">restart_alt</span>
+            </button>
+          )}
+          <button
+            onClick={onClose}
+            className="px-4 min-h-[44px] rounded-xl bg-black/40 border border-white/10 text-gray-400 text-xs hover:text-white hover:bg-white/5 transition-all"
+          >Cancelar</button>
+        </div>
+      </div>
+    </div>
+  );
+}
+
 /* ── Ferramentas ── */
 function FerramentasSection() {
   const customToolConfig = useMachiningStore((s) => s.customToolConfig);
@@ -607,9 +711,7 @@ function FerramentasSection() {
   const removeToolCorrectionFactor = useMachiningStore((s) => s.removeToolCorrectionFactor);
   const [newDiam, setNewDiam] = useState('');
   const [newRadius, setNewRadius] = useState('');
-  const [editKey, setEditKey] = useState<{ tipo: TipoFerramenta; diametro: number } | null>(null);
-  const [editFator, setEditFator] = useState(1.0);
-  const [editDesc, setEditDesc] = useState('');
+  const [modalKey, setModalKey] = useState<{ tipo: TipoFerramenta; diametro: number } | null>(null);
 
   const addDiameter = () => {
     const v = Number(newDiam);
@@ -708,126 +810,90 @@ function FerramentasSection() {
           Fatores de Correção por Ferramenta
         </h3>
         <p className="text-[10px] text-gray-500 mb-4">
-          Multiplicador global aplicado a Vc e fz. Use para compensar revestimentos (TiAlN, DLC, etc).
-          {' '}1.00 = sem correção. Fatores ativos são exibidos em destaque.
+          Multiplicador aplicado a Vc e fz. Compensa revestimentos (TiAlN, DLC, etc).
+          Clique em Editar em qualquer diâmetro para ajustar.
         </p>
 
-        {/* Inline edit form */}
-        {editKey && (
-          <div className="mb-4 p-3 rounded-xl bg-primary/5 border border-primary/20">
-            <p className="text-xs text-primary font-semibold mb-3">
-              Editando: {TIPOS_FERRAMENTA.find((t) => t.tipo === editKey.tipo)?.label} Ø{editKey.diametro}mm
-            </p>
-            <div className="flex items-center gap-3 mb-3">
-              <button
-                className={BTN_CLS}
-                onClick={() => setEditFator(Math.max(0.5, +(editFator - 0.05).toFixed(2)))}
-              >−</button>
-              <div className="flex-1">
-                <StyledSlider
-                  value={editFator}
-                  min={0.5}
-                  max={1.5}
-                  step={0.05}
-                  color="primary"
-                  rgb="0,217,255"
-                  label="Fator de correção"
-                  onChange={(v) => setEditFator(+(v.toFixed(2)))}
-                />
-              </div>
-              <button
-                className={BTN_CLS}
-                onClick={() => setEditFator(Math.min(1.5, +(editFator + 0.05).toFixed(2)))}
-              >+</button>
-              <span className="text-lg font-mono font-bold text-primary w-14 text-right">{editFator.toFixed(2)}</span>
-            </div>
-            <input
-              type="text"
-              value={editDesc}
-              onChange={(e) => setEditDesc(e.target.value)}
-              placeholder="Descrição opcional (ex: TiAlN, DLC, sem rev.)"
-              className="w-full min-h-[36px] bg-black/40 border border-white/10 rounded-lg py-1.5 px-3 text-xs text-white font-mono focus:ring-1 focus:ring-primary outline-none mb-3"
-            />
-            <div className="flex gap-2">
-              <button
-                onClick={() => {
-                  setToolCorrectionFactor({ tipo: editKey.tipo, diametro: editKey.diametro, fator: editFator, descricao: editDesc || undefined });
-                  setEditKey(null);
-                }}
-                className="flex-1 min-h-[36px] rounded-lg bg-primary/20 border border-primary/40 text-primary text-xs font-bold active:bg-primary/30 hover:bg-primary/30 transition-all"
-              >Salvar</button>
-              <button
-                onClick={() => setEditKey(null)}
-                className="px-4 min-h-[36px] rounded-lg bg-black/40 border border-white/10 text-gray-400 text-xs hover:text-white hover:bg-white/5 transition-all"
-              >Cancelar</button>
-            </div>
-          </div>
-        )}
-
         {/* Table: one block per tool type */}
-        {TIPOS_FERRAMENTA.map(({ tipo, label }) => (
-          <div key={tipo} className="mb-4">
-            <label className={LABEL}>{label}</label>
-            <div className="overflow-x-auto">
-              <table className="w-full text-xs">
-                <thead>
-                  <tr className="border-b border-white/5">
-                    <th className="text-left text-gray-500 font-semibold pb-1.5 pl-1">Ø (mm)</th>
-                    <th className="text-center text-gray-500 font-semibold pb-1.5">Fator</th>
-                    <th className="text-left text-gray-500 font-semibold pb-1.5 pl-2">Descrição</th>
-                    <th className="pb-1.5" />
-                  </tr>
-                </thead>
-                <tbody>
-                  {[...DIAMETROS_TABELA, ...customToolConfig.extraDiameters].map((d) => {
-                    const tcf = toolCorrectionFactors.find((t) => t.tipo === tipo && t.diametro === d);
-                    const isActive = tcf && tcf.fator !== 1.0;
-                    const isEditing = editKey?.tipo === tipo && editKey?.diametro === d;
-                    return (
-                      <tr
-                        key={d}
-                        className={`border-b border-white/5 last:border-0 ${isActive ? 'bg-primary/5' : ''} ${isEditing ? 'bg-primary/10' : ''}`}
-                      >
-                        <td className="py-2 pl-1 font-mono text-gray-300">{d}</td>
-                        <td className="py-2 text-center">
-                          <span className={`font-mono font-bold ${isActive ? 'text-primary' : 'text-gray-500'}`}>
-                            {tcf ? tcf.fator.toFixed(2) : '1.00'}
-                          </span>
-                        </td>
-                        <td className="py-2 pl-2 text-gray-500 truncate max-w-[120px]">
-                          {tcf?.descricao ?? '—'}
-                        </td>
-                        <td className="py-2 pr-1 text-right">
-                          <div className="flex items-center justify-end gap-1">
+        {TIPOS_FERRAMENTA.map(({ tipo, label }) => {
+          const allDiams = [...DIAMETROS_TABELA, ...customToolConfig.extraDiameters];
+          const activeFactors = toolCorrectionFactors.filter((t) => t.tipo === tipo && t.fator !== 1.0);
+          return (
+            <div key={tipo} className="mb-5">
+              <div className="flex items-center justify-between mb-2">
+                <label className="text-[11px] font-semibold text-gray-400 uppercase tracking-wide">{label}</label>
+                {activeFactors.length > 0 && (
+                  <span className="text-[10px] text-primary font-mono bg-primary/10 px-2 py-0.5 rounded-full border border-primary/20">
+                    {activeFactors.length} ativo{activeFactors.length > 1 ? 's' : ''}
+                  </span>
+                )}
+              </div>
+              <div className="overflow-x-auto rounded-xl border border-white/5 bg-black/20">
+                <table className="w-full text-xs min-w-[320px]">
+                  <thead>
+                    <tr className="border-b border-white/5 bg-white/2">
+                      <th className="text-left text-gray-600 font-semibold py-2 pl-3">Ø (mm)</th>
+                      <th className="text-center text-gray-600 font-semibold py-2">Fator</th>
+                      <th className="text-left text-gray-600 font-semibold py-2 pl-2 hidden sm:table-cell">Descrição</th>
+                      <th className="py-2 pr-2" />
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {allDiams.map((d) => {
+                      const tcf = toolCorrectionFactors.find((t) => t.tipo === tipo && t.diametro === d);
+                      const isActive = tcf && tcf.fator !== 1.0;
+                      return (
+                        <tr
+                          key={d}
+                          className={`border-b border-white/5 last:border-0 transition-colors ${isActive ? 'bg-primary/5' : 'hover:bg-white/2'}`}
+                        >
+                          <td className="py-2 pl-3 font-mono text-gray-300 font-bold">{d}</td>
+                          <td className="py-2 text-center">
+                            <span className={`font-mono font-bold text-sm ${isActive ? 'text-primary' : 'text-gray-600'}`}>
+                              {tcf ? tcf.fator.toFixed(2) : '1.00'}
+                            </span>
+                          </td>
+                          <td className="py-2 pl-2 text-gray-500 text-[10px] truncate max-w-[100px] hidden sm:table-cell">
+                            {tcf?.descricao ?? '—'}
+                          </td>
+                          <td className="py-2 pr-2 text-right">
                             <button
-                              onClick={() => {
-                                setEditKey({ tipo, diametro: d });
-                                setEditFator(tcf?.fator ?? 1.0);
-                                setEditDesc(tcf?.descricao ?? '');
-                              }}
-                              className="px-2 py-1 rounded bg-black/40 border border-white/10 text-gray-400 hover:text-primary hover:border-primary/30 transition-all text-[10px] flex items-center gap-0.5"
+                              onClick={() => setModalKey({ tipo, diametro: d })}
+                              className={`px-2.5 py-1 rounded-lg text-[10px] font-semibold transition-all flex items-center gap-1 ml-auto
+                                ${isActive
+                                  ? 'bg-primary/15 border border-primary/30 text-primary hover:bg-primary/25'
+                                  : 'bg-black/40 border border-white/10 text-gray-500 hover:text-primary hover:border-primary/20'
+                                }`}
                             >
-                              <span className="material-symbols-outlined" style={{ fontSize: '11px' }}>edit</span>
+                              <span className="material-symbols-outlined" style={{ fontSize: '12px' }}>edit</span>
                               Editar
                             </button>
-                            {tcf && (
-                              <button
-                                onClick={() => removeToolCorrectionFactor(tipo, d)}
-                                className="px-1.5 py-1 rounded bg-black/40 border border-white/10 text-gray-500 hover:text-seg-vermelho transition-all"
-                                title="Remover correção"
-                              >×</button>
-                            )}
-                          </div>
-                        </td>
-                      </tr>
-                    );
-                  })}
-                </tbody>
-              </table>
+                          </td>
+                        </tr>
+                      );
+                    })}
+                  </tbody>
+                </table>
+              </div>
             </div>
-          </div>
-        ))}
+          );
+        })}
       </div>
+
+      {/* Modal */}
+      {modalKey && (() => {
+        const tcf = toolCorrectionFactors.find((t) => t.tipo === modalKey.tipo && t.diametro === modalKey.diametro);
+        return (
+          <CorrectionModal
+            tipo={modalKey.tipo}
+            diametro={modalKey.diametro}
+            initial={{ fator: tcf?.fator ?? 1.0, descricao: tcf?.descricao }}
+            onSave={(fator, descricao) => setToolCorrectionFactor({ tipo: modalKey.tipo, diametro: modalKey.diametro, fator, descricao })}
+            onReset={() => removeToolCorrectionFactor(modalKey.tipo, modalKey.diametro)}
+            onClose={() => setModalKey(null)}
+          />
+        );
+      })()}
     </div>
   );
 }
