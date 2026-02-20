@@ -41,11 +41,11 @@ export function FormulaCard({
           <span className="material-symbols-outlined text-primary text-sm">{icon}</span>
         </div>
         <div className="flex-1 text-left">
-          <span className="text-xs font-bold text-white uppercase tracking-wider">{title}</span>
+          <span className="text-sm font-bold text-white uppercase tracking-wider">{title}</span>
         </div>
         <div className="flex items-baseline gap-1 mr-3">
-          <span className="text-lg font-mono font-bold text-white">{resultValue}</span>
-          <span className="text-[10px] text-gray-400 font-bold">{resultUnit}</span>
+          <span className="text-xl font-mono font-bold text-white">{resultValue}</span>
+          <span className="text-xs text-gray-400 font-bold">{resultUnit}</span>
         </div>
         <span className={`material-symbols-outlined text-gray-400 text-sm transition-transform duration-300 ${expanded ? 'rotate-180' : ''}`}>
           expand_more
@@ -56,13 +56,13 @@ export function FormulaCard({
       {expanded && (
         <div className="border-t border-white/5 px-4 py-4 space-y-4 animate-in">
           {/* Label */}
-          <div className="flex items-center gap-2 text-[10px] text-primary/70 font-bold uppercase tracking-widest">
+          <div className="flex items-center gap-2 text-xs text-primary/70 font-bold uppercase tracking-widest">
             <span className="material-symbols-outlined text-xs">school</span>
             Como é Calculado
           </div>
 
           {/* Formula display */}
-          <div className="bg-black/40 rounded-lg border border-white/5 px-4 py-3 font-mono text-sm text-center space-y-1">
+          <div className="bg-black/40 rounded-lg border border-white/5 px-4 py-3 font-mono text-base text-center space-y-1">
             <div className="text-gray-300">{formula}</div>
             <div className="text-primary">{substitution}</div>
           </div>
@@ -70,11 +70,11 @@ export function FormulaCard({
           {/* Variables legend */}
           <div className="grid grid-cols-2 gap-x-4 gap-y-1.5">
             {variables.map((v) => (
-              <div key={v.symbol} className="flex items-baseline gap-2 text-xs">
+              <div key={v.symbol} className="flex items-baseline gap-2 text-sm">
                 <span className="font-mono font-bold text-primary">{v.symbol}</span>
                 <span className="text-gray-500">=</span>
                 <span className="font-mono text-white">{v.value}</span>
-                <span className="text-gray-500 text-[10px] truncate">({v.description})</span>
+                <span className="text-gray-500 text-xs truncate">({v.description})</span>
               </div>
             ))}
           </div>
@@ -82,7 +82,7 @@ export function FormulaCard({
           {/* Context bar */}
           {contextBar && (
             <div className="space-y-1">
-              <div className="flex justify-between text-[10px] text-gray-500 font-mono">
+              <div className="flex justify-between text-xs text-gray-500 font-mono">
                 <span>{contextBar.min}</span>
                 <span>{contextBar.label}</span>
                 <span>{contextBar.max.toLocaleString('en-US')}</span>
@@ -103,7 +103,7 @@ export function FormulaCard({
           {/* Practical tip */}
           <div className="flex items-start gap-2 bg-primary/5 border border-primary/10 rounded-lg px-3 py-2">
             <span className="material-symbols-outlined text-primary text-sm mt-0.5">lightbulb</span>
-            <span className="text-xs text-gray-300 leading-relaxed">{tip}</span>
+            <span className="text-sm text-gray-300 leading-relaxed">{tip}</span>
           </div>
         </div>
       )}

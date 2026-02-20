@@ -16,10 +16,10 @@ export default function App() {
       {/* Header */}
       <header className="flex items-center justify-between py-2 px-6 rounded-2xl bg-surface-dark backdrop-blur-xl border border-white/5 shadow-glass">
         <div className="flex items-center gap-3">
-          <span className="material-symbols-outlined text-primary text-4xl drop-shadow-[0_0_12px_rgba(0,217,255,0.8)]">
+          <span className="material-symbols-outlined text-primary text-5xl drop-shadow-[0_0_12px_rgba(0,217,255,0.8)]">
             precision_manufacturing
           </span>
-          <h1 className="text-2xl font-bold tracking-tight bg-gradient-to-r from-white to-gray-400 bg-clip-text text-transparent">
+          <h1 className="text-3xl font-bold tracking-tight bg-gradient-to-r from-white to-gray-400 bg-clip-text text-transparent">
             ToolOptimizer<span className="font-light text-primary">CNC</span>
           </h1>
         </div>

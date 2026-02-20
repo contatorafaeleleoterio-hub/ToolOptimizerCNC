@@ -105,19 +105,19 @@ export function BidirectionalSlider({
       {/* Value display */}
       <div className="flex justify-between items-baseline">
         <div className="flex items-baseline gap-2">
-          <span className={`text-xs font-bold font-mono text-${color}`}>{label}</span>
-          <span className={`text-[9px] font-bold tracking-wider ${
+          <span className={`text-sm font-bold font-mono text-${color}`}>{label}</span>
+          <span className={`text-[11px] font-bold tracking-wider ${
             currentPercent === 0 ? 'text-gray-500' : currentPercent > 0 ? 'text-secondary' : 'text-seg-vermelho'
           }`}>
             {currentPercent > 0 ? '+' : ''}{currentPercent}%
           </span>
         </div>
         <div className="text-right">
-          <span className={`font-mono text-lg font-bold text-${color}`}
+          <span className={`font-mono text-xl font-bold text-${color}`}
             style={{ filter: `drop-shadow(0 0 8px rgba(${rgb},0.4))` }}>
             {actualValue.toLocaleString('en-US')}
           </span>
-          <span className="text-[8px] text-gray-500 font-mono tracking-wider ml-1">{unit}</span>
+          <span className="text-[11px] text-gray-500 font-mono tracking-wider ml-1">{unit}</span>
         </div>
       </div>
 
@@ -212,7 +212,7 @@ export function BidirectionalSlider({
 
       {/* Tick labels */}
       <div className="relative h-3 px-10">
-        <div className="absolute inset-0 flex justify-between text-[8px] text-gray-600 font-mono">
+        <div className="absolute inset-0 flex justify-between text-[11px] text-gray-600 font-mono">
           <span>-150%</span>
           <span className="text-white/40">0%</span>
           <span>+150%</span>

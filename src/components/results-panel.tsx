@@ -61,8 +61,8 @@ export function ResultsPanel() {
           <div className="flex items-center gap-3">
             <span className="material-symbols-outlined text-yellow-400 animate-pulse">refresh</span>
             <div>
-              <p className="text-sm font-semibold text-yellow-300">Parâmetros Alterados</p>
-              <p className="text-xs text-yellow-400/80 mt-0.5">Clique em "SIMULAR" para recalcular os resultados</p>
+              <p className="text-base font-semibold text-yellow-300">Parâmetros Alterados</p>
+              <p className="text-sm text-yellow-400/80 mt-0.5">Clique em "SIMULAR" para recalcular os resultados</p>
             </div>
           </div>
         </div>
@@ -79,8 +79,8 @@ export function ResultsPanel() {
             <span className="material-symbols-outlined text-gray-400">analytics</span>
           </div>
           <div>
-            <h3 className="text-sm font-bold text-white uppercase tracking-widest">Parâmetros Calculados</h3>
-            <p className="text-[10px] text-gray-500 font-mono mt-0.5">Resumo da Operação</p>
+            <h3 className="text-base font-bold text-white uppercase tracking-widest">Parâmetros Calculados</h3>
+            <p className="text-xs text-gray-500 font-mono mt-0.5">Resumo da Operação</p>
           </div>
         </div>
         <div className="bg-black/40 rounded-xl border border-white/5 overflow-hidden">
@@ -131,8 +131,8 @@ export function ResultsPanel() {
             <span className="material-symbols-outlined text-primary">school</span>
           </div>
           <div>
-            <h3 className="text-sm font-bold text-white uppercase tracking-widest">Entenda os Cálculos</h3>
-            <p className="text-[10px] text-gray-500 mt-0.5">Clique para expandir e ver como cada valor é calculado</p>
+            <h3 className="text-base font-bold text-white uppercase tracking-widest">Entenda os Cálculos</h3>
+            <p className="text-xs text-gray-500 mt-0.5">Clique para expandir e ver como cada valor é calculado</p>
           </div>
         </div>
         <div className="space-y-2">

@@ -2,7 +2,7 @@ import type { ReactNode } from 'react';
 
 export function SectionTitle({ color, label }: { color: string; label: string }) {
   return (
-    <h3 className="text-xs font-bold text-gray-400 uppercase tracking-widest mb-4 flex items-center gap-2">
+    <h3 className="text-sm font-bold text-gray-400 uppercase tracking-widest mb-4 flex items-center gap-2">
       <span className={`w-1 h-3 ${color} rounded-full`} />
       {label}
     </h3>
@@ -12,7 +12,7 @@ export function SectionTitle({ color, label }: { color: string; label: string })
 export function FieldGroup({ label, children }: { label: string; children: ReactNode }) {
   return (
     <div className="group">
-      <label className="text-[11px] font-semibold text-gray-500 uppercase tracking-wide mb-2 block">{label}</label>
+      <label className="text-xs font-semibold text-gray-500 uppercase tracking-wide mb-2 block">{label}</label>
       {children}
     </div>
   );
@@ -32,7 +32,7 @@ export function NumInput({ label, value, onChange, min, max, step }: {
   };
   return (
     <div>
-      <label className="text-[11px] font-semibold text-gray-500 uppercase tracking-wide mb-1 block">{label}</label>
+      <label className="text-xs font-semibold text-gray-500 uppercase tracking-wide mb-1 block">{label}</label>
       <div className="flex gap-1">
         <input
           type="number"
@@ -40,7 +40,7 @@ export function NumInput({ label, value, onChange, min, max, step }: {
           onChange={(e) => onChange(Number(e.target.value))}
           min={min} max={max} step={step}
           aria-label={label}
-          className="flex-1 min-w-0 min-h-[44px] bg-black/40 border border-white/10 rounded-lg py-2 px-3 text-sm text-white font-mono focus:ring-1 focus:ring-primary outline-none"
+          className="flex-1 min-w-0 min-h-[44px] bg-black/40 border border-white/10 rounded-lg py-2 px-3 text-base text-white font-mono focus:ring-1 focus:ring-primary outline-none"
         />
         <div className="flex flex-col gap-0.5">
           <button onClick={increment} aria-label={`Increase ${label}`}

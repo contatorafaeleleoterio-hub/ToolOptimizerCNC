@@ -62,7 +62,7 @@ export function Gauge({ value, maxValue, label = 'Eficiência' }: GaugeProps) {
 
   return (
     <div className="bg-surface-dark backdrop-blur-xl border border-white/5 rounded-2xl p-4 shadow-glass flex flex-col items-center">
-      {label && <span className="text-[10px] text-gray-500 font-bold uppercase tracking-wider mb-2">{label}</span>}
+      {label && <span className="text-xs text-gray-500 font-bold uppercase tracking-wider mb-2">{label}</span>}
       <div className="relative w-40 h-40">
         <svg viewBox="0 0 200 200" className="w-40 h-40" data-testid="gauge-svg">
           <defs>
@@ -100,7 +100,7 @@ export function Gauge({ value, maxValue, label = 'Eficiência' }: GaugeProps) {
             return (
               <text key={val} x={x} y={y} textAnchor="middle" dominantBaseline="central"
                 fill={val === 100 ? '#00D9FF' : '#6b7280'}
-                fontSize={val === 100 ? 11 : 8}
+                fontSize={val === 100 ? 14 : 11}
                 fontWeight={val === 100 ? 'bold' : 'normal'}
                 data-testid={`scale-${val}`}>
                 {val}
@@ -112,8 +112,8 @@ export function Gauge({ value, maxValue, label = 'Eficiência' }: GaugeProps) {
         {/* Center display */}
         <div className="absolute inset-0 flex items-center justify-center">
           <div className={`transition-all duration-450 ${gaugeAnimating ? 'scale-110' : ''} ${isCritical ? 'animate-pulse' : ''}`}>
-            <span className="text-4xl font-bold text-white font-mono">{Math.round(pct)}</span>
-            <span className="text-lg text-gray-500">%</span>
+            <span className="text-5xl font-bold text-white font-mono">{Math.round(pct)}</span>
+            <span className="text-xl text-gray-500">%</span>
           </div>
         </div>
       </div>

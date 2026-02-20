@@ -32,7 +32,7 @@ export function ConfigPanel() {
       <div className="sticky top-0 z-10 bg-background-dark/90 backdrop-blur-md pt-0 pb-2">
         <div className="flex gap-3">
           <button onClick={handleSimulate} disabled={isCalculating}
-            className="flex-1 py-2 px-4 rounded-xl bg-gradient-to-r from-cyan-600 to-cyan-500 text-white font-bold tracking-wide shadow-neon-cyan hover:brightness-110 transition-all active:scale-[0.98] flex items-center justify-center gap-2 text-sm uppercase disabled:opacity-70 disabled:cursor-not-allowed">
+            className="flex-1 py-2 px-4 rounded-xl bg-gradient-to-r from-cyan-600 to-cyan-500 text-white font-bold tracking-wide shadow-neon-cyan hover:brightness-110 transition-all active:scale-[0.98] flex items-center justify-center gap-2 text-base uppercase disabled:opacity-70 disabled:cursor-not-allowed">
             {isCalculating ? (
               <>
                 <span className="material-symbols-outlined text-lg animate-[spinner_0.9s_linear_infinite]">refresh</span>
@@ -60,26 +60,26 @@ export function ConfigPanel() {
           <div className="space-y-3">
             <FieldGroup label="Material da Peça">
               <select value={materialId} onChange={(e) => setMaterial(Number(e.target.value))}
-                className="w-full bg-black/40 border border-white/10 rounded-lg py-3 pl-3 pr-10 text-sm text-gray-200 focus:ring-1 focus:ring-primary focus:border-primary outline-none appearance-none transition-all hover:border-white/20 select-chevron">
+                className="w-full bg-black/40 border border-white/10 rounded-lg py-3 pl-3 pr-10 text-base text-gray-200 focus:ring-1 focus:ring-primary focus:border-primary outline-none appearance-none transition-all hover:border-white/20 select-chevron">
                 {MATERIAIS.map((m) => (
                   <option key={m.id} value={m.id}>{m.nome}{m.status === 'estimado' ? ' ⚠' : ''}</option>
                 ))}
               </select>
               {material && (
                 <div className="flex justify-between mt-1 px-1">
-                  <span className="text-[10px] text-gray-600">{material.dureza}</span>
+                  <span className="text-xs text-gray-600">{material.dureza}</span>
                   {vcRange && <span className="text-[10px] text-primary/70">Vc: {vcRange[0]}-{vcRange[1]} m/min</span>}
                 </div>
               )}
               {material?.status === 'estimado' && (
-                <span className="text-[10px] text-seg-amarelo mt-1 block">Dados estimados</span>
+                <span className="text-xs text-seg-amarelo mt-1 block">Dados estimados</span>
               )}
             </FieldGroup>
             <FieldGroup label="Tipo de Usinagem">
               <div className="grid grid-cols-3 gap-2">
                 {Object.values(TipoUsinagem).map((t) => (
                   <button key={t} onClick={() => setTipoOperacao(t)}
-                    className={`py-2 rounded border text-xs transition-colors ${tipoOperacao === t
+                    className={`py-2 rounded border text-sm transition-colors ${tipoOperacao === t
                       ? 'bg-primary text-black font-bold border-primary shadow-neon-cyan'
                       : 'bg-black/40 text-gray-400 hover:text-white hover:bg-white/5 border-white/10'}`}>
                     {OPERACAO_LABELS[t]}
@@ -99,7 +99,7 @@ export function ConfigPanel() {
               <div className="grid grid-cols-3 gap-2">
                 {FERRAMENTAS_PADRAO.map((f) => (
                   <button key={f.tipo} onClick={() => setFerramenta({ tipo: f.tipo, numeroArestas: f.zPadrao })}
-                    className={`py-2 rounded border text-xs transition-colors ${ferramenta.tipo === f.tipo
+                    className={`py-2 rounded border text-sm transition-colors ${ferramenta.tipo === f.tipo
                       ? 'bg-primary text-black font-bold border-primary shadow-neon-cyan'
                       : 'bg-black/40 text-gray-400 hover:text-white hover:bg-white/5 border-white/10'}`}>
                     {f.descricao.split(' ')[0]}
@@ -111,7 +111,7 @@ export function ConfigPanel() {
             {/* 2. Diameter (dropdown with chevron) */}
             <FieldGroup label="Diâmetro (mm)">
               <select value={ferramenta.diametro} onChange={(e) => setFerramenta({ diametro: Number(e.target.value) })}
-                className="w-full bg-black/40 border border-white/10 rounded-lg py-2 pl-3 pr-10 text-sm text-white font-mono focus:ring-1 focus:ring-primary outline-none appearance-none hover:border-white/20 select-chevron">
+                className="w-full bg-black/40 border border-white/10 rounded-lg py-2 pl-3 pr-10 text-base text-white font-mono focus:ring-1 focus:ring-primary outline-none appearance-none hover:border-white/20 select-chevron">
                 {DIAMETROS_COMPLETOS.map((d) => (
                   <option key={d} value={d}>{d}mm</option>
                 ))}
@@ -124,7 +124,7 @@ export function ConfigPanel() {
                 <div className="grid grid-cols-2 gap-2">
                   {RAIOS_PADRAO.map((raio) => (
                     <button key={raio} onClick={() => setFerramenta({ raioQuina: raio })}
-                      className={`py-2 rounded-lg border text-xs font-mono transition-colors ${(ferramenta.raioQuina ?? 1.0) === raio
+                      className={`py-2 rounded-lg border text-sm font-mono transition-colors ${(ferramenta.raioQuina ?? 1.0) === raio
                         ? 'bg-primary text-black font-bold border-primary shadow-neon-cyan'
                         : 'bg-black/40 text-gray-400 hover:text-white hover:bg-white/5 border-white/10'}`}>
                       R{raio}
@@ -139,7 +139,7 @@ export function ConfigPanel() {
               <div className="grid grid-cols-2 gap-2">
                 {ARESTAS_OPTIONS.map((z) => (
                   <button key={z} onClick={() => setFerramenta({ numeroArestas: z })}
-                    className={`py-2 rounded-lg border text-xs font-mono transition-colors ${ferramenta.numeroArestas === z
+                    className={`py-2 rounded-lg border text-sm font-mono transition-colors ${ferramenta.numeroArestas === z
                       ? 'bg-primary text-black font-bold border-primary shadow-neon-cyan'
                       : 'bg-black/40 text-gray-400 hover:text-white hover:bg-white/5 border-white/10'}`}>
                     {z} Arestas
@@ -167,7 +167,7 @@ export function ConfigPanel() {
         <div className="bg-card-dark rounded-xl p-3 border border-white/5 shadow-inner-glow">
           <div className="flex items-center justify-between mb-2">
             <SectionTitle color="bg-accent-orange" label="Parâmetros de Corte" />
-            <span className="text-[10px] text-gray-500 font-mono flex items-center gap-1" title="Fator de Segurança — ajuste em Configurações">
+            <span className="text-xs text-gray-500 font-mono flex items-center gap-1" title="Fator de Segurança — ajuste em Configurações">
               <span className="material-symbols-outlined" style={{ fontSize: '11px' }}>shield</span>
               SF: {safetyFactor.toFixed(2)}
             </span>

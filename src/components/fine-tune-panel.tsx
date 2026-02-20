@@ -143,7 +143,7 @@ export function FineTunePanel() {
 
   return (
     <div className="bg-surface-dark backdrop-blur-xl border border-white/5 rounded-2xl p-4 shadow-glass h-full flex flex-col overflow-y-auto">
-      <h2 className="text-xs font-bold uppercase tracking-widest mb-4 flex items-center gap-2 text-gray-300">
+      <h2 className="text-sm font-bold uppercase tracking-widest mb-4 flex items-center gap-2 text-gray-300">
         <span className="material-symbols-outlined text-base">tune</span> Ajuste Fino
       </h2>
 
@@ -164,8 +164,8 @@ export function FineTunePanel() {
                     aria-expanded={isOpen}
                     aria-label={`Informações sobre ${fullLabel}`}
                   >
-                    <span className={`text-xs font-bold font-mono text-${color}`}>{label}</span>
-                    <span className="text-[9px] font-bold tracking-wider text-gray-500 uppercase">{fullLabel}</span>
+                    <span className={`text-sm font-bold font-mono text-${color}`}>{label}</span>
+                    <span className="text-xs font-bold tracking-wider text-gray-500 uppercase">{fullLabel}</span>
                     <span
                       className="material-symbols-outlined text-gray-600 transition-transform duration-300"
                       style={{ fontSize: '14px', transform: isOpen ? 'rotate(180deg)' : 'rotate(0deg)' }}
@@ -180,10 +180,10 @@ export function FineTunePanel() {
                       const n = Number(e.target.value);
                       if (!isNaN(n) && n >= min && n <= max) setParametros({ [key]: n });
                     }}
-                    className={`w-16 bg-transparent border-none text-right font-mono text-lg font-bold text-${color} outline-none [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none`}
+                    className={`w-20 bg-transparent border-none text-right font-mono text-xl font-bold text-${color} outline-none [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none`}
                     style={{ filter: `drop-shadow(0 0 8px rgba(${rgb},0.4))` }}
                     aria-label={`valor de ${label}`} />
-                  <div className="text-[8px] text-gray-500 font-mono tracking-wider">{unit}</div>
+                  <div className="text-[11px] text-gray-500 font-mono tracking-wider">{unit}</div>
                 </div>
               </div>
 
@@ -207,19 +207,19 @@ export function FineTunePanel() {
                   className="mt-1 rounded-xl border bg-black/30 p-3 animate-[fadeInUp_0.25s_ease-out]"
                   style={{ borderColor: `rgba(${rgb},0.18)` }}
                 >
-                  <p className="text-[10px] text-gray-400 leading-relaxed mb-2.5">{desc}</p>
+                  <p className="text-xs text-gray-400 leading-relaxed mb-2.5">{desc}</p>
                   <div className="space-y-1.5">
                     <div className="flex items-start gap-2">
-                      <span className="text-[9px] font-bold text-green-400 w-14 shrink-0 pt-0.5 tracking-wide">▲ MAIS</span>
-                      <span className="text-[10px] text-gray-400 leading-relaxed">{aumentar}</span>
+                      <span className="text-[11px] font-bold text-green-400 w-16 shrink-0 pt-0.5 tracking-wide">▲ MAIS</span>
+                      <span className="text-xs text-gray-400 leading-relaxed">{aumentar}</span>
                     </div>
                     <div className="flex items-start gap-2">
-                      <span className="text-[9px] font-bold text-red-400 w-14 shrink-0 pt-0.5 tracking-wide">▼ MENOS</span>
-                      <span className="text-[10px] text-gray-400 leading-relaxed">{diminuir}</span>
+                      <span className="text-[11px] font-bold text-red-400 w-16 shrink-0 pt-0.5 tracking-wide">▼ MENOS</span>
+                      <span className="text-xs text-gray-400 leading-relaxed">{diminuir}</span>
                     </div>
                     <div className="flex items-start gap-2 pt-1.5 mt-1 border-t border-white/5">
-                      <span className="material-symbols-outlined text-yellow-500 shrink-0 leading-none" style={{ fontSize: '13px' }}>balance</span>
-                      <span className="text-[10px] text-gray-500 italic leading-relaxed">{equilibrio}</span>
+                      <span className="material-symbols-outlined text-yellow-500 shrink-0 leading-none" style={{ fontSize: '14px' }}>balance</span>
+                      <span className="text-xs text-gray-500 italic leading-relaxed">{equilibrio}</span>
                     </div>
                   </div>
                 </div>
@@ -236,13 +236,13 @@ export function FineTunePanel() {
         <div className="bg-black/30 p-3 rounded-xl flex items-center justify-between border border-white/5 shadow-inner-glow">
           <div className="flex items-center gap-2">
             <span className="material-symbols-outlined text-gray-600 text-sm">delete_sweep</span>
-            <span className="text-[10px] text-gray-400">MRR</span>
+            <span className="text-xs text-gray-400">MRR</span>
           </div>
           <span className="font-mono text-base font-bold text-white">
-            {resultado ? resultado.mrr.toFixed(1) : '—'} <span className="text-[10px] text-gray-600">cm³/min</span>
+            {resultado ? resultado.mrr.toFixed(1) : '—'} <span className="text-xs text-gray-600">cm³/min</span>
           </span>
         </div>
-        {material && <p className="text-[9px] text-gray-600 mt-1">{material.nome} — {material.dureza}</p>}
+        {material && <p className="text-[11px] text-gray-600 mt-1">{material.nome} — {material.dureza}</p>}
       </div>
     </div>
   );

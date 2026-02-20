@@ -18,8 +18,8 @@ function ValueCell({ label, value, color = 'text-primary' }: {
 }) {
   return (
     <div className="flex flex-col">
-      <span className="text-[9px] text-gray-500 uppercase tracking-wider">{label}</span>
-      <span className={`text-sm font-mono font-bold ${color}`}>{value}</span>
+      <span className="text-xs text-gray-500 uppercase tracking-wider">{label}</span>
+      <span className={`text-base font-mono font-bold ${color}`}>{value}</span>
     </div>
   );
 }

@@ -27,10 +27,10 @@ export function MetricCell({ label, value, unit, unitColor }: {
 }) {
   return (
     <div className="p-4 flex flex-col gap-1">
-      <span className="text-[10px] text-gray-500 font-bold uppercase tracking-wider">{label}</span>
+      <span className="text-xs text-gray-500 font-bold uppercase tracking-wider">{label}</span>
       <div className="flex items-baseline gap-1">
-        <span className="text-2xl font-bold text-white font-mono transition-all duration-500">{value}</span>
-        <span className={`text-[10px] ${unitColor} font-bold`}>{unit}</span>
+        <span className="text-3xl font-bold text-white font-mono transition-all duration-500">{value}</span>
+        <span className={`text-xs ${unitColor} font-bold`}>{unit}</span>
       </div>
     </div>
   );
@@ -57,16 +57,16 @@ export function BigNumber({ label, value, unit, pct, color, glow, barGlow, icon,
       <div className="absolute top-4 right-4 opacity-30 group-hover:opacity-100 transition-opacity duration-500">
         <span className={`material-symbols-outlined text-3xl text-${color}`}>{icon}</span>
       </div>
-      <h3 className={`text-xs uppercase tracking-[0.25em] text-${color} font-bold mb-2 relative z-10`}
+      <h3 className={`text-sm uppercase tracking-[0.25em] text-${color} font-bold mb-2 relative z-10`}
         style={{ filter: `drop-shadow(0 0 8px ${glow})` }}>{label}</h3>
 
       {/* Big number display */}
       <div className="flex items-center gap-2 z-10 relative mb-2">
-        <span className="text-5xl font-mono font-bold text-white tracking-tighter"
+        <span className="text-6xl font-mono font-bold text-white tracking-tighter"
           style={{ filter: `drop-shadow(0 0 20px ${glow})` }}>{value}</span>
       </div>
 
-      <span className="text-lg text-gray-400 font-medium font-mono uppercase tracking-widest z-10">{unit}</span>
+      <span className="text-xl text-gray-400 font-medium font-mono uppercase tracking-widest z-10">{unit}</span>
 
       {/* Bidirectional slider OR simple progress bar */}
       {useBidirectionalSlider && onPercentChange && baseValue !== undefined && rgb ? (
@@ -98,9 +98,9 @@ export function ProgressCard({ label, value, unit, pct, barColor, barShadow }: {
 }) {
   return (
     <div className="bg-surface-dark backdrop-blur-md border border-white/5 rounded-xl p-5 flex flex-col justify-between hover:bg-white/5 transition-colors group relative overflow-hidden">
-      <div className="text-[10px] font-bold tracking-wider text-gray-400 uppercase">{label}</div>
-      <div className="text-3xl font-mono text-white tracking-tight">
-        {value} <span className="text-sm text-gray-500 font-sans font-normal">{unit}</span>
+      <div className="text-xs font-bold tracking-wider text-gray-400 uppercase">{label}</div>
+      <div className="text-4xl font-mono text-white tracking-tight">
+        {value} <span className="text-base text-gray-500 font-sans font-normal">{unit}</span>
       </div>
       <div className="h-1 w-full bg-white/10 rounded-full overflow-hidden mt-2">
         <div className={`h-full ${barColor}`} style={{ width: `${pct}%`, boxShadow: `0 0 10px ${barShadow}` }} />
@@ -114,9 +114,9 @@ export function SafetyBadge({ nivel, avisosCount }: { nivel: StatusSeguranca['ni
   return (
     <div className={`flex items-center gap-2 px-4 py-2 rounded-xl border ${SEG_BG[nivel]}`}>
       <span className={`material-symbols-outlined ${SEG_COLORS[nivel]}`}>{SEG_ICONS[nivel]}</span>
-      <span className={`text-xs font-bold uppercase tracking-widest ${SEG_COLORS[nivel]}`}>{SEG_LABELS[nivel]}</span>
+      <span className={`text-sm font-bold uppercase tracking-widest ${SEG_COLORS[nivel]}`}>{SEG_LABELS[nivel]}</span>
       {avisosCount > 0 && (
-        <span className="text-[10px] text-gray-400 ml-2">({avisosCount} aviso{avisosCount > 1 ? 's' : ''})</span>
+        <span className="text-xs text-gray-400 ml-2">({avisosCount} aviso{avisosCount > 1 ? 's' : ''})</span>
       )}
     </div>
   );
@@ -126,12 +126,12 @@ export function WarningsSection({ avisos }: { avisos: string[] }) {
   if (avisos.length === 0) return null;
   return (
     <div className="bg-surface-dark backdrop-blur-xl border border-white/5 rounded-2xl p-4 shadow-glass">
-      <h4 className="text-xs font-bold text-gray-400 uppercase tracking-widest mb-3 flex items-center gap-2">
+      <h4 className="text-sm font-bold text-gray-400 uppercase tracking-widest mb-3 flex items-center gap-2">
         <span className="material-symbols-outlined text-seg-amarelo text-sm">warning</span> Avisos
       </h4>
       <ul className="space-y-2">
         {avisos.map((a, i) => (
-          <li key={i} className="text-xs text-gray-300 flex items-start gap-2">
+          <li key={i} className="text-sm text-gray-300 flex items-start gap-2">
             <span className="text-seg-amarelo mt-0.5">•</span>{a}
           </li>
         ))}
