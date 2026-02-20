@@ -2,7 +2,7 @@
 import type { StatusSeguranca } from '@/types';
 import { BidirectionalSlider } from './bidirectional-slider';
 
-export function fmt(n: number): string { return Math.round(n).toLocaleString('en-US'); }
+export function fmt(n: number): string { return Math.round(n).toLocaleString('pt-BR'); }
 
 export const SEG_COLORS: Record<StatusSeguranca['nivel'], string> = {
   verde: 'text-seg-verde', amarelo: 'text-seg-amarelo',

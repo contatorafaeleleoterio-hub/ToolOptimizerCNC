@@ -3,17 +3,17 @@ import { useMachiningStore } from '@/store';
 import { MATERIAIS } from '@/data';
 
 const SLIDER_CONFIG = [
-  { key: 'vc' as const, label: 'Vc', fullLabel: 'CUTTING SPEED', unit: 'M/MIN', color: 'primary',
-    rgb: '0,217,255', desc: 'Controls tangential speed at tool edge. Higher values improve finish but increase heat.',
+  { key: 'vc' as const, label: 'Vc', fullLabel: 'VEL. DE CORTE', unit: 'M/MIN', color: 'primary',
+    rgb: '0,217,255', desc: 'Velocidade tangencial na aresta da ferramenta. Valores maiores melhoram o acabamento mas aumentam o calor.',
     min: 1, max: 1200, step: 1 },
-  { key: 'fz' as const, label: 'fz', fullLabel: 'FEED PER TOOTH', unit: 'MM/TOOTH', color: 'secondary',
-    rgb: '57,255,20', desc: 'Chip thickness per flute. Impacts tool life and chip evacuation.',
+  { key: 'fz' as const, label: 'fz', fullLabel: 'AVANÇO/DENTE', unit: 'MM/DENTE', color: 'secondary',
+    rgb: '57,255,20', desc: 'Espessura do cavaco por aresta. Impacta a vida útil da ferramenta e evacuação de cavacos.',
     min: 0.01, max: 1, step: 0.01 },
-  { key: 'ae' as const, label: 'ae', fullLabel: 'RADIAL ENGAGEMENT', unit: 'MM', color: 'accent-purple',
-    rgb: '168,85,247', desc: 'Width of cut perpendicular to tool axis. Affects lateral pressure and deflection.',
+  { key: 'ae' as const, label: 'ae', fullLabel: 'ENGAJ. RADIAL', unit: 'MM', color: 'accent-purple',
+    rgb: '168,85,247', desc: 'Largura de corte perpendicular ao eixo. Afeta a pressão lateral e deflexão.',
     min: 0.1, max: 50, step: 0.1 },
-  { key: 'ap' as const, label: 'ap', fullLabel: 'AXIAL DEPTH', unit: 'MM', color: 'accent-orange',
-    rgb: '249,115,22', desc: 'Depth of cut along tool axis. Primary driver for material removal rate.',
+  { key: 'ap' as const, label: 'ap', fullLabel: 'PROF. AXIAL', unit: 'MM', color: 'accent-orange',
+    rgb: '249,115,22', desc: 'Profundidade de corte ao longo do eixo. Principal fator de taxa de remoção.',
     min: 0.05, max: 6, step: 0.05 },
 ] as const;
 
@@ -122,7 +122,7 @@ export function FineTunePanel() {
   return (
     <div className="bg-surface-dark backdrop-blur-xl border border-white/5 rounded-2xl p-4 shadow-glass h-full flex flex-col overflow-y-auto">
       <h2 className="text-xs font-bold uppercase tracking-widest mb-4 flex items-center gap-2 text-gray-300">
-        <span className="material-symbols-outlined text-base">tune</span> Fine Tune
+        <span className="material-symbols-outlined text-base">tune</span> Ajuste Fino
       </h2>
 
       <div className="flex-1 flex flex-col justify-between gap-3 px-1">
@@ -145,13 +145,13 @@ export function FineTunePanel() {
                     }}
                     className={`w-16 bg-transparent border-none text-right font-mono text-lg font-bold text-${color} outline-none [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none`}
                     style={{ filter: `drop-shadow(0 0 8px rgba(${rgb},0.4))` }}
-                    aria-label={`${label} value`} />
+                    aria-label={`valor de ${label}`} />
                   <div className="text-[8px] text-gray-500 font-mono tracking-wider">{unit}</div>
                 </div>
               </div>
 
               <div className="flex items-center gap-1.5">
-                <button className={BTN_CLS} aria-label={`Decrease ${label}`}
+                <button className={BTN_CLS} aria-label={`Diminuir ${label}`}
                   onClick={() => setParametros({ [key]: Math.max(min, +(val - step).toFixed(4)) })}>−</button>
                 <div className="flex-1">
                   <StyledSlider
@@ -160,7 +160,7 @@ export function FineTunePanel() {
                     onChange={(v) => setParametros({ [key]: v })}
                   />
                 </div>
-                <button className={BTN_CLS} aria-label={`Increase ${label}`}
+                <button className={BTN_CLS} aria-label={`Aumentar ${label}`}
                   onClick={() => setParametros({ [key]: Math.min(max, +(val + step).toFixed(4)) })}>+</button>
               </div>
 

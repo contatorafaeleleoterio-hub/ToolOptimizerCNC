@@ -16,8 +16,8 @@ describe('Gauge', () => {
   });
 
   it('shows label text', () => {
-    render(<Gauge value={1000} maxValue={5000} label="Feed Efficiency" />);
-    expect(screen.getByText('Feed Efficiency')).toBeInTheDocument();
+    render(<Gauge value={1000} maxValue={5000} label="Eficiência de Avanço" />);
+    expect(screen.getByText('Eficiência de Avanço')).toBeInTheDocument();
   });
 
   it('caps percentage at 150', () => {

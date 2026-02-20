@@ -45,7 +45,7 @@ function markerPos(val: number): { x: number; y: number } {
   };
 }
 
-export function Gauge({ value, maxValue, label = 'Efficiency' }: GaugeProps) {
+export function Gauge({ value, maxValue, label = 'Eficiência' }: GaugeProps) {
   const { gaugeAnimating } = useSimulationAnimation();
   const pct = Math.min((value / maxValue) * 100, MAX_PCT);
   const activeCount = Math.round((pct / MAX_PCT) * TOTAL_SEGMENTS);

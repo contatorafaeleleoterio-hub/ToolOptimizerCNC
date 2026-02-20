@@ -85,9 +85,9 @@ export function ResultsPanel() {
         </div>
         <div className="bg-black/40 rounded-xl border border-white/5 overflow-hidden">
           <div className="grid grid-cols-4 divide-x divide-white/5">
-            <MetricCell label="Spindle" value={fmt(rpm)} unit="RPM" unitColor="text-primary" />
-            <MetricCell label="Feed Rate" value={fmt(avanco)} unit="mm/min" unitColor="text-secondary" />
-            <MetricCell label="Power" value={potenciaMotor.toFixed(2)} unit="kW" unitColor="text-accent-orange" />
+            <MetricCell label="Rotação" value={fmt(rpm)} unit="RPM" unitColor="text-primary" />
+            <MetricCell label="Avanço" value={fmt(avanco)} unit="mm/min" unitColor="text-secondary" />
+            <MetricCell label="Potência" value={potenciaMotor.toFixed(2)} unit="kW" unitColor="text-accent-orange" />
             <MetricCell label="Vc Real" value={vcReal.toFixed(0)} unit="m/min" unitColor="text-primary" />
           </div>
         </div>
@@ -95,14 +95,14 @@ export function ResultsPanel() {
 
       {/* Big numbers: RPM + Feed (bidirectional sliders) */}
       <div className="grid grid-cols-2 gap-3">
-        <BigNumber label="Spindle Speed" value={fmt(rpm)} unit="RPM" pct={rpmPct}
+        <BigNumber label="Rotação (RPM)" value={fmt(rpm)} unit="RPM" pct={rpmPct}
           color="primary" glow="rgba(0,217,255,0.4)" barGlow="rgba(0,217,255,1)" icon="speed"
           useBidirectionalSlider
           baseValue={baseRPM}
           currentPercent={manualOverrides.rpmPercent ?? 0}
           onPercentChange={setManualRPMPercent}
           rgb="0,217,255" />
-        <BigNumber label="Feed Rate" value={fmt(avanco)} unit="mm/min" pct={feedPct}
+        <BigNumber label="Avanço (mm/min)" value={fmt(avanco)} unit="mm/min" pct={feedPct}
           color="secondary" glow="rgba(57,255,20,0.4)" barGlow="rgba(57,255,20,1)" icon="moving"
           useBidirectionalSlider
           baseValue={baseFeed}
@@ -112,15 +112,15 @@ export function ResultsPanel() {
       </div>
 
       {/* Gauge */}
-      <Gauge value={avanco} maxValue={limites.maxAvanco} label="Feed Efficiency" />
+      <Gauge value={avanco} maxValue={limites.maxAvanco} label="Eficiência de Avanço" />
 
       {/* Progress bars */}
       <div className="grid grid-cols-3 gap-3">
-        <ProgressCard label="Power Est." value={potenciaMotor.toFixed(2)} unit="kW" pct={powerPct}
+        <ProgressCard label="Potência Est." value={potenciaMotor.toFixed(2)} unit="kW" pct={powerPct}
           barColor="bg-accent-orange" barShadow="rgba(249,115,22,0.5)" />
         <ProgressCard label="MRR" value={mrr.toFixed(1)} unit="cm³/min" pct={Math.min(mrr / 100 * 100, 100)}
           barColor="bg-accent-purple" barShadow="rgba(168,85,247,0.5)" />
-        <ProgressCard label="Surface Speed" value={vcReal.toFixed(0)} unit="m/min" pct={Math.min(vcReal / 500 * 100, 100)}
+        <ProgressCard label="Vel. Superficial" value={vcReal.toFixed(0)} unit="m/min" pct={Math.min(vcReal / 500 * 100, 100)}
           barColor="bg-blue-500" barShadow="rgba(59,130,246,0.5)" />
       </div>
 
@@ -148,13 +148,13 @@ export function ResultsPanel() {
               { symbol: 'Vc', value: `${parametros.vc} m/min`, description: 'velocidade de corte' },
               { symbol: 'D', value: `${ferramenta.diametro} mm`, description: 'diâmetro da ferramenta' },
             ]}
-            contextBar={{ value: rpm, min: 0, max: limites.maxRPM, label: `${fmt(rpm)} / ${limites.maxRPM.toLocaleString('en-US')} RPM`, color: '#00D9FF' }}
+            contextBar={{ value: rpm, min: 0, max: limites.maxRPM, label: `${fmt(rpm)} / ${limites.maxRPM.toLocaleString('pt-BR')} RPM`, color: '#00D9FF' }}
             tip="Para aumentar RPM: aumente Vc ou reduza o diâmetro. Vc maior → RPM maior."
           />
 
           {/* Feed Rate */}
           <FormulaCard
-            title="Avanço (Feed Rate)"
+            title="Avanço (mm/min)"
             icon="moving"
             resultValue={fmt(avanco)}
             resultUnit="mm/min"
@@ -165,7 +165,7 @@ export function ResultsPanel() {
               { symbol: 'Z', value: `${ferramenta.numeroArestas}`, description: 'número de arestas' },
               { symbol: 'N', value: `${fmt(rpm)} RPM`, description: 'rotação' },
             ]}
-            contextBar={{ value: avanco, min: 0, max: limites.maxAvanco, label: `${fmt(avanco)} / ${limites.maxAvanco.toLocaleString('en-US')} mm/min`, color: '#39FF14' }}
+            contextBar={{ value: avanco, min: 0, max: limites.maxAvanco, label: `${fmt(avanco)} / ${limites.maxAvanco.toLocaleString('pt-BR')} mm/min`, color: '#39FF14' }}
             tip={resultado.seguranca.ctf > 1
               ? `CTF ativo (${resultado.seguranca.ctf.toFixed(2)}) — ae < 50% de D, fz compensado para manter espessura do cavaco.`
               : 'Mais arestas = mais avanço na mesma fz. Aumente Z para maior produtividade.'}

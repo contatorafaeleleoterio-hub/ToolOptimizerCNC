@@ -43,7 +43,7 @@ function formatDate(ts: number): string {
 }
 
 function fmt(n: number): string {
-  return Math.round(n).toLocaleString('en-US');
+  return Math.round(n).toLocaleString('pt-BR');
 }
 
 export function HistoryPage() {
@@ -283,11 +283,11 @@ function HistoryEntryCard({ entry, isExpanded, onToggle, onRestore, onRemove, on
             <span className="text-sm font-mono text-primary font-bold">{fmt(resultado.rpm)}</span>
           </div>
           <div>
-            <span className="text-[10px] text-gray-500 block">Feed</span>
+            <span className="text-[10px] text-gray-500 block">Avanço</span>
             <span className="text-sm font-mono text-secondary font-bold">{fmt(resultado.avanco)}</span>
           </div>
           <div>
-            <span className="text-[10px] text-gray-500 block">Power</span>
+            <span className="text-[10px] text-gray-500 block">Potência</span>
             <span className="text-sm font-mono text-accent-orange font-bold">{resultado.potenciaMotor.toFixed(2)}</span>
           </div>
         </div>
@@ -323,7 +323,7 @@ function HistoryEntryCard({ entry, isExpanded, onToggle, onRestore, onRemove, on
             <DetailCell label="ap" value={`${parametros.ap} mm`} />
             <DetailCell label="ae" value={`${parametros.ae} mm`} />
             <DetailCell label="RPM" value={fmt(resultado.rpm)} highlight="text-primary" />
-            <DetailCell label="Feed" value={`${fmt(resultado.avanco)} mm/min`} highlight="text-secondary" />
+            <DetailCell label="Avanço" value={`${fmt(resultado.avanco)} mm/min`} highlight="text-secondary" />
             <DetailCell label="Potência" value={`${resultado.potenciaMotor.toFixed(2)} kW`} highlight="text-accent-orange" />
             <DetailCell label="MRR" value={`${resultado.mrr.toFixed(1)} cm³/min`} />
             <DetailCell label="Torque" value={`${resultado.torque.toFixed(2)} Nm`} />

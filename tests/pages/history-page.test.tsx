@@ -62,7 +62,7 @@ describe('HistoryPage', () => {
   it('shows entry RPM value', () => {
     addTestEntry();
     renderPage();
-    expect(screen.getByText('3,183')).toBeInTheDocument();
+    expect(screen.getByText('3.183')).toBeInTheDocument();
   });
 
   it('shows safety badge', () => {

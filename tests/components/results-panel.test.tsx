@@ -21,7 +21,7 @@ describe('ResultsPanel', () => {
 
   it('shows zeroed results when no simulation yet', () => {
     renderPanel();
-    expect(screen.getByText('Spindle')).toBeInTheDocument();
+    expect(screen.getByText('Rotação')).toBeInTheDocument();
     expect(screen.getByText('Parâmetros Calculados')).toBeInTheDocument();
     expect(screen.getByText('SEGURO')).toBeInTheDocument();
   });
@@ -34,9 +34,9 @@ describe('ResultsPanel', () => {
   it('shows calculated results after calcular()', () => {
     setupSafeCalc();
     renderPanel();
-    expect(screen.getByText('Spindle')).toBeInTheDocument();
-    expect(screen.getAllByText('Feed Rate').length).toBeGreaterThan(0);
-    expect(screen.getByText('Power')).toBeInTheDocument();
+    expect(screen.getByText('Rotação')).toBeInTheDocument();
+    expect(screen.getAllByText('Avanço').length).toBeGreaterThan(0);
+    expect(screen.getByText('Potência')).toBeInTheDocument();
   });
 
   it('shows safety badge', () => {
@@ -48,16 +48,16 @@ describe('ResultsPanel', () => {
   it('shows big numbers section', () => {
     setupSafeCalc();
     renderPanel();
-    expect(screen.getAllByText('Spindle Speed').length).toBeGreaterThan(0);
-    expect(screen.getAllByText('Feed Rate').length).toBeGreaterThanOrEqual(2);
+    expect(screen.getAllByText('Rotação (RPM)').length).toBeGreaterThan(0);
+    expect(screen.getAllByText('Avanço (mm/min)').length).toBeGreaterThanOrEqual(1);
   });
 
   it('shows progress cards', () => {
     setupSafeCalc();
     renderPanel();
-    expect(screen.getByText('Power Est.')).toBeInTheDocument();
+    expect(screen.getByText('Potência Est.')).toBeInTheDocument();
     expect(screen.getByText('MRR')).toBeInTheDocument();
-    expect(screen.getByText('Surface Speed')).toBeInTheDocument();
+    expect(screen.getByText('Vel. Superficial')).toBeInTheDocument();
   });
 
   it('shows warnings when L/D is critical', () => {
@@ -72,7 +72,7 @@ describe('ResultsPanel', () => {
     setupSafeCalc();
     renderPanel();
     const resultado = useMachiningStore.getState().resultado!;
-    const rpmFormatted = Math.round(resultado.rpm).toLocaleString('en-US');
+    const rpmFormatted = Math.round(resultado.rpm).toLocaleString('pt-BR');
     expect(screen.getAllByText(rpmFormatted).length).toBeGreaterThan(0);
   });
 
@@ -85,26 +85,26 @@ describe('ResultsPanel', () => {
   it('renders bidirectional slider for RPM', () => {
     setupSafeCalc();
     renderPanel();
-    expect(screen.getByLabelText('Spindle Speed slider')).toBeInTheDocument();
+    expect(screen.getByLabelText('Rotação (RPM) slider')).toBeInTheDocument();
   });
 
   it('renders bidirectional slider for Feed', () => {
     setupSafeCalc();
     renderPanel();
-    expect(screen.getByLabelText('Feed Rate slider')).toBeInTheDocument();
+    expect(screen.getByLabelText('Avanço (mm/min) slider')).toBeInTheDocument();
   });
 
   it('renders +/- buttons for RPM', () => {
     setupSafeCalc();
     renderPanel();
-    expect(screen.getByLabelText('Decrease Spindle Speed')).toBeInTheDocument();
-    expect(screen.getByLabelText('Increase Spindle Speed')).toBeInTheDocument();
+    expect(screen.getByLabelText('Decrease Rotação (RPM)')).toBeInTheDocument();
+    expect(screen.getByLabelText('Increase Rotação (RPM)')).toBeInTheDocument();
   });
 
   it('manual RPM override recalculates', () => {
     setupSafeCalc();
     renderPanel();
-    const increaseBtn = screen.getByLabelText('Increase Spindle Speed');
+    const increaseBtn = screen.getByLabelText('Increase Rotação (RPM)');
     const initialRpm = useMachiningStore.getState().resultado!.rpm;
     fireEvent.click(increaseBtn);
     const newRpm = useMachiningStore.getState().resultado!.rpm;
