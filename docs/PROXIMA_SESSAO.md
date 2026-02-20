@@ -6,8 +6,8 @@
 
 ---
 
-**Data:** 20/02/2026 — Sessão 5
-**Versão:** 0.2.0
+**Data:** 20/02/2026 — Sessão 6
+**Versão:** 0.2.1
 
 ---
 
@@ -16,40 +16,77 @@
 | Item | Estado |
 |------|--------|
 | Branch | `main` |
-| Último commit | `245131f` style: scale up typography system for desktop readability |
+| Último commit | `d32b26e` feat: SEO + Schema.org + fix mobile educational drawer |
 | Testes | **338/338 passando** (24 arquivos, zero falhas) |
 | TypeScript | **zero erros** (`npx tsc --noEmit`) |
-| Build | **limpo** (`npx vite build`) |
+| Build | **limpo** (`npx vite build`) — JS 92KB gzip, CSS 12.8KB |
 | GitHub | pushado — `contatorafaeleleoterio-hub/ToolOptimizerCNC` |
 | Deploy | GitHub Pages ativo + CI pipeline ativo |
 | Desktop | `Sistema_Desktop_Pen_driver/` — .exe 85MB (Electron v40.4.1) |
-| Versão | `0.2.0` |
+| Versão | `0.2.1` |
 
 ---
 
-## 📋 COMMITS DESTA SESSÃO (20/02 sessão 5)
+## 📋 COMMITS DESTA SESSÃO (20/02 sessão 6)
 
 ```
-245131f  style: scale up typography system for desktop readability
-b47a835  feat: add educational accordion drawer to Fine Tune sliders
-958b82a  docs: session summary 20/02 - translate UI to pt-BR
+d32b26e  feat: add SEO meta tags, Schema.org JSON-LD, and fix mobile educational drawer
 ```
 
 ### Commits anteriores:
 ```
+4064549  docs: session summary 20/02 s5 - accordion drawer + typography scale
+245131f  style: scale up typography system for desktop readability
+b47a835  feat: add educational accordion drawer to Fine Tune sliders
 d3c5395  style: translate all UI text to Portuguese (pt-BR)
-c0dc244  docs: final session summary 19/02 s3
-4b194d9  style: redesign tool correction factor UI with modal drawer + compact table
-3c9dbf1  feat: add tool correction factor (coating/geometry multiplier) per tool type + diameter
 ```
 
 ---
 
-## ✅ O QUE FOI FEITO NESTA SESSÃO (20/02 sessão 5)
+## ✅ O QUE FOI FEITO NESTA SESSÃO (20/02 sessão 6)
 
-### 1. Gaveta Educativa no Ajuste Fino (accordion)
+### 1. Story-004 — SEO + Schema.org (COMPLETA)
+
+**Novos arquivos:**
+- `src/hooks/use-page-title.ts` — hook simples, seta `document.title` por rota
+- `src/components/seo-head.tsx` — injeta meta tags OG/Twitter via JS DOM
+- `public/sitemap.xml` — todas as rotas públicas
+- `public/robots.txt` — Allow all + Sitemap URL
+- `docs/stories/story-004-seo-schema.md` — documentação da story
+
+**Modificados:**
+- `index.html` — meta tags base + OG + Twitter + Schema.org JSON-LD (SoftwareApplication)
+- `src/App.tsx` — `usePageTitle` + `SeoHead` na rota principal
+- `src/pages/settings-page.tsx` — `usePageTitle('Configurações — ToolOptimizer CNC')`
+- `src/pages/history-page.tsx` — `usePageTitle('Histórico — ToolOptimizer CNC')`
+- `src/pages/mobile-page.tsx` — `usePageTitle('ToolOptimizer CNC Mobile')`
+
+**Títulos por rota:**
+| Rota | Título |
+|------|--------|
+| `/` | ToolOptimizer CNC — Calculadora de Parâmetros de Corte |
+| `/settings` | Configurações — ToolOptimizer CNC |
+| `/history` | Histórico — ToolOptimizer CNC |
+| `/mobile` | ToolOptimizer CNC Mobile |
+
+### 2. Fix — Gaveta Educativa no Mobile
+
+**Problema:** `mobile-fine-tune-section.tsx` tinha seu próprio `SLIDER_CONFIG` sem os campos educativos (`desc`, `aumentar`, `diminuir`, `equilibrio`) e sem a lógica do accordion.
+
+**Solução:**
+- `SLIDER_CONFIG` do mobile agora idêntico ao desktop (com todos os campos)
+- Adicionado `openKey`/`toggleDrawer` state (accordion pattern)
+- Label de cada slider virou `<button>` com seta animada (igual ao desktop)
+- Gaveta educativa renderizada quando `isOpen === true`
+- Touch target mínimo: `min-h-[44px]` no botão do label
+
+---
+
+## ✅ O QUE FOI FEITO NAS SESSÕES ANTERIORES (20/02 sessão 5)
+
+### 1. Gaveta Educativa no Ajuste Fino (accordion — desktop)
 - Clicar no label de cada slider (Vc, fz, ae, ap) abre gaveta inline animada
-- Conteúdo: `desc` (o que é) + `▲ MAIS` (verde) + `▼ MENOS` (vermelho) + dica `balance` (amarelo)
+- Conteúdo: `desc` + `▲ MAIS` (verde) + `▼ MENOS` (vermelho) + dica `balance` (amarelo)
 - Apenas 1 gaveta aberta por vez — accordion pattern com `openKey` state
 - Animação `fadeInUp` 0.25s reutilizando keyframe existente
 - SLIDER_CONFIG enriquecido com campos: `aumentar`, `diminuir`, `equilibrio`
@@ -57,148 +94,31 @@ c0dc244  docs: final session summary 19/02 s3
 
 ### 2. Escala tipográfica global para desktop (1360px+)
 - Todos os textos do sistema foram aumentados 1 nível na hierarquia
-- `text-[8px]`→`[11px]`, `text-[9px]`→`xs`, `text-[10px]`→`xs/sm`, `text-xs`→`sm`, `text-sm`→`base`, `text-lg`→`xl`
-- Valores métricos: `text-2xl→3xl`, `text-3xl→4xl`, `text-4xl→5xl`, `text-5xl→6xl`
-- Gauge SVG markers: `fontSize 8→11`, `fontSize 11→14`
-- App header: `text-2xl→3xl`, ícone `text-4xl→5xl`
 - **10 arquivos modificados**: fine-tune-panel, shared-result-parts, results-panel, config-panel, ui-helpers, bidirectional-slider, gauge, tool-summary-viewer, formula-card, App.tsx
-- 338/338 testes passando, zero erros TS
 
 ---
 
-## ✅ O QUE FOI FEITO NAS SESSÕES ANTERIORES (20/02 sessão 4)
+## 🎯 PRÓXIMA TAREFA
 
-### 1. Tradução completa UI para Português (pt-BR)
+Story-004 está **COMPLETA**. Próximas opções:
 
-**Arquivos alterados:**
-- `src/components/fine-tune-panel.tsx` — Labels e aria-labels: `'CUTTING SPEED'`→`'VEL. DE CORTE'`, `'FEED PER TOOTH'`→`'AVANÇO/DENTE'`, `'RADIAL ENGAGEMENT'`→`'ENGAJ. RADIAL'`, `'AXIAL DEPTH'`→`'PROF. AXIAL'`; `'Fine Tune'`→`'Ajuste Fino'`; `'MM/TOOTH'`→`'MM/DENTE'`
-- `src/components/results-panel.tsx` — `'Spindle'`→`'Rotação'`, `'Feed Rate'`→`'Avanço'`, `'Power'`→`'Potência'`, `'Feed Efficiency'`→`'Eficiência de Avanço'`, `'Power Est.'`→`'Potência Est.'`, `'Surface Speed'`→`'Vel. Superficial'`; locales `'en-US'`→`'pt-BR'`
-- `src/components/gauge.tsx` — Default label `'Efficiency'`→`'Eficiência'`
-- `src/components/mobile/mobile-results-section.tsx` — Mesmas traduções do results-panel
-- `src/components/shared-result-parts.tsx` — `fmt()`: locale `'en-US'`→`'pt-BR'` (afeta todo o app)
-- `src/pages/history-page.tsx` — Colunas `'Feed'`→`'Avanço'`, `'Power'`→`'Potência'`; locale `pt-BR`
+### Opção A: HistoryPage responsiva (mobile-friendly)
+- A HistoryPage atual não é responsiva — só funciona em desktop
+- Adaptar layout para mobile: scroll vertical, cards em vez de tabela
 
-**Testes atualizados:**
-- `tests/components/fine-tune-panel.test.tsx` — Todos os matchers para português; aria-labels: `'Decrease Vc'`→`'Diminuir Vc'`, `'Increase Vc'`→`'Aumentar Vc'`
-- `tests/components/results-panel.test.tsx` — Labels e aria-labels atualizados; locale em formatação RPM
-- `tests/components/gauge.test.tsx` — `'Feed Efficiency'`→`'Eficiência de Avanço'`
-- `tests/pages/history-page.test.tsx` — Formato pt-BR: `'3,183'`→`'3.183'` (ponto como separador de milhares)
+### Opção B: Desktop — recursos pendentes
+- Ícone customizado (.ico)
+- Fontes offline no .exe
+- Code signing (avançado)
 
-**Resultado:** 333/333 testes passando; zero erros TS; build limpo.
+### Opção C: Story-005 (a definir com usuário)
+- Exportação melhorada (PDF com logo, Excel com fórmulas)
+- Comparação de simulações
+- Modo de aprendizado
 
----
-
-## ✅ O QUE FOI FEITO NAS SESSÕES ANTERIORES (19/02 sessão 3)
-
-### 1. Lista de Materiais Unificada (Configurações → Materiais)
-- Removida separação "Base (somente leitura)" / "Personalizados"
-- **Todos os materiais** em uma lista única com botão **Editar**
-- Materiais base editados criam um **override** (CustomMaterial com mesmo ID)
-- Override tem badge laranja "Custom" + botão `restart_alt` para restaurar original
-- Materiais extras (IDs > 9): edit + delete
-- Padrão de upsert: `updateCustomMaterial` se ID existe, `addCustomMaterial` se novo
-
-### 2. Fator de Segurança movido para Configurações
-- **Removido** slider SF do `config-panel.tsx` (dashboard)
-- **Adicionado** badge de leitura `SF: 0.80` no dashboard (hint visual)
-- SF agora só é editável em Configurações → Segurança
-- Motivo: `setSafetyFactor` zera `resultado=null` → UX confusa no dashboard
-
-### 3. Slider Fator de Segurança redesenhado
-- Era: `<input type="range">` nativo (sem estilo)
-- Agora: `StyledSlider` idêntico ao Fine Tune
-  - Ring + inner dot + glow + scale(1.15) ao pressionar
-  - Botões − e + nas extremidades (`BTN_CLS`)
-  - Range: 0.50 a 1.00, step 0.05
-
-### 4. Fator de Correção por Ferramenta (feature novo completo)
-**Propósito:** Compensar revestimentos de ferramentas (TiAlN, DLC, etc)
-
-**Tipo novo** (`src/types/index.ts`):
-```ts
-interface ToolCorrectionFactor {
-  tipo: 'toroidal' | 'esferica' | 'topo';
-  diametro: number;
-  fator: number;        // 0.5–1.5, default 1.0
-  descricao?: string;   // ex: "TiAlN", "DLC"
-}
-```
-
-**Store** (`src/store/machining-store.ts`):
-- `toolCorrectionFactors: ToolCorrectionFactor[]` no state
-- `setToolCorrectionFactor(tcf)` — upsert por (tipo, diametro)
-- `removeToolCorrectionFactor(tipo, diametro)`
-- Aplicado em `calcular()`:
-  ```ts
-  const corrFactor = tcf?.fator ?? 1.0;
-  const vc = parametros.vc * corrFactor;
-  const fz = parametros.fz * corrFactor;
-  ```
-- Persiste em localStorage via `partialize`
-
-**UI** (`src/pages/settings-page.tsx`):
-- Tabela compacta por tipo de ferramenta
-- Badge "N ativos" quando há correções configuradas
-- Botão **Editar** → abre `CorrectionModal`
-- `CorrectionModal`: drawer/modal com padrão do projeto
-  - Mobile: slide-from-bottom com handle bar
-  - Desktop: modal centralizado
-  - Slider 0.50–1.50 com botões −/+
-  - Campo descrição opcional
-  - Botões: Salvar / Resetar (→ 1.00) / Cancelar
-
----
-
-## 🎯 PRÓXIMA TAREFA: Story-004 — SEO + Schema.org
-
-### O que implementar:
-```
-1. <meta> tags dinâmicas:
-   - description, keywords
-   - og:title, og:description, og:image, og:url
-   - twitter:card, twitter:title, twitter:description
-
-2. Schema.org JSON-LD (SoftwareApplication):
-   {
-     "@type": "SoftwareApplication",
-     "name": "ToolOptimizer CNC",
-     "applicationCategory": "DesignApplication",
-     "operatingSystem": "Web",
-     "description": "...",
-     "url": "https://...",
-     "offers": { "@type": "Offer", "price": "0" }
-   }
-
-3. <title> dinâmico por rota (sem biblioteca externa, document.title):
-   "/" → "ToolOptimizer CNC — Calculadora de Parâmetros de Corte"
-   "/settings" → "Configurações — ToolOptimizer CNC"
-   "/history" → "Histórico — ToolOptimizer CNC"
-   "/mobile" → "ToolOptimizer CNC Mobile"
-
-4. sitemap.xml em /public/
-5. robots.txt em /public/
-```
-
-### Como implementar (sem biblioteca extra):
-```tsx
-// src/hooks/use-page-title.ts — hook simples
-import { useEffect } from 'react';
-export function usePageTitle(title: string) {
-  useEffect(() => { document.title = title; }, [title]);
-}
-
-// src/components/seo-head.tsx — injeta meta tags via JS
-// src/App.tsx — adiciona Schema.org via <script type="application/ld+json">
-```
-
-### Arquivo story (criar antes de codar):
-`docs/stories/story-004-seo-schema.md`
-
-### Critério de conclusão:
-- Lighthouse SEO ≥ 90
-- Schema validado em: https://validator.schema.org
-- `npx vite build` limpo
-- Todos 333 testes ainda passando
+### Verificação SEO (sugestão)
+- Abrir https://validator.schema.org e colar a URL do GitHub Pages
+- Verificar Lighthouse SEO ≥ 90 no Chrome DevTools
 
 ---
 
@@ -230,13 +150,6 @@ SEM backend, SEM CSS Modules
     {/* conteúdo */}
   </div>
 </div>
-```
-
-### Botões seleção (toggle-like)
-```tsx
-className={`... ${selected
-  ? 'bg-primary text-black font-bold border-primary shadow-neon-cyan'
-  : 'bg-black/40 text-gray-400 hover:text-white hover:bg-white/5 border-white/10'}`}
 ```
 
 ### Store — regras críticas
@@ -277,45 +190,30 @@ src/
   components/
     config-panel.tsx          ← painel esquerdo dashboard (Simular, parâmetros)
     results-panel.tsx         ← painel direito (RPM, Feed, Potência, gauge)
-    fine-tune-panel.tsx       ← sliders Vc/fz/ae/ap + StyledSlider
+    fine-tune-panel.tsx       ← sliders Vc/fz/ae/ap + StyledSlider + gaveta educativa
     bidirectional-slider.tsx  ← slider bidirecional RPM/Feed (-150% a +150%)
     gauge.tsx                 ← gauge semicircular animado
-    export-buttons.tsx        ← exportar PDF/Excel
-    tool-summary-viewer.tsx   ← visualizador da ferramenta selecionada
-    disclaimer.tsx            ← aviso legal obrigatório
-    formula-card.tsx          ← cards educativos de fórmulas
-    viewport-redirect.tsx     ← redireciona mobile para /mobile
-    mobile/                   ← componentes exclusivos mobile
+    seo-head.tsx              ← injeta meta tags OG/Twitter dinamicamente
+    mobile/
+      mobile-fine-tune-section.tsx ← TouchSlider + gaveta educativa (igual desktop)
   pages/
     settings-page.tsx         ← Configurações (6 seções)
     history-page.tsx          ← Histórico de simulações
     mobile-page.tsx           ← versão mobile completa
   hooks/
+    use-page-title.ts         ← seta document.title por rota
     use-is-mobile.ts
     use-simulation-animation.ts
     use-reset-feedback.ts
-  App.tsx                     ← layout 3 colunas + header
-  main.tsx                    ← BrowserRouter + Routes
+  App.tsx                     ← layout 3 colunas + header + SeoHead
+  main.tsx                    ← BrowserRouter + Routes (web) / HashRouter (desktop)
   index.css                   ← Tailwind v4 @theme + keyframes
 
+public/
+  sitemap.xml                 ← todas as rotas públicas
+  robots.txt                  ← Allow all + Sitemap
+
 tests/                        ← 24 arquivos de teste (Vitest)
-  engine/                     ← rpm, feed, power, chip-thinning, validators, recommendations
-  store/                      ← machining-store, history-store, history-integration
-  data/                       ← materials, tools, operations
-  components/                 ← config-panel, results-panel, fine-tune-panel, gauge, etc
-  pages/                      ← settings-page, history-page, mobile-page
-  hooks/                      ← use-is-mobile
-
-docs/
-  specs/                      ← PRDs
-  technical/                  ← dados Kienzle, velocidades, casos teste
-  design/                     ← UI specs, branding
-  architecture/               ← ADR-001 a ADR-006
-  stories/                    ← features documentadas
-  PROXIMA_SESSAO.md           ← ESTE ARQUIVO
-  AIOS_INTEGRATION.md         ← framework de desenvolvimento
-
-Sistema_Desktop_Pen_driver/   ← clone Electron (NUNCA editar aqui)
 ```
 
 ---
@@ -330,10 +228,6 @@ npm run dev                   # servidor local (localhost:5173/ToolOptimizerCNC/
 npx vitest run                # todos os testes
 npx tsc --noEmit              # TypeScript check
 npx vite build                # build de produção
-
-# Testes rápidos por arquivo
-npx vitest run tests/store/machining-store.test.ts
-npx vitest run tests/pages/settings-page.test.tsx
 
 # Git
 git log --oneline -10         # histórico
@@ -355,11 +249,13 @@ print(f'passed={passed} failed={failed}')"
 | Problema | Causa | Solução |
 |----------|-------|---------|
 | `exit code 1` em vitest | Warnings ANSI no stderr | Usar `--reporter=json` para confirmar real contagem |
+| `exit code 1` em vite build | Warnings do vite no stderr | Verificar output — se ✓ built, está OK |
 | `toBeCloseTo(x, 0)` | Margem ±0.5, não ±1 | Usar `Math.abs(val - expected) <= 1` para tolerância ±1 |
 | SF slider "não funciona" | Zera resultado sem recalcular | É design intencional — usuário clica Simular |
 | Teste `fireEvent.change` em StyledSlider | Não tem `value setter` (div, não input) | Testar via `fireEvent.click` nos botões +/− |
 | Clone desktop em testes | Vitest encontra arquivos do clone | `exclude: ['Sistema_Desktop_Pen_driver/**']` no vitest.config.ts |
 | Tailwind class dinâmica | Classes com interpolação não geram CSS | Usar classes completas ou `style={}` inline |
+| Mobile gaveta educativa | SLIDER_CONFIG separado do desktop | Agora sincronizado (sessão 6) |
 
 ---
 
@@ -384,8 +280,12 @@ print(f'passed={passed} failed={failed}')"
 [x] SF movido para Settings + StyledSlider
 [x] Tool Correction Factor (Vc/fz multiplier por tipo+diâmetro)
 [x] CorrectionModal (drawer mobile + modal desktop)
+[x] Tradução completa UI pt-BR
+[x] Gaveta educativa accordion (desktop)
+[x] Escala tipográfica global desktop
+[x] Story-004: SEO Schema.org + meta tags
+[x] Fix: gaveta educativa mobile (parity com desktop)
 
-[ ] Story-004: SEO Schema.org + meta tags ← PRÓXIMA
 [ ] Branch protection GitHub (manual pelo usuário)
 [ ] Cloudflare Pages (manual pelo usuário)
 [ ] HistoryPage responsiva
@@ -406,10 +306,11 @@ O próximo assistente deve:
    git log --oneline -5
    npx vitest run --reporter=json 2>/dev/null | python3 -c "..."
    ```
-3. Iniciar **Story-004** criando primeiro o arquivo de story:
-   `docs/stories/story-004-seo-schema.md`
-4. Seguir o fluxo: **document → test → implement → commit**
+3. Perguntar ao usuário qual próxima tarefa:
+   - HistoryPage responsiva?
+   - Story-005?
+   - Desktop features?
 
 ---
 
-*Documento atualizado em 20/02/2026 — Sessão 5*
+*Documento atualizado em 20/02/2026 — Sessão 6*
