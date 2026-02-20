@@ -144,6 +144,18 @@ export interface CustomToolConfig {
   extraRadii: number[];
 }
 
+/** Tool correction factor: global multiplier applied to Vc and fz for a specific tool (type + diameter) */
+export interface ToolCorrectionFactor {
+  /** Tool type matching Ferramenta.tipo */
+  tipo: 'toroidal' | 'esferica' | 'topo';
+  /** Tool diameter in mm */
+  diametro: number;
+  /** Global multiplier applied to Vc and fz (e.g. 1.2 = +20%, default 1.0) */
+  fator: number;
+  /** Optional label/description (e.g. "TiAlN", "DLC", "não revestida") */
+  descricao?: string;
+}
+
 /** Default preferences */
 export const PREFERENCES_PADRAO: Preferences = {
   decimals: 2,

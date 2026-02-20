@@ -7,6 +7,7 @@ import { subscribeWithSelector, persist } from 'zustand/middleware';
 import type {
   Ferramenta, LimitesMaquina, ParametrosUsinagem, ResultadoUsinagem,
   StatusSeguranca, SafetyRules, Preferences, CustomMaterial, CustomToolConfig,
+  ToolCorrectionFactor,
 } from '@/types/index';
 import {
   TipoUsinagem, LIMITES_PADRAO_MAQUINA, PREFERENCES_PADRAO,
@@ -57,6 +58,7 @@ interface MachiningState {
   safetyRules: SafetyRules;
   customMaterials: CustomMaterial[];
   customToolConfig: CustomToolConfig;
+  toolCorrectionFactors: ToolCorrectionFactor[];
 }
 
 interface MachiningActions {
@@ -78,6 +80,8 @@ interface MachiningActions {
   updateCustomMaterial: (id: number, m: Partial<CustomMaterial>) => void;
   removeCustomMaterial: (id: number) => void;
   setCustomToolConfig: (c: Partial<CustomToolConfig>) => void;
+  setToolCorrectionFactor: (tcf: ToolCorrectionFactor) => void;
+  removeToolCorrectionFactor: (tipo: ToolCorrectionFactor['tipo'], diametro: number) => void;
   exportSettings: () => string;
   importSettings: (json: string) => boolean;
   resetToDefaults: () => void;
@@ -102,6 +106,7 @@ const INITIAL_STATE: MachiningState = {
   safetyRules: SAFETY_RULES_PADRAO,
   customMaterials: [],
   customToolConfig: CUSTOM_TOOL_CONFIG_PADRAO,
+  toolCorrectionFactors: [],
 };
 
 /** Lookup material from built-in list or custom materials */
@@ -249,8 +254,28 @@ export const useMachiningStore = create<MachiningState & MachiningActions>()(
           set((state) => ({ customToolConfig: { ...state.customToolConfig, ...c } }));
         },
 
+        setToolCorrectionFactor: (tcf) => {
+          set((state) => {
+            const existing = state.toolCorrectionFactors.findIndex(
+              (t) => t.tipo === tcf.tipo && t.diametro === tcf.diametro
+            );
+            const updated = [...state.toolCorrectionFactors];
+            if (existing >= 0) updated[existing] = tcf;
+            else updated.push(tcf);
+            return { toolCorrectionFactors: updated };
+          });
+        },
+
+        removeToolCorrectionFactor: (tipo, diametro) => {
+          set((state) => ({
+            toolCorrectionFactors: state.toolCorrectionFactors.filter(
+              (t) => !(t.tipo === tipo && t.diametro === diametro)
+            ),
+          }));
+        },
+
         exportSettings: () => {
-          const { limitesMaquina, safetyFactor, preferences, safetyRules, customMaterials, customToolConfig } = get();
+          const { limitesMaquina, safetyFactor, preferences, safetyRules, customMaterials, customToolConfig, toolCorrectionFactors } = get();
           return JSON.stringify({
             version: 1,
             limitesMaquina,
@@ -259,6 +284,7 @@ export const useMachiningStore = create<MachiningState & MachiningActions>()(
             safetyRules,
             customMaterials,
             customToolConfig,
+            toolCorrectionFactors,
           }, null, 2);
         },
 
@@ -279,6 +305,7 @@ export const useMachiningStore = create<MachiningState & MachiningActions>()(
             }
             if (Array.isArray(data.customMaterials)) set({ customMaterials: data.customMaterials });
             if (data.customToolConfig) set((s) => ({ customToolConfig: { ...s.customToolConfig, ...data.customToolConfig } }));
+            if (Array.isArray(data.toolCorrectionFactors)) set({ toolCorrectionFactors: data.toolCorrectionFactors });
             get().calcular();
             return true;
           } catch {
@@ -292,9 +319,17 @@ export const useMachiningStore = create<MachiningState & MachiningActions>()(
         },
 
         calcular: () => {
-          const { materialId, ferramenta, parametros, limitesMaquina, safetyFactor, manualOverrides, safetyRules, customMaterials } = get();
-          const { ap, ae, fz, vc } = parametros;
+          const { materialId, ferramenta, parametros, limitesMaquina, safetyFactor, manualOverrides, safetyRules, customMaterials, toolCorrectionFactors } = get();
+          const { ap, ae } = parametros;
           const { diametro: D, numeroArestas: Z, balanco } = ferramenta;
+
+          // Apply tool correction factor (global multiplier on Vc and fz)
+          const tcf = toolCorrectionFactors.find(
+            (t) => t.tipo === ferramenta.tipo && t.diametro === D
+          );
+          const corrFactor = tcf?.fator ?? 1.0;
+          const vc = parametros.vc * corrFactor;
+          const fz = parametros.fz * corrFactor;
 
           const material = findMaterial(materialId, customMaterials);
           if (!material) { set({ resultado: null }); return; }
@@ -397,6 +432,7 @@ export const useMachiningStore = create<MachiningState & MachiningActions>()(
           safetyRules: state.safetyRules,
           customMaterials: state.customMaterials,
           customToolConfig: state.customToolConfig,
+          toolCorrectionFactors: state.toolCorrectionFactors,
         }),
       },
     ),
