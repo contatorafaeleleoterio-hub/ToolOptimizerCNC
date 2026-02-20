@@ -6,7 +6,7 @@
 
 ---
 
-**Data:** 20/02/2026 — Sessão 4
+**Data:** 20/02/2026 — Sessão 5
 **Versão:** 0.2.0
 
 ---
@@ -16,8 +16,8 @@
 | Item | Estado |
 |------|--------|
 | Branch | `main` |
-| Último commit | `d3c5395` style: translate all UI text to Portuguese (pt-BR) |
-| Testes | **333/333 passando** (24 arquivos, zero falhas) |
+| Último commit | `245131f` style: scale up typography system for desktop readability |
+| Testes | **338/338 passando** (24 arquivos, zero falhas) |
 | TypeScript | **zero erros** (`npx tsc --noEmit`) |
 | Build | **limpo** (`npx vite build`) |
 | GitHub | pushado — `contatorafaeleleoterio-hub/ToolOptimizerCNC` |
@@ -27,25 +27,46 @@
 
 ---
 
-## 📋 COMMITS DESTA SESSÃO (20/02 sessão 4)
+## 📋 COMMITS DESTA SESSÃO (20/02 sessão 5)
 
+```
+245131f  style: scale up typography system for desktop readability
+b47a835  feat: add educational accordion drawer to Fine Tune sliders
+958b82a  docs: session summary 20/02 - translate UI to pt-BR
+```
+
+### Commits anteriores:
 ```
 d3c5395  style: translate all UI text to Portuguese (pt-BR)
-```
-
-### Commits anteriores (19/02 sessão 3):
-```
 c0dc244  docs: final session summary 19/02 s3
 4b194d9  style: redesign tool correction factor UI with modal drawer + compact table
 3c9dbf1  feat: add tool correction factor (coating/geometry multiplier) per tool type + diameter
-a6f66b4  style: replace native SF slider with StyledSlider + ±buttons in Settings
-16d2212  refactor: move safety factor from dashboard to Settings page
-d343101  feat: unify materials list with edit support for all materials
 ```
 
 ---
 
-## ✅ O QUE FOI FEITO NESTA SESSÃO (20/02 sessão 4)
+## ✅ O QUE FOI FEITO NESTA SESSÃO (20/02 sessão 5)
+
+### 1. Gaveta Educativa no Ajuste Fino (accordion)
+- Clicar no label de cada slider (Vc, fz, ae, ap) abre gaveta inline animada
+- Conteúdo: `desc` (o que é) + `▲ MAIS` (verde) + `▼ MENOS` (vermelho) + dica `balance` (amarelo)
+- Apenas 1 gaveta aberta por vez — accordion pattern com `openKey` state
+- Animação `fadeInUp` 0.25s reutilizando keyframe existente
+- SLIDER_CONFIG enriquecido com campos: `aumentar`, `diminuir`, `equilibrio`
+- 5 novos testes: 333 → **338 testes** passando
+
+### 2. Escala tipográfica global para desktop (1360px+)
+- Todos os textos do sistema foram aumentados 1 nível na hierarquia
+- `text-[8px]`→`[11px]`, `text-[9px]`→`xs`, `text-[10px]`→`xs/sm`, `text-xs`→`sm`, `text-sm`→`base`, `text-lg`→`xl`
+- Valores métricos: `text-2xl→3xl`, `text-3xl→4xl`, `text-4xl→5xl`, `text-5xl→6xl`
+- Gauge SVG markers: `fontSize 8→11`, `fontSize 11→14`
+- App header: `text-2xl→3xl`, ícone `text-4xl→5xl`
+- **10 arquivos modificados**: fine-tune-panel, shared-result-parts, results-panel, config-panel, ui-helpers, bidirectional-slider, gauge, tool-summary-viewer, formula-card, App.tsx
+- 338/338 testes passando, zero erros TS
+
+---
+
+## ✅ O QUE FOI FEITO NAS SESSÕES ANTERIORES (20/02 sessão 4)
 
 ### 1. Tradução completa UI para Português (pt-BR)
 
@@ -391,4 +412,4 @@ O próximo assistente deve:
 
 ---
 
-*Documento atualizado em 20/02/2026 — Sessão 4*
+*Documento atualizado em 20/02/2026 — Sessão 5*
