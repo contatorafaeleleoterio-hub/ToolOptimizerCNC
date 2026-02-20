@@ -59,4 +59,39 @@ describe('FineTunePanel', () => {
     render(<FineTunePanel />);
     expect(screen.getByText('MRR')).toBeInTheDocument();
   });
+
+  it('renders info toggle button for each slider', () => {
+    render(<FineTunePanel />);
+    expect(screen.getByLabelText('Informações sobre VEL. DE CORTE')).toBeInTheDocument();
+    expect(screen.getByLabelText('Informações sobre AVANÇO/DENTE')).toBeInTheDocument();
+    expect(screen.getByLabelText('Informações sobre ENGAJ. RADIAL')).toBeInTheDocument();
+    expect(screen.getByLabelText('Informações sobre PROF. AXIAL')).toBeInTheDocument();
+  });
+
+  it('drawer is hidden by default', () => {
+    render(<FineTunePanel />);
+    expect(screen.queryByText('▲ MAIS')).not.toBeInTheDocument();
+  });
+
+  it('clicking label opens drawer with content', () => {
+    render(<FineTunePanel />);
+    fireEvent.click(screen.getByLabelText('Informações sobre VEL. DE CORTE'));
+    expect(screen.getByText('▲ MAIS')).toBeInTheDocument();
+    expect(screen.getByText('▼ MENOS')).toBeInTheDocument();
+  });
+
+  it('clicking same label again closes drawer', () => {
+    render(<FineTunePanel />);
+    const btn = screen.getByLabelText('Informações sobre VEL. DE CORTE');
+    fireEvent.click(btn);
+    fireEvent.click(btn);
+    expect(screen.queryByText('▲ MAIS')).not.toBeInTheDocument();
+  });
+
+  it('opening one drawer closes the previous', () => {
+    render(<FineTunePanel />);
+    fireEvent.click(screen.getByLabelText('Informações sobre VEL. DE CORTE'));
+    fireEvent.click(screen.getByLabelText('Informações sobre AVANÇO/DENTE'));
+    expect(screen.getAllByText('▲ MAIS')).toHaveLength(1);
+  });
 });
