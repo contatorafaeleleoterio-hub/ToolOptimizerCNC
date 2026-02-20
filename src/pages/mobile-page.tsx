@@ -6,6 +6,8 @@ import { MobileConfigSection } from '@/components/mobile/mobile-config-section';
 import { MobileResultsSection } from '@/components/mobile/mobile-results-section';
 import { MobileFineTuneSection } from '@/components/mobile/mobile-fine-tune-section';
 import { Disclaimer } from '@/components/disclaimer';
+import { usePageTitle } from '@/hooks/use-page-title';
+import { SeoHead } from '@/components/seo-head';
 
 function MobileStickyActions() {
   const { simular, reset } = useMachiningStore();
@@ -38,6 +40,7 @@ function MobileStickyActions() {
 }
 
 export function MobilePage() {
+  usePageTitle('ToolOptimizer CNC Mobile');
   useEffect(() => {
     document.body.classList.add('mobile-active');
     return () => { document.body.classList.remove('mobile-active'); };
@@ -45,6 +48,7 @@ export function MobilePage() {
 
   return (
     <div className="flex flex-col min-h-screen bg-background-dark">
+      <SeoHead title="ToolOptimizer CNC Mobile" />
       <MobileHeader />
       <MobileStickyActions />
       <main className="flex-1 flex flex-col gap-6 py-4 pb-8">

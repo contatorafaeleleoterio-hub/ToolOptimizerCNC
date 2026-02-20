@@ -3,10 +3,19 @@ import { ResultsPanel } from './components/results-panel';
 import { FineTunePanel } from './components/fine-tune-panel';
 import { ExportButtons } from './components/export-buttons';
 import { Disclaimer } from './components/disclaimer';
+import { SeoHead } from './components/seo-head';
+import { usePageTitle } from './hooks/use-page-title';
+
+const BASE_URL = 'https://contatorafaeleleoterio-hub.github.io/ToolOptimizerCNC';
 
 export default function App() {
+  usePageTitle('ToolOptimizer CNC — Calculadora de Parâmetros de Corte');
   return (
     <div className="flex flex-col h-screen mx-auto p-3 gap-3 relative">
+      <SeoHead
+        title="ToolOptimizer CNC — Calculadora de Parâmetros de Corte"
+        url={`${BASE_URL}/`}
+      />
       {/* Background gradient orbs */}
       <div className="fixed top-0 left-0 w-full h-full overflow-hidden -z-10 pointer-events-none">
         <div className="absolute top-[-20%] left-[-10%] w-[50%] h-[50%] bg-primary/10 rounded-full blur-[150px] opacity-40" />

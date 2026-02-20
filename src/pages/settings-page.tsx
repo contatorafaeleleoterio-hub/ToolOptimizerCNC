@@ -6,6 +6,8 @@ import { MATERIAIS } from '@/data';
 import { TipoUsinagem } from '@/types';
 import type { Material, CustomMaterial, ClasseISO } from '@/types';
 import { NumInput } from '@/components/ui-helpers';
+import { usePageTitle } from '@/hooks/use-page-title';
+import { SeoHead } from '@/components/seo-head';
 
 type Section = 'maquina' | 'seguranca' | 'materiais' | 'ferramentas' | 'exibicao' | 'dados';
 
@@ -22,6 +24,7 @@ const CARD = 'bg-card-dark rounded-xl p-4 sm:p-6 border border-white/5 shadow-in
 const LABEL = 'text-[11px] font-semibold text-gray-500 uppercase tracking-wide mb-1 block';
 
 export function SettingsPage() {
+  usePageTitle('Configurações — ToolOptimizer CNC');
   const navigate = useNavigate();
   const isMobile = useIsMobile();
   const [active, setActive] = useState<Section>('maquina');
@@ -30,6 +33,7 @@ export function SettingsPage() {
 
   return (
     <div className="min-h-screen bg-background-dark p-3 sm:p-6 overflow-y-auto">
+      <SeoHead title="Configurações — ToolOptimizer CNC" />
       {/* Header */}
       <header className="mb-4 sm:mb-6 flex items-center gap-3 py-3 px-4 sm:py-4 sm:px-6 rounded-2xl bg-surface-dark backdrop-blur-xl border border-white/5 shadow-glass">
         <button onClick={handleBack}

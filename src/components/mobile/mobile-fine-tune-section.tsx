@@ -5,13 +5,33 @@ import { SectionTitle } from '../ui-helpers';
 
 const SLIDER_CONFIG = [
   { key: 'vc' as const, label: 'Vc', fullLabel: 'Velocidade Corte', unit: 'm/min', color: 'primary',
-    rgb: '0,217,255', min: 1, max: 1200, step: 1 },
+    rgb: '0,217,255',
+    desc: 'Velocidade tangencial na aresta da ferramenta durante o corte.',
+    aumentar: 'Usinagem mais rápida, mas desgaste prematuro e mais calor gerado.',
+    diminuir: 'Ferramenta mais protegida, porém pode manchar o acabamento superficial.',
+    equilibrio: 'Ajuste junto com fz — material mais duro exige Vc menor.',
+    min: 1, max: 1200, step: 1 },
   { key: 'fz' as const, label: 'fz', fullLabel: 'Avanço/Dente', unit: 'mm', color: 'secondary',
-    rgb: '57,255,20', min: 0.01, max: 1, step: 0.01 },
+    rgb: '57,255,20',
+    desc: 'Espessura do cavaco por aresta de corte em cada passagem.',
+    aumentar: 'Maior taxa de remoção (MRR), mas risco de vibração e quebra da ferramenta.',
+    diminuir: 'Acabamento mais fino e menor esforço, porém reduz a produtividade.',
+    equilibrio: 'Mantenha fz dentro da recomendação do fabricante da ferramenta.',
+    min: 0.01, max: 1, step: 0.01 },
   { key: 'ae' as const, label: 'ae', fullLabel: 'Eng. Radial', unit: 'mm', color: 'accent-purple',
-    rgb: '168,85,247', min: 0.1, max: 50, step: 0.1 },
+    rgb: '168,85,247',
+    desc: 'Largura radial de corte — quantos % do diâmetro da fresa está em contato.',
+    aumentar: 'Remove mais material por passada, mas aumenta pressão lateral e deflexão.',
+    diminuir: 'Menor força lateral — ideal para paredes finas ou ferramentas longas.',
+    equilibrio: 'ae < 50% do diâmetro ativa o CTF — compensação automática de avanço.',
+    min: 0.1, max: 50, step: 0.1 },
   { key: 'ap' as const, label: 'ap', fullLabel: 'Prof. Axial', unit: 'mm', color: 'accent-orange',
-    rgb: '249,115,22', min: 0.05, max: 6, step: 0.05 },
+    rgb: '249,115,22',
+    desc: 'Profundidade axial de corte — principal fator da taxa de remoção de material.',
+    aumentar: 'MRR sobe proporcionalmente, mas eleva potência e torque exigidos da máquina.',
+    diminuir: 'Operação mais leve — essencial quando a potência da máquina é o fator limitante.',
+    equilibrio: 'Combine ap alto com ae baixo para operações de desbaste eficiente.',
+    min: 0.05, max: 6, step: 0.05 },
 ] as const;
 
 const BTN_CLS = 'w-10 h-10 rounded-lg bg-black/40 border border-white/10 text-gray-400 active:bg-white/10 transition-all text-sm font-bold flex items-center justify-center';
@@ -181,9 +201,15 @@ export function MobileFineTuneSection() {
   const resultado = useMachiningStore((s) => s.resultado);
   const material = MATERIAIS.find((m) => m.id === materialId);
 
+  const [openKey, setOpenKey] = useState<string | null>(null);
+
   const handleChange = useCallback((key: ParamKey, val: number) => {
     setParametros({ [key]: val });
   }, [setParametros]);
+
+  const toggleDrawer = (key: string) => {
+    setOpenKey((prev) => (prev === key ? null : key));
+  };
 
   return (
     <section className="flex flex-col gap-4 px-4">
@@ -191,17 +217,29 @@ export function MobileFineTuneSection() {
         <SectionTitle color="bg-primary" label="Fine Tune" />
         <p className="text-[9px] text-gray-500 mb-3">Segure o controle por 0.8s para ativar o ajuste</p>
         <div className="flex flex-col gap-5">
-          {SLIDER_CONFIG.map(({ key, label, fullLabel, unit, color, rgb, min, max, step }) => {
+          {SLIDER_CONFIG.map(({ key, label, fullLabel, unit, color, rgb, min, max, step, desc, aumentar, diminuir, equilibrio }) => {
             const val = parametros[key];
             const display = key === 'fz' || key === 'ap' ? val.toFixed(2) : key === 'ae' ? val.toFixed(1) : val.toFixed(0);
+            const isOpen = openKey === key;
 
             return (
               <div key={key} className="flex flex-col gap-1">
                 <div className="flex justify-between items-center">
-                  <div className="flex items-baseline gap-2">
+                  <button
+                    onClick={() => toggleDrawer(key)}
+                    className="flex items-center gap-2 cursor-pointer min-h-[44px]"
+                    aria-expanded={isOpen}
+                    aria-label={`Informações sobre ${fullLabel}`}
+                  >
                     <span className={`text-sm font-bold font-mono text-${color}`}>{label}</span>
                     <span className="text-[10px] text-gray-500 uppercase">{fullLabel}</span>
-                  </div>
+                    <span
+                      className="material-symbols-outlined text-gray-600 transition-transform duration-300"
+                      style={{ fontSize: '14px', transform: isOpen ? 'rotate(180deg)' : 'rotate(0deg)' }}
+                    >
+                      expand_more
+                    </span>
+                  </button>
                   <div className="flex items-baseline gap-1">
                     <input type="number" value={display} step={step} min={min} max={max}
                       onChange={(e) => {
@@ -228,6 +266,30 @@ export function MobileFineTuneSection() {
                   <button className={BTN_CLS} aria-label={`Increase ${label}`}
                     onClick={() => setParametros({ [key]: Math.min(max, +(val + step).toFixed(4)) })}>+</button>
                 </div>
+
+                {/* Educational drawer */}
+                {isOpen && (
+                  <div
+                    className="mt-1 rounded-xl border bg-black/30 p-3 animate-[fadeInUp_0.25s_ease-out]"
+                    style={{ borderColor: `rgba(${rgb},0.18)` }}
+                  >
+                    <p className="text-xs text-gray-400 leading-relaxed mb-2.5">{desc}</p>
+                    <div className="space-y-1.5">
+                      <div className="flex items-start gap-2">
+                        <span className="text-[11px] font-bold text-green-400 w-16 shrink-0 pt-0.5 tracking-wide">▲ MAIS</span>
+                        <span className="text-xs text-gray-400 leading-relaxed">{aumentar}</span>
+                      </div>
+                      <div className="flex items-start gap-2">
+                        <span className="text-[11px] font-bold text-red-400 w-16 shrink-0 pt-0.5 tracking-wide">▼ MENOS</span>
+                        <span className="text-xs text-gray-400 leading-relaxed">{diminuir}</span>
+                      </div>
+                      <div className="flex items-start gap-2 pt-1.5 mt-1 border-t border-white/5">
+                        <span className="material-symbols-outlined text-yellow-500 shrink-0 leading-none" style={{ fontSize: '14px' }}>balance</span>
+                        <span className="text-xs text-gray-500 italic leading-relaxed">{equilibrio}</span>
+                      </div>
+                    </div>
+                  </div>
+                )}
               </div>
             );
           })}

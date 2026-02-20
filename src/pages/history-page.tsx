@@ -8,6 +8,8 @@ import { useHistoryStore } from '@/store';
 import { useMachiningStore } from '@/store';
 import { TipoUsinagem } from '@/types';
 import type { FeedbackOperador, HistoricoCalculo } from '@/types';
+import { usePageTitle } from '@/hooks/use-page-title';
+import { SeoHead } from '@/components/seo-head';
 
 const CARD = 'bg-card-dark rounded-xl p-6 border border-white/5 shadow-inner-glow mb-6';
 const LABEL = 'text-[11px] font-semibold text-gray-500 uppercase tracking-wide mb-1 block';
@@ -47,6 +49,7 @@ function fmt(n: number): string {
 }
 
 export function HistoryPage() {
+  usePageTitle('Histórico — ToolOptimizer CNC');
   const navigate = useNavigate();
   const entries = useHistoryStore((s) => s.entries);
   const filters = useHistoryStore((s) => s.filters);
@@ -117,6 +120,7 @@ export function HistoryPage() {
 
   return (
     <div className="min-h-screen bg-background-dark p-6 overflow-y-auto">
+      <SeoHead title="Histórico — ToolOptimizer CNC" />
       {/* Header */}
       <header className="mb-6 flex items-center gap-4 py-4 px-6 rounded-2xl bg-surface-dark backdrop-blur-xl border border-white/5 shadow-glass">
         <button onClick={() => navigate('/')}
