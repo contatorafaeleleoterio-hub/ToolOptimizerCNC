@@ -6,7 +6,7 @@
 
 ---
 
-**Data:** 19/02/2026 — Sessão 3
+**Data:** 20/02/2026 — Sessão 4
 **Versão:** 0.2.0
 
 ---
@@ -16,7 +16,7 @@
 | Item | Estado |
 |------|--------|
 | Branch | `main` |
-| Último commit | `bcfdf16` docs: session summary 19/02 session 3 |
+| Último commit | `d3c5395` style: translate all UI text to Portuguese (pt-BR) |
 | Testes | **333/333 passando** (24 arquivos, zero falhas) |
 | TypeScript | **zero erros** (`npx tsc --noEmit`) |
 | Build | **limpo** (`npx vite build`) |
@@ -27,10 +27,15 @@
 
 ---
 
-## 📋 COMMITS DESTA SESSÃO (19/02 sessão 3)
+## 📋 COMMITS DESTA SESSÃO (20/02 sessão 4)
 
 ```
-bcfdf16  docs: session summary 19/02 session 3
+d3c5395  style: translate all UI text to Portuguese (pt-BR)
+```
+
+### Commits anteriores (19/02 sessão 3):
+```
+c0dc244  docs: final session summary 19/02 s3
 4b194d9  style: redesign tool correction factor UI with modal drawer + compact table
 3c9dbf1  feat: add tool correction factor (coating/geometry multiplier) per tool type + diameter
 a6f66b4  style: replace native SF slider with StyledSlider + ±buttons in Settings
@@ -40,7 +45,29 @@ d343101  feat: unify materials list with edit support for all materials
 
 ---
 
-## ✅ O QUE FOI FEITO NESTA SESSÃO
+## ✅ O QUE FOI FEITO NESTA SESSÃO (20/02 sessão 4)
+
+### 1. Tradução completa UI para Português (pt-BR)
+
+**Arquivos alterados:**
+- `src/components/fine-tune-panel.tsx` — Labels e aria-labels: `'CUTTING SPEED'`→`'VEL. DE CORTE'`, `'FEED PER TOOTH'`→`'AVANÇO/DENTE'`, `'RADIAL ENGAGEMENT'`→`'ENGAJ. RADIAL'`, `'AXIAL DEPTH'`→`'PROF. AXIAL'`; `'Fine Tune'`→`'Ajuste Fino'`; `'MM/TOOTH'`→`'MM/DENTE'`
+- `src/components/results-panel.tsx` — `'Spindle'`→`'Rotação'`, `'Feed Rate'`→`'Avanço'`, `'Power'`→`'Potência'`, `'Feed Efficiency'`→`'Eficiência de Avanço'`, `'Power Est.'`→`'Potência Est.'`, `'Surface Speed'`→`'Vel. Superficial'`; locales `'en-US'`→`'pt-BR'`
+- `src/components/gauge.tsx` — Default label `'Efficiency'`→`'Eficiência'`
+- `src/components/mobile/mobile-results-section.tsx` — Mesmas traduções do results-panel
+- `src/components/shared-result-parts.tsx` — `fmt()`: locale `'en-US'`→`'pt-BR'` (afeta todo o app)
+- `src/pages/history-page.tsx` — Colunas `'Feed'`→`'Avanço'`, `'Power'`→`'Potência'`; locale `pt-BR`
+
+**Testes atualizados:**
+- `tests/components/fine-tune-panel.test.tsx` — Todos os matchers para português; aria-labels: `'Decrease Vc'`→`'Diminuir Vc'`, `'Increase Vc'`→`'Aumentar Vc'`
+- `tests/components/results-panel.test.tsx` — Labels e aria-labels atualizados; locale em formatação RPM
+- `tests/components/gauge.test.tsx` — `'Feed Efficiency'`→`'Eficiência de Avanço'`
+- `tests/pages/history-page.test.tsx` — Formato pt-BR: `'3,183'`→`'3.183'` (ponto como separador de milhares)
+
+**Resultado:** 333/333 testes passando; zero erros TS; build limpo.
+
+---
+
+## ✅ O QUE FOI FEITO NAS SESSÕES ANTERIORES (19/02 sessão 3)
 
 ### 1. Lista de Materiais Unificada (Configurações → Materiais)
 - Removida separação "Base (somente leitura)" / "Personalizados"
@@ -364,4 +391,4 @@ O próximo assistente deve:
 
 ---
 
-*Documento gerado em 19/02/2026 — Sessão 3*
+*Documento atualizado em 20/02/2026 — Sessão 4*
