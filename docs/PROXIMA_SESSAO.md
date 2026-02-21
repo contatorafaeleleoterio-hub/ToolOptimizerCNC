@@ -1,125 +1,168 @@
 # PROXIMA SESSAO — ToolOptimizer CNC
 
-> **📌 PARA O PRÓXIMO ASSISTENTE:**
-> Este é o documento principal de continuidade. Leia do início ao fim antes de qualquer ação.
-> Contém: estado do projeto, commits, o que foi feito, o que vem a seguir, padrões obrigatórios.
+> ## 👋 PARA O PRÓXIMO ASSISTENTE — LEIA ISTO PRIMEIRO
+>
+> Este documento é o **único ponto de entrada** para continuar o projeto.
+> Contém TUDO que você precisa saber para trabalhar com eficiência máxima.
+> **NÃO comece a codar sem ler do início ao fim.**
 
 ---
 
-**Data:** 21/02/2026 — Sessão 7
-**Versão:** 0.3.0
+## 📍 ESTADO DO PROJETO (início da próxima sessão)
+
+| Item | Valor |
+|------|-------|
+| **Branch** | `main` |
+| **Versão** | `0.3.0` |
+| **Último commit** | `a994c54` docs: session summary 21/02 s7 |
+| **Testes** | **401/401 passando** (25 arquivos) |
+| **TypeScript** | **zero erros** |
+| **Build** | **limpo** — JS 93.64KB gzip, CSS 12.83KB |
+| **Remote** | `origin/main` sincronizado (GitHub) |
+| **Deploy** | GitHub Pages ativo via CI/CD |
+| **Desktop** | `.exe` 85MB em `Sistema_Desktop_Pen_driver/` |
 
 ---
 
-## ⚡ ESTADO ATUAL (início da próxima sessão)
+## 🔍 COMO VERIFICAR O ESTADO RAPIDAMENTE
 
-| Item | Estado |
-|------|--------|
-| Branch | `main` |
-| Último commit | `12b8a6c` feat: ParameterHealthBar bidirectional health indicator |
-| Testes | **401/401 passando** (25 arquivos, zero falhas) |
-| TypeScript | **zero erros** (`npx tsc --noEmit`) |
-| Build | **limpo** — JS 93.64KB gzip, CSS 12.83KB |
-| GitHub | pushado — `contatorafaeleleoterio-hub/ToolOptimizerCNC` |
-| Deploy | GitHub Pages ativo + CI pipeline ativo |
-| Desktop | `Sistema_Desktop_Pen_driver/` — .exe 85MB (Electron v40.4.1) |
-| Versão | `0.3.0` |
+```bash
+# 1. Últimos commits
+git log --oneline -5
 
----
+# 2. Testes todos passando?
+npx vitest run --reporter=verbose 2>&1 | tail -5
 
-## 📋 COMMITS DESTA SESSÃO (21/02 sessão 7)
+# 3. TypeScript limpo?
+npx tsc --noEmit
 
+# 4. Build funciona?
+npx vite build 2>&1 | tail -5
 ```
-12b8a6c  feat: add ParameterHealthBar bidirectional health indicator for Fine Tune params
-```
-
-### Commits anteriores:
-```
-e8b4adf  docs: session summary 20/02 s6 - SEO + mobile fix + version 0.2.1
-d32b26e  feat: add SEO meta tags, Schema.org JSON-LD, and fix mobile educational drawer
-4064549  docs: session summary 20/02 s5 - accordion drawer + typography scale
-245131f  style: scale up typography system for desktop readability
-```
 
 ---
 
-## ✅ O QUE FOI FEITO NESTA SESSÃO (21/02 sessão 7)
+## ✅ O QUE FOI FEITO (histórico recente)
 
-### 1. Story-005 — ParameterHealthBar (COMPLETA)
+### Sessão 21/02 s7 — Story-005 ParameterHealthBar
+- **Novo:** `src/components/parameter-health-bar.tsx` — barras bidirecionais de saúde
+- **Novo:** `tests/components/parameter-health-bar.test.tsx` — 56 testes TDD
+- **Integrado:** `fine-tune-panel.tsx` + `mobile-fine-tune-section.tsx` — mesmo componente
+- **Testado:** +7 testes de integração em arquivos existentes
+- **Versão:** 0.2.1 → 0.3.0
 
-**Novos arquivos:**
-- `src/components/parameter-health-bar.tsx` — componente + 4 funções puras exportadas
-- `tests/components/parameter-health-bar.test.tsx` — 56 testes (TDD-first)
+### Sessão 20/02 s6 — Story-004 SEO
+- `index.html` com meta tags OG, Twitter, Schema.org JSON-LD
+- `src/hooks/use-page-title.ts`, `src/components/seo-head.tsx`
+- `public/sitemap.xml`, `public/robots.txt`
+- Fix: gaveta educativa mobile (paridade com desktop)
 
-**Modificados:**
-- `src/components/fine-tune-panel.tsx` — `<ParameterHealthBar paramKey={key} />` inserido após slider, antes da gaveta
-- `src/components/mobile/mobile-fine-tune-section.tsx` — mesmo padrão (paridade mobile)
-- `tests/components/fine-tune-panel.test.tsx` — +5 testes de integração
-- `tests/pages/mobile-page.test.tsx` — +2 testes de presença mobile
-- `package.json` — versão 0.2.1 → 0.3.0
+### Sessão 20/02 s5 — Typography + Accordion
+- Escala tipográfica global desktop (text-base → text-lg)
+- Gaveta educativa accordion em todos os sliders (Vc/fz/ae/ap)
 
-**Funcionalidade:**
-- Barra bidirecional abaixo de cada slider (Vc, fz, ae, ap)
-- Centro = equilíbrio ótimo; fill para direita = agressivo; fill para esquerda = conservador
-- **Vc**: baseado em `rpm/maxRPM` (zonas: Sub-ótimo/Ideal/Alerta/Desgaste) — ativo só após Simular
-- **fz**: baseado em `chipRatio = fzEfetivo/(D×0.017)` (zonas: Atrito/Leve/Ideal/Agressivo/Vibração) — ativo só após Simular + badge CTF quando ativo
-- **ae**: baseado em `ae/D` (CTF Alto/CTF Ativo/Engaj. Pleno/Pesado) — sempre ativo + readout "XX.X%"
-- **ap**: baseado em `ap/D` com limiar dinâmico por L/D (Leve/Padrão/Agressivo/Deflexão) — sempre ativo + readout "L/D: X.X" colorido
-
-**Critérios técnicos validados:**
-- Fontes: Sandvik CoroPlus, Kennametal NOVO, Walter GPS, CNC Cookbook, Machining Doctor
-- Padrão "deviation-from-optimum bar" com failure modes nomeados nas extremidades
-- Normalização assimétrica no Vc (centro 55% → esquerda ÷0.55, direita ÷0.45 → maxRPM=posição 1.0)
-- Fórmulas: 401 testes passando, zero erros TypeScript
+### Sessão 19/02 s3 — Settings + Correções
+- Fator de Segurança movido para Settings com StyledSlider
+- ToolCorrectionFactor (multiplicador Vc/fz por tipo + diâmetro)
+- CorrectionModal (drawer mobile, modal desktop)
+- Edit de materiais base + custom override pattern
 
 ---
 
-## 🎯 PRÓXIMA TAREFA
+## 🎯 PRÓXIMAS TAREFAS SUGERIDAS
 
-Story-005 (ParameterHealthBar) está **COMPLETA**. Próximas opções:
+O usuário precisa escolher a Story-006. Apresente as opções:
 
-### Opção A: HistoryPage responsiva (mobile-friendly)
-- A HistoryPage atual não é responsiva — só funciona em desktop
-- Adaptar layout para mobile: scroll vertical, cards em vez de tabela
+### Opção A — HistoryPage responsiva (RECOMENDADO)
+**Por quê:** A HistoryPage atual é só-desktop. Em mobile aparece quebrada.
+**O que fazer:**
+- Layout em cards empilhados no mobile (em vez de tabela)
+- Filtros colapsáveis
+- Export funcionando no mobile
 
-### Opção B: Exportação melhorada
-- PDF com logo e formatação profissional
-- Excel com fórmulas ou dados tabulados
+### Opção B — Melhorias no Desktop .exe
+**Por quê:** O .exe portátil existe mas tem limitações UX.
+**O que fazer:**
+- Ícone customizado `.ico` (agora usa ícone genérico Electron)
+- Fontes offline (Material Symbols falha sem internet → ícones aparecem como texto)
+- Auto-updater (notifica quando nova versão disponível)
 
-### Opção C: Comparação de simulações
-- Side-by-side de 2+ simulações no histórico
-- Diff visual dos parâmetros
+### Opção C — Exportação PDF profissional
+**Por quê:** Usuários precisam imprimir/enviar relatórios para aprovação.
+**O que fazer:**
+- PDF com logo, parâmetros, resultado, MRR, gráfico de saúde
+- Usar `jsPDF` ou template HTML → print
 
-### Opção D: Desktop features
-- Ícone customizado (.ico)
-- Fontes offline no .exe
+### Opção D — Comparação de simulações
+**Por quê:** Feature avançada para comparar 2+ cenários side-by-side.
+**O que fazer:**
+- Selecionar 2 itens do histórico
+- Diff visual de parâmetros e resultados
+
+### Opção E — Dashboard de métricas rápidas
+**Por quê:** Power users querem ver tendências (material mais usado, faixa de RPM típica, etc.)
+**O que fazer:**
+- Charts no HistoryPage (Recharts ou Chart.js)
+- Resumo estatístico das últimas N simulações
 
 ---
 
-## 📐 PADRÕES OBRIGATÓRIOS (não mudar sem ADR)
+## 🏗️ ARQUITETURA E PADRÕES (OBRIGATÓRIO LER)
 
-### Stack
+### Stack confirmada (fev/2026)
 ```
-React 18.3 + TypeScript 5.7 (strict, zero any)
-Vite 6.1 + @tailwindcss/vite 4.0
+React 18.3 + TypeScript 5.7 (strict mode, zero any)
+Vite 6.1 + @tailwindcss/vite 4.0 (NÃO tailwind.config!)
 Zustand 5.0 + react-router-dom 7.13
 Vitest 3.0 + Testing Library
-SEM backend, SEM CSS Modules
+SEM backend, SEM CSS Modules, SEM Prettier (não configurado)
 ```
 
-### Slider padrão (ÚNICO em todo app)
-`StyledSlider` — div customizado com:
-- Track `h-1.5 bg-black/40 rounded-full` + filled com glow
-- Thumb: outer ring `border-2 border-${color}` + inner dot + scale(1.15) on press
-- Botões −/+ nas extremidades: `BTN_CLS = 'w-6 h-6 rounded bg-black/40 ...'`
-- **Usado em:** Fine Tune (Vc/fz/ae/ap), SF (Settings), CorrectionModal
+### Rotas
+```
+"/"          → App.tsx (desktop 3-col)
+"/mobile"    → MobilePage (auto-redirect via useIsMobile)
+"/settings"  → SettingsPage
+"/history"   → HistoryPage
+```
 
-### Modal/Drawer padrão (CorrectionModal como referência)
+### Store (Zustand) — regras críticas
+```typescript
+// Estes NÃO recalculam automaticamente:
+setMaterial() → resultado = null
+setFerramenta() → resultado = null
+setTipoOperacao() → resultado = null
+setParametros() → resultado = null
+setSafetyFactor() → resultado = null
+
+// Este SIM recalcula automaticamente (exceção):
+setLimitesMaquina() → chama calcular()
+
+// Nos testes: sempre chamar explicitamente
+useMachiningStore.getState().calcular();
+```
+
+### Tailwind v4 — regra crítica
+```tsx
+// ❌ NUNCA — classe interpolada é purgada no build
+className={`text-${color}-500`}
+
+// ✅ SEMPRE — classe completa estática
+className="text-primary"
+// OU inline style para valores dinâmicos:
+style={{ color: `rgba(${rgb},1)` }}
+```
+
+### Slider padrão (ÚNICO no app)
+`StyledSlider` — div customizado (NÃO input[type=range]). Thumb: ring + inner dot + glow. Usado em: Fine Tune, Settings (Safety Factor), CorrectionModal.
+
+### Modal/Drawer padrão
 ```tsx
 <div className="fixed inset-0 z-50 flex items-end sm:items-center justify-center">
   <div className="absolute inset-0 bg-black/60 backdrop-blur-sm" />
   <div className="relative w-full sm:max-w-md bg-surface-dark border border-white/10
                   rounded-t-2xl sm:rounded-2xl shadow-glass p-5 pb-8 sm:pb-5">
+    {/* Handle bar mobile */}
     <div className="w-10 h-1 bg-white/20 rounded-full mx-auto mb-4 sm:hidden" />
     {/* conteúdo */}
   </div>
@@ -127,102 +170,117 @@ SEM backend, SEM CSS Modules
 ```
 
 ### ParameterHealthBar — regras
-- **Funções puras** exportadas: `computeVcPosition`, `computeFzPosition`, `computeAePosition`, `computeApPosition`
-- **Tailwind dinâmico proibido**: ZONE_RGB é lookup estático; cores via `style={}`
-- **Vc/fz**: inactive (gray) quando `resultado === null`; ae/ap sempre ativos
-- **Inserção**: após slider row `</div>`, ANTES da gaveta educativa `{isOpen && ...}`
-- **data-testid**: `health-bar-{key}`, `health-bar-{key}-fill`, `health-bar-{key}-inactive`
-- **CTF badge**: aparece em fz quando `resultado.seguranca.ctf > 1.0` e resultado definido
+```tsx
+// Inserção em fine-tune-panel.tsx (após slider row, antes gaveta):
+</div>  {/* ← fecha flex items-center gap-1.5 */}
+<ParameterHealthBar paramKey={key} />
+{isOpen && (  {/* ← gaveta educativa */}
 
-### Store — regras críticas
-- `setMaterial / setFerramenta / setTipoOperacao / setParametros / setSafetyFactor` → zeram `resultado=null`, NÃO chamam `calcular()`
-- `setLimitesMaquina` → chama `calcular()` automaticamente (exceção)
-- Testes do store: chamar `getState().calcular()` explicitamente
-- Safety factor aplicado em: `potenciaCorte`, `potenciaMotor`, `torque` (NÃO em RPM, feed, MRR)
-- Tool Correction Factor aplicado em: `vc` e `fz` (ANTES do cálculo, em `calcular()`)
-
-### Design tokens
-```
-Primary:    #00D9FF (cyan neon)   → rgb: 0,217,255
-Secondary:  #39FF14 (green neon)  → rgb: 57,255,20
-Background: #0F1419 (dark)
-Verde:      #2ecc71   Amarelo: #f39c12   Vermelho: #e74c3c
+// Vc/fz inactive quando resultado=null. ae/ap sempre ativos.
+// ZONE_RGB é lookup estático — nunca interpolar em className
+// CTF badge aparece quando resultado.seguranca.ctf > 1.0
 ```
 
-### Commits (conventional)
-```
-feat:     nova funcionalidade
-fix:      correção de bug
-style:    mudança visual sem lógica
-refactor: refatoração sem mudança de comportamento
-test:     testes
-docs:     documentação
+### Tolerâncias nos testes
+```typescript
+// ±1 RPM, ±1 mm/min
+expect(Math.abs(val - expected)).toBeLessThanOrEqual(1);
+
+// toBeCloseTo(x, 0) = margem ±0.5 (não ±1!)
+// Para ±1 use Math.abs, não toBeCloseTo com decimais=0
 ```
 
 ---
 
-## 📁 ESTRUTURA DE ARQUIVOS RELEVANTE
+## 📁 MAPA DE ARQUIVOS
 
 ```
 src/
-  types/index.ts              ← ToolCorrectionFactor, CustomMaterial, etc
-  store/machining-store.ts    ← estado central (Zustand)
-  engine/                     ← rpm, feed, power, chip-thinning, validators, recommendations
-  data/                       ← materials, tools, operations
+  types/index.ts                        ← tipos TS + constantes (REGRAS_SEGURANCA, LIMITES_PADRAO)
+  store/machining-store.ts              ← estado central Zustand
+  store/history-store.ts                ← histórico de simulações (localStorage)
+  engine/
+    rpm.ts                              ← calculateRPM
+    chip-thinning.ts                    ← calculateEffectiveFz + CTF
+    feed.ts                             ← calculateFeedRate
+    power.ts                            ← calculatePower + calculateTorque + calculateMRR
+    validators.ts                       ← validateLDRatio + validateInputs + validateMachineLimits
+    recommendations.ts                  ← getRecommendedParams
+    index.ts                            ← re-exports
+  data/
+    materials.ts                        ← MATERIAIS[] + custom materials
+    tools.ts                            ← FERRAMENTAS_PADRAO, DIAMETROS_PADRAO, etc.
+    operations.ts                       ← OPERACOES[]
+    index.ts                            ← re-exports
   components/
-    config-panel.tsx          ← painel esquerdo dashboard (Simular, parâmetros)
-    results-panel.tsx         ← painel direito (RPM, Feed, Potência, gauge)
-    fine-tune-panel.tsx       ← sliders Vc/fz/ae/ap + StyledSlider + gaveta educativa + health bars
-    parameter-health-bar.tsx  ← ParameterHealthBar + 4 funções puras (compute*)
-    bidirectional-slider.tsx  ← slider bidirecional RPM/Feed (-150% a +150%)
-    gauge.tsx                 ← gauge semicircular animado
-    seo-head.tsx              ← injeta meta tags OG/Twitter dinamicamente
+    config-panel.tsx                    ← painel esquerdo (Material, Ferramenta, Tipo, Parâmetros)
+    results-panel.tsx                   ← painel central (RPM, Feed, Potência, Gauge, BidirSliders)
+    fine-tune-panel.tsx                 ← painel direito (Vc/fz/ae/ap sliders + health bars + gaveta)
+    parameter-health-bar.tsx            ← ParameterHealthBar + 4 funções puras compute*
+    bidirectional-slider.tsx            ← slider bidirecional RPM/Feed (-150% a +150%)
+    gauge.tsx                           ← gauge semicircular 270° animado (40 segmentos)
+    formula-card.tsx                    ← cards de fórmula colapsáveis
+    export-buttons.tsx                  ← botões JSON/CSV export
+    tool-summary-viewer.tsx             ← resumo da ferramenta com toFixed(2)
+    disclaimer.tsx                      ← aviso legal obrigatório
+    seo-head.tsx                        ← injeta meta tags OG/Twitter
+    ui-helpers.tsx                      ← SectionTitle, etc.
+    correction-modal.tsx                ← modal/drawer Tool Correction Factor
     mobile/
-      mobile-fine-tune-section.tsx ← TouchSlider + gaveta educativa + health bars (paridade)
+      mobile-fine-tune-section.tsx      ← fine tune mobile (TouchSlider + health bars + gaveta)
+      mobile-results-section.tsx        ← resultados mobile
+      mobile-sticky-actions.tsx         ← Simular/Reset fixos no topo mobile
   pages/
-    settings-page.tsx         ← Configurações (6 seções)
-    history-page.tsx          ← Histórico de simulações
-    mobile-page.tsx           ← versão mobile completa
+    settings-page.tsx                   ← Settings (6 seções: limites, SF, materiais, etc.)
+    history-page.tsx                    ← Histórico de simulações (tabela + filtros)
+    mobile-page.tsx                     ← página mobile completa
   hooks/
-    use-page-title.ts         ← seta document.title por rota
-    use-is-mobile.ts
-    use-simulation-animation.ts
-    use-reset-feedback.ts
-  App.tsx                     ← layout 3 colunas + header
-  main.tsx                    ← BrowserRouter + Routes (web) / HashRouter (desktop)
-  index.css                   ← Tailwind v4 @theme + keyframes
+    use-page-title.ts                   ← document.title por rota
+    use-is-mobile.ts                    ← detecta viewport mobile
+    use-simulation-animation.ts         ← estados de animação (loading/gauge/pulse)
+    use-reset-feedback.ts               ← detecta mudança de params, aciona aviso visual
+  App.tsx                               ← layout 3-col + header + SeoHead
+  main.tsx                              ← BrowserRouter + Routes (web) / HashRouter (desktop)
+  index.css                             ← Tailwind v4 @theme + keyframes + range fix
 
 public/
-  sitemap.xml                 ← todas as rotas públicas
-  robots.txt                  ← Allow all + Sitemap
+  sitemap.xml                           ← 3 rotas indexáveis
+  robots.txt                            ← Allow all + Sitemap
 
-tests/                        ← 25 arquivos de teste (Vitest), 401 testes
-```
+tests/                                  ← espelho de src/
+  engine/                               ← rpm, feed, power, chip-thinning, validators
+  data/                                 ← materials, tools, operations
+  store/                                ← machining-store, history-store
+  components/                           ← config-panel, results-panel, fine-tune-panel,
+                                           parameter-health-bar, bidirectional-slider,
+                                           formula-card, gauge, export-buttons,
+                                           tool-summary-viewer, seo-head, disclaimer,
+                                           correction-modal, mobile-fine-tune-section
+  pages/                                ← settings-page, history-page, mobile-page
+  hooks/                                ← use-is-mobile, use-simulation-animation,
+                                           use-reset-feedback
 
----
-
-## 🔧 COMANDOS ÚTEIS
-
-```bash
-# Desenvolvimento
-npm run dev                   # servidor local (localhost:5173/ToolOptimizerCNC/)
-
-# Qualidade (rodar ANTES de qualquer commit)
-npx vitest run                # todos os testes
-npx tsc --noEmit              # TypeScript check
-npx vite build                # build de produção
-
-# Git
-git log --oneline -10         # histórico
-git status                    # estado atual
-git push origin main          # push
-
-# Contar testes (ignora warnings ANSI)
-npx vitest run --reporter=json 2>/dev/null | python3 -c "
-import sys,json; d=json.load(sys.stdin)
-passed=sum(1 for s in d['testResults'] for t in s['assertionResults'] if t['status']=='passed')
-failed=sum(1 for s in d['testResults'] for t in s['assertionResults'] if t['status']=='failed')
-print(f'passed={passed} failed={failed}')"
+docs/
+  specs/
+    PRD_TOOLOPTIMIZER_CNC_MVP.md        ← PRD completo
+    PRD_MASTER.md                       ← PRD condensado
+    DECISOES_VALIDACAO_PRD.md           ← validações críticas de domínio
+  technical/
+    DADOS_TECNICOS_KIENZLE_E_VC.md      ← dados Kienzle + Vc por material
+    PRD_Velocidades_Corte_CNC.md        ← faixas de Vc por material/ferramenta
+    CASOS_TESTE_REFERENCIA.md           ← ← USE ESTE para valores nos testes!
+  design/
+    DASHBOARD.md                        ← protótipo do dashboard
+    UI_DESIGN_SPEC_FINAL.md             ← spec completa de UI
+    UI_BRANDING.md                      ← tokens de design
+  architecture/
+    ADR-001 a ADR-006                   ← decisões arquiteturais documentadas
+    ADR-005-electron-desktop-build.md   ← guia completo para build do .exe
+    ADR-006-estrategia-versionamento.md ← regras SemVer
+  stories/
+    story-001 a story-005               ← documentação de cada feature entregue
+  PROXIMA_SESSAO.md                     ← ESTE ARQUIVO (ponto de entrada da sessão)
+  AIOS_INTEGRATION.md                  ← integração com Synkra AIOS Framework
 ```
 
 ---
@@ -231,69 +289,103 @@ print(f'passed={passed} failed={failed}')"
 
 | Problema | Causa | Solução |
 |----------|-------|---------|
-| `exit code 1` em vitest | Warnings ANSI no stderr | Usar `--reporter=json` para confirmar real contagem |
-| `exit code 1` em vite build | Warnings do vite no stderr | Verificar output — se ✓ built, está OK |
-| `toBeCloseTo(x, 0)` | Margem ±0.5, não ±1 | Usar `Math.abs(val - expected) <= 1` para tolerância ±1 |
-| SF slider "não funciona" | Zera resultado sem recalcular | É design intencional — usuário clica Simular |
-| Teste `fireEvent.change` em StyledSlider | Não tem `value setter` (div, não input) | Testar via `fireEvent.click` nos botões +/− |
-| Clone desktop em testes | Vitest encontra arquivos do clone | `exclude: ['Sistema_Desktop_Pen_driver/**']` no vitest.config.ts |
-| Tailwind class dinâmica | Classes com interpolação não geram CSS | Usar classes completas ou `style={}` inline |
-| ParameterHealthBar ZONE_RGB | Nunca interpolate cor no className | Use lookup estático + style={} para backgroundColor |
+| `exit code 1` em `vitest run` | Warnings ANSI no stderr | Verificar output — se `X passed` = OK |
+| `exit code 1` em `vite build` | Warnings do vite no stderr | Verificar output — se `✓ built in` = OK |
+| `toBeCloseTo(x, 0)` | Margem ±0.5, não ±1 | Usar `Math.abs(val - expected) <= 1` |
+| Slider "não funciona" no teste | `StyledSlider` é div, não `input` | Testar via botões `+`/`−` com `fireEvent.click` |
+| Teste do store não recalcula | Store não auto-recalcula | Chamar `getState().calcular()` explicitamente |
+| Tailwind classe purgada | Interpolação em runtime | Usar classes completas estáticas OU `style={}` |
+| Clone desktop em testes | Vitest acha arquivos do clone | `exclude: ['Sistema_Desktop_Pen_driver/**']` já configurado |
+| `usePageTitle` em teste | Muda `document.title` | Limpar no `afterEach` se necessário |
+| `BrowserRouter` em testes mobile | MobilePage usa hooks de routing | Sempre envolver em `<BrowserRouter>` |
 
 ---
 
-## 📊 ROADMAP COMPLETO
+## 🚀 CHECKLIST FIM DE SESSÃO (para o assistente não esquecer)
+
+Antes de encerrar qualquer sessão:
+
+```bash
+# 1. Todos os testes passando?
+npx vitest run
+
+# 2. TypeScript limpo?
+npx tsc --noEmit
+
+# 3. Build de produção OK?
+npx vite build
+
+# 4. Commit com conventional commits
+git add <arquivos específicos>
+git commit -m "feat/fix/style/docs: descrição"
+
+# 5. Push
+git push origin main
+
+# 6. Se story concluída: version bump em package.json
+#    MINOR: nova feature (0.3.0 → 0.4.0)
+#    PATCH: bugfix (0.3.0 → 0.3.1)
+
+# 7. Atualizar PROXIMA_SESSAO.md (este arquivo)
+
+# 8. Atualizar memory/MEMORY.md
+
+# 9. Commit docs
+git add docs/ && git commit -m "docs: session summary ..."
+git push origin main
+```
+
+---
+
+## 🔧 COMANDOS DO DIA-A-DIA
+
+```bash
+# Dev server
+npm run dev                    # → http://localhost:5173/ToolOptimizerCNC/
+
+# Testes
+npx vitest run                 # todos os testes
+npx vitest run tests/components/parameter-health-bar.test.tsx  # arquivo específico
+npx vitest watch               # modo watch (dev)
+
+# Qualidade
+npx tsc --noEmit               # type check
+npx vite build                 # build prod
+
+# Git
+git log --oneline -10
+git diff HEAD~1                # o que mudou no último commit
+git status
+```
+
+---
+
+## 📊 HISTÓRICO DE VERSÕES
+
+| Versão | Commits | Feature |
+|--------|---------|---------|
+| 0.1.0 | inicial | MVP base (cálculos + UI) |
+| 0.2.0 | múltiplos | Animações + Sliders bidirecionais + Mobile + CI |
+| 0.2.1 | d32b26e | SEO + Schema.org + fix gaveta mobile |
+| **0.3.0** | **12b8a6c** | **ParameterHealthBar (Story-005)** |
+
+---
+
+## 📌 ROADMAP VISUAL
 
 ```
-[x] Story-001: Limpeza técnica + ADRs
-[~] Story-002: Deploy Cloudflare (fase 1 OK, setup manual pendente)
-[x] Animações profissionais (spinner, gauge, pulse)
-[x] Sliders bidirecionais RPM/Feed
-[x] Reset feedback ao alterar parâmetros
-[x] Sticky Simular/Reset (desktop + mobile)
-[x] StyledSlider unificado (Fine Tune, SF, CorrectionModal)
-[x] Story-003: CI/CD GitHub Actions
-[x] Mobile fixes: Settings responsiva + touch targets
-[x] Desktop .exe portátil (Electron v40.4.1)
-[x] ADR-005: Guia build Electron
-[x] ADR-006: Estratégia versionamento SemVer
-[x] Design unificado: sliders RPM/Feed = Fine Tune
-[x] Design unificado: botões Tipo Usinagem = Tipo Ferramenta
-[x] Edit materiais (base + custom) com override pattern
-[x] SF movido para Settings + StyledSlider
-[x] Tool Correction Factor (Vc/fz multiplier por tipo+diâmetro)
-[x] CorrectionModal (drawer mobile + modal desktop)
-[x] Tradução completa UI pt-BR
-[x] Gaveta educativa accordion (desktop + mobile)
-[x] Escala tipográfica global desktop
-[x] Story-004: SEO Schema.org + meta tags
-[x] Story-005: ParameterHealthBar — feedback visual Fine Tune
-
-[ ] Branch protection GitHub (manual pelo usuário)
-[ ] Cloudflare Pages (manual pelo usuário)
-[ ] HistoryPage responsiva
-[ ] Desktop: ícone customizado, fontes offline, code signing
-[ ] Story-006: ... (a definir)
-[ ] MVP v1.0.0: feature-complete
+✅ Story-001: Limpeza técnica + ADRs
+✅ Story-002: Deploy Cloudflare (código OK, setup manual pendente)
+✅ Story-003: CI/CD GitHub Actions
+✅ Story-004: SEO Schema.org + meta tags
+✅ Story-005: ParameterHealthBar (feedback visual Fine Tune)
+⬜ Story-006: [A DEFINIR com usuário] ← PRÓXIMA
+⬜ MVP v1.0.0 (feature-complete)
+⬜ Cloudflare Pages (setup manual pelo usuário)
+⬜ Desktop: ícone + fontes offline + code signing
 ```
 
 ---
 
-## 🚀 PARA INICIAR A PRÓXIMA SESSÃO
-
-O próximo assistente deve:
-
-1. **Ler este arquivo** (já está fazendo isso)
-2. Confirmar estado:
-   ```bash
-   git log --oneline -5
-   npx vitest run --reporter=json 2>/dev/null | python3 -c "..."
-   ```
-3. Perguntar ao usuário qual próxima tarefa:
-   - HistoryPage responsiva?
-   - Story-006 (a definir)?
-   - Desktop features?
-
----
-
-*Documento atualizado em 21/02/2026 — Sessão 7*
+*Última atualização: 21/02/2026 — Sessão 7*
+*Próximo assistente: leia este arquivo + MEMORY.md antes de qualquer ação*
