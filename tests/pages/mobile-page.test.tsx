@@ -90,4 +90,17 @@ describe('MobilePage', () => {
     const radios = screen.getAllByRole('radio');
     expect(radios.length).toBeGreaterThanOrEqual(3);
   });
+
+  // Health bar integration — mobile parity
+  it('renders health bars for ae and ap in mobile fine tune', () => {
+    renderMobile();
+    expect(screen.getByTestId('health-bar-ae')).toBeInTheDocument();
+    expect(screen.getByTestId('health-bar-ap')).toBeInTheDocument();
+  });
+
+  it('vc and fz health bars show inactive state before simulation', () => {
+    renderMobile();
+    expect(screen.getByTestId('health-bar-vc-inactive')).toBeInTheDocument();
+    expect(screen.getByTestId('health-bar-fz-inactive')).toBeInTheDocument();
+  });
 });

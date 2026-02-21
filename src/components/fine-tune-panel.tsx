@@ -1,6 +1,7 @@
 import { useState, useRef, useCallback } from 'react';
 import { useMachiningStore } from '@/store';
 import { MATERIAIS } from '@/data';
+import { ParameterHealthBar } from './parameter-health-bar';
 
 const SLIDER_CONFIG = [
   { key: 'vc' as const, label: 'Vc', fullLabel: 'VEL. DE CORTE', unit: 'M/MIN', color: 'primary',
@@ -200,6 +201,9 @@ export function FineTunePanel() {
                 <button className={BTN_CLS} aria-label={`Aumentar ${label}`}
                   onClick={() => setParametros({ [key]: Math.min(max, +(val + step).toFixed(4)) })}>+</button>
               </div>
+
+              {/* Parameter health bar — always visible below slider */}
+              <ParameterHealthBar paramKey={key} />
 
               {/* Educational drawer */}
               {isOpen && (

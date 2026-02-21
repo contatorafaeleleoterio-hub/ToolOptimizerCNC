@@ -2,6 +2,7 @@ import { useRef, useCallback, useState } from 'react';
 import { useMachiningStore } from '@/store';
 import { MATERIAIS } from '@/data';
 import { SectionTitle } from '../ui-helpers';
+import { ParameterHealthBar } from '../parameter-health-bar';
 
 const SLIDER_CONFIG = [
   { key: 'vc' as const, label: 'Vc', fullLabel: 'Velocidade Corte', unit: 'm/min', color: 'primary',
@@ -266,6 +267,9 @@ export function MobileFineTuneSection() {
                   <button className={BTN_CLS} aria-label={`Increase ${label}`}
                     onClick={() => setParametros({ [key]: Math.min(max, +(val + step).toFixed(4)) })}>+</button>
                 </div>
+
+                {/* Parameter health bar — always visible below slider */}
+                <ParameterHealthBar paramKey={key} />
 
                 {/* Educational drawer */}
                 {isOpen && (

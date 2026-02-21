@@ -94,4 +94,39 @@ describe('FineTunePanel', () => {
     fireEvent.click(screen.getByLabelText('Informações sobre AVANÇO/DENTE'));
     expect(screen.getAllByText('▲ MAIS')).toHaveLength(1);
   });
+
+  // Health bar integration tests
+  it('renders health bars for all 4 params', () => {
+    render(<FineTunePanel />);
+    expect(screen.getByTestId('health-bar-vc')).toBeInTheDocument();
+    expect(screen.getByTestId('health-bar-fz')).toBeInTheDocument();
+    expect(screen.getByTestId('health-bar-ae')).toBeInTheDocument();
+    expect(screen.getByTestId('health-bar-ap')).toBeInTheDocument();
+  });
+
+  it('vc and fz bars inactive before calcular()', () => {
+    render(<FineTunePanel />);
+    expect(screen.getByTestId('health-bar-vc-inactive')).toBeInTheDocument();
+    expect(screen.getByTestId('health-bar-fz-inactive')).toBeInTheDocument();
+  });
+
+  it('ae and ap bars always active (no resultado needed)', () => {
+    render(<FineTunePanel />);
+    expect(screen.getByTestId('health-bar-ae-fill')).toBeInTheDocument();
+    expect(screen.getByTestId('health-bar-ap-fill')).toBeInTheDocument();
+  });
+
+  it('vc and fz bars activate after calcular()', () => {
+    useMachiningStore.getState().calcular();
+    render(<FineTunePanel />);
+    expect(screen.getByTestId('health-bar-vc-fill')).toBeInTheDocument();
+    expect(screen.getByTestId('health-bar-fz-fill')).toBeInTheDocument();
+  });
+
+  it('health bars visible when educational drawer is open', () => {
+    render(<FineTunePanel />);
+    fireEvent.click(screen.getByLabelText('Informações sobre VEL. DE CORTE'));
+    // Drawer is open, but health bar is still in DOM (rendered before drawer)
+    expect(screen.getByTestId('health-bar-vc')).toBeInTheDocument();
+  });
 });
