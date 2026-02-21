@@ -6,8 +6,8 @@
 
 ---
 
-**Data:** 20/02/2026 — Sessão 6
-**Versão:** 0.2.1
+**Data:** 21/02/2026 — Sessão 7
+**Versão:** 0.3.0
 
 ---
 
@@ -16,109 +16,83 @@
 | Item | Estado |
 |------|--------|
 | Branch | `main` |
-| Último commit | `d32b26e` feat: SEO + Schema.org + fix mobile educational drawer |
-| Testes | **338/338 passando** (24 arquivos, zero falhas) |
+| Último commit | `12b8a6c` feat: ParameterHealthBar bidirectional health indicator |
+| Testes | **401/401 passando** (25 arquivos, zero falhas) |
 | TypeScript | **zero erros** (`npx tsc --noEmit`) |
-| Build | **limpo** (`npx vite build`) — JS 92KB gzip, CSS 12.8KB |
+| Build | **limpo** — JS 93.64KB gzip, CSS 12.83KB |
 | GitHub | pushado — `contatorafaeleleoterio-hub/ToolOptimizerCNC` |
 | Deploy | GitHub Pages ativo + CI pipeline ativo |
 | Desktop | `Sistema_Desktop_Pen_driver/` — .exe 85MB (Electron v40.4.1) |
-| Versão | `0.2.1` |
+| Versão | `0.3.0` |
 
 ---
 
-## 📋 COMMITS DESTA SESSÃO (20/02 sessão 6)
+## 📋 COMMITS DESTA SESSÃO (21/02 sessão 7)
 
 ```
-d32b26e  feat: add SEO meta tags, Schema.org JSON-LD, and fix mobile educational drawer
+12b8a6c  feat: add ParameterHealthBar bidirectional health indicator for Fine Tune params
 ```
 
 ### Commits anteriores:
 ```
+e8b4adf  docs: session summary 20/02 s6 - SEO + mobile fix + version 0.2.1
+d32b26e  feat: add SEO meta tags, Schema.org JSON-LD, and fix mobile educational drawer
 4064549  docs: session summary 20/02 s5 - accordion drawer + typography scale
 245131f  style: scale up typography system for desktop readability
-b47a835  feat: add educational accordion drawer to Fine Tune sliders
-d3c5395  style: translate all UI text to Portuguese (pt-BR)
 ```
 
 ---
 
-## ✅ O QUE FOI FEITO NESTA SESSÃO (20/02 sessão 6)
+## ✅ O QUE FOI FEITO NESTA SESSÃO (21/02 sessão 7)
 
-### 1. Story-004 — SEO + Schema.org (COMPLETA)
+### 1. Story-005 — ParameterHealthBar (COMPLETA)
 
 **Novos arquivos:**
-- `src/hooks/use-page-title.ts` — hook simples, seta `document.title` por rota
-- `src/components/seo-head.tsx` — injeta meta tags OG/Twitter via JS DOM
-- `public/sitemap.xml` — todas as rotas públicas
-- `public/robots.txt` — Allow all + Sitemap URL
-- `docs/stories/story-004-seo-schema.md` — documentação da story
+- `src/components/parameter-health-bar.tsx` — componente + 4 funções puras exportadas
+- `tests/components/parameter-health-bar.test.tsx` — 56 testes (TDD-first)
 
 **Modificados:**
-- `index.html` — meta tags base + OG + Twitter + Schema.org JSON-LD (SoftwareApplication)
-- `src/App.tsx` — `usePageTitle` + `SeoHead` na rota principal
-- `src/pages/settings-page.tsx` — `usePageTitle('Configurações — ToolOptimizer CNC')`
-- `src/pages/history-page.tsx` — `usePageTitle('Histórico — ToolOptimizer CNC')`
-- `src/pages/mobile-page.tsx` — `usePageTitle('ToolOptimizer CNC Mobile')`
+- `src/components/fine-tune-panel.tsx` — `<ParameterHealthBar paramKey={key} />` inserido após slider, antes da gaveta
+- `src/components/mobile/mobile-fine-tune-section.tsx` — mesmo padrão (paridade mobile)
+- `tests/components/fine-tune-panel.test.tsx` — +5 testes de integração
+- `tests/pages/mobile-page.test.tsx` — +2 testes de presença mobile
+- `package.json` — versão 0.2.1 → 0.3.0
 
-**Títulos por rota:**
-| Rota | Título |
-|------|--------|
-| `/` | ToolOptimizer CNC — Calculadora de Parâmetros de Corte |
-| `/settings` | Configurações — ToolOptimizer CNC |
-| `/history` | Histórico — ToolOptimizer CNC |
-| `/mobile` | ToolOptimizer CNC Mobile |
+**Funcionalidade:**
+- Barra bidirecional abaixo de cada slider (Vc, fz, ae, ap)
+- Centro = equilíbrio ótimo; fill para direita = agressivo; fill para esquerda = conservador
+- **Vc**: baseado em `rpm/maxRPM` (zonas: Sub-ótimo/Ideal/Alerta/Desgaste) — ativo só após Simular
+- **fz**: baseado em `chipRatio = fzEfetivo/(D×0.017)` (zonas: Atrito/Leve/Ideal/Agressivo/Vibração) — ativo só após Simular + badge CTF quando ativo
+- **ae**: baseado em `ae/D` (CTF Alto/CTF Ativo/Engaj. Pleno/Pesado) — sempre ativo + readout "XX.X%"
+- **ap**: baseado em `ap/D` com limiar dinâmico por L/D (Leve/Padrão/Agressivo/Deflexão) — sempre ativo + readout "L/D: X.X" colorido
 
-### 2. Fix — Gaveta Educativa no Mobile
-
-**Problema:** `mobile-fine-tune-section.tsx` tinha seu próprio `SLIDER_CONFIG` sem os campos educativos (`desc`, `aumentar`, `diminuir`, `equilibrio`) e sem a lógica do accordion.
-
-**Solução:**
-- `SLIDER_CONFIG` do mobile agora idêntico ao desktop (com todos os campos)
-- Adicionado `openKey`/`toggleDrawer` state (accordion pattern)
-- Label de cada slider virou `<button>` com seta animada (igual ao desktop)
-- Gaveta educativa renderizada quando `isOpen === true`
-- Touch target mínimo: `min-h-[44px]` no botão do label
-
----
-
-## ✅ O QUE FOI FEITO NAS SESSÕES ANTERIORES (20/02 sessão 5)
-
-### 1. Gaveta Educativa no Ajuste Fino (accordion — desktop)
-- Clicar no label de cada slider (Vc, fz, ae, ap) abre gaveta inline animada
-- Conteúdo: `desc` + `▲ MAIS` (verde) + `▼ MENOS` (vermelho) + dica `balance` (amarelo)
-- Apenas 1 gaveta aberta por vez — accordion pattern com `openKey` state
-- Animação `fadeInUp` 0.25s reutilizando keyframe existente
-- SLIDER_CONFIG enriquecido com campos: `aumentar`, `diminuir`, `equilibrio`
-- 5 novos testes: 333 → **338 testes** passando
-
-### 2. Escala tipográfica global para desktop (1360px+)
-- Todos os textos do sistema foram aumentados 1 nível na hierarquia
-- **10 arquivos modificados**: fine-tune-panel, shared-result-parts, results-panel, config-panel, ui-helpers, bidirectional-slider, gauge, tool-summary-viewer, formula-card, App.tsx
+**Critérios técnicos validados:**
+- Fontes: Sandvik CoroPlus, Kennametal NOVO, Walter GPS, CNC Cookbook, Machining Doctor
+- Padrão "deviation-from-optimum bar" com failure modes nomeados nas extremidades
+- Normalização assimétrica no Vc (centro 55% → esquerda ÷0.55, direita ÷0.45 → maxRPM=posição 1.0)
+- Fórmulas: 401 testes passando, zero erros TypeScript
 
 ---
 
 ## 🎯 PRÓXIMA TAREFA
 
-Story-004 está **COMPLETA**. Próximas opções:
+Story-005 (ParameterHealthBar) está **COMPLETA**. Próximas opções:
 
 ### Opção A: HistoryPage responsiva (mobile-friendly)
 - A HistoryPage atual não é responsiva — só funciona em desktop
 - Adaptar layout para mobile: scroll vertical, cards em vez de tabela
 
-### Opção B: Desktop — recursos pendentes
+### Opção B: Exportação melhorada
+- PDF com logo e formatação profissional
+- Excel com fórmulas ou dados tabulados
+
+### Opção C: Comparação de simulações
+- Side-by-side de 2+ simulações no histórico
+- Diff visual dos parâmetros
+
+### Opção D: Desktop features
 - Ícone customizado (.ico)
 - Fontes offline no .exe
-- Code signing (avançado)
-
-### Opção C: Story-005 (a definir com usuário)
-- Exportação melhorada (PDF com logo, Excel com fórmulas)
-- Comparação de simulações
-- Modo de aprendizado
-
-### Verificação SEO (sugestão)
-- Abrir https://validator.schema.org e colar a URL do GitHub Pages
-- Verificar Lighthouse SEO ≥ 90 no Chrome DevTools
 
 ---
 
@@ -151,6 +125,14 @@ SEM backend, SEM CSS Modules
   </div>
 </div>
 ```
+
+### ParameterHealthBar — regras
+- **Funções puras** exportadas: `computeVcPosition`, `computeFzPosition`, `computeAePosition`, `computeApPosition`
+- **Tailwind dinâmico proibido**: ZONE_RGB é lookup estático; cores via `style={}`
+- **Vc/fz**: inactive (gray) quando `resultado === null`; ae/ap sempre ativos
+- **Inserção**: após slider row `</div>`, ANTES da gaveta educativa `{isOpen && ...}`
+- **data-testid**: `health-bar-{key}`, `health-bar-{key}-fill`, `health-bar-{key}-inactive`
+- **CTF badge**: aparece em fz quando `resultado.seguranca.ctf > 1.0` e resultado definido
 
 ### Store — regras críticas
 - `setMaterial / setFerramenta / setTipoOperacao / setParametros / setSafetyFactor` → zeram `resultado=null`, NÃO chamam `calcular()`
@@ -190,12 +172,13 @@ src/
   components/
     config-panel.tsx          ← painel esquerdo dashboard (Simular, parâmetros)
     results-panel.tsx         ← painel direito (RPM, Feed, Potência, gauge)
-    fine-tune-panel.tsx       ← sliders Vc/fz/ae/ap + StyledSlider + gaveta educativa
+    fine-tune-panel.tsx       ← sliders Vc/fz/ae/ap + StyledSlider + gaveta educativa + health bars
+    parameter-health-bar.tsx  ← ParameterHealthBar + 4 funções puras (compute*)
     bidirectional-slider.tsx  ← slider bidirecional RPM/Feed (-150% a +150%)
     gauge.tsx                 ← gauge semicircular animado
     seo-head.tsx              ← injeta meta tags OG/Twitter dinamicamente
     mobile/
-      mobile-fine-tune-section.tsx ← TouchSlider + gaveta educativa (igual desktop)
+      mobile-fine-tune-section.tsx ← TouchSlider + gaveta educativa + health bars (paridade)
   pages/
     settings-page.tsx         ← Configurações (6 seções)
     history-page.tsx          ← Histórico de simulações
@@ -205,7 +188,7 @@ src/
     use-is-mobile.ts
     use-simulation-animation.ts
     use-reset-feedback.ts
-  App.tsx                     ← layout 3 colunas + header + SeoHead
+  App.tsx                     ← layout 3 colunas + header
   main.tsx                    ← BrowserRouter + Routes (web) / HashRouter (desktop)
   index.css                   ← Tailwind v4 @theme + keyframes
 
@@ -213,7 +196,7 @@ public/
   sitemap.xml                 ← todas as rotas públicas
   robots.txt                  ← Allow all + Sitemap
 
-tests/                        ← 24 arquivos de teste (Vitest)
+tests/                        ← 25 arquivos de teste (Vitest), 401 testes
 ```
 
 ---
@@ -255,7 +238,7 @@ print(f'passed={passed} failed={failed}')"
 | Teste `fireEvent.change` em StyledSlider | Não tem `value setter` (div, não input) | Testar via `fireEvent.click` nos botões +/− |
 | Clone desktop em testes | Vitest encontra arquivos do clone | `exclude: ['Sistema_Desktop_Pen_driver/**']` no vitest.config.ts |
 | Tailwind class dinâmica | Classes com interpolação não geram CSS | Usar classes completas ou `style={}` inline |
-| Mobile gaveta educativa | SLIDER_CONFIG separado do desktop | Agora sincronizado (sessão 6) |
+| ParameterHealthBar ZONE_RGB | Nunca interpolate cor no className | Use lookup estático + style={} para backgroundColor |
 
 ---
 
@@ -281,16 +264,16 @@ print(f'passed={passed} failed={failed}')"
 [x] Tool Correction Factor (Vc/fz multiplier por tipo+diâmetro)
 [x] CorrectionModal (drawer mobile + modal desktop)
 [x] Tradução completa UI pt-BR
-[x] Gaveta educativa accordion (desktop)
+[x] Gaveta educativa accordion (desktop + mobile)
 [x] Escala tipográfica global desktop
 [x] Story-004: SEO Schema.org + meta tags
-[x] Fix: gaveta educativa mobile (parity com desktop)
+[x] Story-005: ParameterHealthBar — feedback visual Fine Tune
 
 [ ] Branch protection GitHub (manual pelo usuário)
 [ ] Cloudflare Pages (manual pelo usuário)
 [ ] HistoryPage responsiva
 [ ] Desktop: ícone customizado, fontes offline, code signing
-[ ] Story-005: ... (a definir)
+[ ] Story-006: ... (a definir)
 [ ] MVP v1.0.0: feature-complete
 ```
 
@@ -308,9 +291,9 @@ O próximo assistente deve:
    ```
 3. Perguntar ao usuário qual próxima tarefa:
    - HistoryPage responsiva?
-   - Story-005?
+   - Story-006 (a definir)?
    - Desktop features?
 
 ---
 
-*Documento atualizado em 20/02/2026 — Sessão 6*
+*Documento atualizado em 21/02/2026 — Sessão 7*
