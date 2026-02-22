@@ -44,6 +44,17 @@ npx vite build 2>&1 | tail -5
 
 ## ✅ O QUE FOI FEITO (histórico recente)
 
+### Sessão 22/02 s8 — Pesquisa Vc (somente pesquisa, zero código)
+- **Pesquisa GitHub:** 15+ repositórios CNC analisados (CNC-ToolHub, brturn, pymachining, cnc-calc-react, etc.)
+  - Nenhum usa Kienzle — ToolOptimizer é único
+  - Padrões aproveitáveis: coating multipliers, machine rigidity classes, machinability index
+- **Mapeamento completo do código Vc:** slider config (min=1, max=1200, step=1), vcRanges por material, engine 4 grupos, ParameterHealthBar normalização
+- **Problema identificado:** Slider Vc com range fixo 1–1200 é genérico demais — precisa de range dinâmico por material
+- **Insight:** Slider deve adaptar min/max ao material selecionado (ex: Inox 40–180, Alumínio 200–1200, Aço 100–350)
+- **NÃO concluído:** Pesquisa nos sites de fabricantes (Sandvik, Kennametal, Mitsubishi, Iscar, Walter, Seco)
+- **NÃO gerado:** PESQUISA_VC_VALIDADA.md, GITHUB_REFERENCIAS.md
+- **Zero commits** — sessão 100% pesquisa
+
 ### Sessão 21/02 s7 — Story-005 ParameterHealthBar
 - **Novo:** `src/components/parameter-health-bar.tsx` — barras bidirecionais de saúde
 - **Novo:** `tests/components/parameter-health-bar.test.tsx` — 56 testes TDD
@@ -69,41 +80,50 @@ npx vite build 2>&1 | tail -5
 
 ---
 
-## 🎯 PRÓXIMAS TAREFAS SUGERIDAS
+## 🎯 PRÓXIMAS TAREFAS — SLIDER Vc DINÂMICO (PRIORIDADE)
 
-O usuário precisa escolher a Story-006. Apresente as opções:
+### TAREFA IMEDIATA: Concluir pesquisa Vc + implementar slider dinâmico
 
-### Opção A — HistoryPage responsiva (RECOMENDADO)
-**Por quê:** A HistoryPage atual é só-desktop. Em mobile aparece quebrada.
-**O que fazer:**
-- Layout em cards empilhados no mobile (em vez de tabela)
-- Filtros colapsáveis
-- Export funcionando no mobile
+**Contexto:** Sessão 22/02 identificou que o slider Vc (Fine Tune) tem range fixo 1–1200 m/min, genérico demais. Usuário pediu range realista por material.
 
-### Opção B — Melhorias no Desktop .exe
-**Por quê:** O .exe portátil existe mas tem limitações UX.
-**O que fazer:**
-- Ícone customizado `.ico` (agora usa ícone genérico Electron)
-- Fontes offline (Material Symbols falha sem internet → ícones aparecem como texto)
-- Auto-updater (notifica quando nova versão disponível)
+#### Passo 1 — Concluir pesquisa de fabricantes (NÃO FEITO na sessão 22/02)
+Pesquisar Vc (m/min) para metal duro TiAlN nos sites:
+- Sandvik Coromant, Kennametal, Mitsubishi, Iscar, Walter, Seco
+- Para cada material: Vc_min, Vc_ideal, Vc_max
+- Diferenciar por tipo de fresa: topo reto, toroidal, esférica
+- Gerar `docs/technical/PESQUISA_VC_VALIDADA.md` com tabela consolidada
+- Gerar `docs/technical/GITHUB_REFERENCIAS.md` com análise dos 15 repos
 
-### Opção C — Exportação PDF profissional
-**Por quê:** Usuários precisam imprimir/enviar relatórios para aprovação.
-**O que fazer:**
-- PDF com logo, parâmetros, resultado, MRR, gráfico de saúde
-- Usar `jsPDF` ou template HTML → print
+#### Passo 2 — Implementar range dinâmico no slider Vc
+- Slider Vc deve adaptar min/max ao `material.vcRanges[operacao]`
+- Exemplo: Inox 304 desbaste → slider 40–180 m/min (margem ±30% dos vcRanges)
+- Exemplo: Alumínio acabamento → slider 400–1200 m/min
+- Manter step=1 m/min
 
-### Opção D — Comparação de simulações
-**Por quê:** Feature avançada para comparar 2+ cenários side-by-side.
-**O que fazer:**
-- Selecionar 2 itens do histórico
-- Diff visual de parâmetros e resultados
+#### Passo 3 — Validar dados estimados
+- 6 de 9 materiais são "Estimado" — precisam validação multi-fonte
+- Material 2711 tem status "N/D" — pesquisar fontes primárias
+- Aços de molde brasileiros (VP50, VP Atlas) podem não ter dados internacionais
 
-### Opção E — Dashboard de métricas rápidas
-**Por quê:** Power users querem ver tendências (material mais usado, faixa de RPM típica, etc.)
-**O que fazer:**
-- Charts no HistoryPage (Recharts ou Chart.js)
-- Resumo estatístico das últimas N simulações
+### Pesquisa GitHub já concluída — achados principais:
+- **CNC-ToolHub** (Python): coating multipliers (TiAlN=1.4x), machine rigidity classes
+- **brturn/feeds-and-speeds** (JS): unitPower, chip thinning, 27 stars
+- **pymachining** (Python): machinability index, cálculos com unidades
+- **cnc-calc-react** (React+TS+Vite): mesmo stack, mas SEM base de materiais
+- **Nenhum** projeto open-source usa Kienzle — ToolOptimizer é único
+- **Nenhum** tem 401 testes — nosso coverage é o maior
+
+---
+
+### STORY-006 (após slider Vc) — opções futuras
+
+| Opção | Descrição |
+|-------|-----------|
+| A | HistoryPage responsiva (mobile cards + filtros) |
+| B | Desktop .exe melhorias (ícone, fontes offline, auto-updater) |
+| C | Exportação PDF profissional |
+| D | Comparação side-by-side de simulações |
+| E | Dashboard de métricas rápidas |
 
 ---
 
@@ -387,5 +407,5 @@ git status
 
 ---
 
-*Última atualização: 21/02/2026 — Sessão 7*
+*Última atualização: 22/02/2026 — Sessão 8 (pesquisa Vc, zero código)*
 *Próximo assistente: leia este arquivo + MEMORY.md antes de qualquer ação*
