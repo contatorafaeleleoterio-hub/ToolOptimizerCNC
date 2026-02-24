@@ -1,4 +1,4 @@
 User-agent: *
 Allow: /
 
-Sitemap: https://contatorafaeleleoterio-hub.github.io/ToolOptimizerCNC/sitemap.xml
+Sitemap: https://app.tooloptimizercnc.com.br/sitemap.xml

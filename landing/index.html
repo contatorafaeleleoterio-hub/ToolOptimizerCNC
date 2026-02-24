@@ -1,0 +1,644 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>ToolOptimizer CNC — Calculadora de Parâmetros de Corte</title>
+  <meta name="description" content="Sistema profissional de cálculo de parâmetros CNC. Calcule RPM, Avanço e Potência em 2 segundos. Desenvolvido por operador CNC com 17+ anos de experiência. Grátis, sem cadastro." />
+  <meta name="keywords" content="calculadora CNC, parâmetros de corte, RPM fresamento, avanço CNC, potência usinagem, Kienzle, velocidade de corte, fresamento CNC grátis" />
+  <meta name="robots" content="index, follow" />
+  <meta name="author" content="Mestre CNC" />
+
+  <!-- Open Graph -->
+  <meta property="og:type" content="website" />
+  <meta property="og:title" content="ToolOptimizer CNC — Calculadora de Parâmetros de Corte" />
+  <meta property="og:description" content="Sistema profissional de cálculo de parâmetros CNC. Calcule RPM, Avanço e Potência em 2 segundos. Grátis, sem cadastro." />
+  <meta property="og:url" content="https://www.tooloptimizercnc.com.br/" />
+  <meta property="og:image" content="https://app.tooloptimizercnc.com.br/og-image.png" />
+  <meta property="og:site_name" content="ToolOptimizer CNC" />
+  <meta property="og:locale" content="pt_BR" />
+
+  <!-- Twitter Card -->
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content="ToolOptimizer CNC — Calculadora de Parâmetros de Corte" />
+  <meta name="twitter:description" content="Sistema profissional de cálculo de parâmetros CNC. RPM, Avanço e Potência em 2 segundos. Grátis." />
+  <meta name="twitter:image" content="https://app.tooloptimizercnc.com.br/og-image.png" />
+
+  <!-- Canonical -->
+  <link rel="canonical" href="https://www.tooloptimizercnc.com.br/" />
+
+  <!-- Schema.org — SoftwareApplication -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "SoftwareApplication",
+    "name": "ToolOptimizer CNC",
+    "description": "Sistema web para cálculo rápido de parâmetros de usinagem CNC. RPM, Avanço e Potência em 2 segundos.",
+    "applicationCategory": "ProductivityApplication",
+    "operatingSystem": "Web Browser, Windows",
+    "url": "https://app.tooloptimizercnc.com.br/",
+    "inLanguage": "pt-BR",
+    "offers": {
+      "@type": "Offer",
+      "price": "0",
+      "priceCurrency": "BRL"
+    },
+    "author": {
+      "@type": "Person",
+      "name": "Mestre CNC",
+      "url": "https://mestrecnc.com.br",
+      "jobTitle": "Especialista em Usinagem CNC",
+      "description": "Programador e operador CNC com 17+ anos de experiência em moldes de injeção",
+      "sameAs": ["https://tooloptimizercnc.com.br"]
+    },
+    "aggregateRating": {
+      "@type": "AggregateRating",
+      "ratingValue": "5.0",
+      "reviewCount": "1"
+    }
+  }
+  </script>
+
+  <!-- Schema.org — FAQPage -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
+    "mainEntity": [
+      {
+        "@type": "Question",
+        "name": "Como calcular RPM para fresamento CNC?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "O RPM é calculado pela fórmula: RPM = (Vc × 1000) / (π × D), onde Vc é a velocidade de corte em m/min e D é o diâmetro da ferramenta em mm. O ToolOptimizer realiza este cálculo automaticamente ao inserir os parâmetros."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "O ToolOptimizer CNC é gratuito?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Sim, o ToolOptimizer CNC é completamente gratuito. Não requer cadastro, não tem anúncios e funciona diretamente no navegador ou como aplicativo portátil para Windows."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "Quais materiais o ToolOptimizer suporta?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "O sistema suporta aços carbono (1020, 1045), aços inoxidáveis (AISI 304), alumínio (Al 6061-T6), aços de molde (H13, P20, 2711), aços cementados (8620) e mais. Você pode adicionar materiais personalizados com seus próprios dados."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "O sistema funciona sem internet?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Sim. O ToolOptimizer CNC possui versão desktop portátil para Windows (.exe, ~85MB) que funciona completamente offline — ideal para ambientes industriais sem acesso à internet."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "O sistema usa o modelo de Kienzle?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Sim. O ToolOptimizer utiliza o modelo de Kienzle para cálculo da força específica de corte (kc), padrão técnico mais preciso para fresamento. Os dados de Kc1.1 e mc estão incluídos para cada material suportado."
+        }
+      }
+    ]
+  }
+  </script>
+
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg: #0F1419;
+      --bg-card: #1a2332;
+      --bg-card2: #151f2e;
+      --cyan: #00D9FF;
+      --green: #39FF14;
+      --text: #e2e8f0;
+      --muted: #8892a4;
+      --border: rgba(255,255,255,0.08);
+    }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      font-family: Inter, system-ui, -apple-system, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      line-height: 1.6;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    /* ── HEADER ── */
+    header {
+      position: sticky;
+      top: 0;
+      z-index: 50;
+      background: rgba(15,20,25,0.9);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      border-bottom: 1px solid var(--border);
+      padding: 0 1.5rem;
+    }
+    .header-inner {
+      max-width: 1100px;
+      margin: auto;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      height: 60px;
+    }
+    .logo {
+      font-weight: 800;
+      font-size: 1.1rem;
+      color: var(--cyan);
+      text-decoration: none;
+      letter-spacing: -0.02em;
+    }
+    .logo span { color: var(--text); font-weight: 400; }
+    .header-cta {
+      background: var(--cyan);
+      color: #0F1419;
+      font-weight: 700;
+      font-size: 0.875rem;
+      padding: 0.5rem 1.25rem;
+      border-radius: 8px;
+      text-decoration: none;
+      transition: opacity 0.15s;
+    }
+    .header-cta:hover { opacity: 0.85; }
+
+    /* ── HERO ── */
+    .hero {
+      text-align: center;
+      padding: 5rem 1.5rem 3.5rem;
+      max-width: 820px;
+      margin: auto;
+    }
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      background: rgba(0,217,255,0.08);
+      border: 1px solid rgba(0,217,255,0.25);
+      color: var(--cyan);
+      font-size: 0.8rem;
+      font-weight: 600;
+      padding: 5px 14px;
+      border-radius: 999px;
+      margin-bottom: 1.75rem;
+    }
+    .badge-dot {
+      width: 7px; height: 7px;
+      background: var(--green);
+      border-radius: 50%;
+      box-shadow: 0 0 8px var(--green);
+      animation: blink 2s infinite;
+    }
+    @keyframes blink { 0%,100%{opacity:1} 50%{opacity:0.35} }
+
+    h1 {
+      font-size: clamp(2rem, 5.5vw, 3.5rem);
+      font-weight: 800;
+      line-height: 1.12;
+      letter-spacing: -0.03em;
+      margin-bottom: 1.25rem;
+    }
+    h1 em {
+      font-style: normal;
+      color: var(--cyan);
+      text-shadow: 0 0 40px rgba(0,217,255,0.45);
+    }
+    .hero-sub {
+      font-size: 1.125rem;
+      color: var(--muted);
+      max-width: 580px;
+      margin: 0 auto 2.75rem;
+    }
+    .hero-actions {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 1rem;
+      flex-wrap: wrap;
+    }
+    .btn-primary {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      background: var(--cyan);
+      color: #0F1419;
+      font-weight: 800;
+      font-size: 1rem;
+      padding: 0.9rem 2.25rem;
+      border-radius: 10px;
+      text-decoration: none;
+      transition: transform 0.15s, box-shadow 0.15s;
+      box-shadow: 0 0 24px rgba(0,217,255,0.35);
+    }
+    .btn-primary:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 0 40px rgba(0,217,255,0.55);
+    }
+    .btn-secondary {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      color: var(--muted);
+      font-size: 0.9rem;
+      text-decoration: none;
+      border: 1px solid var(--border);
+      padding: 0.9rem 1.5rem;
+      border-radius: 10px;
+      transition: border-color 0.15s, color 0.15s;
+    }
+    .btn-secondary:hover { border-color: var(--cyan); color: var(--cyan); }
+
+    /* ── STATS ── */
+    .stats {
+      display: flex;
+      justify-content: center;
+      gap: 3.5rem;
+      padding: 0 1.5rem 3.5rem;
+      flex-wrap: wrap;
+    }
+    .stat { text-align: center; }
+    .stat-n {
+      font-size: 2rem;
+      font-weight: 800;
+      color: var(--cyan);
+      font-family: 'Courier New', monospace;
+      letter-spacing: -0.02em;
+    }
+    .stat-l { font-size: 0.78rem; color: var(--muted); margin-top: 3px; text-transform: uppercase; letter-spacing: 0.05em; }
+
+    /* ── SECTION ── */
+    section { padding: 4.5rem 1.5rem; }
+    .container { max-width: 1100px; margin: auto; }
+
+    h2 {
+      font-size: clamp(1.5rem, 3vw, 2.1rem);
+      font-weight: 700;
+      text-align: center;
+      margin-bottom: 0.75rem;
+      letter-spacing: -0.02em;
+    }
+    .sec-sub {
+      text-align: center;
+      color: var(--muted);
+      margin-bottom: 3rem;
+      font-size: 1rem;
+    }
+
+    /* ── FEATURES ── */
+    .grid-features {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(290px, 1fr));
+      gap: 1.25rem;
+    }
+    .card {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      padding: 1.75rem;
+      transition: border-color 0.2s, transform 0.2s;
+    }
+    .card:hover {
+      border-color: rgba(0,217,255,0.2);
+      transform: translateY(-3px);
+    }
+    .card-icon { font-size: 1.75rem; margin-bottom: 1rem; }
+    .card h3 { font-size: 1.05rem; font-weight: 700; margin-bottom: 0.5rem; }
+    .card p { color: var(--muted); font-size: 0.9rem; line-height: 1.65; }
+
+    /* ── HOW IT WORKS ── */
+    .steps-wrap {
+      background: var(--bg-card2);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 2.75rem;
+    }
+    .steps-wrap h2 { margin-bottom: 0.5rem; }
+    .steps-wrap .sec-sub { margin-bottom: 2.5rem; }
+    .steps-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 2rem;
+    }
+    .step { text-align: center; }
+    .step-n {
+      width: 50px; height: 50px;
+      background: rgba(0,217,255,0.1);
+      border: 1.5px solid rgba(0,217,255,0.3);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 800;
+      color: var(--cyan);
+      font-size: 1.2rem;
+      margin: 0 auto 1rem;
+    }
+    .step h3 { font-size: 0.95rem; font-weight: 600; margin-bottom: 0.4rem; }
+    .step p { font-size: 0.875rem; color: var(--muted); }
+
+    /* ── AUTHORITY ── */
+    .authority {
+      background: linear-gradient(135deg, rgba(0,217,255,0.06) 0%, rgba(57,255,20,0.03) 100%);
+      border: 1px solid rgba(0,217,255,0.15);
+      border-radius: 16px;
+      padding: 2.75rem;
+      display: flex;
+      align-items: center;
+      gap: 2.5rem;
+      flex-wrap: wrap;
+    }
+    .av {
+      width: 82px; height: 82px;
+      background: linear-gradient(135deg, rgba(0,217,255,0.3), rgba(57,255,20,0.2));
+      border: 2px solid rgba(0,217,255,0.4);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 2.25rem;
+      flex-shrink: 0;
+    }
+    .av-text h3 { font-size: 1.25rem; font-weight: 700; margin-bottom: 0.2rem; }
+    .av-role { color: var(--cyan); font-size: 0.85rem; font-weight: 600; margin-bottom: 0.75rem; }
+    .av-text p { color: var(--muted); font-size: 0.9rem; max-width: 560px; line-height: 1.65; }
+    .av-link {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      color: var(--cyan);
+      font-size: 0.875rem;
+      text-decoration: none;
+      margin-top: 0.875rem;
+      font-weight: 500;
+    }
+    .av-link:hover { text-decoration: underline; }
+
+    /* ── FAQ ── */
+    .faq { max-width: 740px; margin: auto; }
+    .faq-item { border-bottom: 1px solid var(--border); padding: 1.375rem 0; }
+    .faq-item:last-child { border-bottom: none; }
+    .faq-q { font-weight: 600; color: var(--text); margin-bottom: 0.5rem; font-size: 0.95rem; }
+    .faq-a { color: var(--muted); font-size: 0.875rem; line-height: 1.65; }
+
+    /* ── CTA FINAL ── */
+    .cta-final {
+      text-align: center;
+      padding: 5.5rem 1.5rem;
+      background: radial-gradient(ellipse at center, rgba(0,217,255,0.08) 0%, transparent 65%);
+    }
+    .cta-final h2 { margin-bottom: 0.875rem; }
+    .cta-final p { color: var(--muted); margin-bottom: 2.25rem; font-size: 1rem; }
+
+    /* ── DIVIDER ── */
+    .div { height: 1px; background: var(--border); max-width: 1100px; margin: 0 auto; }
+
+    /* ── FOOTER ── */
+    footer {
+      border-top: 1px solid var(--border);
+      padding: 2.5rem 1.5rem;
+    }
+    .footer-inner {
+      max-width: 1100px;
+      margin: auto;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 1rem;
+    }
+    .footer-links { display: flex; gap: 1.5rem; flex-wrap: wrap; }
+    .footer-links a {
+      color: var(--muted);
+      text-decoration: none;
+      font-size: 0.875rem;
+      transition: color 0.15s;
+    }
+    .footer-links a:hover { color: var(--cyan); }
+    .footer-copy { color: var(--muted); font-size: 0.8rem; }
+
+    /* ── RESPONSIVE ── */
+    @media (max-width: 640px) {
+      .stats { gap: 2rem; }
+      .authority { flex-direction: column; align-items: flex-start; }
+      .footer-inner { flex-direction: column; text-align: center; }
+      .footer-links { justify-content: center; }
+      .steps-wrap { padding: 2rem 1.25rem; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- ── Header ── -->
+  <header>
+    <div class="header-inner">
+      <a href="/" class="logo">ToolOptimizer<span> CNC</span></a>
+      <a href="https://app.tooloptimizercnc.com.br" class="header-cta">Abrir Calculadora →</a>
+    </div>
+  </header>
+
+  <!-- ── Hero ── -->
+  <div class="hero">
+    <div class="badge">
+      <span class="badge-dot"></span>
+      Sistema profissional gratuito · sem cadastro
+    </div>
+    <h1>Parâmetros de Corte CNC<br>em <em>2 segundos</em></h1>
+    <p class="hero-sub">
+      RPM, Avanço e Potência com modelo de Kienzle. Validação de segurança integrada.
+      Desenvolvido por quem opera máquina CNC todo dia.
+    </p>
+    <div class="hero-actions">
+      <a href="https://app.tooloptimizercnc.com.br" class="btn-primary">
+        ⚡ Abrir Calculadora Grátis
+      </a>
+      <a href="https://mestrecnc.com.br" target="_blank" rel="noopener" class="btn-secondary">
+        Sobre o projeto ↗
+      </a>
+    </div>
+  </div>
+
+  <!-- ── Stats ── -->
+  <div class="stats">
+    <div class="stat">
+      <div class="stat-n">2s</div>
+      <div class="stat-l">tempo de cálculo</div>
+    </div>
+    <div class="stat">
+      <div class="stat-n">9+</div>
+      <div class="stat-l">materiais suportados</div>
+    </div>
+    <div class="stat">
+      <div class="stat-n">17+</div>
+      <div class="stat-l">anos experiência CNC</div>
+    </div>
+    <div class="stat">
+      <div class="stat-n">100%</div>
+      <div class="stat-l">gratuito</div>
+    </div>
+  </div>
+
+  <div class="div"></div>
+
+  <!-- ── Features ── -->
+  <section>
+    <div class="container">
+      <h2>Tudo que você precisa em um lugar</h2>
+      <p class="sec-sub">Desenvolvido para operadores e programadores CNC que precisam de resultados rápidos e confiáveis.</p>
+      <div class="grid-features">
+        <div class="card">
+          <div class="card-icon">⚡</div>
+          <h3>Cálculo instantâneo</h3>
+          <p>RPM, Avanço (F), Potência e Torque calculados com fórmulas validadas. Modelo de Kienzle para força de corte real.</p>
+        </div>
+        <div class="card">
+          <div class="card-icon">🔒</div>
+          <h3>Validação de segurança</h3>
+          <p>Semáforo visual Verde/Amarelo/Vermelho. Verificação de relação L/D, limites de máquina e fator de segurança configurável.</p>
+        </div>
+        <div class="card">
+          <div class="card-icon">🎯</div>
+          <h3>Ajuste fino inteligente</h3>
+          <p>Sliders bidirecionais para RPM e Avanço. Indicadores de saúde dos parâmetros em tempo real para evitar erros.</p>
+        </div>
+        <div class="card">
+          <div class="card-icon">📊</div>
+          <h3>Histórico de simulações</h3>
+          <p>Registre e compare simulações. Exporte resultados em JSON ou CSV para documentação e auditoria.</p>
+        </div>
+        <div class="card">
+          <div class="card-icon">🖥️</div>
+          <h3>Desktop + Web</h3>
+          <p>Funciona no navegador (online) ou como .exe portátil para Windows — sem instalação, sem internet necessária.</p>
+        </div>
+        <div class="card">
+          <div class="card-icon">🔧</div>
+          <h3>Materiais personalizados</h3>
+          <p>Banco de materiais editável. Adicione suas ligas específicas com dados reais do chão de fábrica.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <div class="div"></div>
+
+  <!-- ── How It Works ── -->
+  <section>
+    <div class="container">
+      <div class="steps-wrap">
+        <h2>Como usar</h2>
+        <p class="sec-sub">Três passos para resultados profissionais</p>
+        <div class="steps-grid">
+          <div class="step">
+            <div class="step-n">1</div>
+            <h3>Selecione material e ferramenta</h3>
+            <p>Escolha o material da peça e a ferramenta de corte no banco pré-configurado ou cadastre o seu.</p>
+          </div>
+          <div class="step">
+            <div class="step-n">2</div>
+            <h3>Configure os parâmetros</h3>
+            <p>Defina Vc, fz, ae, ap e o tipo de operação: desbaste, semi-acabamento ou acabamento.</p>
+          </div>
+          <div class="step">
+            <div class="step-n">3</div>
+            <h3>Simule e ajuste</h3>
+            <p>Clique em Simular. O sistema calcula RPM, Avanço, Potência e valida a segurança da operação instantaneamente.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <div class="div"></div>
+
+  <!-- ── Authority ── -->
+  <section>
+    <div class="container">
+      <div class="authority">
+        <div class="av">🔧</div>
+        <div class="av-text">
+          <h3>Desenvolvido por Mestre CNC</h3>
+          <div class="av-role">Especialista em Usinagem CNC · 17+ anos de experiência</div>
+          <p>
+            Programador e operador CNC com vasta experiência em moldes de injeção. Criei o ToolOptimizer
+            para resolver um problema real: calcular parâmetros de corte com precisão levava 15–30 minutos
+            consultando catálogos. Agora leva 2 segundos.
+          </p>
+          <a href="https://mestrecnc.com.br" target="_blank" rel="noopener" class="av-link">
+            Leia mais sobre o projeto no Mestre CNC ↗
+          </a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <div class="div"></div>
+
+  <!-- ── FAQ ── -->
+  <section>
+    <div class="container">
+      <h2>Perguntas Frequentes</h2>
+      <p class="sec-sub">Respostas para as dúvidas mais comuns</p>
+      <div class="faq">
+        <div class="faq-item">
+          <div class="faq-q">Como calcular RPM para fresamento CNC?</div>
+          <div class="faq-a">O RPM é calculado pela fórmula: RPM = (Vc × 1000) / (π × D), onde Vc é a velocidade de corte em m/min e D é o diâmetro da ferramenta em mm. O ToolOptimizer realiza este cálculo automaticamente ao inserir seus parâmetros.</div>
+        </div>
+        <div class="faq-item">
+          <div class="faq-q">O ToolOptimizer CNC é gratuito?</div>
+          <div class="faq-a">Sim, completamente gratuito. Não requer cadastro, não tem anúncios e funciona diretamente no navegador ou como aplicativo portátil para Windows.</div>
+        </div>
+        <div class="faq-item">
+          <div class="faq-q">Quais materiais o ToolOptimizer suporta?</div>
+          <div class="faq-a">O sistema suporta aços carbono (1020, 1045), aços inoxidáveis (AISI 304), alumínio (Al 6061-T6), aços de molde (H13, P20, 2711), aços cementados (8620) e mais. Você também pode adicionar materiais personalizados com seus próprios dados do chão de fábrica.</div>
+        </div>
+        <div class="faq-item">
+          <div class="faq-q">O sistema funciona sem internet?</div>
+          <div class="faq-a">Sim. O ToolOptimizer CNC possui versão desktop portátil para Windows (.exe, ~85MB) que funciona completamente offline — ideal para ambientes industriais sem acesso à internet.</div>
+        </div>
+        <div class="faq-item">
+          <div class="faq-q">O sistema usa o modelo de Kienzle?</div>
+          <div class="faq-a">Sim. O ToolOptimizer utiliza o modelo de Kienzle para cálculo da força específica de corte (kc), que é o padrão técnico mais preciso para fresamento. Os dados de Kc1.1 e mc estão incluídos para cada material suportado.</div>
+        </div>
+        <div class="faq-item">
+          <div class="faq-q">O que é a relação L/D e por que ela importa?</div>
+          <div class="faq-a">A relação L/D (comprimento por diâmetro da ferramenta) determina a tendência à vibração (chatter). O ToolOptimizer valida automaticamente: L/D ≤ 3 (verde, seguro), L/D ≤ 4 (amarelo, atenção), L/D ≤ 6 (vermelho, crítico), L/D > 6 (bloqueado — risco de quebra).</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── CTA Final ── -->
+  <div class="cta-final">
+    <h2>Pronto para calcular com precisão?</h2>
+    <p>Grátis. Sem cadastro. Resultados em 2 segundos.</p>
+    <a href="https://app.tooloptimizercnc.com.br" class="btn-primary" style="font-size:1.05rem; padding:1rem 2.5rem;">
+      ⚡ Abrir ToolOptimizer Grátis
+    </a>
+  </div>
+
+  <!-- ── Footer ── -->
+  <footer>
+    <div class="footer-inner">
+      <div class="footer-links">
+        <a href="https://app.tooloptimizercnc.com.br">Calculadora</a>
+        <a href="https://blog.tooloptimizercnc.com.br">Blog</a>
+        <a href="https://docs.tooloptimizercnc.com.br">Documentação</a>
+        <a href="https://mestrecnc.com.br" target="_blank" rel="noopener">Mestre CNC</a>
+        <a href="https://status.tooloptimizercnc.com.br">Status</a>
+      </div>
+      <div class="footer-copy">© 2026 ToolOptimizer CNC · Todos os direitos reservados</div>
+    </div>
+  </footer>
+
+</body>
+</html>

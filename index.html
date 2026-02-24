@@ -6,52 +6,102 @@
     <title>ToolOptimizer CNC — Calculadora de Parâmetros de Corte</title>
 
     <!-- Base SEO -->
-    <meta name="description" content="Calculadora profissional de parâmetros de corte CNC. Calcule RPM, Avanço e Potência em segundos com segurança. Fresamento, torneamento e furação." />
-    <meta name="keywords" content="CNC, fresamento, parâmetros de corte, RPM, avanço, potência, velocidade de corte, torneamento, calculadora CNC, usinagem, Kienzle, Vc, fz" />
+    <meta name="description" content="Calculadora profissional de parâmetros de corte CNC. Calcule RPM, Avanço e Potência em 2 segundos com segurança. Fresamento, torneamento e furação. Modelo de Kienzle." />
+    <meta name="keywords" content="CNC, fresamento, parâmetros de corte, RPM, avanço, potência, velocidade de corte, torneamento, calculadora CNC, usinagem, Kienzle, Vc, fz, fresa toroidal, mestre CNC" />
     <meta name="robots" content="index, follow" />
-    <meta name="author" content="ToolOptimizer CNC" />
+    <meta name="author" content="Mestre CNC" />
 
     <!-- Open Graph -->
     <meta property="og:type" content="website" />
     <meta property="og:title" content="ToolOptimizer CNC — Calculadora de Parâmetros de Corte" />
-    <meta property="og:description" content="Calculadora profissional de parâmetros de corte CNC. Calcule RPM, Avanço e Potência em segundos com segurança." />
-    <meta property="og:url" content="https://contatorafaeleleoterio-hub.github.io/ToolOptimizerCNC/" />
-    <meta property="og:image" content="https://contatorafaeleleoterio-hub.github.io/ToolOptimizerCNC/og-image.png" />
+    <meta property="og:description" content="Calculadora profissional de parâmetros de corte CNC. Calcule RPM, Avanço e Potência em 2 segundos com segurança." />
+    <meta property="og:url" content="https://app.tooloptimizercnc.com.br/" />
+    <meta property="og:image" content="https://app.tooloptimizercnc.com.br/og-image.png" />
     <meta property="og:site_name" content="ToolOptimizer CNC" />
     <meta property="og:locale" content="pt_BR" />
 
     <!-- Twitter Card -->
     <meta name="twitter:card" content="summary_large_image" />
     <meta name="twitter:title" content="ToolOptimizer CNC — Calculadora de Parâmetros de Corte" />
-    <meta name="twitter:description" content="Calculadora profissional de parâmetros de corte CNC. Calcule RPM, Avanço e Potência em segundos." />
-    <meta name="twitter:image" content="https://contatorafaeleleoterio-hub.github.io/ToolOptimizerCNC/og-image.png" />
+    <meta name="twitter:description" content="Calculadora profissional de parâmetros de corte CNC. Calcule RPM, Avanço e Potência em 2 segundos." />
+    <meta name="twitter:image" content="https://app.tooloptimizercnc.com.br/og-image.png" />
 
     <!-- Canonical -->
-    <link rel="canonical" href="https://contatorafaeleleoterio-hub.github.io/ToolOptimizerCNC/" />
+    <link rel="canonical" href="https://app.tooloptimizercnc.com.br/" />
 
-    <!-- Schema.org JSON-LD -->
+    <!-- Schema.org JSON-LD — SoftwareApplication -->
     <script type="application/ld+json">
     {
       "@context": "https://schema.org",
       "@type": "SoftwareApplication",
       "name": "ToolOptimizer CNC",
-      "applicationCategory": "DesignApplication",
-      "operatingSystem": "Web, Windows",
-      "description": "Calculadora profissional de parâmetros de corte CNC. Calcule RPM, Avanço e Potência em segundos com segurança. Suporta fresamento, torneamento e furação com modelo de Kienzle.",
-      "url": "https://contatorafaeleleoterio-hub.github.io/ToolOptimizerCNC/",
+      "applicationCategory": "ProductivityApplication",
+      "operatingSystem": "Web Browser, Windows",
+      "description": "Sistema profissional para cálculo de parâmetros de corte CNC. Calcule RPM, Avanço e Potência em 2 segundos com segurança. Suporta fresamento com modelo de Kienzle.",
+      "url": "https://app.tooloptimizercnc.com.br/",
       "inLanguage": "pt-BR",
       "offers": {
         "@type": "Offer",
         "price": "0",
         "priceCurrency": "BRL"
       },
+      "author": {
+        "@type": "Person",
+        "name": "Mestre CNC",
+        "url": "https://mestrecnc.com.br",
+        "jobTitle": "Especialista em Usinagem CNC",
+        "description": "Programador e operador CNC com 17+ anos de experiência em moldes de injeção"
+      },
       "featureList": [
         "Cálculo de RPM, Avanço e Potência de corte",
         "Modelo de Kienzle para força de corte",
         "Banco de materiais editável",
+        "Validação de segurança com semáforo visual",
         "Histórico de simulações",
-        "Exportação de resultados",
+        "Exportação de resultados (JSON e CSV)",
         "Versão desktop portátil (Windows)"
+      ]
+    }
+    </script>
+
+    <!-- Schema.org JSON-LD — FAQPage (rich snippets Google) -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "FAQPage",
+      "mainEntity": [
+        {
+          "@type": "Question",
+          "name": "Como calcular RPM para fresamento CNC?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "O RPM é calculado pela fórmula: RPM = (Vc × 1000) / (π × D), onde Vc é a velocidade de corte em m/min e D é o diâmetro da ferramenta em mm. O ToolOptimizer realiza este cálculo automaticamente ao inserir os parâmetros."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "O ToolOptimizer CNC é gratuito?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Sim, o ToolOptimizer CNC é completamente gratuito. Não requer cadastro, não tem anúncios e funciona diretamente no navegador ou como aplicativo portátil para Windows."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "O sistema funciona sem internet?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Sim. O ToolOptimizer CNC possui versão desktop portátil para Windows (.exe, ~85MB) que funciona completamente offline — ideal para ambientes industriais sem acesso à internet."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "O sistema usa o modelo de Kienzle?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Sim. O ToolOptimizer utiliza o modelo de Kienzle para cálculo da força específica de corte (kc), que é o padrão técnico mais preciso para fresamento. Os dados de Kc1.1 e mc estão incluídos para cada material suportado."
+          }
+        }
       ]
     }
     </script>
