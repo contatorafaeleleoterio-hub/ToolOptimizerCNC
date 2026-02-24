@@ -1,1 +1,4 @@
-/*    /index.html   200
+# SPA routing is handled by 404.html (works on both GitHub Pages and Cloudflare Pages).
+# The rule "/* /index.html 200" caused an infinite loop on Cloudflare Pages (error code 10021)
+# because Cloudflare strips .html extensions, creating a redirect cycle.
+# Cloudflare Pages serves 404.html for all unmatched routes — that file handles SPA routing.

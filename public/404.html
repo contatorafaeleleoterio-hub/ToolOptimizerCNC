@@ -4,10 +4,13 @@
     <meta charset="UTF-8" />
     <title>ToolOptimizer CNC</title>
     <script>
-      // SPA redirect for GitHub Pages
-      // Converts path to query param so index.html can restore it
-      // Source: https://github.com/rafgraph/spa-github-pages
-      var pathSegmentsToKeep = 1; // /ToolOptimizerCNC/ = 1 segment
+      // SPA redirect for GitHub Pages AND Cloudflare Pages
+      // On GitHub Pages the app lives at /ToolOptimizerCNC/ (1 segment to keep)
+      // On Cloudflare Pages the app lives at / (0 segments to keep)
+      // Auto-detect by checking if hostname is github.io
+      var isGitHubPages = window.location.hostname.indexOf('github.io') !== -1;
+      var pathSegmentsToKeep = isGitHubPages ? 1 : 0;
+
       var l = window.location;
       l.replace(
         l.protocol + '//' + l.hostname + (l.port ? ':' + l.port : '') +
