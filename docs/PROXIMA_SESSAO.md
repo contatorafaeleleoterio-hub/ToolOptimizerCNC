@@ -14,12 +14,13 @@
 |------|-------|
 | **Branch** | `main` |
 | **Versão** | `0.3.0` |
-| **Último commit** | `a994c54` docs: session summary 21/02 s7 |
+| **Último commit** | `ver git log` — Sessão 24/02 s10 — SEO dual-domain |
 | **Testes** | **401/401 passando** (25 arquivos) |
 | **TypeScript** | **zero erros** |
 | **Build** | **limpo** — JS 93.64KB gzip, CSS 12.83KB |
 | **Remote** | `origin/main` sincronizado (GitHub) |
-| **Deploy** | GitHub Pages ativo via CI/CD |
+| **Deploy** | GitHub Pages ativo + **Cloudflare Pages workflow pronto** (aguarda secrets) |
+| **Domínio** | `tooloptimizercnc.com.br` **registrado** pelo usuário |
 | **Desktop** | `.exe` 85MB em `Sistema_Desktop_Pen_driver/` |
 
 ---
@@ -44,15 +45,44 @@ npx vite build 2>&1 | tail -5
 
 ## ✅ O QUE FOI FEITO (histórico recente)
 
+### Sessão 24/02 s10 — Estratégia Dual-Domain SEO (Fase 1 + 2 código)
+
+**Commit Fase 1 (`3e1b73b`):**
+- `index.html` → canonical + OG + Twitter → `app.tooloptimizercnc.com.br`; Schema.org com autor Mestre CNC + `ProductivityApplication`; FAQPage para rich snippets Google
+- `landing/index.html` criado → landing page HTML/CSS puro para `www.tooloptimizercnc.com.br` (dark theme, <50KB, hero+features+FAQ+CTA)
+- `public/sitemap.xml` + `robots.txt` → URLs atualizadas para novo domínio
+- `public/_headers` criado → security headers Cloudflare (HSTS, X-Frame, nosniff)
+
+**Commit Fase 2 (esta sessão):**
+- `public/og-image.png` → logo oficial copiada (preview social WhatsApp/LinkedIn/Slack)
+- `.github/workflows/deploy-cloudflare.yml` → CI/CD automático Cloudflare Pages (app + landing)
+- `landing/_redirects` → suporte ao projeto landing no Cloudflare
+
+**Domínio registrado pelo usuário:** `tooloptimizercnc.com.br`
+
+**Próximos passos manuais do usuário:**
+1. GitHub → Settings → Secrets: `CF_API_TOKEN` + `CF_ACCOUNT_ID`
+2. Cloudflare Pages → criar projeto `tooloptimizer-app` (repo + build command + `VITE_BASE_URL=/`)
+3. Cloudflare Pages → criar projeto `tooloptimizer-landing` (root `landing/`, sem build command)
+4. Cloudflare → adicionar domínio e alterar nameservers no Registro.br
+5. Google Search Console + Bing Webmaster Tools (após DNS propagar 2–48h)
+
+---
+
+### Sessão 24/02 s9 — Pesquisa Vc Etapa 1 (parcial, suspensa)
+- **H13 validado:** Machining Doctor + aobosteel confirmam 80–125 / 100–150 / 125–170 m/min → valores do código **alinhados** ✅
+- **Insight alumínio:** Al 6061-T6 NÃO usa TiAlN — fabricantes recomendam não revestido / DLC / PCD
+- **Criado:** `docs/technical/PESQUISA_VC_VALIDADA.md` (WIP — H13 concluído, outros pendentes)
+- **Pendente:** Al 6061-T6, P20, 2711, 8620 núcleo, 8620 cementado
+- **Pendente:** `GITHUB_REFERENCIAS.md`
+- **Zero commits** — sessão 100% pesquisa/documentação
+
 ### Sessão 22/02 s8 — Pesquisa Vc (somente pesquisa, zero código)
 - **Pesquisa GitHub:** 15+ repositórios CNC analisados (CNC-ToolHub, brturn, pymachining, cnc-calc-react, etc.)
   - Nenhum usa Kienzle — ToolOptimizer é único
   - Padrões aproveitáveis: coating multipliers, machine rigidity classes, machinability index
 - **Mapeamento completo do código Vc:** slider config (min=1, max=1200, step=1), vcRanges por material, engine 4 grupos, ParameterHealthBar normalização
 - **Problema identificado:** Slider Vc com range fixo 1–1200 é genérico demais — precisa de range dinâmico por material
-- **Insight:** Slider deve adaptar min/max ao material selecionado (ex: Inox 40–180, Alumínio 200–1200, Aço 100–350)
-- **NÃO concluído:** Pesquisa nos sites de fabricantes (Sandvik, Kennametal, Mitsubishi, Iscar, Walter, Seco)
-- **NÃO gerado:** PESQUISA_VC_VALIDADA.md, GITHUB_REFERENCIAS.md
 - **Zero commits** — sessão 100% pesquisa
 
 ### Sessão 21/02 s7 — Story-005 ParameterHealthBar
@@ -80,19 +110,34 @@ npx vite build 2>&1 | tail -5
 
 ---
 
-## 🎯 PRÓXIMAS TAREFAS — SLIDER Vc DINÂMICO (PRIORIDADE)
+## 🎯 PRÓXIMAS TAREFAS — SLIDER Vc DINÂMICO
 
-### TAREFA IMEDIATA: Concluir pesquisa Vc + implementar slider dinâmico
+> ⏸️ **EM PAUSA** — Pesquisa Vc está suspensa indefinidamente. Não retomar sem instrução explícita do usuário.
+> Quando retomar: abrir `docs/technical/PESQUISA_VC_VALIDADA.md` — estado salvo lá.
 
-**Contexto:** Sessão 22/02 identificou que o slider Vc (Fine Tune) tem range fixo 1–1200 m/min, genérico demais. Usuário pediu range realista por material.
+### Pesquisa Vc + slider dinâmico (PAUSADO)
 
-#### Passo 1 — Concluir pesquisa de fabricantes (NÃO FEITO na sessão 22/02)
-Pesquisar Vc (m/min) para metal duro TiAlN nos sites:
-- Sandvik Coromant, Kennametal, Mitsubishi, Iscar, Walter, Seco
-- Para cada material: Vc_min, Vc_ideal, Vc_max
-- Diferenciar por tipo de fresa: topo reto, toroidal, esférica
-- Gerar `docs/technical/PESQUISA_VC_VALIDADA.md` com tabela consolidada
-- Gerar `docs/technical/GITHUB_REFERENCIAS.md` com análise dos 15 repos
+**Contexto:** Slider Vc (Fine Tune) tem range fixo 1–1200 m/min, genérico demais. Usuário quer range dinâmico por material — mas a pesquisa de validação está em pausa.
+
+#### Passo 1 — Continuar pesquisa de fabricantes (PAUSADO — retomar da sessão 24/02)
+
+> **Arquivo de referência:** `docs/technical/PESQUISA_VC_VALIDADA.md` (WIP — H13 ✅, restantes pendentes)
+
+**H13 já validado** — valores do código confirmados. Retomar por:
+
+1. **Al 6061-T6** — buscar "aluminum 6061 milling cutting speed uncoated carbide m/min"
+   - Atenção: Al NÃO usa TiAlN — usar não revestido / DLC / PCD
+   - Sites: Sandvik CoroPlus, Kennametal Machining Advisor, FSWizard
+
+2. **P20 (AISI P20 = DIN 1.2311)** — buscar "P20 mold steel milling Vc carbide TiAlN"
+   - Sites: Kennametal, Mitsubishi, Seco Tools
+
+3. **2711 (bloqueador N/D)** — buscar "AISI P20H" ou "DIN 1.2738"
+   - Fallback: usar P20 –15% se não encontrar dado primário
+
+4. **8620 núcleo/cementado** — buscar por "DIN 1.6523" (equivalente ISO)
+
+- Gerar `docs/technical/GITHUB_REFERENCIAS.md` com análise dos 15 repos (já feita em 22/02)
 
 #### Passo 2 — Implementar range dinâmico no slider Vc
 - Slider Vc deve adaptar min/max ao `material.vcRanges[operacao]`
@@ -407,5 +452,5 @@ git status
 
 ---
 
-*Última atualização: 22/02/2026 — Sessão 8 (pesquisa Vc, zero código)*
+*Última atualização: 24/02/2026 — Sessão 9 (pesquisa Vc parcial — H13 validado, restante em pausa)*
 *Próximo assistente: leia este arquivo + MEMORY.md antes de qualquer ação*
