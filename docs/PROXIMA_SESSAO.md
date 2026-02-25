@@ -14,13 +14,13 @@
 |------|-------|
 | **Branch** | `main` |
 | **Versão** | `0.3.0` |
-| **Último commit** | `ver git log` — Sessão 24/02 s10 — SEO dual-domain |
+| **Último commit** | `9929a1f` — Sessão 24/02 s11 — Cloudflare Worker live |
 | **Testes** | **401/401 passando** (25 arquivos) |
 | **TypeScript** | **zero erros** |
-| **Build** | **limpo** — JS 93.64KB gzip, CSS 12.83KB |
+| **Build** | **limpo** — JS 93.65KB gzip, CSS 12.83KB |
 | **Remote** | `origin/main` sincronizado (GitHub) |
-| **Deploy** | GitHub Pages ativo + **Cloudflare Pages workflow pronto** (aguarda secrets) |
-| **Domínio** | `tooloptimizercnc.com.br` **registrado** pelo usuário |
+| **Deploy** | GitHub Pages ativo + **Cloudflare Worker LIVE** em `tooloptimizercnc.contatorafaeleleoterio.workers.dev` |
+| **Domínio** | `tooloptimizercnc.com.br` **registrado** — DNS/nameservers pendente (ação do usuário) |
 | **Desktop** | `.exe` 85MB em `Sistema_Desktop_Pen_driver/` |
 
 ---
@@ -44,6 +44,33 @@ npx vite build 2>&1 | tail -5
 ---
 
 ## ✅ O QUE FOI FEITO (histórico recente)
+
+### Sessão 24/02 s11 — Cloudflare Worker ativo + wrangler.jsonc
+
+**Contexto:** Continuação do setup Cloudflare via browser automation (Claude in Chrome MCP).
+
+**O que foi feito:**
+- ✅ **Variável de build adicionada:** `VITE_BASE_URL=/` em Settings → Build → Variables and secrets
+- ✅ **Merge do PR automático do Cloudflare** (`cloudflare/workers-autoconfig` branch):
+  - `wrangler.jsonc` com `"not_found_handling": "single-page-application"` → SPA routing nativo (substitui workaround do 404.html)
+  - `@cloudflare/vite-plugin` adicionado ao Vite
+  - `wrangler` como devDependency
+  - Script `deploy: npm run build && wrangler deploy`
+- ✅ **Push → build disparado** → Worker rebuilding com `VITE_BASE_URL=/`
+- ✅ **401 testes passando** após merge
+- ✅ **Build OK** com `VITE_BASE_URL=/`
+
+**Worker URL atual:** `https://tooloptimizercnc.contatorafaeleleoterio.workers.dev`
+
+**Próximos passos manuais do usuário:**
+1. **Verificar deploy** — aguardar build completar (1–2 min), testar `https://tooloptimizercnc.contatorafaeleleoterio.workers.dev`
+2. **Adicionar domínio customizado** no Cloudflare: Settings → Domains & Routes → Custom domain → `app.tooloptimizercnc.com.br`
+3. **DNS Cloudflare** → alterar nameservers do domínio `tooloptimizercnc.com.br` no Registro.br para os NS do Cloudflare
+4. **Criar projeto landing** `tooloptimizer-landing` (pasta `landing/`) → domínio `www.tooloptimizercnc.com.br`
+5. **GitHub secrets** `CF_API_TOKEN` + `CF_ACCOUNT_ID` (para o workflow `deploy-cloudflare.yml` funcionar)
+6. **Google Search Console** + Bing Webmaster Tools (após DNS propagar 2–48h)
+
+---
 
 ### Sessão 24/02 s10 — Estratégia Dual-Domain SEO (Fase 1 + 2 código)
 
@@ -452,5 +479,5 @@ git status
 
 ---
 
-*Última atualização: 24/02/2026 — Sessão 9 (pesquisa Vc parcial — H13 validado, restante em pausa)*
+*Última atualização: 24/02/2026 — Sessão 11 (Cloudflare Worker live, wrangler.jsonc merged, VITE_BASE_URL configurado)*
 *Próximo assistente: leia este arquivo + MEMORY.md antes de qualquer ação*
