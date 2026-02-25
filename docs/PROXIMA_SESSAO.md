@@ -14,13 +14,14 @@
 |------|-------|
 | **Branch** | `main` |
 | **Versão** | `0.3.0` |
-| **Último commit** | `9929a1f` — Sessão 24/02 s11 — Cloudflare Worker live |
+| **Último commit** | `1bf78fe` — docs: session summary 24/02 s11 |
 | **Testes** | **401/401 passando** (25 arquivos) |
 | **TypeScript** | **zero erros** |
 | **Build** | **limpo** — JS 93.65KB gzip, CSS 12.83KB |
 | **Remote** | `origin/main` sincronizado (GitHub) |
 | **Deploy** | GitHub Pages ativo + **Cloudflare Worker LIVE** em `tooloptimizercnc.contatorafaeleleoterio.workers.dev` |
-| **Domínio** | `tooloptimizercnc.com.br` **registrado** — DNS/nameservers pendente (ação do usuário) |
+| **Domínio** | `tooloptimizercnc.com.br` **no Cloudflare (Free)** — nameservers `fatima` + `odin` obtidos — **TROCA PENDENTE no Registro.br** |
+| **CF_ACCOUNT_ID** | `6b8c90369455a504e560d9fac74eea0c` (do Cloudflare dashboard) |
 | **Desktop** | `.exe` 85MB em `Sistema_Desktop_Pen_driver/` |
 
 ---
@@ -44,6 +45,31 @@ npx vite build 2>&1 | tail -5
 ---
 
 ## ✅ O QUE FOI FEITO (histórico recente)
+
+### Sessão 25/02 s12 — Setup Cloudflare DNS via browser automation (parcial)
+
+**Contexto:** Continuação da sessão anterior (contexto esgotado) — setup Cloudflare/domínio via Claude in Chrome MCP.
+
+**O que foi feito:**
+- ✅ **Passo 1:** Worker live confirmado — app renderiza corretamente em `tooloptimizercnc.contatorafaeleleoterio.workers.dev`
+- ✅ **Passo 2+3:** Domínio `tooloptimizercnc.com.br` adicionado ao Cloudflare (plano Free), nameservers obtidos:
+  - `fatima.ns.cloudflare.com`
+  - `odin.ns.cloudflare.com`
+  - (remover: `a.auto.dns.br` + `b.auto.dns.br`)
+- 🔄 **Passo 3b:** Formulário "ALTERAR SERVIDORES DNS" aberto no Registro.br — **sessão encerrada antes de salvar** → **PENDENTE para próxima sessão**
+- 🔄 **Passo 5:** Navegado até Cloudflare API Tokens → template "Edit Cloudflare Workers" localizado — **sessão encerrada antes de criar o token** → **PENDENTE**
+- **CF_ACCOUNT_ID obtido:** `6b8c90369455a504e560d9fac74eea0c`
+- **Zero código alterado** — sessão 100% browser automation / infra
+
+**Próxima sessão deve retomar em:**
+1. **Registro.br** → Alterar Servidores DNS → Servidor 1: `fatima.ns.cloudflare.com` | Servidor 2: `odin.ns.cloudflare.com` → SALVAR
+2. **Cloudflare API Tokens** → Criar token com template "Edit Cloudflare Workers" → copiar token
+3. **GitHub Secrets** → adicionar `CF_API_TOKEN` + `CF_ACCOUNT_ID=6b8c90369455a504e560d9fac74eea0c`
+4. **Cloudflare Pages** → criar projeto `tooloptimizer-landing`
+5. **Cloudflare Worker** → adicionar `app.tooloptimizercnc.com.br` como custom domain (após DNS propagar)
+6. **Google Search Console + Bing** (após DNS propagar 2–48h)
+
+---
 
 ### Sessão 24/02 s11 — Cloudflare Worker ativo + wrangler.jsonc
 
@@ -479,5 +505,5 @@ git status
 
 ---
 
-*Última atualização: 24/02/2026 — Sessão 11 (Cloudflare Worker live, wrangler.jsonc merged, VITE_BASE_URL configurado)*
+*Última atualização: 25/02/2026 — Sessão 12 (Cloudflare DNS setup parcial via browser automation — nameservers obtidos, troca Registro.br pendente)*
 *Próximo assistente: leia este arquivo + MEMORY.md antes de qualquer ação*
