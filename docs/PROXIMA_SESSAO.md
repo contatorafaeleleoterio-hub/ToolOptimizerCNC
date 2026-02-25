@@ -14,14 +14,19 @@
 |------|-------|
 | **Branch** | `main` |
 | **Versão** | `0.3.0` |
-| **Último commit** | `1bf78fe` — docs: session summary 24/02 s11 |
+| **Último commit** | ver `git log --oneline -3` |
 | **Testes** | **401/401 passando** (25 arquivos) |
 | **TypeScript** | **zero erros** |
 | **Build** | **limpo** — JS 93.65KB gzip, CSS 12.83KB |
 | **Remote** | `origin/main` sincronizado (GitHub) |
-| **Deploy** | GitHub Pages ativo + **Cloudflare Worker LIVE** em `tooloptimizercnc.contatorafaeleleoterio.workers.dev` |
-| **Domínio** | `tooloptimizercnc.com.br` **no Cloudflare (Free)** — nameservers `fatima` + `odin` obtidos — **TROCA PENDENTE no Registro.br** |
-| **CF_ACCOUNT_ID** | `6b8c90369455a504e560d9fac74eea0c` (do Cloudflare dashboard) |
+| **Worker** | ✅ LIVE — `https://tooloptimizercnc.contatorafaeleleoterio.workers.dev` |
+| **GitHub Pages** | ✅ LIVE — deploy automático funciona |
+| **CI (testes)** | ✅ passando no GitHub Actions |
+| **Cloudflare Pages app** | ❌ projeto não existe — workflow usa `wrangler deploy` agora |
+| **DNS Registro.br** | ✅ Alterado — nameservers `fatima` + `odin` (propagação 2-48h) |
+| **Domínio** | `tooloptimizercnc.com.br` no Cloudflare — aguardando propagação DNS |
+| **GitHub Secrets** | ✅ `CF_API_TOKEN` + `CF_ACCOUNT_ID` configurados |
+| **CF_ACCOUNT_ID** | `6b8c90369455a504e560d9fac74eea0c` |
 | **Desktop** | `.exe` 85MB em `Sistema_Desktop_Pen_driver/` |
 
 ---
@@ -46,28 +51,43 @@ npx vite build 2>&1 | tail -5
 
 ## ✅ O QUE FOI FEITO (histórico recente)
 
-### Sessão 25/02 s12 — Setup Cloudflare DNS via browser automation (parcial)
+### Sessão 25/02 s14 — Fix deploy-cloudflare.yml + documentação
 
-**Contexto:** Continuação da sessão anterior (contexto esgotado) — setup Cloudflare/domínio via Claude in Chrome MCP.
+**Contexto:** Verificação do estado pós-s13 + correção do workflow de deploy.
 
 **O que foi feito:**
-- ✅ **Passo 1:** Worker live confirmado — app renderiza corretamente em `tooloptimizercnc.contatorafaeleleoterio.workers.dev`
-- ✅ **Passo 2+3:** Domínio `tooloptimizercnc.com.br` adicionado ao Cloudflare (plano Free), nameservers obtidos:
-  - `fatima.ns.cloudflare.com`
-  - `odin.ns.cloudflare.com`
-  - (remover: `a.auto.dns.br` + `b.auto.dns.br`)
-- 🔄 **Passo 3b:** Formulário "ALTERAR SERVIDORES DNS" aberto no Registro.br — **sessão encerrada antes de salvar** → **PENDENTE para próxima sessão**
-- 🔄 **Passo 5:** Navegado até Cloudflare API Tokens → template "Edit Cloudflare Workers" localizado — **sessão encerrada antes de criar o token** → **PENDENTE**
-- **CF_ACCOUNT_ID obtido:** `6b8c90369455a504e560d9fac74eea0c`
-- **Zero código alterado** — sessão 100% browser automation / infra
+- ✅ **Diagnóstico GitHub Actions:** CI ✅ | GitHub Pages ✅ | **Cloudflare Pages deploy ❌** (2 execuções)
+- ✅ **Root cause identificado:** workflow usava `wrangler pages deploy` mas o app é um Worker (não Pages). Além disso, token "Edit Cloudflare Workers" não tem permissão `Cloudflare Pages: Edit`
+- ✅ **Fix deploy-app:** mudado de `wrangler pages deploy dist --project-name=tooloptimizercnc` para `wrangler deploy` (usa Worker via wrangler.jsonc)
+- ✅ **Fix deploy-landing:** adicionado `continue-on-error: true` — não bloqueia o pipeline enquanto Pages project pendente
+- ✅ **PROXIMA_SESSAO.md + MEMORY.md atualizados** com estado real da s13
 
-**Próxima sessão deve retomar em:**
-1. **Registro.br** → Alterar Servidores DNS → Servidor 1: `fatima.ns.cloudflare.com` | Servidor 2: `odin.ns.cloudflare.com` → SALVAR
-2. **Cloudflare API Tokens** → Criar token com template "Edit Cloudflare Workers" → copiar token
-3. **GitHub Secrets** → adicionar `CF_API_TOKEN` + `CF_ACCOUNT_ID=6b8c90369455a504e560d9fac74eea0c`
-4. **Cloudflare Pages** → criar projeto `tooloptimizer-landing`
-5. **Cloudflare Worker** → adicionar `app.tooloptimizercnc.com.br` como custom domain (após DNS propagar)
-6. **Google Search Console + Bing** (após DNS propagar 2–48h)
+**Próxima execução do workflow deve:**
+- App deploy → `wrangler deploy` → ✅ deve passar (token tem Workers perms)
+- Landing deploy → `wrangler pages deploy` → ainda falha (Pages project não existe ainda)
+
+---
+
+### Sessão 25/02 s13 — Cloudflare DNS + API Token + GitHub Secrets ✅
+
+**Contexto:** Continuação da s12 — setup infra Cloudflare via browser automation.
+
+**O que foi feito:**
+- ✅ **Registro.br DNS:** nameservers alterados para `fatima.ns.cloudflare.com` + `odin.ns.cloudflare.com`
+- ✅ **Cloudflare API Token criado:** template "Edit Cloudflare Workers" → token gerado (salvo nos Secrets do GitHub)
+- ✅ **GitHub Secrets configurados:**
+  - `CF_API_TOKEN` = token criado (não expor aqui — está seguro no GitHub)
+  - `CF_ACCOUNT_ID` = `6b8c90369455a504e560d9fac74eea0c`
+- ✅ **Push para main** → GitHub Actions disparado
+- ⚠️ **Deploy Cloudflare Pages falhou** (workflow incorreto — corrigido na s14)
+
+---
+
+### Sessão 25/02 s12 — Setup Cloudflare DNS (parcial)
+
+- ✅ Worker live confirmado em `tooloptimizercnc.contatorafaeleleoterio.workers.dev`
+- ✅ Domínio `tooloptimizercnc.com.br` no Cloudflare Free — nameservers obtidos
+- ✅ CF_ACCOUNT_ID: `6b8c90369455a504e560d9fac74eea0c`
 
 ---
 
@@ -163,7 +183,55 @@ npx vite build 2>&1 | tail -5
 
 ---
 
-## 🎯 PRÓXIMAS TAREFAS — SLIDER Vc DINÂMICO
+## 🎯 PRÓXIMAS TAREFAS
+
+### 🔴 Infra Cloudflare (verificar após push do fix s14)
+
+#### 1. Verificar se o fix do deploy-app funcionou
+
+Após o push do commit da s14:
+```bash
+# Verificar GitHub Actions
+https://github.com/contatorafaeleleoterio-hub/ToolOptimizerCNC/actions
+# Esperado: "Deploy App (Worker)" → success | "Deploy Landing" → continua falhando mas não bloqueia
+```
+
+#### 2. Aguardar DNS propagar (pode levar até 48h)
+
+Verificar propagação:
+```bash
+curl -s "https://tooloptimizercnc.com.br" -o /dev/null -w "%{http_code}\n"
+# Ou: https://dnschecker.org/#A/tooloptimizercnc.com.br
+```
+
+#### 3. Configurar Custom Domains (após DNS propagar)
+
+Via Cloudflare Dashboard:
+- `https://dash.cloudflare.com` → Workers & Pages → `tooloptimizercnc`
+- Settings → Domains & Routes → Custom domain → `app.tooloptimizercnc.com.br`
+
+#### 4. Landing Page (pendente — 2 pré-requisitos)
+
+**Pré-requisito A:** Criar projeto `tooloptimizer-landing` no Cloudflare Pages:
+- `https://dash.cloudflare.com` → Pages → Create project → Connect to Git
+- Nome: `tooloptimizer-landing` | Root dir: `landing/` | Build: nenhum
+
+**Pré-requisito B:** Atualizar token `CF_API_TOKEN` com permissão `Cloudflare Pages: Edit`:
+- `https://dash.cloudflare.com/profile/api-tokens`
+- Editar token existente → Add permission → Cloudflare Pages: Edit
+- OU criar novo token com ambas as permissões (Workers + Pages)
+- Atualizar secret no GitHub
+
+Depois de ambos: workflow `deploy-landing` deve passar automaticamente.
+
+#### 5. Google Search Console + Bing (após DNS propagar)
+
+- Google: `https://search.google.com/search-console` → Add property → `tooloptimizercnc.com.br`
+- Bing: `https://www.bing.com/webmasters` → Add site → `tooloptimizercnc.com.br`
+
+---
+
+### ⏸️ Pesquisa Vc + Slider Dinâmico (PAUSADO)
 
 > ⏸️ **EM PAUSA** — Pesquisa Vc está suspensa indefinidamente. Não retomar sem instrução explícita do usuário.
 > Quando retomar: abrir `docs/technical/PESQUISA_VC_VALIDADA.md` — estado salvo lá.
@@ -505,5 +573,5 @@ git status
 
 ---
 
-*Última atualização: 25/02/2026 — Sessão 12 (Cloudflare DNS setup parcial via browser automation — nameservers obtidos, troca Registro.br pendente)*
+*Última atualização: 25/02/2026 — Sessão 14 (Fix deploy-cloudflare.yml: wrangler deploy para app + documentação s13 retroativa)*
 *Próximo assistente: leia este arquivo + MEMORY.md antes de qualquer ação*
