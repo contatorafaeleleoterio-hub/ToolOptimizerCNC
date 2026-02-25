@@ -23,8 +23,8 @@
 | **GitHub Pages** | ✅ LIVE — deploy automático funciona |
 | **CI (testes)** | ✅ passando no GitHub Actions |
 | **Cloudflare Pages app** | ❌ projeto não existe — workflow usa `wrangler deploy` agora |
-| **DNS Registro.br** | ✅ Alterado — nameservers `fatima` + `odin` (propagação 2-48h) |
-| **Domínio** | `tooloptimizercnc.com.br` no Cloudflare — aguardando propagação DNS |
+| **DNS Registro.br** | ✅ Alterado 25/02 ~06:45 BRT — nameservers `fatima` + `odin` (propagação ~2h) |
+| **Domínio** | `tooloptimizercnc.com.br` no Cloudflare — aguardando propagação (~08:45 BRT) |
 | **GitHub Secrets** | ✅ `CF_API_TOKEN` + `CF_ACCOUNT_ID` configurados |
 | **CF_ACCOUNT_ID** | `6b8c90369455a504e560d9fac74eea0c` |
 | **Desktop** | `.exe` 85MB em `Sistema_Desktop_Pen_driver/` |
@@ -187,16 +187,11 @@ npx vite build 2>&1 | tail -5
 
 ### 🔴 Infra Cloudflare (verificar após push do fix s14)
 
-#### 1. Verificar se o fix do deploy-app funcionou
+#### 1. ✅ Fix deploy-app VERIFICADO — passa com sucesso
 
-Após o push do commit da s14:
-```bash
-# Verificar GitHub Actions
-https://github.com/contatorafaeleleoterio-hub/ToolOptimizerCNC/actions
-# Esperado: "Deploy App (Worker)" → success | "Deploy Landing" → continua falhando mas não bloqueia
-```
+GitHub Actions "Deploy to Cloudflare Pages" → **success** (commit `55f2580`).
 
-#### 2. Aguardar DNS propagar (pode levar até 48h)
+#### 2. Aguardar DNS propagar (~2h a partir de 25/02 ~06:45 BRT)
 
 Verificar propagação:
 ```bash
@@ -573,5 +568,5 @@ git status
 
 ---
 
-*Última atualização: 25/02/2026 — Sessão 14 (Fix deploy-cloudflare.yml: wrangler deploy para app + documentação s13 retroativa)*
+*Última atualização: 25/02/2026 — Sessão 14 (Fix deploy-cloudflare.yml + DNS Registro.br confirmado + próximos passos documentados)*
 *Próximo assistente: leia este arquivo + MEMORY.md antes de qualquer ação*
