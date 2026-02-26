@@ -23,8 +23,8 @@
 | **GitHub Pages** | ✅ LIVE — deploy automático funciona |
 | **CI (testes)** | ✅ passando no GitHub Actions |
 | **Cloudflare Pages app** | ❌ projeto não existe — workflow usa `wrangler deploy` agora |
-| **DNS Registro.br** | ✅ Alterado 25/02 ~06:45 BRT — nameservers `fatima` + `odin` (propagação ~2h) |
-| **Domínio** | `tooloptimizercnc.com.br` no Cloudflare — aguardando propagação (~08:45 BRT) |
+| **DNS Registro.br** | ✅ Propagado — nameservers `fatima` + `odin` ativos |
+| **Custom Domains** | ✅ `tooloptimizercnc.com.br` + `app.tooloptimizercnc.com.br` configurados no Worker |
 | **GitHub Secrets** | ✅ `CF_API_TOKEN` + `CF_ACCOUNT_ID` configurados |
 | **CF_ACCOUNT_ID** | `6b8c90369455a504e560d9fac74eea0c` |
 | **Desktop** | `.exe` 85MB em `Sistema_Desktop_Pen_driver/` |
@@ -50,6 +50,62 @@ npx vite build 2>&1 | tail -5
 ---
 
 ## ✅ O QUE FOI FEITO (histórico recente)
+
+### Sessão 26/02 s15 — Custom Domains + Auditoria + Plano Login Google
+
+**Contexto:** Verificação DNS, configuração de custom domains, auditoria completa do sistema e planejamento de login Google.
+
+**O que foi feito:**
+- ✅ **DNS propagado:** `nslookup` confirmou nameservers `fatima` + `odin` ativos
+- ✅ **Custom domains configurados no Worker** (via Cloudflare Dashboard):
+  - `tooloptimizercnc.com.br` → Worker `tooloptimizercnc`
+  - `app.tooloptimizercnc.com.br` → Worker `tooloptimizercnc`
+  - Verificado: `curl --resolve` retornou HTTP 200
+- ✅ **Auditoria completa do sistema** — 3 agentes paralelos escanearam:
+  - Testes/build, UI/design, engine/lógica
+  - 15 issues encontrados em 3 categorias
+  - **Decisão do usuário:** remover `forcaCorte` completamente (não corrigir)
+- ✅ **Documentos de auditoria criados:**
+  - `docs/PLANO_AUDITORIA.md` — plano completo 5 fases
+  - `docs/IMPLEMENTACAO_SESSOES.md` — roadmap S1-S5 com checklists
+  - Commit: `53ae29d`
+- ✅ **Plano Login Google + Multi-Usuário aprovado:**
+  - Firebase Auth (Google sign-in) + Cloud Firestore
+  - Login opcional (guest mode = comportamento atual)
+  - Sync entre dispositivos via Firestore
+  - 5 fases (L1 a L5), ~8h total
+- ✅ **Documentos de login criados:**
+  - `docs/PLANO_LOGIN_GOOGLE.md` — plano completo Firebase Auth + Firestore
+  - `docs/IMPLEMENTACAO_LOGIN.md` — roadmap L1-L5 com checklists
+  - Commit: `f2ab4de`
+
+**Commits desta sessão:**
+- `53ae29d` docs: add audit plan and session-by-session implementation roadmap
+- `f2ab4de` docs: add Google Login implementation plan and session roadmap
+
+---
+
+### ⚠️ PARA O PRÓXIMO ASSISTENTE — VERIFICAR E CONFERIR
+
+#### Documentos criados nesta sessão (conferir existência e conteúdo):
+| Documento | Caminho | Conteúdo |
+|-----------|---------|----------|
+| **Plano Auditoria** | `docs/PLANO_AUDITORIA.md` | 5 fases: correções críticas, design system, consistência visual, qualidade código, testes |
+| **Roadmap Auditoria** | `docs/IMPLEMENTACAO_SESSOES.md` | Sessões S1-S5 com checklists detalhados |
+| **Plano Login Google** | `docs/PLANO_LOGIN_GOOGLE.md` | Firebase Auth + Firestore, arquitetura, 5 fases, setup manual |
+| **Roadmap Login** | `docs/IMPLEMENTACAO_LOGIN.md` | Sessões L1-L5 com checklists detalhados |
+
+#### O que conferir ao iniciar:
+1. **Custom domains respondendo?** `curl -s https://tooloptimizercnc.com.br -o /dev/null -w "%{http_code}"`
+2. **Testes passando?** `npx vitest run` → 401 passando
+3. **Build limpo?** `npx vite build`
+4. **Documentos existem?** `ls docs/PLANO_AUDITORIA.md docs/IMPLEMENTACAO_SESSOES.md docs/PLANO_LOGIN_GOOGLE.md docs/IMPLEMENTACAO_LOGIN.md`
+
+#### Duas iniciativas independentes — qual executar depende do usuário:
+- **Auditoria:** Ler `docs/IMPLEMENTACAO_SESSOES.md` → executar próxima fase pendente (S1)
+- **Login Google:** Ler `docs/IMPLEMENTACAO_LOGIN.md` → pré-requisito: Setup Manual Firebase → executar L1
+
+---
 
 ### Sessão 25/02 s14 — Fix deploy-cloudflare.yml + documentação
 
@@ -185,27 +241,26 @@ npx vite build 2>&1 | tail -5
 
 ## 🎯 PRÓXIMAS TAREFAS
 
-### 🔴 Infra Cloudflare (verificar após push do fix s14)
+### ✅ Infra Cloudflare (CONCLUÍDO s15)
 
-#### 1. ✅ Fix deploy-app VERIFICADO — passa com sucesso
+- ✅ Fix deploy-app — `wrangler deploy` passa (commit `55f2580`)
+- ✅ DNS propagado — nameservers Cloudflare ativos
+- ✅ Custom domains — `tooloptimizercnc.com.br` + `app.tooloptimizercnc.com.br` no Worker
 
-GitHub Actions "Deploy to Cloudflare Pages" → **success** (commit `55f2580`).
+### 🟡 Duas Iniciativas Independentes (escolher com usuário)
 
-#### 2. Aguardar DNS propagar (~2h a partir de 25/02 ~06:45 BRT)
+#### Opção A — Auditoria do Sistema (5 sessões S1-S5)
+- **Documento:** `docs/IMPLEMENTACAO_SESSOES.md`
+- **Plano detalhado:** `docs/PLANO_AUDITORIA.md`
+- **Próxima fase:** S1 — Correções Críticas (remover forcaCorte, fix landing links, vite base URL, CTF guard)
 
-Verificar propagação:
-```bash
-curl -s "https://tooloptimizercnc.com.br" -o /dev/null -w "%{http_code}\n"
-# Ou: https://dnschecker.org/#A/tooloptimizercnc.com.br
-```
+#### Opção B — Login Google + Multi-Usuário (5 sessões L1-L5)
+- **Documento:** `docs/IMPLEMENTACAO_LOGIN.md`
+- **Plano detalhado:** `docs/PLANO_LOGIN_GOOGLE.md`
+- **Pré-requisito manual:** Setup Firebase Console (ver plano)
+- **Próxima fase:** L1 — Firebase Setup + Auth Store + Login UI
 
-#### 3. Configurar Custom Domains (após DNS propagar)
-
-Via Cloudflare Dashboard:
-- `https://dash.cloudflare.com` → Workers & Pages → `tooloptimizercnc`
-- Settings → Domains & Routes → Custom domain → `app.tooloptimizercnc.com.br`
-
-#### 4. Landing Page (pendente — 2 pré-requisitos)
+### 🟡 Landing Page (pendente — 2 pré-requisitos)
 
 **Pré-requisito A:** Criar projeto `tooloptimizer-landing` no Cloudflare Pages:
 - `https://dash.cloudflare.com` → Pages → Create project → Connect to Git
@@ -461,6 +516,10 @@ docs/
   stories/
     story-001 a story-005               ← documentação de cada feature entregue
   PROXIMA_SESSAO.md                     ← ESTE ARQUIVO (ponto de entrada da sessão)
+  PLANO_AUDITORIA.md                   ← plano completo auditoria (5 fases)
+  IMPLEMENTACAO_SESSOES.md             ← roadmap auditoria S1-S5 com checklists
+  PLANO_LOGIN_GOOGLE.md                ← plano completo Firebase Auth + Firestore (5 fases)
+  IMPLEMENTACAO_LOGIN.md               ← roadmap login L1-L5 com checklists
   AIOS_INTEGRATION.md                  ← integração com Synkra AIOS Framework
 ```
 
@@ -556,17 +615,19 @@ git status
 
 ```
 ✅ Story-001: Limpeza técnica + ADRs
-✅ Story-002: Deploy Cloudflare (código OK, setup manual pendente)
+✅ Story-002: Deploy Cloudflare (Worker + Custom Domains LIVE)
 ✅ Story-003: CI/CD GitHub Actions
 ✅ Story-004: SEO Schema.org + meta tags
 ✅ Story-005: ParameterHealthBar (feedback visual Fine Tune)
-⬜ Story-006: [A DEFINIR com usuário] ← PRÓXIMA
+⬜ Auditoria: 5 fases (S1-S5) → docs/IMPLEMENTACAO_SESSOES.md
+⬜ Login Google: 5 fases (L1-L5) → docs/IMPLEMENTACAO_LOGIN.md
+⬜ Story-006: [A DEFINIR com usuário]
 ⬜ MVP v1.0.0 (feature-complete)
-⬜ Cloudflare Pages (setup manual pelo usuário)
+⬜ Landing Page (Cloudflare Pages — setup manual pendente)
 ⬜ Desktop: ícone + fontes offline + code signing
 ```
 
 ---
 
-*Última atualização: 25/02/2026 — Sessão 14 (Fix deploy-cloudflare.yml + DNS Registro.br confirmado + próximos passos documentados)*
-*Próximo assistente: leia este arquivo + MEMORY.md antes de qualquer ação*
+*Última atualização: 26/02/2026 — Sessão 15 (Custom Domains + Auditoria completa + Plano Login Google)*
+*Próximo assistente: leia este arquivo + verificar documentos listados na seção "PARA O PRÓXIMO ASSISTENTE"*
