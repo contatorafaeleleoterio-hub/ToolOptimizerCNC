@@ -51,6 +51,26 @@ npx vite build 2>&1 | tail -5
 
 ## ✅ O QUE FOI FEITO (histórico recente)
 
+### Sessão 27/02 s16 — Auditoria FASE 1 (Correções Críticas)
+
+**Contexto:** Execução da FASE 1 do plano de auditoria — correções críticas identificadas em 26/02.
+
+**O que foi feito:**
+- ✅ **Removido `forcaCorte`** de 6 arquivos (decisão do usuário: campo não usado)
+  - `src/types/index.ts`, `src/store/machining-store.ts`, `src/components/results-panel.tsx`
+  - `tests/store/history-store.test.ts`, `tests/pages/history-page.test.tsx`, `docs/technical/srctypes.md`
+- ✅ **Landing page:** removidos links quebrados (`blog.`, `docs.`, `status.` subdomínios inexistentes)
+- ✅ **Vite base URL:** fallback corrigido de `/ToolOptimizerCNC/` para `/` (deploy primário é Cloudflare)
+  - `deploy.yml` atualizado com `VITE_BASE_URL: /ToolOptimizerCNC/` explícito para GitHub Pages
+- ✅ **Guard CTF:** `if (sqrtRatio === 0) throw new Error('CTF denominator zero')` adicionado
+- ✅ **Quality gates:** 401 testes passando, zero erros TS, build 93.64KB gzip
+- ✅ **Commit:** `1cc4056`
+
+**Commits desta sessão:**
+- `1cc4056` fix: remove forcaCorte, fix landing links, vite base URL, CTF guard
+
+---
+
 ### Sessão 26/02 s15 — Custom Domains + Auditoria + Plano Login Google
 
 **Contexto:** Verificação DNS, configuração de custom domains, auditoria completa do sistema e planejamento de login Google.
@@ -252,7 +272,8 @@ npx vite build 2>&1 | tail -5
 #### Opção A — Auditoria do Sistema (5 sessões S1-S5)
 - **Documento:** `docs/IMPLEMENTACAO_SESSOES.md`
 - **Plano detalhado:** `docs/PLANO_AUDITORIA.md`
-- **Próxima fase:** S1 — Correções Críticas (remover forcaCorte, fix landing links, vite base URL, CTF guard)
+- **✅ S1 concluída** (27/02/2026 — commit `1cc4056`)
+- **Próxima fase:** S2 — Design System (extração StyledSlider, design tokens, font sizes `text-2xs`/`text-fine`)
 
 #### Opção B — Login Google + Multi-Usuário (5 sessões L1-L5)
 - **Documento:** `docs/IMPLEMENTACAO_LOGIN.md`

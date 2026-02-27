@@ -13,7 +13,7 @@
 
 | Sessao | Fase | Status | Commit |
 |--------|------|--------|--------|
-| S1 | FASE 1 — Correcoes Criticas | ⬜ Pendente | — |
+| S1 | FASE 1 — Correcoes Criticas | ✅ Concluido | `1cc4056` |
 | S2 | FASE 2 — Design System | ⬜ Pendente | — |
 | S3 | FASE 3 — Consistencia Visual | ⬜ Pendente | — |
 | S4 | FASE 4 — Qualidade de Codigo | ⬜ Pendente | — |
@@ -22,7 +22,7 @@
 ---
 
 ## FASE 1 — Correcoes Criticas
-**Status:** ⬜ Pendente
+**Status:** ✅ Concluido — 27/02/2026 — commit `1cc4056`
 **Commit esperado:** `fix: remove forcaCorte, fix landing links, vite base URL, CTF guard`
 **Plano detalhado:** `docs/PLANO_AUDITORIA.md` → secao FASE 1
 
@@ -183,7 +183,7 @@
 
 | Data | Sessao | Quem | Resultado |
 |------|--------|------|-----------|
-| — | S1 | — | — |
+| 27/02/2026 | S1 | Claude Sonnet 4.6 | ✅ 401 testes, zero erros TS, build limpo |
 | — | S2 | — | — |
 | — | S3 | — | — |
 | — | S4 | — | — |
