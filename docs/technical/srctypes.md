@@ -87,7 +87,6 @@ export interface ResultadoUsinagem {
   mrr: number;           // Q (cm³/min)
   vcReal: number;        // Vc efetiva
   fzEfetivo: number;     // fz corrigido pelo CTF
-  forcaCorte: number;    // Fc (N)
   seguranca: StatusSeguranca;
 }
 

@@ -50,6 +50,7 @@ export function calculateEffectiveFz(
 
   // CTF: fz_corr = fz / sqrt(ae/D)
   const sqrtRatio = Math.sqrt(ratio);
+  if (sqrtRatio === 0) throw new Error('CTF denominator zero');
   const fzCorrigido = fz / sqrtRatio;
 
   return {

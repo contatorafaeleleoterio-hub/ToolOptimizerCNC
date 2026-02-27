@@ -87,7 +87,6 @@ export interface ResultadoUsinagem {
   mrr: number;
   vcReal: number;
   fzEfetivo: number;
-  forcaCorte: number;
   seguranca: StatusSeguranca;
 }
 

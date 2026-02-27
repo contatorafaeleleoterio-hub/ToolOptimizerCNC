@@ -22,7 +22,6 @@ const MOCK_RESULTADO: ResultadoUsinagem = {
   mrr: 12.7,
   vcReal: 100,
   fzEfetivo: 0.1,
-  forcaCorte: 2000,
   seguranca: { nivel: 'verde', avisos: [], razaoLD: 3.0, ctf: 1 },
 };
 

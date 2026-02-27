@@ -30,6 +30,8 @@ jobs:
         run: npm run test
       - name: Build
         run: npm run build
+        env:
+          VITE_BASE_URL: /ToolOptimizerCNC/
       - name: Verify mobile route (404.html exists)
         run: |
           if [ ! -f dist/404.html ]; then

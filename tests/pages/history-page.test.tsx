@@ -12,7 +12,7 @@ const MOCK_FERRAMENTA: Ferramenta = {
 const MOCK_PARAMS: ParametrosUsinagem = { ap: 2, ae: 5, fz: 0.1, vc: 100 };
 const MOCK_RESULT: ResultadoUsinagem = {
   rpm: 3183, avanco: 1273, potenciaCorte: 0.85, potenciaMotor: 0.68, torque: 2.04,
-  mrr: 12.7, vcReal: 100, fzEfetivo: 0.1, forcaCorte: 2000,
+  mrr: 12.7, vcReal: 100, fzEfetivo: 0.1,
   seguranca: { nivel: 'verde', avisos: [], razaoLD: 3.0, ctf: 1 },
 };
 

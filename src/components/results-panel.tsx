@@ -16,7 +16,6 @@ const EMPTY_RESULTADO: ResultadoUsinagem = {
   mrr: 0,
   vcReal: 0,
   fzEfetivo: 0,
-  forcaCorte: 0,
   seguranca: { nivel: 'verde', avisos: [], razaoLD: 0, ctf: 1 },
 };
 

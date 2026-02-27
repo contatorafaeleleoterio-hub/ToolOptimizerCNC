@@ -399,7 +399,6 @@ export const useMachiningStore = create<MachiningState & MachiningActions>()(
               mrr,
               vcReal: (Math.PI * D * rpm) / 1000,
               fzEfetivo: chipResult.fzEfetivo,
-              forcaCorte: kc * ae * ap,
               seguranca: { nivel, avisos, razaoLD, ctf: chipResult.ctfFactor },
             },
           });
