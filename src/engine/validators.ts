@@ -37,10 +37,10 @@ export function validateLDRatio(l: number, d: number, thresholds?: LDThresholds)
     critico: REGRAS_SEGURANCA.LD.CRITICO,
   };
 
-  if (ratio <= seguro) return 'verde';
-  if (ratio < alerta) return 'amarelo';
-  if (ratio <= critico) return 'vermelho';
-  return 'bloqueado';
+  if (ratio <= seguro)  return 'verde';    // [0, 3]  — safe zone
+  if (ratio < alerta)   return 'amarelo';  // (3, 4)  — vibration warning (exclusive upper boundary)
+  if (ratio <= critico) return 'vermelho'; // [4, 6]  — critical, suggest reduction
+  return 'bloqueado';                      // (6, ∞)  — blocked in MVP
 }
 
 export interface InputParams {

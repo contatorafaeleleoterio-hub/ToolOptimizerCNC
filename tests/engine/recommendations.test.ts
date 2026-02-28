@@ -120,4 +120,23 @@ describe('getRecommendedParams', () => {
       }
     }
   });
+
+  // --- L/D-aware ap cap (balanco param) ---
+
+  it('caps ap to 0.1 when L/D ratio > 6 (bloqueado zone)', () => {
+    // D=6, balanco=40 → L/D = 6.67 > 6
+    const result = getRecommendedParams(aco1045, TipoUsinagem.DESBASTE, 6, 40);
+    expect(result.ap).toBe(0.1);
+  });
+
+  it('does not cap ap when L/D ratio ≤ 6', () => {
+    // D=6, balanco=30 → L/D = 5 ≤ 6 → normal rule applies (1.0×6 = 6)
+    const result = getRecommendedParams(aco1045, TipoUsinagem.DESBASTE, 6, 30);
+    expect(result.ap).toBeGreaterThan(0.1);
+  });
+
+  it('returns normal ap when balanco is not provided', () => {
+    const result = getRecommendedParams(aco1045, TipoUsinagem.DESBASTE, 6);
+    expect(result.ap).toBeGreaterThan(0.1);
+  });
 });

@@ -38,8 +38,12 @@ const DEFAULT_FILTERS: HistoryFilters = {
   feedback: 'todos',
 };
 
-/** Generate a short unique ID based on timestamp + random suffix */
+/** Generate a unique ID using crypto.randomUUID() when available, with timestamp fallback */
 function generateId(): string {
+  if (typeof crypto !== 'undefined' && typeof crypto.randomUUID === 'function') {
+    return crypto.randomUUID();
+  }
+  // Fallback for environments without crypto.randomUUID (e.g. jsdom in tests)
   return `${Date.now()}-${Math.random().toString(36).slice(2, 8)}`;
 }
 

@@ -186,7 +186,10 @@ export const useMachiningStore = create<MachiningState & MachiningActions>()(
 
         setManualRPMPercent: (percent) => {
           const { baseRPM } = get();
-          if (baseRPM === 0) return;
+          if (baseRPM === 0) {
+            if (import.meta.env.DEV) console.warn('[MachiningStore] setManualRPMPercent called before simulation');
+            return;
+          }
           const newRPM = Math.round(baseRPM * (1 + percent / 100));
           set({ manualOverrides: { ...get().manualOverrides, rpm: newRPM, rpmPercent: percent } });
           get().calcular();
@@ -194,7 +197,10 @@ export const useMachiningStore = create<MachiningState & MachiningActions>()(
 
         setManualFeedPercent: (percent) => {
           const { baseFeed } = get();
-          if (baseFeed === 0) return;
+          if (baseFeed === 0) {
+            if (import.meta.env.DEV) console.warn('[MachiningStore] setManualFeedPercent called before simulation');
+            return;
+          }
           const newFeed = Math.round(baseFeed * (1 + percent / 100));
           set({ manualOverrides: { ...get().manualOverrides, feed: newFeed, feedPercent: percent } });
           get().calcular();

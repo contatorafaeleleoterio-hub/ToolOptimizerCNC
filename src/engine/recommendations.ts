@@ -255,6 +255,7 @@ export function getRecommendedParams(
   material: Material,
   tipoOperacao: TipoUsinagem,
   diametro: number,
+  balanco?: number,
 ): ParametrosUsinagem {
   const group = getMaterialGroup(material);
   const desbasteTable = getDesbasteTable(group);
@@ -291,8 +292,12 @@ export function getRecommendedParams(
   const apRaw = diametro * getAPMultiplier(tipoOperacao, diametro);
   const ap = Math.round(apRaw * 10) / 10; // round to 0.1
 
+  // Cap ap when tool overhang creates L/D > 6 (bloqueado zone — aggressive ap is unsafe)
+  const ldRatio = balanco !== undefined ? balanco / diametro : 0;
+  const apFinal = ldRatio > 6 ? 0.1 : Math.max(0.1, ap);
+
   return {
-    ap: Math.max(0.1, ap),
+    ap: apFinal,
     ae: Math.max(0.01, ae),
     fz: Math.max(0.001, fz),
     vc,
