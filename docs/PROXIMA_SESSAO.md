@@ -296,7 +296,8 @@ npx vite build 2>&1 | tail -5
 - ✅ **S1 CONCLUÍDA** — commit `c6e1e06` (v0.3.1)
 - ✅ **S2 CONCLUÍDA** — commit `4866416` (v0.3.2)
 - ✅ **S3 CONCLUÍDA** — commit `5401d18` (v0.3.3)
-- **Próxima fase:** S4 — Qualidade de Código (comentários L/D, getRecommendedParams, crypto.randomUUID, console.warn DEV)
+- ✅ **S4 CONCLUÍDA** — commit `fca2fba` (v0.3.4)
+- **Próxima fase:** S5 — Expansão de Testes (mobile components, disclaimer, ui-helpers, L/D integration, coverage config)
 
 #### Opção B — Login Google + Multi-Usuário (5 sessões L1-L5)
 - **Documento:** `docs/IMPLEMENTACAO_LOGIN.md`

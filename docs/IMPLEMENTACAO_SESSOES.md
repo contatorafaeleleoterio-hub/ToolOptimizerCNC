@@ -16,7 +16,7 @@
 | S1 | FASE 1 — Correcoes Criticas | ✅ Concluida | `c6e1e06` |
 | S2 | FASE 2 — Design System | ✅ Concluida | `4866416` |
 | S3 | FASE 3 — Consistencia Visual | ✅ Concluida | `5401d18` |
-| S4 | FASE 4 — Qualidade de Codigo | ⬜ Pendente | — |
+| S4 | FASE 4 — Qualidade de Codigo | ✅ Concluida | `fca2fba` |
 | S5 | FASE 5 — Expansao de Testes | ⬜ Pendente | — |
 
 ---
@@ -105,28 +105,25 @@
 ---
 
 ## FASE 4 — Qualidade de Codigo
-**Status:** ⬜ Pendente
-**Commit esperado:** `refactor: L/D boundary comments, L/D-aware recommendations, hardened IDs`
+**Status:** ✅ Concluida — 28/02/2026 — Sessao s19
+**Commit:** `fca2fba` — `refactor: audit fase 4 — L/D comments, L/D-aware ap cap, crypto.randomUUID, DEV warn (v0.3.4)`
 **Plano detalhado:** `docs/PLANO_AUDITORIA.md` → secao FASE 4
 
 ### Tarefas:
-- [ ] **4A.** Comentarios L/D em `src/engine/validators.ts` (linhas 40-43)
-- [ ] **4B.** `getRecommendedParams()` — param `balanco?` + cap ap quando L/D > 6
-  - [ ] Modificar `src/engine/recommendations.ts`
-  - [ ] Adicionar teste em `tests/engine/recommendations.test.ts`
-- [ ] **4C.** `crypto.randomUUID()` em `src/store/history-store.ts` (linha 43)
-- [ ] **4D.** `console.warn` DEV em `src/store/machining-store.ts` (linhas 188-189)
+- [x] **4A.** Comentarios L/D em `src/engine/validators.ts` (linhas 40-43)
+  - Intervalos documentados: `[0,3]` verde, `(3,4)` amarelo, `[4,6]` vermelho, `(6,∞)` bloqueado
+- [x] **4B.** `getRecommendedParams()` — param `balanco?` + cap ap quando L/D > 6
+  - [x] Modificar `src/engine/recommendations.ts` — assinatura + logica cap ap=0.1
+  - [x] Adicionar 3 testes em `tests/engine/recommendations.test.ts`
+- [x] **4C.** `crypto.randomUUID()` em `src/store/history-store.ts`
+  - `generateId()` usa `crypto.randomUUID()` com fallback timestamp+random para jsdom
+- [x] **4D.** `console.warn` DEV em `src/store/machining-store.ts`
+  - Guards `setManualRPMPercent` e `setManualFeedPercent` com `import.meta.env.DEV` warn
 
 ### Quality Gates:
-- [ ] Todos os testes passando
-- [ ] TypeScript limpo
-- [ ] Build limpo
-
-### Ao concluir:
-- [ ] Commit + push
-- [ ] Marcar FASE 4 como ✅ neste documento
-- [ ] Atualizar PROXIMA_SESSAO.md e MEMORY.md
-- [ ] Notificar usuario: **"FASE 4 concluida. Iniciar nova sessao para FASE 5."**
+- [x] Todos os testes passando (418/418 — +3 novos)
+- [x] TypeScript limpo (zero erros)
+- [x] Build limpo (92.96KB gzip)
 
 ---
 
