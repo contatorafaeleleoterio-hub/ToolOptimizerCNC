@@ -8,6 +8,12 @@ export default defineConfig({
     setupFiles: ['./tests/setup.ts'],
     passWithNoTests: true,
     exclude: ['Sistema_Desktop_Pen_driver/**', 'node_modules/**', '.claude/**'],
+    coverage: {
+      provider: 'v8',
+      reporter: ['text', 'html'],
+      include: ['src/**/*.{ts,tsx}'],
+      exclude: ['src/main.tsx', 'src/app/**'],
+    },
   },
   resolve: {
     alias: {

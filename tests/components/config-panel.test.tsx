@@ -1,4 +1,4 @@
-import { render, screen, fireEvent } from '@testing-library/react';
+import { render, screen, fireEvent, waitFor, act } from '@testing-library/react';
 import { describe, it, expect, beforeEach } from 'vitest';
 import { BrowserRouter } from 'react-router-dom';
 import { ConfigPanel } from '@/components/config-panel';
@@ -122,10 +122,13 @@ describe('ConfigPanel', () => {
 
   it('calculates on Simular click', async () => {
     renderPanel();
-    fireEvent.click(screen.getByText('Simular'));
-    // Wait for animation to complete (450ms loading + 1350ms gauge + buffer)
-    await new Promise((resolve) => setTimeout(resolve, 2000));
-    expect(useMachiningStore.getState().resultado).not.toBeNull();
+    await act(async () => {
+      fireEvent.click(screen.getByText('Simular'));
+    });
+    await waitFor(
+      () => expect(useMachiningStore.getState().resultado).not.toBeNull(),
+      { timeout: 2500 },
+    );
   });
 
   it('resets state on reset button click', () => {

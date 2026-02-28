@@ -506,6 +506,40 @@ describe('machining-store', () => {
     });
   });
 
+  describe('calcular() — L/D boundary integration', () => {
+    beforeEach(() => {
+      getState().setFerramenta({ tipo: 'topo', diametro: 10 });
+      getState().setParametros({ ap: 2, ae: 5, fz: 0.1, vc: 100 });
+    });
+
+    it('L/D exactly 6.0 → vermelho (still within critical range)', () => {
+      getState().setFerramenta({ balanco: 60, diametro: 10 }); // 60/10 = 6.0
+      getState().setParametros({ ap: 2, ae: 5, fz: 0.1, vc: 100 });
+      getState().calcular();
+      const r = getState().resultado!;
+      expect(r.seguranca.razaoLD).toBe(6.0);
+      expect(r.seguranca.nivel).toBe('vermelho');
+    });
+
+    it('L/D just above 6 → bloqueado (strict boundary)', () => {
+      getState().setFerramenta({ balanco: 61, diametro: 10 }); // 61/10 = 6.1 > 6
+      getState().setParametros({ ap: 2, ae: 5, fz: 0.1, vc: 100 });
+      getState().calcular();
+      const r = getState().resultado!;
+      expect(r.seguranca.razaoLD).toBeCloseTo(6.1, 1);
+      expect(r.seguranca.nivel).toBe('bloqueado');
+    });
+
+    it('L/D > 6 → bloqueado result includes BLOQUEADO warning', () => {
+      getState().setFerramenta({ balanco: 70, diametro: 10 }); // 70/10 = 7.0
+      getState().setParametros({ ap: 2, ae: 5, fz: 0.1, vc: 100 });
+      getState().calcular();
+      const r = getState().resultado!;
+      expect(r.seguranca.nivel).toBe('bloqueado');
+      expect(r.seguranca.avisos.some((a) => a.includes('BLOQUEADO'))).toBe(true);
+    });
+  });
+
   describe('resetToDefaults', () => {
     it('resets all state to defaults', () => {
       getState().setLimitesMaquina({ maxRPM: 5000 });
