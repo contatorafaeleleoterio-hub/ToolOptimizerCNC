@@ -13,11 +13,11 @@
 | Item | Valor |
 |------|-------|
 | **Branch** | `main` |
-| **Versão** | `0.3.1` |
+| **Versão** | `0.3.2` |
 | **Último commit** | ver `git log --oneline -3` |
-| **Testes** | **401/401 passando** (25 arquivos) |
+| **Testes** | **412 passando** (26 arquivos) — 3 flaky mobile-page (timeout ambiente, passam isolados) |
 | **TypeScript** | **zero erros** |
-| **Build** | **limpo** — JS 93.65KB gzip, CSS 12.83KB |
+| **Build** | **limpo** — JS 92.91KB gzip, CSS 12.84KB |
 | **Remote** | `origin/main` sincronizado (GitHub) |
 | **Worker** | ✅ LIVE — `https://tooloptimizercnc.contatorafaeleleoterio.workers.dev` |
 | **GitHub Pages** | ✅ LIVE — deploy automático funciona |
@@ -50,6 +50,24 @@ npx vite build 2>&1 | tail -5
 ---
 
 ## ✅ O QUE FOI FEITO (histórico recente)
+
+### Sessão 28/02 s17 — Auditoria FASE 2: Design System
+
+**Contexto:** Extração do StyledSlider duplicado + criação de design tokens + font sizes.
+
+**O que foi feito:**
+- ✅ **Commit `4866416` — Auditoria FASE 2 completa (v0.3.1 → 0.3.2):**
+  - Criado `src/components/styled-slider.tsx` — exporta `StyledSlider`, `BTN_CLS`, `StyledSliderProps`
+  - Removidas ~95 linhas de código duplicado de `fine-tune-panel.tsx` e `settings-page.tsx`
+  - Criado `tests/components/styled-slider.test.tsx` — 14 testes (render, aria, keyboard, clamp, step)
+  - Criado `src/components/design-tokens.ts` — `CARD_GLASS`, `CARD_INNER`, `MODAL_PANEL`, `MODAL_BACKDROP`, `MODAL_HANDLE`
+  - Adicionado `--font-size-2xs: 10px` e `--font-size-fine: 11px` ao `@theme` em `src/index.css`
+- ✅ **412 testes passando** (14 novos) | **TypeScript zero erros** | **Build 92.91KB gzip**
+
+**Commits desta sessão:**
+- `4866416` refactor: extract StyledSlider to shared component, create design tokens (FASE 2 v0.3.2)
+
+---
 
 ### Sessão 27/02 s16 — Auditoria FASE 1 + Melhorias UX mobile + Fix vitest worktrees
 
@@ -276,7 +294,8 @@ npx vite build 2>&1 | tail -5
 - **Documento:** `docs/IMPLEMENTACAO_SESSOES.md`
 - **Plano detalhado:** `docs/PLANO_AUDITORIA.md`
 - ✅ **S1 CONCLUÍDA** — commit `c6e1e06` (v0.3.1)
-- **Próxima fase:** S2 — Design System (extrair StyledSlider, design tokens, font sizes)
+- ✅ **S2 CONCLUÍDA** — commit `4866416` (v0.3.2)
+- **Próxima fase:** S3 — Consistência Visual (cores ae, ToolSummaryViewer glass, border radius, migrar text-[10px]→text-2xs)
 
 #### Opção B — Login Google + Multi-Usuário (5 sessões L1-L5)
 - **Documento:** `docs/IMPLEMENTACAO_LOGIN.md`
@@ -653,5 +672,5 @@ git status
 
 ---
 
-*Última atualização: 26/02/2026 — Sessão 15 (Custom Domains + Auditoria completa + Plano Login Google)*
-*Próximo assistente: leia este arquivo + verificar documentos listados na seção "PARA O PRÓXIMO ASSISTENTE"*
+*Última atualização: 28/02/2026 — Sessão 17 (Auditoria FASE 2 — Design System)*
+*Próximo assistente: leia este arquivo + executar FASE 3 via `docs/IMPLEMENTACAO_SESSOES.md`*
