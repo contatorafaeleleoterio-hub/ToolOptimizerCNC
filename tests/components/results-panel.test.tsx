@@ -21,8 +21,6 @@ describe('ResultsPanel', () => {
 
   it('shows zeroed results when no simulation yet', () => {
     renderPanel();
-    expect(screen.getByText('Rotação')).toBeInTheDocument();
-    expect(screen.getByText('Parâmetros Calculados')).toBeInTheDocument();
     expect(screen.getByText('SEGURO')).toBeInTheDocument();
   });
 
@@ -34,9 +32,9 @@ describe('ResultsPanel', () => {
   it('shows calculated results after calcular()', () => {
     setupSafeCalc();
     renderPanel();
-    expect(screen.getByText('Rotação')).toBeInTheDocument();
-    expect(screen.getAllByText('Avanço').length).toBeGreaterThan(0);
-    expect(screen.getByText('Potência')).toBeInTheDocument();
+    expect(screen.getAllByText('Rotação (RPM)').length).toBeGreaterThan(0);
+    expect(screen.getAllByText('Avanço (mm/min)').length).toBeGreaterThan(0);
+    expect(screen.getByText('Potência Est.')).toBeInTheDocument();
   });
 
   it('shows safety badge', () => {

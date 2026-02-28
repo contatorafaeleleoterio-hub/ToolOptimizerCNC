@@ -3,9 +3,8 @@ import type { ResultadoUsinagem } from '@/types/index';
 import { Gauge } from './gauge';
 import { FormulaCard, Fraction } from './formula-card';
 import { ToolSummaryViewer } from './tool-summary-viewer';
-import { fmt, SafetyBadge, MetricCell, BigNumber, ProgressCard, WarningsSection } from './shared-result-parts';
+import { fmt, SafetyBadge, BigNumber, ProgressCard, WarningsSection } from './shared-result-parts';
 import { useSimulationAnimation } from '@/hooks/use-simulation-animation';
-import { useResetFeedback } from '@/hooks/use-reset-feedback';
 
 const EMPTY_RESULTADO: ResultadoUsinagem = {
   rpm: 0,
@@ -33,8 +32,6 @@ export function ResultsPanel() {
   const setManualFeedPercent = useMachiningStore((s) => s.setManualFeedPercent);
 
   const { triggerPulse, safetyLevel } = useSimulationAnimation();
-  const { isResetting } = useResetFeedback();
-
   const resultado = storeResultado ?? EMPTY_RESULTADO;
 
   const { rpm, avanco, potenciaMotor, mrr, vcReal, seguranca } = resultado;
@@ -48,7 +45,6 @@ export function ResultsPanel() {
     ? 'animate-[subtlePulse_0.45s_ease-in-out_2]' // 0.3s → 0.45s (+50%)
     : '';
 
-  const resetFeedbackClass = isResetting ? 'animate-[fadeOut_0.4s_ease-out]' : '';
   const showResetMessage = storeResultado === null;
 
   return (
@@ -70,27 +66,6 @@ export function ResultsPanel() {
 
       <div className={pulseClass}>
         <SafetyBadge nivel={seguranca.nivel} avisosCount={seguranca.avisos.length} />
-      </div>
-
-      {/* Overview cards */}
-      <div className={`bg-surface-dark backdrop-blur-xl border border-white/5 rounded-2xl p-6 shadow-glass transition-all duration-300 ${pulseClass} ${resetFeedbackClass}`}>
-        <div className="flex items-center gap-3 mb-4">
-          <div className="w-10 h-10 rounded-lg bg-white/5 flex items-center justify-center border border-white/10">
-            <span className="material-symbols-outlined text-gray-400">analytics</span>
-          </div>
-          <div>
-            <h3 className="text-base font-bold text-white uppercase tracking-widest">Parâmetros Calculados</h3>
-            <p className="text-xs text-gray-500 font-mono mt-0.5">Resumo da Operação</p>
-          </div>
-        </div>
-        <div className="bg-black/40 rounded-xl border border-white/5 overflow-hidden">
-          <div className="grid grid-cols-4 divide-x divide-white/5">
-            <MetricCell label="Rotação" value={fmt(rpm)} unit="RPM" unitColor="text-primary" />
-            <MetricCell label="Avanço" value={fmt(avanco)} unit="mm/min" unitColor="text-secondary" />
-            <MetricCell label="Potência" value={potenciaMotor.toFixed(2)} unit="kW" unitColor="text-accent-orange" />
-            <MetricCell label="Vc Real" value={vcReal.toFixed(0)} unit="m/min" unitColor="text-primary" />
-          </div>
-        </div>
       </div>
 
       {/* Big numbers: RPM + Feed (bidirectional sliders) */}
