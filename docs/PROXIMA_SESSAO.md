@@ -13,7 +13,7 @@
 | Item | Valor |
 |------|-------|
 | **Branch** | `main` |
-| **Versão** | `0.3.0` |
+| **Versão** | `0.3.1` |
 | **Último commit** | ver `git log --oneline -3` |
 | **Testes** | **401/401 passando** (25 arquivos) |
 | **TypeScript** | **zero erros** |
@@ -50,6 +50,29 @@ npx vite build 2>&1 | tail -5
 ---
 
 ## ✅ O QUE FOI FEITO (histórico recente)
+
+### Sessão 27/02 s16 — Auditoria FASE 1 + Melhorias UX mobile + Fix vitest worktrees
+
+**Contexto:** Verificação de arquivos pendentes (não commitados) + execução da FASE 1 da auditoria.
+
+**O que foi feito:**
+- ✅ **Commit `1195db1` — Melhorias UX (pendentes de sessão anterior):**
+  - `results-panel.tsx`: removido bloco redundante "Parâmetros Calculados" (4-col overview)
+  - `mobile-fine-tune-section.tsx`: TouchSlider com resposta imediata (remove hold-to-activate 800ms)
+  - Fix Tailwind v4: inline styles em vez de `bg-${color}` (evita purge em produção)
+  - `vitest.config.ts`: `exclude: ['.claude/**']` — worktrees não conflitam mais com testes
+- ✅ **Commit `c6e1e06` — Auditoria FASE 1 completa (v0.3.0 → 0.3.1):**
+  - Removido `forcaCorte` de 6 locais (types, store, component, 2 testes, srctypes.md)
+  - Landing page: removidos links quebrados (blog/docs/status inexistentes)
+  - `vite.config.ts`: base URL fallback corrigido (`/ToolOptimizerCNC/` → `/`)
+  - CTF guard defensivo adicionado em `chip-thinning.ts`
+- ✅ **401 testes passando** | **TypeScript zero erros** | **Build limpo 93KB**
+
+**Commits desta sessão:**
+- `1195db1` refactor: remove overview cards, improve mobile slider UX, fix vitest worktree exclude
+- `c6e1e06` fix: audit fase 1 — remove forcaCorte, landing links, vite base, CTF guard (v0.3.1)
+
+---
 
 ### Sessão 26/02 s15 — Custom Domains + Auditoria + Plano Login Google
 
@@ -252,7 +275,8 @@ npx vite build 2>&1 | tail -5
 #### Opção A — Auditoria do Sistema (5 sessões S1-S5)
 - **Documento:** `docs/IMPLEMENTACAO_SESSOES.md`
 - **Plano detalhado:** `docs/PLANO_AUDITORIA.md`
-- **Próxima fase:** S1 — Correções Críticas (remover forcaCorte, fix landing links, vite base URL, CTF guard)
+- ✅ **S1 CONCLUÍDA** — commit `c6e1e06` (v0.3.1)
+- **Próxima fase:** S2 — Design System (extrair StyledSlider, design tokens, font sizes)
 
 #### Opção B — Login Google + Multi-Usuário (5 sessões L1-L5)
 - **Documento:** `docs/IMPLEMENTACAO_LOGIN.md`
