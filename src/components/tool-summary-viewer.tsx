@@ -29,7 +29,7 @@ export function ToolSummaryViewer() {
   const parametros = useMachiningStore((s) => s.parametros);
 
   return (
-    <div className="bg-gradient-to-r from-primary/5 to-transparent border-l-2 border-primary rounded-lg p-3 mb-4" data-testid="tool-summary">
+    <div className="bg-black/30 border border-white/5 rounded-xl p-3 mb-4 backdrop-blur-sm" data-testid="tool-summary">
       <div className="grid grid-cols-4 gap-3 mb-2">
         <ValueCell label="Diâmetro" value={`Ø${ferramenta.diametro}mm`} />
         <ValueCell label="Raio Ponta" value={getCornerRadius(ferramenta)} />
@@ -39,7 +39,7 @@ export function ToolSummaryViewer() {
       <div className="grid grid-cols-4 gap-3">
         <ValueCell label="Vc" value={`${parametros.vc.toFixed(2)}`} color="text-primary" />
         <ValueCell label="fz" value={`${parametros.fz.toFixed(2)}`} color="text-secondary" />
-        <ValueCell label="ae" value={`${parametros.ae.toFixed(2)}`} color="text-accent-orange" />
+        <ValueCell label="ae" value={`${parametros.ae.toFixed(2)}`} color="text-accent-purple" />
         <ValueCell label="ap" value={`${parametros.ap.toFixed(2)}`} color="text-accent-orange" />
       </div>
     </div>

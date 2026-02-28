@@ -6,11 +6,11 @@
   --color-card-dark: rgba(30, 35, 45, 0.6);
   --color-primary: #00D9FF;
   --color-secondary: #39FF14;
-  --color-accent-orange: #F97316;
-  --color-accent-purple: #A855F7;
-  --color-seg-verde: #2ecc71;
-  --color-seg-amarelo: #f39c12;
-  --color-seg-vermelho: #e74c3c;
+  --color-accent-orange: #F97316;  /* accent: ap axial depth, warnings, badges */
+  --color-accent-purple: #A855F7;  /* accent: ae radial engagement parameter */
+  --color-seg-verde: #2ecc71;      /* semáforo: parâmetros seguros (L/D ≤ 3) */
+  --color-seg-amarelo: #f39c12;    /* semáforo: alerta vibração / L/D 3–4 */
+  --color-seg-vermelho: #e74c3c;   /* semáforo: crítico, sugerir redução (L/D 4–6) */
   --font-display: "Inter", sans-serif;
   --font-mono: "JetBrains Mono", monospace;
   --shadow-neon-cyan: 0 0 15px rgba(0, 217, 255, 0.4), 0 0 30px rgba(0, 217, 255, 0.15);

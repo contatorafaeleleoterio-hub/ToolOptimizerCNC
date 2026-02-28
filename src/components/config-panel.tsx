@@ -68,7 +68,7 @@ export function ConfigPanel() {
               {material && (
                 <div className="flex justify-between mt-1 px-1">
                   <span className="text-xs text-gray-600">{material.dureza}</span>
-                  {vcRange && <span className="text-[10px] text-primary/70">Vc: {vcRange[0]}-{vcRange[1]} m/min</span>}
+                  {vcRange && <span className="text-2xs text-primary/70">Vc: {vcRange[0]}-{vcRange[1]} m/min</span>}
                 </div>
               )}
               {material?.status === 'estimado' && (

@@ -22,7 +22,7 @@ const SECTIONS: { id: Section; label: string; icon: string }[] = [
 ];
 
 const CARD = 'bg-card-dark rounded-xl p-4 sm:p-6 border border-white/5 shadow-inner-glow mb-4 sm:mb-6';
-const LABEL = 'text-[11px] font-semibold text-gray-500 uppercase tracking-wide mb-1 block';
+const LABEL = 'text-fine font-semibold text-gray-500 uppercase tracking-wide mb-1 block';
 
 export function SettingsPage() {
   usePageTitle('Configurações — ToolOptimizer CNC');
@@ -125,7 +125,7 @@ function MaquinaSection() {
           Eficiência do Fuso
         </h3>
         <NumInput label="Eficiência (η)" value={limites.eficiencia} onChange={(v) => setLimites({ eficiencia: v })} min={0.5} max={1.0} step={0.01} />
-        <p className="text-[10px] text-gray-500 mt-2">Relação entre potência entregue no fuso e potência consumida. Valor típico: 0.80–0.90</p>
+        <p className="text-2xs text-gray-500 mt-2">Relação entre potência entregue no fuso e potência consumida. Valor típico: 0.80–0.90</p>
       </div>
     </div>
   );
@@ -172,7 +172,7 @@ function SegurancaSection() {
           >+</button>
           <span className="text-lg font-mono font-bold text-primary w-14 text-right">{safetyFactor.toFixed(2)}</span>
         </div>
-        <p className="text-[10px] text-gray-500 mt-2">Aplicado a Potência, Torque. Valores mais baixos = mais conservador.</p>
+        <p className="text-2xs text-gray-500 mt-2">Aplicado a Potência, Torque. Valores mais baixos = mais conservador.</p>
       </div>
 
       <div className={CARD}>
@@ -209,7 +209,7 @@ function SegurancaSection() {
               className="w-full min-h-[44px] bg-black/40 border border-white/10 rounded-lg py-2 px-3 text-sm text-white font-mono focus:ring-1 focus:ring-seg-vermelho outline-none" />
           </div>
         </div>
-        <p className="text-[10px] text-gray-500 mt-3">L/D {'>'} Crítico = Bloqueado. Padrão: Seguro ≤3, Alerta {'<'}4, Crítico ≤6</p>
+        <p className="text-2xs text-gray-500 mt-3">L/D {'>'} Crítico = Bloqueado. Padrão: Seguro ≤3, Alerta {'<'}4, Crítico ≤6</p>
       </div>
 
       <div className={CARD}>
@@ -316,9 +316,9 @@ function MateriaisSection() {
               <div key={base.id} className={`flex flex-wrap items-center justify-between gap-2 px-3 py-2 rounded-lg border ${custom ? 'bg-accent-orange/5 border-accent-orange/20' : 'bg-black/30 border-white/5'}`}>
                 <div className="flex items-center gap-2 flex-wrap">
                   {custom ? (
-                    <span className="text-[10px] font-bold px-2 py-0.5 rounded bg-accent-orange/20 text-accent-orange shrink-0">Custom</span>
+                    <span className="text-2xs font-bold px-2 py-0.5 rounded bg-accent-orange/20 text-accent-orange shrink-0">Custom</span>
                   ) : (
-                    <span className={`text-[10px] font-bold px-2 py-0.5 rounded shrink-0 ${
+                    <span className={`text-2xs font-bold px-2 py-0.5 rounded shrink-0 ${
                       mat.iso === 'P' ? 'bg-blue-500/20 text-blue-400' :
                       mat.iso === 'M' ? 'bg-yellow-500/20 text-yellow-400' :
                       mat.iso === 'N' ? 'bg-green-500/20 text-green-400' :
@@ -326,8 +326,8 @@ function MateriaisSection() {
                     }`}>ISO {mat.iso}</span>
                   )}
                   <span className="text-sm text-gray-200">{mat.nome}</span>
-                  {mat.status === 'estimado' && !custom && <span className="text-[10px] text-seg-amarelo">⚠ Estimado</span>}
-                  <span className="text-[10px] text-gray-500 font-mono hidden sm:inline">Kc={mat.kc1_1} | {mat.dureza}</span>
+                  {mat.status === 'estimado' && !custom && <span className="text-2xs text-seg-amarelo">⚠ Estimado</span>}
+                  <span className="text-2xs text-gray-500 font-mono hidden sm:inline">Kc={mat.kc1_1} | {mat.dureza}</span>
                 </div>
                 <div className="flex items-center">
                   <button onClick={() => handleEditClick(base.id)}
@@ -362,9 +362,9 @@ function MateriaisSection() {
             return (
               <div key={m.id} className="flex items-center justify-between px-3 py-2 bg-black/30 rounded-lg border border-white/5">
                 <div className="flex items-center gap-2 flex-wrap">
-                  <span className="text-[10px] font-bold px-2 py-0.5 rounded bg-secondary/20 text-secondary shrink-0">Custom</span>
+                  <span className="text-2xs font-bold px-2 py-0.5 rounded bg-secondary/20 text-secondary shrink-0">Custom</span>
                   <span className="text-sm text-gray-200">{m.nome}</span>
-                  <span className="text-[10px] text-gray-500 font-mono hidden sm:inline">Kc={m.kc1_1} | ISO {m.iso}</span>
+                  <span className="text-2xs text-gray-500 font-mono hidden sm:inline">Kc={m.kc1_1} | ISO {m.iso}</span>
                 </div>
                 <div className="flex items-center">
                   <button onClick={() => handleEditClick(m.id)}
@@ -432,7 +432,7 @@ function MaterialForm({
   return (
     <div className={`bg-black/30 rounded-lg border p-4 mb-4 space-y-3 ${isEditing ? 'border-accent-orange/30' : 'border-primary/20'}`}>
       {isEditing && (
-        <p className="text-[10px] font-semibold text-accent-orange uppercase tracking-wide flex items-center gap-1">
+        <p className="text-2xs font-semibold text-accent-orange uppercase tracking-wide flex items-center gap-1">
           <span className="material-symbols-outlined text-sm">edit</span>
           Editando material
         </p>
@@ -468,7 +468,7 @@ function MaterialForm({
         <label className={LABEL}>Faixas de Vc (m/min): Desbaste / Semi / Acabamento</label>
         <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
           <div>
-            <label className="text-[10px] text-gray-600 mb-1 block">Desbaste</label>
+            <label className="text-2xs text-gray-600 mb-1 block">Desbaste</label>
             <div className="flex gap-1">
               <input type="number" value={vcDes[0]} onChange={(e) => setVcDes([Number(e.target.value), vcDes[1]])}
                 className="w-full min-h-[44px] bg-black/40 border border-white/10 rounded-lg py-1.5 px-2 text-xs text-white font-mono outline-none" />
@@ -477,7 +477,7 @@ function MaterialForm({
             </div>
           </div>
           <div>
-            <label className="text-[10px] text-gray-600 mb-1 block">Semi-Acab.</label>
+            <label className="text-2xs text-gray-600 mb-1 block">Semi-Acab.</label>
             <div className="flex gap-1">
               <input type="number" value={vcSemi[0]} onChange={(e) => setVcSemi([Number(e.target.value), vcSemi[1]])}
                 className="w-full min-h-[44px] bg-black/40 border border-white/10 rounded-lg py-1.5 px-2 text-xs text-white font-mono outline-none" />
@@ -486,7 +486,7 @@ function MaterialForm({
             </div>
           </div>
           <div>
-            <label className="text-[10px] text-gray-600 mb-1 block">Acabamento</label>
+            <label className="text-2xs text-gray-600 mb-1 block">Acabamento</label>
             <div className="flex gap-1">
               <input type="number" value={vcAcab[0]} onChange={(e) => setVcAcab([Number(e.target.value), vcAcab[1]])}
                 className="w-full min-h-[44px] bg-black/40 border border-white/10 rounded-lg py-1.5 px-2 text-xs text-white font-mono outline-none" />
@@ -551,7 +551,7 @@ function CorrectionModal({ tipo, diametro, initial, onSave, onReset, onClose }: 
         {/* Header */}
         <div className="flex items-start justify-between mb-4">
           <div>
-            <p className="text-[10px] text-gray-500 uppercase tracking-widest">Fator de Correção</p>
+            <p className="text-2xs text-gray-500 uppercase tracking-widest">Fator de Correção</p>
             <h4 className="text-sm font-bold text-white mt-0.5">{tipoLabel}</h4>
             <p className="text-xs text-primary font-mono mt-0.5">Ø{diametro}mm</p>
           </div>
@@ -563,7 +563,7 @@ function CorrectionModal({ tipo, diametro, initial, onSave, onReset, onClose }: 
         {/* Slider */}
         <div className="mb-1">
           <div className="flex items-center justify-between mb-1">
-            <span className="text-[10px] text-gray-500 uppercase tracking-wide">Multiplicador (Vc × fz)</span>
+            <span className="text-2xs text-gray-500 uppercase tracking-wide">Multiplicador (Vc × fz)</span>
             <span className="text-xl font-mono font-bold text-primary">{fator.toFixed(2)}</span>
           </div>
           <div className="flex items-center gap-2">
@@ -733,7 +733,7 @@ function FerramentasSection() {
           <span className="w-1 h-3 bg-seg-verde rounded-full" />
           Fatores de Correção por Ferramenta
         </h3>
-        <p className="text-[10px] text-gray-500 mb-4">
+        <p className="text-2xs text-gray-500 mb-4">
           Multiplicador aplicado a Vc e fz. Compensa revestimentos (TiAlN, DLC, etc).
           Clique em Editar em qualquer diâmetro para ajustar.
         </p>
@@ -745,9 +745,9 @@ function FerramentasSection() {
           return (
             <div key={tipo} className="mb-5">
               <div className="flex items-center justify-between mb-2">
-                <label className="text-[11px] font-semibold text-gray-400 uppercase tracking-wide">{label}</label>
+                <label className="text-fine font-semibold text-gray-400 uppercase tracking-wide">{label}</label>
                 {activeFactors.length > 0 && (
-                  <span className="text-[10px] text-primary font-mono bg-primary/10 px-2 py-0.5 rounded-full border border-primary/20">
+                  <span className="text-2xs text-primary font-mono bg-primary/10 px-2 py-0.5 rounded-full border border-primary/20">
                     {activeFactors.length} ativo{activeFactors.length > 1 ? 's' : ''}
                   </span>
                 )}
@@ -777,13 +777,13 @@ function FerramentasSection() {
                               {tcf ? tcf.fator.toFixed(2) : '1.00'}
                             </span>
                           </td>
-                          <td className="py-2 pl-2 text-gray-500 text-[10px] truncate max-w-[100px] hidden sm:table-cell">
+                          <td className="py-2 pl-2 text-gray-500 text-2xs truncate max-w-[100px] hidden sm:table-cell">
                             {tcf?.descricao ?? '—'}
                           </td>
                           <td className="py-2 pr-2 text-right">
                             <button
                               onClick={() => setModalKey({ tipo, diametro: d })}
-                              className={`px-2.5 py-1 rounded-lg text-[10px] font-semibold transition-all flex items-center gap-1 ml-auto
+                              className={`px-2.5 py-1 rounded-lg text-2xs font-semibold transition-all flex items-center gap-1 ml-auto
                                 ${isActive
                                   ? 'bg-primary/15 border border-primary/30 text-primary hover:bg-primary/25'
                                   : 'bg-black/40 border border-white/10 text-gray-500 hover:text-primary hover:border-primary/20'
@@ -848,7 +848,7 @@ function ExibicaoSection() {
             </button>
           ))}
         </div>
-        <p className="text-[10px] text-gray-500 mt-3">Número de casas decimais exibidas nos resultados. Padrão: 2</p>
+        <p className="text-2xs text-gray-500 mt-3">Número de casas decimais exibidas nos resultados. Padrão: 2</p>
       </div>
     </div>
   );

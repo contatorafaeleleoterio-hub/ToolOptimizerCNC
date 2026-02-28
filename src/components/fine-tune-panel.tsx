@@ -90,7 +90,7 @@ export function FineTunePanel() {
                     className={`w-20 bg-transparent border-none text-right font-mono text-xl font-bold text-${color} outline-none [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none`}
                     style={{ filter: `drop-shadow(0 0 8px rgba(${rgb},0.4))` }}
                     aria-label={`valor de ${label}`} />
-                  <div className="text-[11px] text-gray-500 font-mono tracking-wider">{unit}</div>
+                  <div className="text-fine text-gray-500 font-mono tracking-wider">{unit}</div>
                 </div>
               </div>
 
@@ -120,11 +120,11 @@ export function FineTunePanel() {
                   <p className="text-xs text-gray-400 leading-relaxed mb-2.5">{desc}</p>
                   <div className="space-y-1.5">
                     <div className="flex items-start gap-2">
-                      <span className="text-[11px] font-bold text-green-400 w-16 shrink-0 pt-0.5 tracking-wide">▲ MAIS</span>
+                      <span className="text-fine font-bold text-green-400 w-16 shrink-0 pt-0.5 tracking-wide">▲ MAIS</span>
                       <span className="text-xs text-gray-400 leading-relaxed">{aumentar}</span>
                     </div>
                     <div className="flex items-start gap-2">
-                      <span className="text-[11px] font-bold text-red-400 w-16 shrink-0 pt-0.5 tracking-wide">▼ MENOS</span>
+                      <span className="text-fine font-bold text-red-400 w-16 shrink-0 pt-0.5 tracking-wide">▼ MENOS</span>
                       <span className="text-xs text-gray-400 leading-relaxed">{diminuir}</span>
                     </div>
                     <div className="flex items-start gap-2 pt-1.5 mt-1 border-t border-white/5">
@@ -152,7 +152,7 @@ export function FineTunePanel() {
             {resultado ? resultado.mrr.toFixed(1) : '—'} <span className="text-xs text-gray-600">cm³/min</span>
           </span>
         </div>
-        {material && <p className="text-[11px] text-gray-600 mt-1">{material.nome} — {material.dureza}</p>}
+        {material && <p className="text-fine text-gray-600 mt-1">{material.nome} — {material.dureza}</p>}
       </div>
     </div>
   );

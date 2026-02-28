@@ -186,7 +186,7 @@ export function MobileFineTuneSection() {
                     aria-label={`Informações sobre ${fullLabel}`}
                   >
                     <span className={`text-sm font-bold font-mono text-${color}`}>{label}</span>
-                    <span className="text-[10px] text-gray-500 uppercase">{fullLabel}</span>
+                    <span className="text-2xs text-gray-500 uppercase">{fullLabel}</span>
                     <span
                       className="material-symbols-outlined text-gray-600 transition-transform duration-300"
                       style={{ fontSize: '14px', transform: isOpen ? 'rotate(180deg)' : 'rotate(0deg)' }}
@@ -233,11 +233,11 @@ export function MobileFineTuneSection() {
                     <p className="text-xs text-gray-400 leading-relaxed mb-2.5">{desc}</p>
                     <div className="space-y-1.5">
                       <div className="flex items-start gap-2">
-                        <span className="text-[11px] font-bold text-green-400 w-16 shrink-0 pt-0.5 tracking-wide">▲ MAIS</span>
+                        <span className="text-fine font-bold text-green-400 w-16 shrink-0 pt-0.5 tracking-wide">▲ MAIS</span>
                         <span className="text-xs text-gray-400 leading-relaxed">{aumentar}</span>
                       </div>
                       <div className="flex items-start gap-2">
-                        <span className="text-[11px] font-bold text-red-400 w-16 shrink-0 pt-0.5 tracking-wide">▼ MENOS</span>
+                        <span className="text-fine font-bold text-red-400 w-16 shrink-0 pt-0.5 tracking-wide">▼ MENOS</span>
                         <span className="text-xs text-gray-400 leading-relaxed">{diminuir}</span>
                       </div>
                       <div className="flex items-start gap-2 pt-1.5 mt-1 border-t border-white/5">
@@ -256,7 +256,7 @@ export function MobileFineTuneSection() {
       {/* MRR summary */}
       <div className="bg-card-dark rounded-xl p-4 border border-white/5">
         <div className="flex justify-between items-center mb-2">
-          <span className="text-[10px] uppercase tracking-wider text-gray-500">Material Removal</span>
+          <span className="text-2xs uppercase tracking-wider text-gray-500">Material Removal</span>
           {resultado && <span className="material-symbols-outlined text-xs text-secondary animate-pulse">trending_up</span>}
         </div>
         <div className="bg-black/30 p-4 rounded-xl flex items-center justify-between border border-white/5">
@@ -268,7 +268,7 @@ export function MobileFineTuneSection() {
             {resultado ? resultado.mrr.toFixed(1) : '—'} <span className="text-xs text-gray-600">cm³/min</span>
           </span>
         </div>
-        {material && <p className="text-[10px] text-gray-600 mt-2">{material.nome} — {material.dureza}</p>}
+        {material && <p className="text-2xs text-gray-600 mt-2">{material.nome} — {material.dureza}</p>}
       </div>
     </section>
   );
