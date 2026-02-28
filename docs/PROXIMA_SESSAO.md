@@ -13,11 +13,11 @@
 | Item | Valor |
 |------|-------|
 | **Branch** | `main` |
-| **Versão** | `0.3.2` |
-| **Último commit** | ver `git log --oneline -3` |
-| **Testes** | **412 passando** (26 arquivos) — 3 flaky mobile-page (timeout ambiente, passam isolados) |
+| **Versão** | `0.3.4` |
+| **Último commit** | `5bd5b2f` test: audit fase 5 — mobile components, UI helpers, L/D boundary, coverage config |
+| **Testes** | **493 passando** (33 arquivos) — nenhum flaky persistente |
 | **TypeScript** | **zero erros** |
-| **Build** | **limpo** — JS 92.91KB gzip, CSS 12.84KB |
+| **Build** | **limpo** — JS 92.96KB gzip, CSS 12.84KB |
 | **Remote** | `origin/main` sincronizado (GitHub) |
 | **Worker** | ✅ LIVE — `https://tooloptimizercnc.contatorafaeleleoterio.workers.dev` |
 | **GitHub Pages** | ✅ LIVE — deploy automático funciona |
@@ -50,6 +50,26 @@ npx vite build 2>&1 | tail -5
 ---
 
 ## ✅ O QUE FOI FEITO (histórico recente)
+
+### Sessão 28/02 s20 — Auditoria FASE 5: Expansão de Testes
+
+**Contexto:** Última fase da auditoria — cobertura de testes mobile, UI helpers, L/D boundary e coverage.
+
+**O que foi feito:**
+- ✅ **Commit `5bd5b2f` — Auditoria FASE 5 completa (v0.3.4 mantido):**
+  - 5A: `mobile-results-section.test.tsx` (8t), `mobile-config-section.test.tsx` (12t), `mobile-fine-tune-section.test.tsx` (13t)
+  - 5B: `disclaimer.test.tsx` (3t), `ui-helpers.test.tsx` (12t), `shared-result-parts.test.tsx` (16t), `viewport-redirect.test.tsx` (4t)
+  - 5C: 3 boundary tests L/D em `machining-store.test.ts` (L/D=6.0 vermelho, L/D=6.1 bloqueado)
+  - 5D: `@vitest/coverage-v8` instalado + `vitest.config.ts` configurado (provider v8, text+html)
+  - 5E: Fix `act()` warnings em `config-panel.test.tsx` (waitFor + act pattern)
+  - Fix: `@testing-library/dom` reinstalado (lost em npm install --legacy-peer-deps)
+- ✅ **493 testes passando** (+75 novos) | **33 arquivos** | **TypeScript zero erros** | **Build 92.96KB gzip**
+- ✅ **Auditoria completa! Score: ~95/100**
+
+**Commits desta sessão:**
+- `5bd5b2f` test: audit fase 5 — mobile components, UI helpers, L/D boundary, coverage config (v0.3.4)
+
+---
 
 ### Sessão 28/02 s17 — Auditoria FASE 2: Design System
 
@@ -290,14 +310,13 @@ npx vite build 2>&1 | tail -5
 
 ### 🟡 Duas Iniciativas Independentes (escolher com usuário)
 
-#### Opção A — Auditoria do Sistema (5 sessões S1-S5)
+#### ✅ Auditoria do Sistema — COMPLETA (5/5 fases)
 - **Documento:** `docs/IMPLEMENTACAO_SESSOES.md`
-- **Plano detalhado:** `docs/PLANO_AUDITORIA.md`
 - ✅ **S1 CONCLUÍDA** — commit `c6e1e06` (v0.3.1)
 - ✅ **S2 CONCLUÍDA** — commit `4866416` (v0.3.2)
 - ✅ **S3 CONCLUÍDA** — commit `5401d18` (v0.3.3)
 - ✅ **S4 CONCLUÍDA** — commit `fca2fba` (v0.3.4)
-- **Próxima fase:** S5 — Expansão de Testes (mobile components, disclaimer, ui-helpers, L/D integration, coverage config)
+- ✅ **S5 CONCLUÍDA** — commit `5bd5b2f` (v0.3.4) — 493 testes, coverage config, score ~95/100
 
 #### Opção B — Login Google + Multi-Usuário (5 sessões L1-L5)
 - **Documento:** `docs/IMPLEMENTACAO_LOGIN.md`
