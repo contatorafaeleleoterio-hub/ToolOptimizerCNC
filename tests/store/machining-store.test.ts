@@ -540,6 +540,39 @@ describe('machining-store', () => {
     });
   });
 
+  describe('ajustarParametros', () => {
+    beforeEach(() => {
+      getState().setFerramenta({ tipo: 'toroidal', diametro: 10 });
+      getState().setParametros({ ap: 2, ae: 5, fz: 0.1, vc: 100 });
+      getState().calcular();
+    });
+
+    it('updates params and recalculates in real-time without zeroing resultado', () => {
+      expect(getState().resultado).not.toBeNull();
+      const vcAntes = getState().parametros.vc;
+      getState().ajustarParametros({ vc: vcAntes + 10 });
+      expect(getState().parametros.vc).toBe(vcAntes + 10);
+      expect(getState().resultado).not.toBeNull();
+    });
+
+    it('does not clear manualOverrides when adjusting fine-tune', () => {
+      getState().simular();
+      getState().setManualRPMPercent(10);
+      const overridesBefore = getState().manualOverrides;
+      expect(overridesBefore.rpmPercent).toBe(10);
+      getState().ajustarParametros({ vc: 150 });
+      expect(getState().manualOverrides.rpmPercent).toBe(10);
+    });
+
+    it('recalculates even when resultado was null before calling', () => {
+      getState().setMaterial(2); // zeros resultado
+      expect(getState().resultado).toBeNull();
+      getState().ajustarParametros({ vc: 120 });
+      expect(getState().resultado).not.toBeNull();
+      expect(getState().parametros.vc).toBe(120);
+    });
+  });
+
   describe('resetToDefaults', () => {
     it('resets all state to defaults', () => {
       getState().setLimitesMaquina({ maxRPM: 5000 });

@@ -37,7 +37,7 @@ const SLIDER_CONFIG = [
 
 export function FineTunePanel() {
   const parametros = useMachiningStore((s) => s.parametros);
-  const setParametros = useMachiningStore((s) => s.setParametros);
+  const ajustarParametros = useMachiningStore((s) => s.ajustarParametros);
   const materialId = useMachiningStore((s) => s.materialId);
   const resultado = useMachiningStore((s) => s.resultado);
   const material = MATERIAIS.find((m) => m.id === materialId);
@@ -85,7 +85,7 @@ export function FineTunePanel() {
                   <input type="number" value={display} step={step} min={min} max={max}
                     onChange={(e) => {
                       const n = Number(e.target.value);
-                      if (!isNaN(n) && n >= min && n <= max) setParametros({ [key]: n });
+                      if (!isNaN(n) && n >= min && n <= max) ajustarParametros({ [key]: n });
                     }}
                     className={`w-20 bg-transparent border-none text-right font-mono text-xl font-bold text-${color} outline-none [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none`}
                     style={{ filter: `drop-shadow(0 0 8px rgba(${rgb},0.4))` }}
@@ -96,16 +96,16 @@ export function FineTunePanel() {
 
               <div className="flex items-center gap-1.5">
                 <button className={BTN_CLS} aria-label={`Diminuir ${label}`}
-                  onClick={() => setParametros({ [key]: Math.max(min, +(val - step).toFixed(4)) })}>−</button>
+                  onClick={() => ajustarParametros({ [key]: Math.max(min, +(val - step).toFixed(4)) })}>−</button>
                 <div className="flex-1">
                   <StyledSlider
                     value={val} min={min} max={max} step={step}
                     color={color} rgb={rgb} label={label}
-                    onChange={(v) => setParametros({ [key]: v })}
+                    onChange={(v) => ajustarParametros({ [key]: v })}
                   />
                 </div>
                 <button className={BTN_CLS} aria-label={`Aumentar ${label}`}
-                  onClick={() => setParametros({ [key]: Math.min(max, +(val + step).toFixed(4)) })}>+</button>
+                  onClick={() => ajustarParametros({ [key]: Math.min(max, +(val + step).toFixed(4)) })}>+</button>
               </div>
 
               {/* Parameter health bar — always visible below slider */}

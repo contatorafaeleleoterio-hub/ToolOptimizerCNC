@@ -150,7 +150,7 @@ function TouchSlider({ value, min, max, step, rgb, onChange, label }: {
 
 export function MobileFineTuneSection() {
   const parametros = useMachiningStore((s) => s.parametros);
-  const setParametros = useMachiningStore((s) => s.setParametros);
+  const ajustarParametros = useMachiningStore((s) => s.ajustarParametros);
   const materialId = useMachiningStore((s) => s.materialId);
   const resultado = useMachiningStore((s) => s.resultado);
   const material = MATERIAIS.find((m) => m.id === materialId);
@@ -158,8 +158,8 @@ export function MobileFineTuneSection() {
   const [openKey, setOpenKey] = useState<string | null>(null);
 
   const handleChange = useCallback((key: ParamKey, val: number) => {
-    setParametros({ [key]: val });
-  }, [setParametros]);
+    ajustarParametros({ [key]: val });
+  }, [ajustarParametros]);
 
   const toggleDrawer = (key: string) => {
     setOpenKey((prev) => (prev === key ? null : key));
@@ -198,7 +198,7 @@ export function MobileFineTuneSection() {
                     <input type="number" value={display} step={step} min={min} max={max}
                       onChange={(e) => {
                         const n = Number(e.target.value);
-                        if (!isNaN(n) && n >= min && n <= max) setParametros({ [key]: n });
+                        if (!isNaN(n) && n >= min && n <= max) ajustarParametros({ [key]: n });
                       }}
                       className={`w-16 bg-transparent border-none text-right font-mono text-lg font-bold text-${color} outline-none [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none`}
                       style={{ filter: `drop-shadow(0 0 6px rgba(${rgb},0.4))` }}
@@ -209,7 +209,7 @@ export function MobileFineTuneSection() {
 
                 <div className="flex items-center gap-2">
                   <button className={BTN_CLS} aria-label={`Decrease ${label}`}
-                    onClick={() => setParametros({ [key]: Math.max(min, +(val - step).toFixed(4)) })}>−</button>
+                    onClick={() => ajustarParametros({ [key]: Math.max(min, +(val - step).toFixed(4)) })}>−</button>
                   <div className="flex-1">
                     <TouchSlider
                       value={val} min={min} max={max} step={step}
@@ -218,7 +218,7 @@ export function MobileFineTuneSection() {
                     />
                   </div>
                   <button className={BTN_CLS} aria-label={`Increase ${label}`}
-                    onClick={() => setParametros({ [key]: Math.min(max, +(val + step).toFixed(4)) })}>+</button>
+                    onClick={() => ajustarParametros({ [key]: Math.min(max, +(val + step).toFixed(4)) })}>+</button>
                 </div>
 
                 {/* Parameter health bar — always visible below slider */}

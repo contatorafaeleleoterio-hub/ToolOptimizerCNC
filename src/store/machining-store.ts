@@ -66,6 +66,7 @@ interface MachiningActions {
   setFerramenta: (f: Partial<Ferramenta>) => void;
   setTipoOperacao: (tipo: TipoUsinagem) => void;
   setParametros: (p: Partial<ParametrosUsinagem>) => void;
+  ajustarParametros: (p: Partial<ParametrosUsinagem>) => void;
   setLimitesMaquina: (l: Partial<LimitesMaquina>) => void;
   setSafetyFactor: (f: number) => void;
   setManualRPM: (rpm: number) => void;
@@ -162,6 +163,12 @@ export const useMachiningStore = create<MachiningState & MachiningActions>()(
         setParametros: (p) => {
           set((state) => ({ parametros: { ...state.parametros, ...p }, resultado: null, manualOverrides: {} }));
           // Don't auto-calculate on parameter change - user must click Simular
+        },
+
+        ajustarParametros: (p) => {
+          // Fine-tune: update params and recalculate immediately, WITHOUT zeroing resultado or clearing manualOverrides
+          set((state) => ({ parametros: { ...state.parametros, ...p } }));
+          get().calcular();
         },
 
         setLimitesMaquina: (l) => {
