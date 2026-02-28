@@ -295,7 +295,8 @@ npx vite build 2>&1 | tail -5
 - **Plano detalhado:** `docs/PLANO_AUDITORIA.md`
 - ✅ **S1 CONCLUÍDA** — commit `c6e1e06` (v0.3.1)
 - ✅ **S2 CONCLUÍDA** — commit `4866416` (v0.3.2)
-- **Próxima fase:** S3 — Consistência Visual (cores ae, ToolSummaryViewer glass, border radius, migrar text-[10px]→text-2xs)
+- ✅ **S3 CONCLUÍDA** — commit `5401d18` (v0.3.3)
+- **Próxima fase:** S4 — Qualidade de Código (comentários L/D, getRecommendedParams, crypto.randomUUID, console.warn DEV)
 
 #### Opção B — Login Google + Multi-Usuário (5 sessões L1-L5)
 - **Documento:** `docs/IMPLEMENTACAO_LOGIN.md`
