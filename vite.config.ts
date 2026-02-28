@@ -6,7 +6,7 @@ import path from 'path';
 import { cloudflare } from "@cloudflare/vite-plugin";
 
 export default defineConfig({
-  base: process.env.VITE_BASE_URL || '/ToolOptimizerCNC/',
+  base: process.env.VITE_BASE_URL || '/',
   plugins: [tailwindcss(), react(), cloudflare()],
   build: {
     cssMinify: false,

@@ -50,6 +50,10 @@ export function calculateEffectiveFz(
 
   // CTF: fz_corr = fz / sqrt(ae/D)
   const sqrtRatio = Math.sqrt(ratio);
+  // Guard: prevent division by zero (defensive — should not happen given validation above)
+  if (sqrtRatio === 0) {
+    return { fzEfetivo: fz, ctfApplied: false, ctfFactor: 1.0 };
+  }
   const fzCorrigido = fz / sqrtRatio;
 
   return {
