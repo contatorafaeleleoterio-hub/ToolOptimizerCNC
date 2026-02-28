@@ -14,8 +14,8 @@
 |------|-------|
 | **Branch** | `main` |
 | **Versão** | `0.3.4` |
-| **Último commit** | `5bd5b2f` test: audit fase 5 — mobile components, UI helpers, L/D boundary, coverage config |
-| **Testes** | **493 passando** (33 arquivos) — nenhum flaky persistente |
+| **Último commit** | `5aed1ae` feat: ajuste fino em tempo real — ajustarParametros sem zerar painel |
+| **Testes** | **496 passando** (33 arquivos) — nenhum flaky persistente |
 | **TypeScript** | **zero erros** |
 | **Build** | **limpo** — JS 92.96KB gzip, CSS 12.84KB |
 | **Remote** | `origin/main` sincronizado (GitHub) |
@@ -50,6 +50,24 @@ npx vite build 2>&1 | tail -5
 ---
 
 ## ✅ O QUE FOI FEITO (histórico recente)
+
+### Sessão 28/02 s21 — Fix UX: Ajuste Fino em Tempo Real
+
+**Contexto:** Sliders do Ajuste Fino (Vc, fz, ae, ap) zeravam o painel de resultados a cada mudança, exigindo novo clique em Simular. Comportamento correto: Ajuste Fino deve atualizar em tempo real; apenas o painel esquerdo (config) deve zerar.
+
+**O que foi feito:**
+- ✅ **Commit `5aed1ae` — Fix UX Ajuste Fino real-time (v0.3.4 mantido):**
+  - Store: nova ação `ajustarParametros(p)` — atualiza `parametros` e chama `calcular()` imediatamente, SEM zerar `resultado`, SEM limpar `manualOverrides`
+  - `fine-tune-panel.tsx`: 3 chamadas `setParametros` → `ajustarParametros` (slider, input, botões ±)
+  - `mobile-fine-tune-section.tsx`: 4 chamadas `setParametros` → `ajustarParametros` (handleChange, input, botões ±)
+  - `machining-store.test.ts`: +3 testes para `ajustarParametros` (real-time sem zerar, preserva manualOverrides, funciona com resultado=null)
+- ✅ **496 testes passando** (+3 novos) | **TypeScript zero erros** | **Build sem erros**
+- ✅ Behavior: config-panel (esquerdo) → zera resultado → aviso amarelo ✅ | fine-tune (direito) → atualiza live sem zerar ✅
+
+**Commits desta sessão:**
+- `5aed1ae` feat: ajuste fino em tempo real — ajustarParametros sem zerar painel
+
+---
 
 ### Sessão 28/02 s20 — Auditoria FASE 5: Expansão de Testes
 
@@ -158,7 +176,7 @@ npx vite build 2>&1 | tail -5
 
 #### O que conferir ao iniciar:
 1. **Custom domains respondendo?** `curl -s https://tooloptimizercnc.com.br -o /dev/null -w "%{http_code}"`
-2. **Testes passando?** `npx vitest run` → 401 passando
+2. **Testes passando?** `npx vitest run` → 496 passando
 3. **Build limpo?** `npx vite build`
 4. **Documentos existem?** `ls docs/PLANO_AUDITORIA.md docs/IMPLEMENTACAO_SESSOES.md docs/PLANO_LOGIN_GOOGLE.md docs/IMPLEMENTACAO_LOGIN.md`
 
@@ -317,6 +335,7 @@ npx vite build 2>&1 | tail -5
 - ✅ **S3 CONCLUÍDA** — commit `5401d18` (v0.3.3)
 - ✅ **S4 CONCLUÍDA** — commit `fca2fba` (v0.3.4)
 - ✅ **S5 CONCLUÍDA** — commit `5bd5b2f` (v0.3.4) — 493 testes, coverage config, score ~95/100
+- ✅ **Fix UX Ajuste Fino** — commit `5aed1ae` (v0.3.4) — 496 testes, ajustarParametros real-time
 
 #### Opção B — Login Google + Multi-Usuário (5 sessões L1-L5)
 - **Documento:** `docs/IMPLEMENTACAO_LOGIN.md`
@@ -428,18 +447,23 @@ SEM backend, SEM CSS Modules, SEM Prettier (não configurado)
 
 ### Store (Zustand) — regras críticas
 ```typescript
-// Estes NÃO recalculam automaticamente:
+// Estes NÃO recalculam automaticamente (zerando resultado):
 setMaterial() → resultado = null
 setFerramenta() → resultado = null
 setTipoOperacao() → resultado = null
-setParametros() → resultado = null
+setParametros() → resultado = null      // usado pelo config-panel (esquerdo)
 setSafetyFactor() → resultado = null
 
-// Este SIM recalcula automaticamente (exceção):
-setLimitesMaquina() → chama calcular()
+// Este SIM recalcula sem zerar (usado pelo fine-tune — direito):
+ajustarParametros() → calcular() imediato, resultado NÃO zerado, manualOverrides preservados
 
-// Nos testes: sempre chamar explicitamente
+// Estes SIM recalculam automaticamente (exceções):
+setLimitesMaquina() → chama calcular()
+setManualRPMPercent() / setManualFeedPercent() → chama calcular()
+
+// Nos testes: chamar explicitamente para setParametros/setFerramenta
 useMachiningStore.getState().calcular();
+// Para ajustarParametros NÃO precisa — já chama calcular() internamente
 ```
 
 ### Tailwind v4 — regra crítica
@@ -693,5 +717,5 @@ git status
 
 ---
 
-*Última atualização: 28/02/2026 — Sessão 17 (Auditoria FASE 2 — Design System)*
-*Próximo assistente: leia este arquivo + executar FASE 3 via `docs/IMPLEMENTACAO_SESSOES.md`*
+*Última atualização: 28/02/2026 — Sessão 21 (Fix UX: Ajuste Fino real-time — ajustarParametros)*
+*Próximo assistente: leia este arquivo + escolher próxima iniciativa com o usuário (Login Google / Story-006 / Landing)*
