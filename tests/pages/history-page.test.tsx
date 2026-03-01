@@ -103,4 +103,31 @@ describe('HistoryPage', () => {
     expect(screen.getByText('Filtros')).toBeInTheDocument();
     expect(screen.getByPlaceholderText('Buscar material...')).toBeInTheDocument();
   });
+
+  // Responsive layout tests (S6A)
+  it('filter grid has responsive class for mobile stacking', () => {
+    const { container } = renderPage();
+    // Grid should stack to 1 column on mobile (grid-cols-1) and expand to 3 on sm+
+    const filterGrid = container.querySelector('.grid-cols-1');
+    expect(filterGrid).toBeInTheDocument();
+  });
+
+  it('expanded detail grid is responsive with 2-column mobile layout', () => {
+    addTestEntry();
+    const { container } = renderPage();
+    // Expand the entry
+    fireEvent.click(screen.getByText('Aço 1045'));
+    // Detail grid must have grid-cols-2 for mobile
+    const detailGrid = container.querySelector('.grid-cols-2');
+    expect(detailGrid).toBeInTheDocument();
+  });
+
+  it('entry action buttons support flex-wrap for small screens', () => {
+    addTestEntry();
+    const { container } = renderPage();
+    fireEvent.click(screen.getByText('Aço 1045'));
+    // The action buttons row (Restaurar + Remover) must have flex-wrap
+    const actionRow = container.querySelector('.flex-wrap');
+    expect(actionRow).toBeInTheDocument();
+  });
 });

@@ -151,7 +151,7 @@ export function HistoryPage() {
               </button>
             )}
           </div>
-          <div className="grid grid-cols-3 gap-4">
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
             <div>
               <label className={LABEL}>Material</label>
               <input type="text" value={filters.materialNome} onChange={(e) => setFilters({ materialNome: e.target.value })}
@@ -182,7 +182,7 @@ export function HistoryPage() {
         </div>
 
         {/* Actions bar */}
-        <div className="flex gap-3 mb-6">
+        <div className="flex flex-wrap gap-2 mb-6">
           <button onClick={handleExport} disabled={entries.length === 0}
             className="flex items-center gap-2 px-4 py-2 rounded-lg bg-white/5 border border-white/10 text-gray-400 hover:bg-white/10 hover:text-white transition-all text-xs disabled:opacity-30 disabled:cursor-not-allowed">
             <span className="material-symbols-outlined text-sm text-primary">download</span>
@@ -270,8 +270,8 @@ function HistoryEntryCard({ entry, isExpanded, onToggle, onRestore, onRemove, on
       <button onClick={onToggle}
         className="w-full flex items-center gap-4 px-5 py-4 hover:bg-white/[0.02] transition-all text-left">
         {/* Timestamp */}
-        <div className="w-36 shrink-0">
-          <span className="text-[10px] text-gray-500 block">{formatDate(entry.timestamp)}</span>
+        <div className="shrink-0 min-w-0">
+          <span className="text-[10px] text-gray-500 block whitespace-nowrap">{formatDate(entry.timestamp)}</span>
         </div>
 
         {/* Material + Operation */}
@@ -280,8 +280,8 @@ function HistoryEntryCard({ entry, isExpanded, onToggle, onRestore, onRemove, on
           <span className="text-[10px] text-gray-500">{TIPO_LABELS[entry.tipoOperacao]} · {TOOL_NAMES[ferramenta.tipo] ?? ferramenta.tipo} Ø{ferramenta.diametro}</span>
         </div>
 
-        {/* Key results */}
-        <div className="flex items-center gap-6 text-right">
+        {/* Key results — hidden on small screens */}
+        <div className="hidden sm:flex items-center gap-6 text-right">
           <div>
             <span className="text-[10px] text-gray-500 block">RPM</span>
             <span className="text-sm font-mono text-primary font-bold">{fmt(resultado.rpm)}</span>
@@ -321,7 +321,7 @@ function HistoryEntryCard({ entry, isExpanded, onToggle, onRestore, onRemove, on
       {isExpanded && (
         <div className="px-5 pb-5 pt-1 border-t border-white/5 space-y-4">
           {/* Full params grid */}
-          <div className="grid grid-cols-4 gap-4">
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
             <DetailCell label="Vc" value={`${parametros.vc} m/min`} />
             <DetailCell label="fz" value={`${parametros.fz} mm`} />
             <DetailCell label="ap" value={`${parametros.ap} mm`} />
@@ -349,7 +349,7 @@ function HistoryEntryCard({ entry, isExpanded, onToggle, onRestore, onRemove, on
           {/* Feedback buttons */}
           <div>
             <span className={LABEL}>Feedback do Operador</span>
-            <div className="flex gap-2">
+            <div className="flex flex-wrap gap-2">
               {FEEDBACK_OPTIONS.map((opt) => (
                 <button key={opt.value} onClick={() => onFeedback(entry.feedback === opt.value ? null : opt.value)}
                   className={`flex items-center gap-1.5 px-3 py-2 rounded-lg border text-xs transition-all ${
@@ -373,7 +373,7 @@ function HistoryEntryCard({ entry, isExpanded, onToggle, onRestore, onRemove, on
           </div>
 
           {/* Actions */}
-          <div className="flex gap-2 pt-2">
+          <div className="flex flex-wrap gap-2 pt-2">
             <button onClick={onRestore}
               className="flex items-center gap-2 px-4 py-2 rounded-lg bg-primary/10 border border-primary/30 text-primary text-xs font-bold hover:bg-primary/20 transition-all">
               <span className="material-symbols-outlined text-sm">restore</span>
