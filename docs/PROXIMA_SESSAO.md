@@ -13,11 +13,11 @@
 | Item | Valor |
 |------|-------|
 | **Branch** | `main` |
-| **Versão** | `0.3.4` |
-| **Último commit** | `5aed1ae` feat: ajuste fino em tempo real — ajustarParametros sem zerar painel |
-| **Testes** | **496 passando** (33 arquivos) — nenhum flaky persistente |
+| **Versão** | `0.4.0` |
+| **Último commit** | `3ce840e` feat: Plausible Analytics + version bump v0.4.0 (S6B) |
+| **Testes** | **503 passando** (34 arquivos) — nenhum flaky persistente |
 | **TypeScript** | **zero erros** |
-| **Build** | **limpo** — JS 92.96KB gzip, CSS 12.84KB |
+| **Build** | **limpo** — JS 92.96KB gzip, CSS 12.84KB (Plausible é externo, bundle não cresce) |
 | **Remote** | `origin/main` sincronizado (GitHub) |
 | **Worker** | ✅ LIVE — `https://tooloptimizercnc.contatorafaeleleoterio.workers.dev` |
 | **GitHub Pages** | ✅ LIVE — deploy automático funciona |
@@ -50,6 +50,38 @@ npx vite build 2>&1 | tail -5
 ---
 
 ## ✅ O QUE FOI FEITO (histórico recente)
+
+### Sessão 01/03 s22 — Story-006: HistoryPage Responsiva + Plausible Analytics
+
+**Contexto:** Descartado Login Google (LGPD, sem demanda validada, perfil conservador). Descartado Export PDF (inútil em chão de fábrica). Implementadas as 2 melhorias corretas para o MVP.
+
+**O que foi feito:**
+- ✅ **Commit `2fe4f55` — S6A: HistoryPage Responsiva:**
+  - Grid filtros: `grid-cols-3` → `grid-cols-1 sm:grid-cols-3`
+  - Resultados do card: `flex gap-6` → `hidden sm:flex` (mobile oculta para evitar overflow)
+  - Detalhe expandido: `grid-cols-4` → `grid-cols-2 md:grid-cols-4`
+  - Ações + feedback: `flex` → `flex flex-wrap`
+  - +3 testes responsive em `history-page.test.tsx` → **499 testes**
+- ✅ **Commit `3ce840e` — S6B: Plausible Analytics (v0.4.0):**
+  - `src/hooks/use-plausible.ts` — hook tipado, no-op automático sem script
+  - `index.html` — script Plausible (`data-domain="tooloptimizercnc.com.br"`)
+  - Eventos rastreados: `Simulacao_Executada`, `Material_Selecionado`, `Resultado_Copiado`, `Historico_Acessado`, `Settings_Acessado`
+  - `tests/hooks/use-plausible.test.ts` — 4 testes
+  - `docs/stories/story-006-responsive-history-analytics.md`
+  - Version bump 0.3.4 → **0.4.0**
+  - **503 testes passando** (34 arquivos)
+- ✅ **Decisão documentada:** Login Google pausado, PDF descartado para MVP
+
+**⚠️ Pré-requisito manual para ativar analytics:**
+1. Criar conta em https://plausible.io
+2. "Add a website" → Domain: `tooloptimizercnc.com.br`
+3. Dados aparecem em ~24h após o próximo deploy
+
+**Commits desta sessão:**
+- `2fe4f55` feat: responsive HistoryPage layout (S6A)
+- `3ce840e` feat: Plausible Analytics integration + version bump v0.4.0 (S6B)
+
+---
 
 ### Sessão 28/02 s21 — Fix UX: Ajuste Fino em Tempo Real
 
@@ -329,19 +361,26 @@ npx vite build 2>&1 | tail -5
 ### 🟡 Duas Iniciativas Independentes (escolher com usuário)
 
 #### ✅ Auditoria do Sistema — COMPLETA (5/5 fases)
-- **Documento:** `docs/IMPLEMENTACAO_SESSOES.md`
-- ✅ **S1 CONCLUÍDA** — commit `c6e1e06` (v0.3.1)
-- ✅ **S2 CONCLUÍDA** — commit `4866416` (v0.3.2)
-- ✅ **S3 CONCLUÍDA** — commit `5401d18` (v0.3.3)
-- ✅ **S4 CONCLUÍDA** — commit `fca2fba` (v0.3.4)
-- ✅ **S5 CONCLUÍDA** — commit `5bd5b2f` (v0.3.4) — 493 testes, coverage config, score ~95/100
-- ✅ **Fix UX Ajuste Fino** — commit `5aed1ae` (v0.3.4) — 496 testes, ajustarParametros real-time
+- ✅ S1–S5 concluídas (v0.3.1 a v0.3.4)
+- ✅ Fix UX Ajuste Fino — `5aed1ae` (v0.3.4)
 
-#### Opção B — Login Google + Multi-Usuário (5 sessões L1-L5)
-- **Documento:** `docs/IMPLEMENTACAO_LOGIN.md`
-- **Plano detalhado:** `docs/PLANO_LOGIN_GOOGLE.md`
-- **Pré-requisito manual:** Setup Firebase Console (ver plano)
-- **Próxima fase:** L1 — Firebase Setup + Auth Store + Login UI
+#### ✅ Story-006 — HistoryPage Responsiva + Plausible Analytics — COMPLETA (v0.4.0)
+- ✅ **S6A** — `2fe4f55` — HistoryPage responsiva (+3 testes → 499)
+- ✅ **S6B** — `3ce840e` — Plausible Analytics (+4 testes → 503)
+- **Pré-req manual:** criar conta Plausible + adicionar `tooloptimizercnc.com.br`
+
+#### 🟡 Próxima: Story-007 (a definir com usuário) OU Login Google (quando houver demanda)
+
+> **REGRA DE SEQUÊNCIA (para o próximo assistente):**
+> 1. Verificar se usuário já criou conta Plausible (perguntar)
+> 2. Perguntar qual próxima feature: Story-007 ou Login Google L1
+> 3. Login Google L1: pré-req = Firebase Console setup + `.env.local`
+> 4. Só iniciar após escolha explícita do usuário
+
+#### ⏸️ Login Google — PAUSADO (decisão estratégica)
+- **Motivo:** Sem demanda validada, LGPD complexa, perfil conservador
+- **Retomar quando:** Usuários pedirem sync entre dispositivos
+- **Plano:** `docs/IMPLEMENTACAO_LOGIN.md` + `docs/PLANO_LOGIN_GOOGLE.md`
 
 ### 🟡 Landing Page (pendente — 2 pré-requisitos)
 
