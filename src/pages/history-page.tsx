@@ -2,7 +2,7 @@
  * History Page - Shows calculation history with filters and operator feedback
  */
 
-import { useState, useRef } from 'react';
+import { useState, useRef, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useHistoryStore } from '@/store';
 import { useMachiningStore } from '@/store';
@@ -10,6 +10,7 @@ import { TipoUsinagem } from '@/types';
 import type { FeedbackOperador, HistoricoCalculo } from '@/types';
 import { usePageTitle } from '@/hooks/use-page-title';
 import { SeoHead } from '@/components/seo-head';
+import { usePlausible } from '@/hooks/use-plausible';
 
 const CARD = 'bg-card-dark rounded-xl p-6 border border-white/5 shadow-inner-glow mb-6';
 const LABEL = 'text-[11px] font-semibold text-gray-500 uppercase tracking-wide mb-1 block';
@@ -51,6 +52,10 @@ function fmt(n: number): string {
 export function HistoryPage() {
   usePageTitle('Histórico — ToolOptimizer CNC');
   const navigate = useNavigate();
+  const { track } = usePlausible();
+
+  // Track page visit once on mount
+  useEffect(() => { track('Historico_Acessado'); }, []);
   const entries = useHistoryStore((s) => s.entries);
   const filters = useHistoryStore((s) => s.filters);
   const setFilters = useHistoryStore((s) => s.setFilters);

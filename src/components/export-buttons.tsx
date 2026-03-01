@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useMachiningStore } from '@/store';
+import { usePlausible } from '@/hooks/use-plausible';
 import { getMaterialById, OPERACOES } from '@/data';
 import type { ResultadoUsinagem, Ferramenta, ParametrosUsinagem, LimitesMaquina } from '@/types';
 import { TipoUsinagem } from '@/types';
@@ -65,6 +66,7 @@ export function ExportButtons() {
   const limitesMaquina = useMachiningStore((s) => s.limitesMaquina);
   const safetyFactor = useMachiningStore((s) => s.safetyFactor);
   const [copied, setCopied] = useState(false);
+  const { track } = usePlausible();
 
   const handleCopy = async () => {
     const text = formatReport({ resultado, materialId, ferramenta, tipoOperacao, parametros, limitesMaquina, safetyFactor });
@@ -72,6 +74,7 @@ export function ExportButtons() {
     try {
       await navigator.clipboard.writeText(text);
       setCopied(true);
+      track('Resultado_Copiado');
       setTimeout(() => setCopied(false), 2000);
     } catch { /* clipboard not available */ }
   };

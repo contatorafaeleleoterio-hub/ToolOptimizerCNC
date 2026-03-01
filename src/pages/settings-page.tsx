@@ -1,4 +1,4 @@
-import { useState, useRef } from 'react';
+import { useState, useRef, useEffect } from 'react';
 import { useMachiningStore } from '@/store';
 import { useNavigate } from 'react-router-dom';
 import { useIsMobile } from '@/hooks/use-is-mobile';
@@ -9,6 +9,7 @@ import { NumInput } from '@/components/ui-helpers';
 import { usePageTitle } from '@/hooks/use-page-title';
 import { SeoHead } from '@/components/seo-head';
 import { StyledSlider, BTN_CLS } from '@/components/styled-slider';
+import { usePlausible } from '@/hooks/use-plausible';
 
 type Section = 'maquina' | 'seguranca' | 'materiais' | 'ferramentas' | 'exibicao' | 'dados';
 
@@ -29,6 +30,10 @@ export function SettingsPage() {
   const navigate = useNavigate();
   const isMobile = useIsMobile();
   const [active, setActive] = useState<Section>('maquina');
+  const { track } = usePlausible();
+
+  // Track page visit once on mount
+  useEffect(() => { track('Settings_Acessado'); }, []);
 
   const handleBack = () => navigate(isMobile ? '/mobile' : '/');
 

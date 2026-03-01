@@ -3,6 +3,7 @@ import { MATERIAIS, FERRAMENTAS_PADRAO, DIAMETROS_COMPLETOS, RAIOS_PADRAO } from
 import { TipoUsinagem } from '@/types';
 import { SectionTitle, FieldGroup, NumInput } from './ui-helpers';
 import { useSimulationAnimation } from '@/hooks/use-simulation-animation';
+import { usePlausible } from '@/hooks/use-plausible';
 
 const OPERACAO_LABELS: Record<TipoUsinagem, string> = {
   [TipoUsinagem.DESBASTE]: 'Desbaste',
@@ -20,11 +21,18 @@ export function ConfigPanel() {
   } = useMachiningStore();
 
   const { isCalculating, runSimulation } = useSimulationAnimation();
+  const { track } = usePlausible();
 
   const material = MATERIAIS.find((m) => m.id === materialId);
   const vcRange = material?.vcRanges[tipoOperacao];
 
-  const handleSimulate = () => runSimulation(simular);
+  const handleSimulate = () => {
+    track('Simulacao_Executada', {
+      material: material?.nome ?? 'desconhecido',
+      operacao: tipoOperacao,
+    });
+    runSimulation(simular);
+  };
 
   return (
     <div className="flex flex-col gap-3">
@@ -59,7 +67,12 @@ export function ConfigPanel() {
           <SectionTitle color="bg-primary" label="Configuração Base" />
           <div className="space-y-3">
             <FieldGroup label="Material da Peça">
-              <select value={materialId} onChange={(e) => setMaterial(Number(e.target.value))}
+              <select value={materialId} onChange={(e) => {
+                const id = Number(e.target.value);
+                setMaterial(id);
+                const mat = MATERIAIS.find((m) => m.id === id);
+                if (mat) track('Material_Selecionado', { material: mat.nome });
+              }}
                 className="w-full bg-black/40 border border-white/10 rounded-lg py-3 pl-3 pr-10 text-base text-gray-200 focus:ring-1 focus:ring-primary focus:border-primary outline-none appearance-none transition-all hover:border-white/20 select-chevron">
                 {MATERIAIS.map((m) => (
                   <option key={m.id} value={m.id}>{m.nome}{m.status === 'estimado' ? ' ⚠' : ''}</option>
