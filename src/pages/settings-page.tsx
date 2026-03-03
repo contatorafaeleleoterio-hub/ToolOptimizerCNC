@@ -4,7 +4,7 @@ import { useNavigate } from 'react-router-dom';
 import { useIsMobile } from '@/hooks/use-is-mobile';
 import { MATERIAIS } from '@/data';
 import { TipoUsinagem } from '@/types';
-import type { Material, CustomMaterial, ClasseISO } from '@/types';
+import type { Material, CustomMaterial, ClasseISO, ToolParamRanges, ParamRangeOverride } from '@/types';
 import { NumInput } from '@/components/ui-helpers';
 import { usePageTitle } from '@/hooks/use-page-title';
 import { SeoHead } from '@/components/seo-head';
@@ -809,6 +809,9 @@ function FerramentasSection() {
         })}
       </div>
 
+      {/* ── Ranges do Ajuste Fino ── */}
+      <RangesAjusteFinoCard />
+
       {/* Modal */}
       {modalKey && (() => {
         const tcf = toolCorrectionFactors.find((t) => t.tipo === modalKey.tipo && t.diametro === modalKey.diametro);
@@ -823,6 +826,134 @@ function FerramentasSection() {
           />
         );
       })()}
+    </div>
+  );
+}
+
+/* ── Ranges do Ajuste Fino ── */
+
+interface RangeRow {
+  key: keyof ToolParamRanges;
+  label: string;
+  unit: string;
+  color: string;
+  step: number;
+}
+
+const RANGE_ROWS: RangeRow[] = [
+  { key: 'vc', label: 'Vc', unit: 'm/min',   color: 'text-primary',       step: 1     },
+  { key: 'fz', label: 'fz', unit: 'mm/dente', color: 'text-secondary',     step: 0.001 },
+  { key: 'ae', label: 'ae', unit: 'mm',       color: 'text-accent-purple', step: 0.1   },
+  { key: 'ap', label: 'ap', unit: 'mm',       color: 'text-accent-orange', step: 0.05  },
+];
+
+function RangesAjusteFinoCard() {
+  const ferramenta = useMachiningStore((s) => s.ferramenta);
+  const setFerramenta = useMachiningStore((s) => s.setFerramenta);
+
+  const ranges = ferramenta.paramRanges ?? {};
+
+  const hasAnyRange = Object.values(ranges).some(
+    (r) => r && (r.min !== undefined || r.max !== undefined || r.desejado !== undefined),
+  );
+
+  const update = (key: keyof ToolParamRanges, field: keyof ParamRangeOverride, raw: string) => {
+    const val = raw === '' ? undefined : Number(raw);
+    const prev = ranges[key] ?? {};
+    const next: ParamRangeOverride = { ...prev, [field]: val };
+    // Se todos undefined, remover a chave
+    const isEmpty = next.min === undefined && next.max === undefined && next.desejado === undefined;
+    const newRanges: ToolParamRanges = { ...ranges, [key]: isEmpty ? undefined : next };
+    setFerramenta({ paramRanges: newRanges });
+  };
+
+  const clearAll = () => setFerramenta({ paramRanges: undefined });
+
+  const getError = (key: keyof ToolParamRanges): string | null => {
+    const r = ranges[key];
+    if (r?.min !== undefined && r?.max !== undefined && r.min >= r.max) {
+      return 'min deve ser menor que max';
+    }
+    return null;
+  };
+
+  return (
+    <div className={CARD}>
+      <h3 className="text-xs font-bold text-gray-400 uppercase tracking-widest mb-1 flex items-center gap-2">
+        <span className="w-1 h-3 bg-accent-purple rounded-full" />
+        Ranges do Ajuste Fino
+        {hasAnyRange && (
+          <span className="ml-auto text-2xs font-mono bg-accent-purple/10 px-2 py-0.5 rounded-full border border-accent-purple/20 text-accent-purple">
+            override ativo
+          </span>
+        )}
+      </h3>
+      <p className="text-2xs text-gray-500 mb-4">
+        Substitui os ranges automáticos por material. Deixe em branco para usar o automático.
+      </p>
+
+      <div className="overflow-x-auto">
+        <table className="w-full text-xs min-w-[360px]">
+          <thead>
+            <tr className="border-b border-white/5 bg-white/2">
+              <th className="text-left text-gray-600 font-semibold py-2 pl-2 w-10">Param</th>
+              <th className="text-center text-gray-600 font-semibold py-2">Min</th>
+              <th className="text-center text-gray-600 font-semibold py-2">Max</th>
+              <th className="text-center text-gray-600 font-semibold py-2">Desejado</th>
+              <th className="text-left text-gray-600 font-semibold py-2 pl-1 hidden sm:table-cell">Unit</th>
+            </tr>
+          </thead>
+          <tbody>
+            {RANGE_ROWS.map(({ key, label, unit, color, step }) => {
+              const r = ranges[key] ?? {};
+              const err = getError(key);
+              return (
+                <tr key={key} className="border-b border-white/5 last:border-0">
+                  <td className={`py-2 pl-2 font-mono font-bold ${color}`}>{label}</td>
+                  {(['min', 'max', 'desejado'] as const).map((field) => (
+                    <td key={field} className="py-1 px-1 text-center">
+                      <input
+                        type="number"
+                        value={r[field] ?? ''}
+                        onChange={(e) => update(key, field, e.target.value)}
+                        step={step}
+                        min={0}
+                        placeholder="auto"
+                        className={`w-full min-h-[36px] bg-black/40 border rounded-lg py-1.5 px-2 text-xs text-white font-mono text-center outline-none focus:ring-1 transition-all
+                          ${err ? 'border-seg-vermelho/50 focus:ring-seg-vermelho' : 'border-white/10 focus:ring-accent-purple'}`}
+                      />
+                    </td>
+                  ))}
+                  <td className="py-2 pl-1 text-gray-600 text-2xs hidden sm:table-cell">{unit}</td>
+                </tr>
+              );
+            })}
+          </tbody>
+        </table>
+      </div>
+
+      {/* Erros de validação */}
+      {RANGE_ROWS.map(({ key, label }) => {
+        const err = getError(key);
+        return err ? (
+          <p key={key} className="text-2xs text-seg-vermelho mt-1">
+            {label}: {err}
+          </p>
+        ) : null;
+      })}
+
+      {/* Limpar */}
+      {hasAnyRange && (
+        <div className="mt-3 flex justify-end">
+          <button
+            onClick={clearAll}
+            className="min-h-[36px] px-3 py-1.5 rounded-lg bg-seg-vermelho/10 border border-seg-vermelho/30 text-seg-vermelho text-2xs font-semibold hover:bg-seg-vermelho/20 transition-all flex items-center gap-1"
+          >
+            <span className="material-symbols-outlined" style={{ fontSize: '12px' }}>delete_sweep</span>
+            Limpar Ranges
+          </button>
+        </div>
+      )}
     </div>
   );
 }

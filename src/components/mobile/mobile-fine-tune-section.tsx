@@ -1,55 +1,55 @@
-import { useRef, useCallback, useState } from 'react';
+import { useRef, useCallback, useState, useEffect } from 'react';
 import { useMachiningStore } from '@/store';
 import { MATERIAIS } from '@/data';
+import { calcularSliderBounds } from '@/engine';
+import type { ParametrosUsinagem } from '@/types';
 import { SectionTitle } from '../ui-helpers';
 import { ParameterHealthBar } from '../parameter-health-bar';
 
-const SLIDER_CONFIG = [
+/** Configuração visual (labels, cores, textos educacionais) — constante */
+const SLIDER_VISUAL = [
   { key: 'vc' as const, label: 'Vc', fullLabel: 'Velocidade Corte', unit: 'm/min', color: 'primary',
     rgb: '0,217,255',
     desc: 'Velocidade tangencial na aresta da ferramenta durante o corte.',
     aumentar: 'Usinagem mais rápida, mas desgaste prematuro e mais calor gerado.',
     diminuir: 'Ferramenta mais protegida, porém pode manchar o acabamento superficial.',
-    equilibrio: 'Ajuste junto com fz — material mais duro exige Vc menor.',
-    min: 1, max: 1200, step: 1 },
+    equilibrio: 'Ajuste junto com fz — material mais duro exige Vc menor.' },
   { key: 'fz' as const, label: 'fz', fullLabel: 'Avanço/Dente', unit: 'mm', color: 'secondary',
     rgb: '57,255,20',
     desc: 'Espessura do cavaco por aresta de corte em cada passagem.',
     aumentar: 'Maior taxa de remoção (MRR), mas risco de vibração e quebra da ferramenta.',
     diminuir: 'Acabamento mais fino e menor esforço, porém reduz a produtividade.',
-    equilibrio: 'Mantenha fz dentro da recomendação do fabricante da ferramenta.',
-    min: 0.01, max: 1, step: 0.01 },
+    equilibrio: 'Mantenha fz dentro da recomendação do fabricante da ferramenta.' },
   { key: 'ae' as const, label: 'ae', fullLabel: 'Eng. Radial', unit: 'mm', color: 'accent-purple',
     rgb: '168,85,247',
     desc: 'Largura radial de corte — quantos % do diâmetro da fresa está em contato.',
     aumentar: 'Remove mais material por passada, mas aumenta pressão lateral e deflexão.',
     diminuir: 'Menor força lateral — ideal para paredes finas ou ferramentas longas.',
-    equilibrio: 'ae < 50% do diâmetro ativa o CTF — compensação automática de avanço.',
-    min: 0.1, max: 50, step: 0.1 },
+    equilibrio: 'ae < 50% do diâmetro ativa o CTF — compensação automática de avanço.' },
   { key: 'ap' as const, label: 'ap', fullLabel: 'Prof. Axial', unit: 'mm', color: 'accent-orange',
     rgb: '249,115,22',
     desc: 'Profundidade axial de corte — principal fator da taxa de remoção de material.',
     aumentar: 'MRR sobe proporcionalmente, mas eleva potência e torque exigidos da máquina.',
     diminuir: 'Operação mais leve — essencial quando a potência da máquina é o fator limitante.',
-    equilibrio: 'Combine ap alto com ae baixo para operações de desbaste eficiente.',
-    min: 0.05, max: 6, step: 0.05 },
-] as const;
+    equilibrio: 'Combine ap alto com ae baixo para operações de desbaste eficiente.' },
+];
 
 const BTN_CLS = 'w-10 h-10 rounded-lg bg-black/40 border border-white/10 text-gray-400 active:bg-white/10 transition-all text-sm font-bold flex items-center justify-center';
 
 /** Maximum number of visible tick marks on the slider track */
 const MAX_TICKS = 20;
 
-type ParamKey = typeof SLIDER_CONFIG[number]['key'];
+type ParamKey = typeof SLIDER_VISUAL[number]['key'];
 
 /**
  * Touch-friendly custom slider with immediate drag response.
  * Snaps to discrete step values with visible tick marks.
  * Uses touch-none CSS to prevent scroll conflicts.
  */
-function TouchSlider({ value, min, max, step, rgb, onChange, label }: {
+function TouchSlider({ value, min, max, step, rgb, onChange, label, recomendado }: {
   value: number; min: number; max: number; step: number;
   rgb: string; label: string;
+  recomendado?: number;
   onChange: (val: number) => void;
 }) {
   const trackRef = useRef<HTMLDivElement>(null);
@@ -121,6 +121,20 @@ function TouchSlider({ value, min, max, step, rgb, onChange, label }: {
         />
       ))}
 
+      {/* Recommended value tick mark */}
+      {recomendado !== undefined && recomendado >= min && recomendado <= max && (
+        <div
+          className="absolute w-0.5 h-3 rounded-full pointer-events-none"
+          style={{
+            left: `${((recomendado - min) / (max - min)) * 100}%`,
+            top: '50%',
+            transform: 'translateY(-50%)',
+            backgroundColor: `rgba(${rgb},0.4)`,
+          }}
+          title={`Recomendado: ${recomendado}`}
+        />
+      )}
+
       {/* Filled track */}
       <div
         className="absolute left-0 h-2 rounded-full pointer-events-none transition-all duration-75"
@@ -153,9 +167,33 @@ export function MobileFineTuneSection() {
   const ajustarParametros = useMachiningStore((s) => s.ajustarParametros);
   const materialId = useMachiningStore((s) => s.materialId);
   const resultado = useMachiningStore((s) => s.resultado);
+  const ferramenta = useMachiningStore((s) => s.ferramenta);
+  const tipoOperacao = useMachiningStore((s) => s.tipoOperacao);
   const material = MATERIAIS.find((m) => m.id === materialId);
 
   const [openKey, setOpenKey] = useState<string | null>(null);
+
+  // Calcular bounds dinâmicos baseados no contexto atual
+  const bounds = calcularSliderBounds(material ?? null, ferramenta, tipoOperacao);
+
+  // Clamp automático: quando bounds mudam, corrigir valores fora do novo range
+  const isFirstRender = useRef(true);
+  useEffect(() => {
+    if (isFirstRender.current) {
+      isFirstRender.current = false;
+      return;
+    }
+    const clamped: Partial<ParametrosUsinagem> = {};
+    if (parametros.vc > bounds.vc.max) clamped.vc = bounds.vc.max;
+    if (parametros.vc < bounds.vc.min) clamped.vc = bounds.vc.min;
+    if (parametros.ae > bounds.ae.max) clamped.ae = bounds.ae.max;
+    if (parametros.ae < bounds.ae.min) clamped.ae = bounds.ae.min;
+    if (parametros.ap > bounds.ap.max) clamped.ap = bounds.ap.max;
+    if (parametros.ap < bounds.ap.min) clamped.ap = bounds.ap.min;
+    if (parametros.fz > bounds.fz.max) clamped.fz = bounds.fz.max;
+    if (parametros.fz < bounds.fz.min) clamped.fz = bounds.fz.min;
+    if (Object.keys(clamped).length > 0) ajustarParametros(clamped);
+  }, [bounds.vc.min, bounds.vc.max, bounds.ae.max, bounds.ap.max, bounds.fz.min, bounds.fz.max]);
 
   const handleChange = useCallback((key: ParamKey, val: number) => {
     ajustarParametros({ [key]: val });
@@ -171,7 +209,8 @@ export function MobileFineTuneSection() {
         <SectionTitle color="bg-primary" label="Fine Tune" />
         <p className="text-[9px] text-gray-500 mb-3">Arraste os controles para ajustar os parâmetros</p>
         <div className="flex flex-col gap-5">
-          {SLIDER_CONFIG.map(({ key, label, fullLabel, unit, color, rgb, min, max, step, desc, aumentar, diminuir, equilibrio }) => {
+          {SLIDER_VISUAL.map(({ key, label, fullLabel, unit, color, rgb, desc, aumentar, diminuir, equilibrio }) => {
+            const { min, max, step, recomendado } = bounds[key];
             const val = parametros[key];
             const display = key === 'fz' || key === 'ap' ? val.toFixed(2) : key === 'ae' ? val.toFixed(1) : val.toFixed(0);
             const isOpen = openKey === key;
@@ -214,6 +253,7 @@ export function MobileFineTuneSection() {
                     <TouchSlider
                       value={val} min={min} max={max} step={step}
                       rgb={rgb} label={label}
+                      recomendado={recomendado}
                       onChange={(v) => handleChange(key, v)}
                     />
                   </div>

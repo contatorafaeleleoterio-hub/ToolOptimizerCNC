@@ -6,3 +6,4 @@ export { calculateMRR, calculatePower, calculateTorque } from './power';
 export { validateLDRatio, validateInputs, validateMachineLimits } from './validators';
 export type { InputParams, CalculatedValues } from './validators';
 export { getRecommendedParams } from './recommendations';
+export { calcularSliderBounds } from './slider-bounds';

@@ -42,6 +42,38 @@ export interface Ferramenta {
   numeroArestas: number;
   balanco: number;
   raioQuina?: number;
+  paramRanges?: ToolParamRanges; // override manual de ranges do Ajuste Fino
+}
+
+/** Override opcional de range para um parâmetro (undefined = automático) */
+export interface ParamRangeOverride {
+  min?: number;
+  max?: number;
+  desejado?: number;
+}
+
+/** Overrides dos 4 parâmetros do Ajuste Fino para uma ferramenta específica */
+export interface ToolParamRanges {
+  vc?: ParamRangeOverride;
+  fz?: ParamRangeOverride;
+  ae?: ParamRangeOverride;
+  ap?: ParamRangeOverride;
+}
+
+/** Limites calculados para um parâmetro do slider do Ajuste Fino */
+export interface ParamBounds {
+  min: number;
+  max: number;
+  step: number;
+  recomendado: number;
+}
+
+/** Limites dinâmicos dos 4 sliders do Ajuste Fino (Vc, fz, ae, ap) */
+export interface SliderBounds {
+  vc: ParamBounds;
+  fz: ParamBounds;
+  ae: ParamBounds;
+  ap: ParamBounds;
 }
 
 /**

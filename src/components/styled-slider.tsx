@@ -10,11 +10,12 @@ export interface StyledSliderProps {
   color: string;
   rgb: string;
   label: string;
+  recomendado?: number;
   onChange: (val: number) => void;
 }
 
 /** Custom styled slider with mobile-style thumb (ring + inner dot + glow) */
-export function StyledSlider({ value, min, max, step, color, rgb, label, onChange }: StyledSliderProps) {
+export function StyledSlider({ value, min, max, step, color, rgb, label, recomendado, onChange }: StyledSliderProps) {
   const [pressed, setPressed] = useState(false);
   const trackRef = useRef<HTMLDivElement>(null);
   const pct = ((value - min) / (max - min)) * 100;
@@ -60,6 +61,20 @@ export function StyledSlider({ value, min, max, step, color, rgb, label, onChang
     >
       {/* Track background */}
       <div className="absolute left-0 right-0 h-1.5 bg-black/40 rounded-full" />
+
+      {/* Recommended value tick mark */}
+      {recomendado !== undefined && recomendado >= min && recomendado <= max && (
+        <div
+          className="absolute w-0.5 h-2.5 rounded-full pointer-events-none"
+          style={{
+            left: `${((recomendado - min) / (max - min)) * 100}%`,
+            top: '50%',
+            transform: 'translateY(-50%)',
+            backgroundColor: `rgba(${rgb},0.4)`,
+          }}
+          title={`Recomendado: ${recomendado}`}
+        />
+      )}
 
       {/* Filled track */}
       <div
