@@ -14,7 +14,7 @@
 |------|-------|
 | **Branch** | `main` |
 | **Versão** | `0.4.0` |
-| **Último commit** | `3ce840e` feat: Plausible Analytics + version bump v0.4.0 (S6B) |
+| **Último commit** | `29d1888` fix: sticky Simular bar visible below header on mobile scroll |
 | **Testes** | **503 passando** (34 arquivos) — nenhum flaky persistente |
 | **TypeScript** | **zero erros** |
 | **Build** | **limpo** — JS 92.96KB gzip, CSS 12.84KB (Plausible é externo, bundle não cresce) |
@@ -80,6 +80,19 @@ npx vite build 2>&1 | tail -5
 **Commits desta sessão:**
 - `2fe4f55` feat: responsive HistoryPage layout (S6A)
 - `3ce840e` feat: Plausible Analytics integration + version bump v0.4.0 (S6B)
+
+---
+
+### Sessão 02/03 — Fix: botão Simular sticky no mobile
+
+**Contexto:** Botão "Simular" no mobile não ficava visível ao rolar — desaparecia atrás do header.
+
+**Causa raiz:** `MobileStickyActions` usava `sticky top-0 z-20` enquanto `MobileHeader` usa `sticky top-0 z-50`. Ambos tentavam ocupar `top: 0`, mas o header (z-50) cobria o botão (z-20).
+
+**Fix:** `src/pages/mobile-page.tsx` linha 17 — `top-0` → `top-[52px]` (altura exata do MobileHeader: `py-3` 24px + `text-lg` 28px). O bar agora gruda visualmente logo abaixo do header ao rolar.
+
+**Commits desta sessão:**
+- `29d1888` fix: sticky Simular bar visible below header on mobile scroll
 
 ---
 
