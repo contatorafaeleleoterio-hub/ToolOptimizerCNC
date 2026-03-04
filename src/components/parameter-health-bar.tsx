@@ -1,5 +1,7 @@
 import type { ReactNode } from 'react';
 import { useMachiningStore } from '@/store';
+import { MATERIAIS } from '@/data';
+import { calcularSliderBounds } from '@/engine';
 
 export type ZoneId = 'verde' | 'amarelo' | 'vermelho';
 
@@ -18,7 +20,7 @@ const FZ_K = 0.017;
 // Result types
 // ---------------------------------------------------------------------------
 
-export interface VcResult { position: number; zone: ZoneId; zoneLabel: string; }
+export interface VcByValueResult { position: number; zone: ZoneId; zoneLabel: string; }
 export interface FzResult { position: number; zone: ZoneId; zoneLabel: string; ctfBadge: string | null; }
 export interface AeResult { position: number; zone: ZoneId; zoneLabel: string; aeDRatioDisplay: string; }
 export interface ApResult { position: number; zone: ZoneId; zoneLabel: string; ldDisplay: string; ldColorClass: string; }
@@ -28,28 +30,22 @@ export interface ApResult { position: number; zone: ZoneId; zoneLabel: string; l
 // ---------------------------------------------------------------------------
 
 /**
- * Computes spindle utilization health.
- * Uses asymmetric normalization: left half divides by center span (0.55),
- * right half by upper span (0.45), so maxRPM maps exactly to position = 1.0.
+ * Computes Vc health based on slider value vs recommended.
+ * position [0, 1]: 0 = Vc zero, 1 = vcMax.
+ * Always computable without simulation result.
+ * Zone based on vc/vcRecomendado ratio — both too low and too high are bad.
  */
-export function computeVcPosition(rpm: number, maxRPM: number): VcResult {
-  const rpmRatio = rpm / maxRPM;
-  const center = 0.55;
-
-  let position: number;
-  if (rpmRatio <= center) {
-    position = (rpmRatio - center) / center;         // [-1, 0]
-  } else {
-    position = (rpmRatio - center) / (1 - center);  // [0, 1]
-  }
-  position = Math.max(-1, Math.min(1, position));
+export function computeVcByValue(vc: number, vcRecomendado: number, vcMax: number): VcByValueResult {
+  const position = vcMax > 0 ? Math.min(1, vc / vcMax) : 0;
+  const ratio = vcRecomendado > 0 ? vc / vcRecomendado : 0;
 
   let zone: ZoneId;
   let zoneLabel: string;
-  if (rpmRatio < 0.30)       { zone = 'amarelo';  zoneLabel = 'Sub-ótimo'; }
-  else if (rpmRatio <= 0.75) { zone = 'verde';    zoneLabel = 'Ideal';     }
-  else if (rpmRatio <= 0.90) { zone = 'amarelo';  zoneLabel = 'Alerta';    }
-  else                       { zone = 'vermelho'; zoneLabel = 'Desgaste';  }
+  if (ratio < 0.50)       { zone = 'vermelho'; zoneLabel = 'Baixo';       }
+  else if (ratio < 0.75)  { zone = 'amarelo';  zoneLabel = 'Sub-ótimo';   }
+  else if (ratio <= 1.20) { zone = 'verde';    zoneLabel = 'Recomendado'; }
+  else if (ratio <= 1.50) { zone = 'amarelo';  zoneLabel = 'Alerta';      }
+  else                    { zone = 'vermelho'; zoneLabel = 'Desgaste';    }
 
   return { position, zone, zoneLabel };
 }
@@ -136,6 +132,65 @@ export function computeApPosition(ap: number, diametro: number, balanco: number)
 // ---------------------------------------------------------------------------
 // Internal render helpers
 // ---------------------------------------------------------------------------
+
+interface VcHealthBarProps {
+  vc: number;
+  vcRecomendado: number;
+  vcMax: number;
+}
+
+/** Left-based unidirectional health bar for Vc. Always active — no simulation needed. */
+function VcHealthBar({ vc, vcRecomendado, vcMax }: VcHealthBarProps) {
+  const result = computeVcByValue(vc, vcRecomendado, vcMax);
+  const rgb = ZONE_RGB[result.zone];
+  const fillPct = result.position * 100;
+  const recPct = vcMax > 0 ? Math.min(100, (vcRecomendado / vcMax) * 100) : 50;
+
+  return (
+    <div data-testid="health-bar-vc" className="flex flex-col gap-0.5">
+      <div className="relative" style={{ height: '14px' }}>
+        {/* Track background */}
+        <div
+          className="absolute inset-x-0 rounded-full"
+          style={{ top: '5px', height: '4px', background: 'rgba(0,0,0,0.4)' }}
+        />
+        {/* Fill from left edge */}
+        <div
+          data-testid="health-bar-vc-fill"
+          className="absolute rounded-full"
+          style={{
+            top: '5px', height: '4px',
+            left: 0,
+            width: `${fillPct}%`,
+            backgroundColor: `rgba(${rgb},0.9)`,
+            boxShadow: `0 0 6px rgba(${rgb},0.4)`,
+          }}
+        />
+        {/* Recommended tick mark */}
+        <div
+          data-testid="health-bar-vc-rec-tick"
+          className="absolute"
+          style={{
+            left: `${recPct}%`,
+            top: '2px',
+            width: '1px',
+            height: '10px',
+            background: 'rgba(255,255,255,0.35)',
+            transform: 'translateX(-50%)',
+          }}
+        />
+      </div>
+      {/* Labels */}
+      <div className="flex justify-between items-center">
+        <span className="text-[8px] text-gray-700">Baixo</span>
+        <span className="text-[8px] font-semibold" style={{ color: `rgba(${rgb},1)` }}>
+          {result.zoneLabel}
+        </span>
+        <span className="text-[8px] text-gray-700">Desgaste</span>
+      </div>
+    </div>
+  );
+}
 
 interface ActiveBarProps {
   paramKey: string;
@@ -241,26 +296,24 @@ interface ParameterHealthBarProps {
   paramKey: 'vc' | 'fz' | 'ae' | 'ap';
 }
 
-/** Visual bidirectional health indicator for a single Fine Tune parameter. */
+/** Visual health indicator for a single Fine Tune parameter. */
 export function ParameterHealthBar({ paramKey }: ParameterHealthBarProps) {
   const resultado = useMachiningStore((s) => s.resultado);
   const parametros = useMachiningStore((s) => s.parametros);
   const ferramenta = useMachiningStore((s) => s.ferramenta);
-  const limitesMaquina = useMachiningStore((s) => s.limitesMaquina);
+  const materialId = useMachiningStore((s) => s.materialId);
+  const tipoOperacao = useMachiningStore((s) => s.tipoOperacao);
 
   const { diametro, balanco } = ferramenta;
 
   if (paramKey === 'vc') {
-    if (!resultado) return <InactiveBar paramKey="vc" />;
-    const vcResult = computeVcPosition(resultado.rpm, limitesMaquina.maxRPM);
+    const material = MATERIAIS.find((m) => m.id === materialId) ?? null;
+    const vcBounds = calcularSliderBounds(material, ferramenta, tipoOperacao).vc;
     return (
-      <ActiveBar
-        paramKey="vc"
-        position={vcResult.position}
-        zone={vcResult.zone}
-        zoneLabel={vcResult.zoneLabel}
-        leftLabel="Sub-ótimo"
-        rightLabel="Desgaste"
+      <VcHealthBar
+        vc={parametros.vc}
+        vcRecomendado={vcBounds.recomendado}
+        vcMax={vcBounds.max}
       />
     );
   }

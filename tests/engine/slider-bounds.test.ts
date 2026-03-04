@@ -27,8 +27,8 @@ describe('P20 Ø10 Desbaste', () => {
   const bounds = calcularSliderBounds(P20, ferr10, TipoUsinagem.DESBASTE);
 
   // Seção 4.1 — Vc
-  it('Vc min = round(100 × 0.7) = 70', () => {
-    expect(bounds.vc.min).toBe(70);
+  it('Vc min = 0 (slider começa no zero)', () => {
+    expect(bounds.vc.min).toBe(0);
   });
 
   it('Vc max = round(120 × 1.3) = 156', () => {
@@ -90,9 +90,8 @@ describe('H13 Ø6 Acabamento', () => {
   const bounds = calcularSliderBounds(H13, ferr6, TipoUsinagem.ACABAMENTO);
 
   // Seção 4.2 — Vc
-  it('Vc min = round(125 × 0.7) = 87', () => {
-    // 125 × 0.7 = 87.5 → Math.round = 88
-    expect(bounds.vc.min).toBe(88);
+  it('Vc min = 0 (slider começa no zero)', () => {
+    expect(bounds.vc.min).toBe(0);
   });
 
   it('Vc max = round(170 × 1.3) = 221', () => {
@@ -141,8 +140,8 @@ describe('Sem material — fallback', () => {
   const bounds = calcularSliderBounds(null, ferr10, TipoUsinagem.DESBASTE);
 
   // Seção 4.3
-  it('Vc min = 30 (cobre aços + inox)', () => {
-    expect(bounds.vc.min).toBe(30);
+  it('Vc min = 0 (fallback — slider começa no zero)', () => {
+    expect(bounds.vc.min).toBe(0);
   });
 
   it('Vc max = 350 (cobre aços + inox)', () => {

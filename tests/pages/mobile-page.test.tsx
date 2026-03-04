@@ -98,9 +98,12 @@ describe('MobilePage', () => {
     expect(screen.getByTestId('health-bar-ap')).toBeInTheDocument();
   });
 
-  it('vc and fz health bars show inactive state before simulation', () => {
+  it('vc bar always active; fz bar shows inactive state before simulation', () => {
     renderMobile();
-    expect(screen.getByTestId('health-bar-vc-inactive')).toBeInTheDocument();
+    // vc is now always active (value-based, no simulation needed)
+    expect(screen.queryByTestId('health-bar-vc-inactive')).not.toBeInTheDocument();
+    expect(screen.getByTestId('health-bar-vc-fill')).toBeInTheDocument();
+    // fz still requires simulation
     expect(screen.getByTestId('health-bar-fz-inactive')).toBeInTheDocument();
   });
 });

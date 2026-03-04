@@ -56,16 +56,16 @@ function calcularVcBounds(
   vcRecomendado: number,
 ): ParamBounds {
   if (material) {
-    const [vcMin, vcMax] = material.vcRanges[tipoOp];
+    const [, vcMax] = material.vcRanges[tipoOp];
     return {
-      min: Math.round(vcMin * 0.7),
+      min: 0,
       max: Math.round(vcMax * 1.3),
       step: 1,
       recomendado: vcRecomendado,
     };
   }
   // Fallback genérico
-  return { min: 30, max: 350, step: 1, recomendado: vcRecomendado };
+  return { min: 0, max: 350, step: 1, recomendado: vcRecomendado };
 }
 
 /**

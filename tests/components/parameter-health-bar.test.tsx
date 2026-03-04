@@ -1,7 +1,7 @@
 import { describe, it, expect, beforeEach } from 'vitest';
 import { render, screen } from '@testing-library/react';
 import {
-  computeVcPosition,
+  computeVcByValue,
   computeFzPosition,
   computeAePosition,
   computeApPosition,
@@ -10,58 +10,83 @@ import {
 import { useMachiningStore } from '@/store';
 
 // ---------------------------------------------------------------------------
-// computeVcPosition — Vc zone uses asymmetric normalization:
-//   left of center (rpmRatio < 0.55): divide by 0.55
-//   right of center (rpmRatio > 0.55): divide by 0.45
+// computeVcByValue — zone based on vc/vcRecomendado ratio:
+//   < 0.50 → vermelho/Baixo | 0.50–0.75 → amarelo/Sub-ótimo
+//   0.75–1.20 → verde/Recomendado | 1.20–1.50 → amarelo/Alerta | > 1.50 → vermelho/Desgaste
+// position [0, 1] = vc / vcMax
 // ---------------------------------------------------------------------------
-describe('computeVcPosition', () => {
-  it('center of ideal zone (rpmRatio=0.55) → position ≈ 0', () => {
-    const { position } = computeVcPosition(6600, 12000);
-    expect(Math.abs(position)).toBeLessThan(0.01);
+describe('computeVcByValue', () => {
+  it('vc=0, vcRec=100, vcMax=260 → position = 0', () => {
+    const { position } = computeVcByValue(0, 100, 260);
+    expect(position).toBe(0);
   });
 
-  it('lower ideal boundary (rpmRatio=0.30) → position ≈ -0.45', () => {
-    const { position } = computeVcPosition(3600, 12000);
-    expect(Math.abs(position - (-0.4545))).toBeLessThan(0.01);
-  });
-
-  it('maxRPM (rpmRatio=1.0) → position = 1.0 (exact right edge)', () => {
-    const { position } = computeVcPosition(12000, 12000);
+  it('vc=vcMax=260, vcRec=100 → position = 1.0', () => {
+    const { position } = computeVcByValue(260, 100, 260);
     expect(position).toBeCloseTo(1.0, 5);
   });
 
-  it('low rpmRatio (rpmRatio=0.10) → position ≈ -0.82 (sub-ótimo)', () => {
-    const { position } = computeVcPosition(1200, 12000);
-    expect(Math.abs(position - (-0.8182))).toBeLessThan(0.01);
-  });
-
-  it('position is clamped to [-1, 1] when rpm > maxRPM', () => {
-    const { position } = computeVcPosition(15000, 12000); // ratio = 1.25
+  it('vc > vcMax → position clamped to 1.0', () => {
+    const { position } = computeVcByValue(300, 100, 260);
     expect(position).toBe(1.0);
   });
 
-  it('rpmRatio < 30% → zone = amarelo, label = Sub-ótimo', () => {
-    const { zone, zoneLabel } = computeVcPosition(1200, 12000); // 10%
+  it('vc=100, vcRec=100 → position = 100/260 ≈ 0.385', () => {
+    const { position } = computeVcByValue(100, 100, 260);
+    expect(Math.abs(position - 100 / 260)).toBeLessThan(0.001);
+  });
+
+  it('ratio < 0.50 → zone = vermelho, label = Baixo', () => {
+    const { zone, zoneLabel } = computeVcByValue(40, 100, 260); // ratio = 0.40
+    expect(zone).toBe('vermelho');
+    expect(zoneLabel).toBe('Baixo');
+  });
+
+  it('ratio = 0.50 → zone = amarelo, label = Sub-ótimo (boundary inclusive)', () => {
+    const { zone, zoneLabel } = computeVcByValue(50, 100, 260); // ratio = 0.50
     expect(zone).toBe('amarelo');
     expect(zoneLabel).toBe('Sub-ótimo');
   });
 
-  it('rpmRatio 30–75% → zone = verde, label = Ideal', () => {
-    const { zone, zoneLabel } = computeVcPosition(5400, 12000); // 45%
-    expect(zone).toBe('verde');
-    expect(zoneLabel).toBe('Ideal');
+  it('ratio 0.50–0.75 → zone = amarelo, label = Sub-ótimo', () => {
+    const { zone, zoneLabel } = computeVcByValue(60, 100, 260); // ratio = 0.60
+    expect(zone).toBe('amarelo');
+    expect(zoneLabel).toBe('Sub-ótimo');
   });
 
-  it('rpmRatio 75–90% → zone = amarelo, label = Alerta', () => {
-    const { zone, zoneLabel } = computeVcPosition(9600, 12000); // 80%
+  it('ratio = 0.75 → zone = verde, label = Recomendado (boundary inclusive)', () => {
+    const { zone, zoneLabel } = computeVcByValue(75, 100, 260); // ratio = 0.75
+    expect(zone).toBe('verde');
+    expect(zoneLabel).toBe('Recomendado');
+  });
+
+  it('ratio 0.75–1.20 → zone = verde, label = Recomendado', () => {
+    const { zone, zoneLabel } = computeVcByValue(100, 100, 260); // ratio = 1.00
+    expect(zone).toBe('verde');
+    expect(zoneLabel).toBe('Recomendado');
+  });
+
+  it('ratio = 1.20 → zone = verde, label = Recomendado (boundary inclusive)', () => {
+    const { zone, zoneLabel } = computeVcByValue(120, 100, 260); // ratio = 1.20
+    expect(zone).toBe('verde');
+    expect(zoneLabel).toBe('Recomendado');
+  });
+
+  it('ratio 1.20–1.50 → zone = amarelo, label = Alerta', () => {
+    const { zone, zoneLabel } = computeVcByValue(135, 100, 260); // ratio = 1.35
     expect(zone).toBe('amarelo');
     expect(zoneLabel).toBe('Alerta');
   });
 
-  it('rpmRatio > 90% → zone = vermelho, label = Desgaste', () => {
-    const { zone, zoneLabel } = computeVcPosition(11400, 12000); // 95%
+  it('ratio > 1.50 → zone = vermelho, label = Desgaste', () => {
+    const { zone, zoneLabel } = computeVcByValue(160, 100, 260); // ratio = 1.60
     expect(zone).toBe('vermelho');
     expect(zoneLabel).toBe('Desgaste');
+  });
+
+  it('vcMax = 0 → position = 0 (divisão por zero segura)', () => {
+    const { position } = computeVcByValue(0, 100, 0);
+    expect(position).toBe(0);
   });
 });
 
@@ -274,10 +299,11 @@ describe('ParameterHealthBar', () => {
     expect(screen.getByTestId('health-bar-ap')).toBeInTheDocument();
   });
 
-  it('vc bar shows inactive state when resultado = null', () => {
-    // resultado is null after reset()
+  it('vc bar is always active even when resultado = null', () => {
+    // vc bar no longer depends on simulation — always shows fill
     render(<ParameterHealthBar paramKey="vc" />);
-    expect(screen.getByTestId('health-bar-vc-inactive')).toBeInTheDocument();
+    expect(screen.queryByTestId('health-bar-vc-inactive')).not.toBeInTheDocument();
+    expect(screen.getByTestId('health-bar-vc-fill')).toBeInTheDocument();
   });
 
   it('fz bar shows inactive state when resultado = null', () => {
