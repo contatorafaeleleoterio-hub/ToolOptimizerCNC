@@ -13,11 +13,11 @@
 | Item | Valor |
 |------|-------|
 | **Branch** | `main` |
-| **Versão** | `0.4.0` |
-| **Último commit** | `29d1888` fix: sticky Simular bar visible below header on mobile scroll |
-| **Testes** | **503 passando** (34 arquivos) — nenhum flaky persistente |
+| **Versão** | `0.4.2` |
+| **Último commit** | `b6b9812` feat(ajuste-fino): unify fz/ae/ap indicators to unidirectional pattern matching Vc |
+| **Testes** | **572 passando** (35 arquivos) — 1 falha pré-existente (`mobile-fine-tune-section` fz step) |
 | **TypeScript** | **zero erros** |
-| **Build** | **limpo** — JS 92.96KB gzip, CSS 12.84KB (Plausible é externo, bundle não cresce) |
+| **Build** | **limpo** — JS 95.03KB gzip, CSS 13.02KB |
 | **Remote** | `origin/main` sincronizado (GitHub) |
 | **Worker** | ✅ LIVE — `https://tooloptimizercnc.contatorafaeleleoterio.workers.dev` |
 | **GitHub Pages** | ✅ LIVE — deploy automático funciona |
@@ -50,6 +50,53 @@ npx vite build 2>&1 | tail -5
 ---
 
 ## ✅ O QUE FOI FEITO (histórico recente)
+
+### Sessão 07/03 — Unificação Indicadores Ajuste Fino (4 unidirecionais)
+
+**Contexto:** Os indicadores de saúde (health bars) do Ajuste Fino tinham comportamento inconsistente — Vc era unidirecional (esquerda→direita, refatorizado em 03/03) mas fz, ae, ap ainda usavam barras bidirecionais (centro→lados), que não refletiam a realidade dos parâmetros CNC.
+
+**Plano revisado:** Analisamos o plano original (`docs/plans/PLAN_Unificar_Indicadores_Ajuste_Fino.md`) e identificamos **5 erros críticos** — proposta de ranges estáticos no store (conflita com `calcularSliderBounds` dinâmico), Settings UI desnecessário, remoção incorreta do InactiveBar, contagem errada de testes, e FZ_K hardcoded. Plano corrigido: 2 arquivos em vez de 5, zero mudanças no store/settings.
+
+**O que foi feito:**
+- ✅ **Commit `b6b9812` — Unificação completa dos 4 indicadores:**
+  - **Removidos:** `computeFzPosition`, `computeAePosition`, `computeApPosition` (bidirecionais), `ActiveBar` component, constante `FZ_K`
+  - **Adicionados:** `computeFzByValue`, `computeAeByValue`, `computeApByValue` — padrão unidirecional [0,1] com zone por ratio (valor/recomendado)
+  - **Criado:** `UnidirectionalBar` — componente compartilhado para todos os 4 indicadores
+  - **Mantidos:** `InactiveBar` (fz antes de simular), `computeVcByValue` (intocado), `ZONE_RGB`
+  - **Testes reescritos:** 77 testes (era 58) — `computeFzByValue` (15t), `computeAeByValue` (13t), `computeApByValue` (17t) + render tests atualizados
+  - **Usa `calcularSliderBounds()`** diretamente — zero mudanças no store, bounds 100% dinâmicos
+- ✅ **Merge para main + push** — CI/CD deploy automático para Cloudflare
+- ✅ **572 testes passando** (35 arquivos) | **TypeScript zero erros** | **Build limpo**
+
+**Arquivos modificados (apenas 2):**
+- `src/components/parameter-health-bar.tsx` — rewrite completo das compute funcs + UnidirectionalBar
+- `tests/components/parameter-health-bar.test.tsx` — 77 testes unidirecionais
+
+**⚠️ Teste falhando pré-existente:**
+- `mobile-fine-tune-section.test.tsx` → "increase button increases fz by step" — falha de step fz no mobile, pré-existente (não relacionada a esta mudança)
+
+**Lições aprendidas desta sessão:**
+- Worktree branches precisam de merge explícito para main antes de serem visíveis
+- Floating-point JS: `0.075 / 0.1 = 0.7499...` (não exatamente 0.75) — usar valores claros nos testes
+- `calcularSliderBounds()` é infraestrutura chave — eliminou necessidade de mudanças no store
+- Planos de implementação devem ser validados contra código existente antes de executar
+
+**Commits desta sessão:**
+- `b6b9812` feat(ajuste-fino): unify fz/ae/ap indicators to unidirectional pattern matching Vc
+
+---
+
+### Sessão 03/03 — Redesign Indicador Vc + Docs Story-007
+
+**Contexto:** Primeiro indicador (Vc) redesenhado de bidirecional para unidirecional. Slider bounds dinâmicos implementados (Story-007).
+
+**Commits:**
+- `9119fd4` feat(ajuste-fino): redesign indicador Vc — unidirecional + slider min=0
+- `9717852` docs: session 2026-03-03 — Vc indicator redesign + 4 pending test failures documented
+- `baec109` docs: session S23 — Story 007 Slider Bounds concluída (v0.4.1)
+- `139f13f` feat(S7): Slider Bounds Dinâmicos — Story 007 completa (v0.4.0 → v0.4.1)
+
+---
 
 ### Sessão 01/03 s22 — Story-006: HistoryPage Responsiva + Plausible Analytics
 
@@ -382,12 +429,26 @@ npx vite build 2>&1 | tail -5
 - ✅ **S6B** — `3ce840e` — Plausible Analytics (+4 testes → 503)
 - **Pré-req manual:** criar conta Plausible + adicionar `tooloptimizercnc.com.br`
 
-#### 🟡 Próxima: Story-007 (a definir com usuário) OU Login Google (quando houver demanda)
+#### ✅ Story-007 — Slider Bounds Dinâmicos (v0.4.1) — COMPLETA
+- ✅ `139f13f` — `calcularSliderBounds()` dinâmico por material/operação/ferramenta
+- ✅ Slider Vc redesenhado para unidirecional
+
+#### ✅ Unificação Indicadores Ajuste Fino (v0.4.2) — COMPLETA
+- ✅ `b6b9812` — fz/ae/ap convertidos para padrão unidirecional (matching Vc)
+- ✅ 572 testes passando (35 arquivos)
+
+#### 🟡 Próximas tarefas (a definir com usuário)
+
+**Sugestões de melhoria contínua (gradual):**
+1. **Fix teste falhando:** `mobile-fine-tune-section` fz step — corrigir para 573/573
+2. **Version bump:** package.json 0.4.0 → 0.4.2 (Story-007 + unificação indicadores)
+3. **Story-008:** A definir — ver sugestões em `docs/MELHORIAS_CONTINUAS.md`
+4. **Login Google L1:** Quando houver demanda validada
 
 > **REGRA DE SEQUÊNCIA (para o próximo assistente):**
-> 1. Verificar se usuário já criou conta Plausible (perguntar)
-> 2. Perguntar qual próxima feature: Story-007 ou Login Google L1
-> 3. Login Google L1: pré-req = Firebase Console setup + `.env.local`
+> 1. Ler este arquivo completo primeiro
+> 2. Corrigir o 1 teste falhando (fz step mobile) — meta: 573/573 zero falhas
+> 3. Perguntar qual próxima feature ao usuário
 > 4. Só iniciar após escolha explícita do usuário
 
 #### ⏸️ Login Google — PAUSADO (decisão estratégica)
@@ -545,16 +606,25 @@ style={{ color: `rgba(${rgb},1)` }}
 </div>
 ```
 
-### ParameterHealthBar — regras
+### ParameterHealthBar — regras (ATUALIZADO 07/03)
 ```tsx
-// Inserção em fine-tune-panel.tsx (após slider row, antes gaveta):
-</div>  {/* ← fecha flex items-center gap-1.5 */}
-<ParameterHealthBar paramKey={key} />
-{isOpen && (  {/* ← gaveta educativa */}
+// TODOS os 4 indicadores são UNIDIRECIONAIS (esquerda → direita)
+// position [0, 1]: valor / max (clampado)
+// zone por ratio: valor / recomendado
+//   < 0.50 → vermelho | 0.50–0.75 → amarelo | 0.75–1.20 → verde | 1.20–1.50 → amarelo | > 1.50 → vermelho
 
-// Vc/fz inactive quando resultado=null. ae/ap sempre ativos.
-// ZONE_RGB é lookup estático — nunca interpolar em className
+// Funções compute puras (testáveis sem React):
+// computeVcByValue(vc, vcRecomendado, vcMax) → { position, zone, zoneLabel }
+// computeFzByValue(fzEfetivo, fzRecomendado, fzMax, ctf) → { position, zone, zoneLabel, ctfBadge }
+// computeAeByValue(ae, aeRecomendado, aeMax, diametro) → { position, zone, zoneLabel, aeDRatioDisplay }
+// computeApByValue(ap, apRecomendado, apMax, diametro, balanco) → { position, zone, zoneLabel, ldDisplay, ldColorClass }
+
+// Bounds dinâmicos via calcularSliderBounds() — NUNCA hardcodar valores
+// fz = único com InactiveBar (precisa de resultado.fzEfetivo da simulação)
+// ae/ap/vc = sempre ativos (usam parametros + ferramenta diretamente)
+// ZONE_RGB é lookup estático — NUNCA interpolar em className
 // CTF badge aparece quando resultado.seguranca.ctf > 1.0
+// L/D > 6 → ap zone = vermelho, label = 'BLOQUEADO'
 ```
 
 ### Tolerâncias nos testes
@@ -678,6 +748,8 @@ docs/
 | Clone desktop em testes | Vitest acha arquivos do clone | `exclude: ['Sistema_Desktop_Pen_driver/**']` já configurado |
 | `usePageTitle` em teste | Muda `document.title` | Limpar no `afterEach` se necessário |
 | `BrowserRouter` em testes mobile | MobilePage usa hooks de routing | Sempre envolver em `<BrowserRouter>` |
+| Worktree branch ≠ main | Commits em worktree não aparecem em main | Merge explícito + push após terminar |
+| Floating-point boundary | `0.075/0.1 ≠ 0.75` exatamente | Usar valores com margem clara em testes |
 
 ---
 
@@ -747,7 +819,11 @@ git status
 | 0.1.0 | inicial | MVP base (cálculos + UI) |
 | 0.2.0 | múltiplos | Animações + Sliders bidirecionais + Mobile + CI |
 | 0.2.1 | d32b26e | SEO + Schema.org + fix gaveta mobile |
-| **0.3.0** | **12b8a6c** | **ParameterHealthBar (Story-005)** |
+| 0.3.0 | 12b8a6c | ParameterHealthBar (Story-005) |
+| 0.3.4 | 5aed1ae | Auditoria completa (5 fases) + Fix UX Ajuste Fino |
+| 0.4.0 | 3ce840e | Story-006: HistoryPage + Plausible Analytics |
+| 0.4.1 | 139f13f | Story-007: Slider Bounds Dinâmicos |
+| **0.4.2** | **b6b9812** | **Unificação 4 indicadores unidirecionais** |
 
 ---
 
@@ -759,15 +835,19 @@ git status
 ✅ Story-003: CI/CD GitHub Actions
 ✅ Story-004: SEO Schema.org + meta tags
 ✅ Story-005: ParameterHealthBar (feedback visual Fine Tune)
-⬜ Auditoria: 5 fases (S1-S5) → docs/IMPLEMENTACAO_SESSOES.md
-⬜ Login Google: 5 fases (L1-L5) → docs/IMPLEMENTACAO_LOGIN.md
-⬜ Story-006: [A DEFINIR com usuário]
-⬜ MVP v1.0.0 (feature-complete)
+✅ Auditoria: 5 fases (S1-S5) completas (v0.3.1 → v0.3.4)
+✅ Story-006: HistoryPage Responsiva + Plausible Analytics (v0.4.0)
+✅ Story-007: Slider Bounds Dinâmicos (v0.4.1)
+✅ Unificação Indicadores: 4 barras unidirecionais (v0.4.2)
+🟡 Fix: 1 teste falhando (fz step mobile)
+⬜ Story-008: [A DEFINIR com usuário]
 ⬜ Landing Page (Cloudflare Pages — setup manual pendente)
+⬜ Login Google: 5 fases (L1-L5) → quando houver demanda
 ⬜ Desktop: ícone + fontes offline + code signing
+⬜ MVP v1.0.0 (feature-complete)
 ```
 
 ---
 
-*Última atualização: 28/02/2026 — Sessão 21 (Fix UX: Ajuste Fino real-time — ajustarParametros)*
-*Próximo assistente: leia este arquivo + escolher próxima iniciativa com o usuário (Login Google / Story-006 / Landing)*
+*Última atualização: 07/03/2026 — Sessão 07/03 (Unificação 4 indicadores unidirecionais — v0.4.2)*
+*Próximo assistente: leia este arquivo + corrigir teste fz step + escolher próxima feature com o usuário*
