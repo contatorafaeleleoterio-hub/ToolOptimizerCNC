@@ -12,21 +12,18 @@ const ZONE_RGB: Record<ZoneId, string> = {
   vermelho: '231,76,60',
 };
 
-// Empirical constant: fzEfetivo = diametro × FZ_K gives chipRatio = 1.0 (ideal center)
-// Based on industry practice: optimal chip load ≈ 1.7% of tool diameter
-const FZ_K = 0.017;
-
 // ---------------------------------------------------------------------------
 // Result types
 // ---------------------------------------------------------------------------
 
 export interface VcByValueResult { position: number; zone: ZoneId; zoneLabel: string; }
-export interface FzResult { position: number; zone: ZoneId; zoneLabel: string; ctfBadge: string | null; }
-export interface AeResult { position: number; zone: ZoneId; zoneLabel: string; aeDRatioDisplay: string; }
-export interface ApResult { position: number; zone: ZoneId; zoneLabel: string; ldDisplay: string; ldColorClass: string; }
+export interface FzByValueResult { position: number; zone: ZoneId; zoneLabel: string; ctfBadge: string | null; }
+export interface AeByValueResult { position: number; zone: ZoneId; zoneLabel: string; aeDRatioDisplay: string; }
+export interface ApByValueResult { position: number; zone: ZoneId; zoneLabel: string; ldDisplay: string; ldColorClass: string; }
 
 // ---------------------------------------------------------------------------
 // Pure computation functions (exported for unit testing)
+// All use unidirectional position [0, 1] and ratio-based zone classification.
 // ---------------------------------------------------------------------------
 
 /**
@@ -51,21 +48,24 @@ export function computeVcByValue(vc: number, vcRecomendado: number, vcMax: numbe
 }
 
 /**
- * Computes chip load health.
- * chipRatio = fzEfetivo / (D × FZ_K); center = 1.0; position = chipRatio - 1 clamped.
+ * Computes chip load health — unidirectional [0, 1].
+ * position = fzEfetivo / fzMax; zone based on fzEfetivo / fzRecomendado ratio.
+ * Uses dynamic bounds from calcularSliderBounds (fzMax, fzRecomendado).
  * Also returns a CTF badge string when chip thinning factor is active (ctf > 1.0).
  */
-export function computeFzPosition(fzEfetivo: number, diametro: number, ctf: number): FzResult {
-  const chipRatio = fzEfetivo / (diametro * FZ_K);
-  const position = Math.max(-1, Math.min(1, chipRatio - 1.0));
+export function computeFzByValue(
+  fzEfetivo: number, fzRecomendado: number, fzMax: number, ctf: number
+): FzByValueResult {
+  const position = fzMax > 0 ? Math.min(1, Math.max(0, fzEfetivo / fzMax)) : 0;
+  const ratio = fzRecomendado > 0 ? fzEfetivo / fzRecomendado : 0;
 
   let zone: ZoneId;
   let zoneLabel: string;
-  if (chipRatio < 0.4)       { zone = 'vermelho'; zoneLabel = 'Atrito';    }
-  else if (chipRatio < 0.7)  { zone = 'amarelo';  zoneLabel = 'Leve';      }
-  else if (chipRatio <= 1.4) { zone = 'verde';    zoneLabel = 'Ideal';     }
-  else if (chipRatio <= 2.0) { zone = 'amarelo';  zoneLabel = 'Agressivo'; }
-  else                       { zone = 'vermelho'; zoneLabel = 'Vibração';  }
+  if (ratio < 0.50)       { zone = 'vermelho'; zoneLabel = 'Atrito';    }
+  else if (ratio < 0.75)  { zone = 'amarelo';  zoneLabel = 'Leve';      }
+  else if (ratio <= 1.20) { zone = 'verde';    zoneLabel = 'Ideal';     }
+  else if (ratio <= 1.50) { zone = 'amarelo';  zoneLabel = 'Agressivo'; }
+  else                    { zone = 'vermelho'; zoneLabel = 'Vibração';  }
 
   const ctfBadge = ctf > 1.0 ? `CTF ×${ctf.toFixed(2)}` : null;
 
@@ -73,81 +73,88 @@ export function computeFzPosition(fzEfetivo: number, diametro: number, ctf: numb
 }
 
 /**
- * Computes radial engagement health.
- * ae/D ratio with center = 0.50 (exact CTF threshold). Always computable.
+ * Computes radial engagement health — unidirectional [0, 1].
+ * position = ae / aeMax; zone based on ae / aeRecomendado ratio.
+ * Uses dynamic bounds from calcularSliderBounds (aeMax, aeRecomendado).
+ * Always computable without simulation result.
  */
-export function computeAePosition(ae: number, diametro: number): AeResult {
-  const aeDRatio = ae / diametro;
-  const center = 0.50;
-  const position = Math.max(-1, Math.min(1, (aeDRatio - center) / center));
-  const aeDRatioDisplay = `${(aeDRatio * 100).toFixed(1)}%`;
+export function computeAeByValue(
+  ae: number, aeRecomendado: number, aeMax: number, diametro: number
+): AeByValueResult {
+  const position = aeMax > 0 ? Math.min(1, Math.max(0, ae / aeMax)) : 0;
+  const ratio = aeRecomendado > 0 ? ae / aeRecomendado : 0;
+  const aeDRatio = diametro > 0 ? ae / diametro : 0;
 
   let zone: ZoneId;
   let zoneLabel: string;
-  if (aeDRatio < 0.20)       { zone = 'amarelo'; zoneLabel = 'CTF Alto';     }
-  else if (aeDRatio <= 0.50) { zone = 'verde';   zoneLabel = 'CTF Ativo';    }
-  else if (aeDRatio <= 0.75) { zone = 'verde';   zoneLabel = 'Engaj. Pleno'; }
-  else                       { zone = 'amarelo'; zoneLabel = 'Pesado';       }
+  if (ratio < 0.50)       { zone = 'amarelo';  zoneLabel = 'CTF Alto';   }
+  else if (ratio <= 1.20) { zone = 'verde';    zoneLabel = 'Ideal';      }
+  else if (ratio <= 1.50) { zone = 'amarelo';  zoneLabel = 'Pesado';     }
+  else                    { zone = 'vermelho'; zoneLabel = 'Excessivo';  }
 
+  const aeDRatioDisplay = `${(aeDRatio * 100).toFixed(0)}% D`;
   return { position, zone, zoneLabel, aeDRatioDisplay };
 }
 
 /**
- * Computes axial depth health, modulated by L/D ratio.
- * The "safe" threshold shrinks as L/D increases (longer tools deflect more).
- * Always computable without resultado.
+ * Computes axial depth health — unidirectional [0, 1], with L/D safety check.
+ * position = ap / apMax; zone based on ap / apRecomendado ratio.
+ * Uses dynamic bounds from calcularSliderBounds (apMax, apRecomendado).
+ * L/D > 6 forces zone = vermelho / BLOQUEADO regardless of ap ratio.
+ * Always computable without simulation result.
  */
-export function computeApPosition(ap: number, diametro: number, balanco: number): ApResult {
-  const ldRatio = balanco / diametro;
+export function computeApByValue(
+  ap: number, apRecomendado: number, apMax: number,
+  diametro: number, balanco: number
+): ApByValueResult {
+  const ldRatio = diametro > 0 ? balanco / diametro : 0;
+  const position = apMax > 0 ? Math.min(1, Math.max(0, ap / apMax)) : 0;
+  const ratio = apRecomendado > 0 ? ap / apRecomendado : 0;
 
-  // Threshold for "Agressivo" boundary, scaled by tool overhang
-  let limiarAgressivo: number;
-  if (ldRatio <= 3)      { limiarAgressivo = 1.5; }
-  else if (ldRatio <= 4) { limiarAgressivo = 1.0; }
-  else                   { limiarAgressivo = 0.6; }
-
-  const apDRatio = ap / diametro;
-  const position = Math.max(-1, Math.min(1, (apDRatio / limiarAgressivo) - 1.0));
-
-  const ldDisplay = `L/D: ${ldRatio.toFixed(1)}`;
-
-  let ldColorClass: string;
-  if (ldRatio <= 3)      { ldColorClass = 'text-seg-verde';    }
-  else if (ldRatio <= 4) { ldColorClass = 'text-seg-amarelo';  }
-  else                   { ldColorClass = 'text-seg-vermelho'; }
-
-  // Zone boundaries scale proportionally with limiarAgressivo
-  const leveLimit      = limiarAgressivo / 3;
-  const deflexaoLimit  = limiarAgressivo * (5 / 3);
   let zone: ZoneId;
   let zoneLabel: string;
-  if (apDRatio < leveLimit)          { zone = 'amarelo';  zoneLabel = 'Leve';      }
-  else if (apDRatio <= limiarAgressivo)   { zone = 'verde';    zoneLabel = 'Padrão';   }
-  else if (apDRatio <= deflexaoLimit)    { zone = 'amarelo';  zoneLabel = 'Agressivo'; }
-  else                                   { zone = 'vermelho'; zoneLabel = 'Deflexão'; }
+  if (ldRatio > 6)        { zone = 'vermelho'; zoneLabel = 'BLOQUEADO';  }
+  else if (ratio < 0.50)  { zone = 'amarelo';  zoneLabel = 'Leve';      }
+  else if (ratio <= 1.20) { zone = 'verde';    zoneLabel = 'Padrão';    }
+  else if (ratio <= 1.50) { zone = 'amarelo';  zoneLabel = 'Agressivo'; }
+  else                    { zone = 'vermelho'; zoneLabel = 'Deflexão';  }
+
+  // L/D color class
+  let ldColorClass: string;
+  if (ldRatio <= 3)      { ldColorClass = 'text-seg-verde';    }
+  else if (ldRatio < 4)  { ldColorClass = 'text-seg-amarelo';  }
+  else                   { ldColorClass = 'text-seg-vermelho'; }
+
+  const ldDisplay = `L/D: ${ldRatio.toFixed(1)}`;
 
   return { position, zone, zoneLabel, ldDisplay, ldColorClass };
 }
 
 // ---------------------------------------------------------------------------
-// Internal render helpers
+// Internal render helpers — all unidirectional (left → right)
 // ---------------------------------------------------------------------------
 
-interface VcHealthBarProps {
-  vc: number;
-  vcRecomendado: number;
-  vcMax: number;
+interface UnidirectionalBarProps {
+  paramKey: string;
+  position: number;       // [0, 1]
+  zone: ZoneId;
+  zoneLabel: string;
+  leftLabel: string;
+  rightLabel: string;
+  recPct: number;         // recommended tick mark position (0–100%)
+  badge?: string | null;
+  readout?: ReactNode;
 }
 
-/** Left-based unidirectional health bar for Vc. Always active — no simulation needed. */
-function VcHealthBar({ vc, vcRecomendado, vcMax }: VcHealthBarProps) {
-  const result = computeVcByValue(vc, vcRecomendado, vcMax);
-  const rgb = ZONE_RGB[result.zone];
-  const fillPct = result.position * 100;
-  const recPct = vcMax > 0 ? Math.min(100, (vcRecomendado / vcMax) * 100) : 50;
+/** Renders a unidirectional health bar: fill grows from left, tick at recommended. */
+function UnidirectionalBar({
+  paramKey, position, zone, zoneLabel, leftLabel, rightLabel, recPct, badge, readout,
+}: UnidirectionalBarProps) {
+  const rgb = ZONE_RGB[zone];
+  const fillPct = position * 100;
 
   return (
-    <div data-testid="health-bar-vc" className="flex flex-col gap-0.5">
+    <div data-testid={`health-bar-${paramKey}`} className="flex flex-col gap-0.5">
       <div className="relative" style={{ height: '14px' }}>
         {/* Track background */}
         <div
@@ -156,7 +163,7 @@ function VcHealthBar({ vc, vcRecomendado, vcMax }: VcHealthBarProps) {
         />
         {/* Fill from left edge */}
         <div
-          data-testid="health-bar-vc-fill"
+          data-testid={`health-bar-${paramKey}-fill`}
           className="absolute rounded-full"
           style={{
             top: '5px', height: '4px',
@@ -168,7 +175,7 @@ function VcHealthBar({ vc, vcRecomendado, vcMax }: VcHealthBarProps) {
         />
         {/* Recommended tick mark */}
         <div
-          data-testid="health-bar-vc-rec-tick"
+          data-testid={`health-bar-${paramKey}-rec-tick`}
           className="absolute"
           style={{
             left: `${recPct}%`,
@@ -180,72 +187,12 @@ function VcHealthBar({ vc, vcRecomendado, vcMax }: VcHealthBarProps) {
           }}
         />
       </div>
-      {/* Labels */}
-      <div className="flex justify-between items-center">
-        <span className="text-[8px] text-gray-700">Baixo</span>
-        <span className="text-[8px] font-semibold" style={{ color: `rgba(${rgb},1)` }}>
-          {result.zoneLabel}
-        </span>
-        <span className="text-[8px] text-gray-700">Desgaste</span>
-      </div>
-    </div>
-  );
-}
-
-interface ActiveBarProps {
-  paramKey: string;
-  position: number;     // [-1, 1]
-  zone: ZoneId;
-  zoneLabel: string;
-  leftLabel: string;
-  rightLabel: string;
-  badge?: string | null;
-  readout?: ReactNode;
-}
-
-/** Renders the colored bidirectional health bar (active state). */
-function ActiveBar({ paramKey, position, zone, zoneLabel, leftLabel, rightLabel, badge, readout }: ActiveBarProps) {
-  const rgb = ZONE_RGB[zone];
-  const fillWidthPct = Math.abs(position) * 50;
-  // Fill starts at 50% (center) if going right, or shifted left if negative
-  const fillLeftPct = position >= 0 ? 50 : (0.5 + position * 0.5) * 100;
-
-  return (
-    <div data-testid={`health-bar-${paramKey}`} className="flex flex-col gap-0.5">
-      {/* Track row */}
-      <div className="relative" style={{ height: '14px' }}>
-        {/* Track background */}
-        <div
-          className="absolute inset-x-0 rounded-full"
-          style={{ top: '5px', height: '4px', background: 'rgba(0,0,0,0.4)' }}
-        />
-        {/* Center marker */}
-        <div
-          className="absolute"
-          style={{
-            left: '50%', top: '2px',
-            width: '1px', height: '10px',
-            background: 'rgba(255,255,255,0.25)',
-            transform: 'translateX(-50%)',
-          }}
-        />
-        {/* Colored fill extending from center */}
-        <div
-          data-testid={`health-bar-${paramKey}-fill`}
-          className="absolute rounded-full"
-          style={{
-            top: '5px', height: '4px',
-            left: `${fillLeftPct}%`,
-            width: `${fillWidthPct}%`,
-            backgroundColor: `rgba(${rgb},0.9)`,
-            boxShadow: `0 0 6px rgba(${rgb},0.4)`,
-          }}
-        />
-      </div>
       {/* Labels row */}
       <div className="flex justify-between items-center">
         <span className="text-[8px] text-gray-700">{leftLabel}</span>
-        <span className="text-[8px] font-semibold" style={{ color: `rgba(${rgb},1)` }}>{zoneLabel}</span>
+        <span className="text-[8px] font-semibold" style={{ color: `rgba(${rgb},1)` }}>
+          {zoneLabel}
+        </span>
         {badge && (
           <span
             data-testid="ctf-badge"
@@ -262,7 +209,7 @@ function ActiveBar({ paramKey, position, zone, zoneLabel, leftLabel, rightLabel,
   );
 }
 
-/** Renders a grayed-out inactive bar (vc/fz before Simular). */
+/** Renders a grayed-out inactive bar (fz before Simular). */
 function InactiveBar({ paramKey }: { paramKey: string }) {
   return (
     <div data-testid={`health-bar-${paramKey}`} className="flex flex-col gap-0.5">
@@ -296,7 +243,7 @@ interface ParameterHealthBarProps {
   paramKey: 'vc' | 'fz' | 'ae' | 'ap';
 }
 
-/** Visual health indicator for a single Fine Tune parameter. */
+/** Visual health indicator for a single Fine Tune parameter. All unidirectional. */
 export function ParameterHealthBar({ paramKey }: ParameterHealthBarProps) {
   const resultado = useMachiningStore((s) => s.resultado);
   const parametros = useMachiningStore((s) => s.parametros);
@@ -304,46 +251,59 @@ export function ParameterHealthBar({ paramKey }: ParameterHealthBarProps) {
   const materialId = useMachiningStore((s) => s.materialId);
   const tipoOperacao = useMachiningStore((s) => s.tipoOperacao);
 
-  const { diametro, balanco } = ferramenta;
+  const material = MATERIAIS.find((m) => m.id === materialId) ?? null;
+  const bounds = calcularSliderBounds(material, ferramenta, tipoOperacao);
 
   if (paramKey === 'vc') {
-    const material = MATERIAIS.find((m) => m.id === materialId) ?? null;
-    const vcBounds = calcularSliderBounds(material, ferramenta, tipoOperacao).vc;
+    const vcResult = computeVcByValue(parametros.vc, bounds.vc.recomendado, bounds.vc.max);
+    const recPct = bounds.vc.max > 0 ? Math.min(100, (bounds.vc.recomendado / bounds.vc.max) * 100) : 50;
     return (
-      <VcHealthBar
-        vc={parametros.vc}
-        vcRecomendado={vcBounds.recomendado}
-        vcMax={vcBounds.max}
+      <UnidirectionalBar
+        paramKey="vc"
+        position={vcResult.position}
+        zone={vcResult.zone}
+        zoneLabel={vcResult.zoneLabel}
+        leftLabel="Baixo"
+        rightLabel="Desgaste"
+        recPct={recPct}
       />
     );
   }
 
   if (paramKey === 'fz') {
     if (!resultado) return <InactiveBar paramKey="fz" />;
-    const fzResult = computeFzPosition(resultado.fzEfetivo, diametro, resultado.seguranca.ctf);
+    const fzResult = computeFzByValue(
+      resultado.fzEfetivo, bounds.fz.recomendado, bounds.fz.max, resultado.seguranca.ctf,
+    );
+    const recPct = bounds.fz.max > 0 ? Math.min(100, (bounds.fz.recomendado / bounds.fz.max) * 100) : 50;
     return (
-      <ActiveBar
+      <UnidirectionalBar
         paramKey="fz"
         position={fzResult.position}
         zone={fzResult.zone}
         zoneLabel={fzResult.zoneLabel}
         leftLabel="Atrito"
         rightLabel="Vibração"
+        recPct={recPct}
         badge={fzResult.ctfBadge}
       />
     );
   }
 
   if (paramKey === 'ae') {
-    const aeResult = computeAePosition(parametros.ae, diametro);
+    const aeResult = computeAeByValue(
+      parametros.ae, bounds.ae.recomendado, bounds.ae.max, ferramenta.diametro,
+    );
+    const recPct = bounds.ae.max > 0 ? Math.min(100, (bounds.ae.recomendado / bounds.ae.max) * 100) : 50;
     return (
-      <ActiveBar
+      <UnidirectionalBar
         paramKey="ae"
         position={aeResult.position}
         zone={aeResult.zone}
         zoneLabel={aeResult.zoneLabel}
         leftLabel="CTF Alto"
-        rightLabel="Pesado"
+        rightLabel="Excessivo"
+        recPct={recPct}
         readout={
           <span
             data-testid="ae-ratio-display"
@@ -357,15 +317,20 @@ export function ParameterHealthBar({ paramKey }: ParameterHealthBarProps) {
   }
 
   // ap
-  const apResult = computeApPosition(parametros.ap, diametro, balanco);
+  const apResult = computeApByValue(
+    parametros.ap, bounds.ap.recomendado, bounds.ap.max,
+    ferramenta.diametro, ferramenta.balanco,
+  );
+  const recPct = bounds.ap.max > 0 ? Math.min(100, (bounds.ap.recomendado / bounds.ap.max) * 100) : 50;
   return (
-    <ActiveBar
+    <UnidirectionalBar
       paramKey="ap"
       position={apResult.position}
       zone={apResult.zone}
       zoneLabel={apResult.zoneLabel}
       leftLabel="Leve"
       rightLabel="Deflexão"
+      recPct={recPct}
       readout={
         <span
           data-testid="ap-ld-display"

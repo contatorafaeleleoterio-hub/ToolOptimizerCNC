@@ -2,9 +2,9 @@ import { describe, it, expect, beforeEach } from 'vitest';
 import { render, screen } from '@testing-library/react';
 import {
   computeVcByValue,
-  computeFzPosition,
-  computeAePosition,
-  computeApPosition,
+  computeFzByValue,
+  computeAeByValue,
+  computeApByValue,
   ParameterHealthBar,
 } from '@/components/parameter-health-bar';
 import { useMachiningStore } from '@/store';
@@ -91,185 +91,284 @@ describe('computeVcByValue', () => {
 });
 
 // ---------------------------------------------------------------------------
-// computeFzPosition — chip load ratio: fzEfetivo / (D × 0.017)
-//   chipRatio center = 1.0; symmetric normalization position = chipRatio - 1.0
+// computeFzByValue — unidirectional [0, 1]
+//   position = fzEfetivo / fzMax; zone based on fzEfetivo / fzRecomendado ratio
 // ---------------------------------------------------------------------------
-describe('computeFzPosition', () => {
-  it('fzEfetivo=0.10, D=6 → chipRatio≈0.98, position≈-0.02', () => {
-    const { position } = computeFzPosition(0.10, 6, 1.0);
-    expect(Math.abs(position - (-0.0196))).toBeLessThan(0.01);
+describe('computeFzByValue', () => {
+  it('fzEfetivo=0 → position = 0', () => {
+    const { position } = computeFzByValue(0, 0.1, 0.2, 1.0);
+    expect(position).toBe(0);
   });
 
-  it('fzEfetivo=0.02, D=6 → chipRatio≈0.196, position≈-0.80 (Atrito)', () => {
-    const { position } = computeFzPosition(0.02, 6, 1.0);
-    expect(Math.abs(position - (-0.804))).toBeLessThan(0.01);
+  it('fzEfetivo=fzMax → position = 1.0', () => {
+    const { position } = computeFzByValue(0.2, 0.1, 0.2, 1.0);
+    expect(position).toBeCloseTo(1.0, 5);
   });
 
-  it('fzEfetivo=0.30, D=6 → position = 1.0 (clamped, Vibração)', () => {
-    const { position } = computeFzPosition(0.30, 6, 1.0);
+  it('fzEfetivo > fzMax → position clamped to 1.0', () => {
+    const { position } = computeFzByValue(0.3, 0.1, 0.2, 1.0);
     expect(position).toBe(1.0);
   });
 
-  it('ctf=1.41 → ctfBadge = "CTF ×1.41"', () => {
-    const { ctfBadge } = computeFzPosition(0.10, 6, 1.41);
-    expect(ctfBadge).toBe('CTF ×1.41');
+  it('fzMax = 0 → position = 0 (safe division)', () => {
+    const { position } = computeFzByValue(0.1, 0.1, 0, 1.0);
+    expect(position).toBe(0);
   });
 
-  it('ctf=1.0 → ctfBadge = null (no CTF active)', () => {
-    const { ctfBadge } = computeFzPosition(0.10, 6, 1.0);
-    expect(ctfBadge).toBeNull();
+  it('fzRecomendado = 0 → ratio = 0, zone = vermelho', () => {
+    const { zone } = computeFzByValue(0.1, 0, 0.2, 1.0);
+    expect(zone).toBe('vermelho');
   });
 
-  it('ctf=0.99 → ctfBadge = null (below threshold)', () => {
-    const { ctfBadge } = computeFzPosition(0.10, 6, 0.99);
-    expect(ctfBadge).toBeNull();
-  });
-
-  it('chipRatio < 0.4 → zone = vermelho (Atrito)', () => {
-    const { zone, zoneLabel } = computeFzPosition(0.02, 6, 1.0); // chipRatio ≈ 0.196
+  it('ratio < 0.50 → zone = vermelho (Atrito)', () => {
+    // fzEfetivo=0.04, fzRec=0.1 → ratio = 0.4
+    const { zone, zoneLabel } = computeFzByValue(0.04, 0.1, 0.2, 1.0);
     expect(zone).toBe('vermelho');
     expect(zoneLabel).toBe('Atrito');
   });
 
-  it('chipRatio 0.4–0.7 → zone = amarelo (Leve)', () => {
-    const { zone, zoneLabel } = computeFzPosition(0.05, 6, 1.0); // chipRatio ≈ 0.49
+  it('ratio 0.50–0.75 → zone = amarelo (Leve)', () => {
+    // fzEfetivo=0.06, fzRec=0.1 → ratio = 0.6
+    const { zone, zoneLabel } = computeFzByValue(0.06, 0.1, 0.2, 1.0);
     expect(zone).toBe('amarelo');
     expect(zoneLabel).toBe('Leve');
   });
 
-  it('chipRatio 0.7–1.4 → zone = verde (Ideal)', () => {
-    const { zone } = computeFzPosition(0.10, 6, 1.0); // chipRatio ≈ 0.98
+  it('ratio ≈ 0.76 → zone = verde (Ideal, just above lower boundary)', () => {
+    // 0.076 / 0.1 = 0.76 → not < 0.75 → falls into verde
+    const { zone, zoneLabel } = computeFzByValue(0.076, 0.1, 0.2, 1.0);
+    expect(zone).toBe('verde');
+    expect(zoneLabel).toBe('Ideal');
+  });
+
+  it('ratio = 1.0 → zone = verde (Ideal, center)', () => {
+    const { zone, zoneLabel } = computeFzByValue(0.1, 0.1, 0.2, 1.0);
+    expect(zone).toBe('verde');
+    expect(zoneLabel).toBe('Ideal');
+  });
+
+  it('ratio = 1.20 → zone = verde (Ideal, upper boundary)', () => {
+    const { zone } = computeFzByValue(0.12, 0.1, 0.2, 1.0);
     expect(zone).toBe('verde');
   });
 
-  it('chipRatio > 2.0 → zone = vermelho (Vibração)', () => {
-    const { zone, zoneLabel } = computeFzPosition(0.30, 6, 1.0); // chipRatio ≈ 2.94
+  it('ratio 1.20–1.50 → zone = amarelo (Agressivo)', () => {
+    // fzEfetivo=0.13, fzRec=0.1 → ratio = 1.3
+    const { zone, zoneLabel } = computeFzByValue(0.13, 0.1, 0.2, 1.0);
+    expect(zone).toBe('amarelo');
+    expect(zoneLabel).toBe('Agressivo');
+  });
+
+  it('ratio > 1.50 → zone = vermelho (Vibração)', () => {
+    // fzEfetivo=0.16, fzRec=0.1 → ratio = 1.6
+    const { zone, zoneLabel } = computeFzByValue(0.16, 0.1, 0.2, 1.0);
     expect(zone).toBe('vermelho');
     expect(zoneLabel).toBe('Vibração');
+  });
+
+  it('ctf > 1.0 → ctfBadge = "CTF ×1.41"', () => {
+    const { ctfBadge } = computeFzByValue(0.1, 0.1, 0.2, 1.41);
+    expect(ctfBadge).toBe('CTF ×1.41');
+  });
+
+  it('ctf = 1.0 → ctfBadge = null (no CTF active)', () => {
+    const { ctfBadge } = computeFzByValue(0.1, 0.1, 0.2, 1.0);
+    expect(ctfBadge).toBeNull();
+  });
+
+  it('ctf = 0.99 → ctfBadge = null (below threshold)', () => {
+    const { ctfBadge } = computeFzByValue(0.1, 0.1, 0.2, 0.99);
+    expect(ctfBadge).toBeNull();
   });
 });
 
 // ---------------------------------------------------------------------------
-// computeAePosition — ae/D ratio; center = 0.50
+// computeAeByValue — unidirectional [0, 1]
+//   position = ae / aeMax; zone based on ae / aeRecomendado ratio
 // ---------------------------------------------------------------------------
-describe('computeAePosition', () => {
-  it('ae=3, D=6 → ae/D = 0.50, position = 0 (exact center)', () => {
-    const { position } = computeAePosition(3, 6);
-    expect(Math.abs(position)).toBeLessThan(0.001);
+describe('computeAeByValue', () => {
+  it('ae=0 → position = 0', () => {
+    const { position } = computeAeByValue(0, 3, 6, 6);
+    expect(position).toBe(0);
   });
 
-  it('ae=1.5, D=6 → ae/D = 0.25, position = -0.5 (CTF Ativo)', () => {
-    const { position } = computeAePosition(1.5, 6);
-    expect(Math.abs(position - (-0.5))).toBeLessThan(0.001);
+  it('ae=aeMax → position = 1.0', () => {
+    const { position } = computeAeByValue(6, 3, 6, 6);
+    expect(position).toBeCloseTo(1.0, 5);
   });
 
-  it('ae=4.5, D=6 → ae/D = 0.75, position = +0.5 (Engaj. Pleno)', () => {
-    const { position } = computeAePosition(4.5, 6);
-    expect(Math.abs(position - 0.5)).toBeLessThan(0.001);
-  });
-
-  it('ae=3, D=6 → aeDRatioDisplay = "50.0%"', () => {
-    const { aeDRatioDisplay } = computeAePosition(3, 6);
-    expect(aeDRatioDisplay).toBe('50.0%');
-  });
-
-  it('ae=2.4, D=6 → aeDRatioDisplay = "40.0%"', () => {
-    const { aeDRatioDisplay } = computeAePosition(2.4, 6);
-    expect(aeDRatioDisplay).toBe('40.0%');
-  });
-
-  it('clamp: ae=6.1, D=6 → ae/D=1.017 → position = 1.0', () => {
-    const { position } = computeAePosition(6.1, 6);
+  it('ae > aeMax → position clamped to 1.0', () => {
+    const { position } = computeAeByValue(7, 3, 6, 6);
     expect(position).toBe(1.0);
   });
 
-  it('ae/D < 20% → zone = amarelo (CTF Alto)', () => {
-    const { zone, zoneLabel } = computeAePosition(1.0, 6); // ae/D ≈ 16.7%
+  it('aeMax = 0 → position = 0 (safe division)', () => {
+    const { position } = computeAeByValue(3, 3, 0, 6);
+    expect(position).toBe(0);
+  });
+
+  it('ratio < 0.50 → zone = amarelo (CTF Alto)', () => {
+    // ae=1, aeRec=3 → ratio = 0.33
+    const { zone, zoneLabel } = computeAeByValue(1, 3, 6, 6);
     expect(zone).toBe('amarelo');
     expect(zoneLabel).toBe('CTF Alto');
   });
 
-  it('ae/D = 25% → zone = verde (CTF Ativo)', () => {
-    const { zone, zoneLabel } = computeAePosition(1.5, 6); // ae/D = 25%
+  it('ratio = 0.50 → zone = verde (Ideal, boundary)', () => {
+    // ae=1.5, aeRec=3 → ratio = 0.50
+    const { zone, zoneLabel } = computeAeByValue(1.5, 3, 6, 6);
     expect(zone).toBe('verde');
-    expect(zoneLabel).toBe('CTF Ativo');
+    expect(zoneLabel).toBe('Ideal');
   });
 
-  it('ae/D = 50% → zone = verde (CTF Ativo, at boundary)', () => {
-    const { zone } = computeAePosition(3, 6); // ae/D = 50%
+  it('ratio = 1.0 → zone = verde (Ideal, center)', () => {
+    const { zone, zoneLabel } = computeAeByValue(3, 3, 6, 6);
+    expect(zone).toBe('verde');
+    expect(zoneLabel).toBe('Ideal');
+  });
+
+  it('ratio = 1.20 → zone = verde (Ideal, upper boundary)', () => {
+    // ae=3.6, aeRec=3 → ratio = 1.20
+    const { zone } = computeAeByValue(3.6, 3, 6, 6);
     expect(zone).toBe('verde');
   });
 
-  it('ae/D = 66% → zone = verde (Engaj. Pleno)', () => {
-    const { zone, zoneLabel } = computeAePosition(4, 6); // ae/D ≈ 66.7%
-    expect(zone).toBe('verde');
-    expect(zoneLabel).toBe('Engaj. Pleno');
-  });
-
-  it('ae/D > 75% → zone = amarelo (Pesado)', () => {
-    const { zone, zoneLabel } = computeAePosition(5, 6); // ae/D ≈ 83%
+  it('ratio 1.20–1.50 → zone = amarelo (Pesado)', () => {
+    // ae=4, aeRec=3 → ratio ≈ 1.33
+    const { zone, zoneLabel } = computeAeByValue(4, 3, 6, 6);
     expect(zone).toBe('amarelo');
     expect(zoneLabel).toBe('Pesado');
+  });
+
+  it('ratio > 1.50 → zone = vermelho (Excessivo)', () => {
+    // ae=5, aeRec=3 → ratio ≈ 1.67
+    const { zone, zoneLabel } = computeAeByValue(5, 3, 6, 6);
+    expect(zone).toBe('vermelho');
+    expect(zoneLabel).toBe('Excessivo');
+  });
+
+  it('displays ae/D ratio correctly — ae=3, D=6 → "50% D"', () => {
+    const { aeDRatioDisplay } = computeAeByValue(3, 3, 6, 6);
+    expect(aeDRatioDisplay).toBe('50% D');
+  });
+
+  it('displays ae/D ratio correctly — ae=1.2, D=6 → "20% D"', () => {
+    const { aeDRatioDisplay } = computeAeByValue(1.2, 3, 6, 6);
+    expect(aeDRatioDisplay).toBe('20% D');
+  });
+
+  it('diametro = 0 → aeDRatio display = "0% D" (safe)', () => {
+    const { aeDRatioDisplay } = computeAeByValue(3, 3, 6, 0);
+    expect(aeDRatioDisplay).toBe('0% D');
   });
 });
 
 // ---------------------------------------------------------------------------
-// computeApPosition — ap/D ratio, L/D modulates threshold
+// computeApByValue — unidirectional [0, 1], L/D safety
+//   position = ap / apMax; zone based on ap / apRecomendado ratio
+//   L/D > 6 → forced vermelho/BLOQUEADO
 // ---------------------------------------------------------------------------
-describe('computeApPosition', () => {
-  it('L/D=3, ap=9, D=6 → position = 0 (at limiar, Padrão center)', () => {
-    const { position } = computeApPosition(9, 6, 18); // balanco=18 → L/D=3
-    expect(Math.abs(position)).toBeLessThan(0.001);
+describe('computeApByValue', () => {
+  it('ap=0 → position = 0', () => {
+    const { position } = computeApByValue(0, 1, 3, 6, 18);
+    expect(position).toBe(0);
   });
 
-  it('L/D=3, ap=15, D=6 → position ≈ +0.667 (Agressivo)', () => {
-    const { position } = computeApPosition(15, 6, 18);
-    expect(Math.abs(position - 0.667)).toBeLessThan(0.005);
+  it('ap=apMax → position = 1.0', () => {
+    const { position } = computeApByValue(3, 1, 3, 6, 18);
+    expect(position).toBeCloseTo(1.0, 5);
   });
 
-  it('L/D=4, ap=6, D=6 → position = 0 (limiarAgressivo=1.0, at center)', () => {
-    const { position } = computeApPosition(6, 6, 24); // balanco=24 → L/D=4
-    expect(Math.abs(position)).toBeLessThan(0.001);
+  it('ap > apMax → position clamped to 1.0', () => {
+    const { position } = computeApByValue(5, 1, 3, 6, 18);
+    expect(position).toBe(1.0);
   });
 
-  it('L/D=5, ap=6, D=6 → position > 0 (limiarAgressivo=0.6, agressivo)', () => {
-    const { position } = computeApPosition(6, 6, 30); // balanco=30 → L/D=5
-    expect(position).toBeGreaterThan(0);
+  it('apMax = 0 → position = 0 (safe division)', () => {
+    const { position } = computeApByValue(1, 1, 0, 6, 18);
+    expect(position).toBe(0);
   });
 
-  it('L/D=3 → ldColorClass = text-seg-verde', () => {
-    const { ldColorClass } = computeApPosition(9, 6, 18);
+  it('ratio < 0.50 → zone = amarelo (Leve)', () => {
+    // ap=0.4, apRec=1 → ratio = 0.4
+    const { zone, zoneLabel } = computeApByValue(0.4, 1, 3, 6, 18);
+    expect(zone).toBe('amarelo');
+    expect(zoneLabel).toBe('Leve');
+  });
+
+  it('ratio = 0.50 → zone = verde (Padrão, boundary)', () => {
+    const { zone, zoneLabel } = computeApByValue(0.5, 1, 3, 6, 18);
+    expect(zone).toBe('verde');
+    expect(zoneLabel).toBe('Padrão');
+  });
+
+  it('ratio = 1.0 → zone = verde (Padrão, center)', () => {
+    const { zone, zoneLabel } = computeApByValue(1, 1, 3, 6, 18);
+    expect(zone).toBe('verde');
+    expect(zoneLabel).toBe('Padrão');
+  });
+
+  it('ratio = 1.20 → zone = verde (Padrão, upper boundary)', () => {
+    const { zone } = computeApByValue(1.2, 1, 3, 6, 18);
+    expect(zone).toBe('verde');
+  });
+
+  it('ratio 1.20–1.50 → zone = amarelo (Agressivo)', () => {
+    // ap=1.3, apRec=1 → ratio = 1.3
+    const { zone, zoneLabel } = computeApByValue(1.3, 1, 3, 6, 18);
+    expect(zone).toBe('amarelo');
+    expect(zoneLabel).toBe('Agressivo');
+  });
+
+  it('ratio > 1.50 → zone = vermelho (Deflexão)', () => {
+    // ap=2, apRec=1 → ratio = 2.0
+    const { zone, zoneLabel } = computeApByValue(2, 1, 3, 6, 18);
+    expect(zone).toBe('vermelho');
+    expect(zoneLabel).toBe('Deflexão');
+  });
+
+  it('L/D > 6 → zone = vermelho (BLOQUEADO), overrides ratio', () => {
+    // balanco=42, D=6 → L/D = 7.0; even with good ratio, should be BLOQUEADO
+    const { zone, zoneLabel } = computeApByValue(1, 1, 3, 6, 42);
+    expect(zone).toBe('vermelho');
+    expect(zoneLabel).toBe('BLOQUEADO');
+  });
+
+  it('L/D = 6 (exact) → NOT bloqueado (only > 6 triggers block)', () => {
+    // balanco=36, D=6 → L/D = 6.0
+    const { zoneLabel } = computeApByValue(1, 1, 3, 6, 36);
+    expect(zoneLabel).not.toBe('BLOQUEADO');
+  });
+
+  it('L/D ≤ 3 → ldColorClass = text-seg-verde', () => {
+    const { ldColorClass } = computeApByValue(1, 1, 3, 6, 18); // L/D = 3
     expect(ldColorClass).toBe('text-seg-verde');
   });
 
-  it('3 < L/D ≤ 4 (L/D=3.5) → ldColorClass = text-seg-amarelo', () => {
-    const { ldColorClass } = computeApPosition(6, 6, 21); // balanco=21 → L/D=3.5
+  it('3 < L/D < 4 → ldColorClass = text-seg-amarelo', () => {
+    const { ldColorClass } = computeApByValue(1, 1, 3, 6, 21); // L/D = 3.5
     expect(ldColorClass).toBe('text-seg-amarelo');
   });
 
-  it('L/D=4 (exact) → ldColorClass = text-seg-amarelo', () => {
-    const { ldColorClass } = computeApPosition(6, 6, 24); // balanco=24 → L/D=4
-    expect(ldColorClass).toBe('text-seg-amarelo');
-  });
-
-  it('4 < L/D ≤ 6 (L/D=5) → ldColorClass = text-seg-vermelho', () => {
-    const { ldColorClass } = computeApPosition(6, 6, 30); // balanco=30 → L/D=5
+  it('L/D ≥ 4 → ldColorClass = text-seg-vermelho', () => {
+    const { ldColorClass } = computeApByValue(1, 1, 3, 6, 30); // L/D = 5
     expect(ldColorClass).toBe('text-seg-vermelho');
   });
 
   it('ldDisplay shows formatted L/D ratio', () => {
-    const { ldDisplay } = computeApPosition(9, 6, 18); // L/D=3.0
+    const { ldDisplay } = computeApByValue(1, 1, 3, 6, 18); // L/D = 3.0
     expect(ldDisplay).toBe('L/D: 3.0');
   });
 
-  it('position clamped to 1.0 when ap >> limiar', () => {
-    const { position } = computeApPosition(30, 6, 18); // ap=30, D=6, limiar=1.5 → apDRatio=5 → (5/1.5)-1=2.33 clamped
-    expect(position).toBe(1.0);
+  it('diametro = 0 → ldRatio = 0, ldDisplay safe', () => {
+    // diametro=0 → ldRatio = 0; but apMax=3 still valid → position = ap/apMax = 1/3
+    const { ldDisplay } = computeApByValue(1, 1, 3, 0, 18);
+    expect(ldDisplay).toBe('L/D: 0.0');
   });
 
-  it('position clamped to -1.0 when ap = 0 (edge case)', () => {
-    const { position } = computeApPosition(0, 6, 18); // apDRatio=0 → (0/1.5)-1=-1
-    expect(position).toBe(-1.0);
+  it('apMax = 0 AND diametro = 0 → position = 0 (fully safe)', () => {
+    const { position } = computeApByValue(1, 1, 0, 0, 18);
+    expect(position).toBe(0);
   });
 });
 
@@ -300,7 +399,6 @@ describe('ParameterHealthBar', () => {
   });
 
   it('vc bar is always active even when resultado = null', () => {
-    // vc bar no longer depends on simulation — always shows fill
     render(<ParameterHealthBar paramKey="vc" />);
     expect(screen.queryByTestId('health-bar-vc-inactive')).not.toBeInTheDocument();
     expect(screen.getByTestId('health-bar-vc-fill')).toBeInTheDocument();
@@ -345,6 +443,21 @@ describe('ParameterHealthBar', () => {
   it('ap bar shows L/D readout', () => {
     render(<ParameterHealthBar paramKey="ap" />);
     expect(screen.getByTestId('ap-ld-display')).toBeInTheDocument();
+  });
+
+  it('vc bar shows recommended tick mark', () => {
+    render(<ParameterHealthBar paramKey="vc" />);
+    expect(screen.getByTestId('health-bar-vc-rec-tick')).toBeInTheDocument();
+  });
+
+  it('ae bar shows recommended tick mark', () => {
+    render(<ParameterHealthBar paramKey="ae" />);
+    expect(screen.getByTestId('health-bar-ae-rec-tick')).toBeInTheDocument();
+  });
+
+  it('ap bar shows recommended tick mark', () => {
+    render(<ParameterHealthBar paramKey="ap" />);
+    expect(screen.getByTestId('health-bar-ap-rec-tick')).toBeInTheDocument();
   });
 
   it('fz bar shows CTF badge when ctf > 1.0 and resultado defined', () => {
