@@ -113,6 +113,10 @@ scripts/          # Scripts auxiliares
 - Dashboard UI: `docs/design/DASHBOARD.md`
 - UI spec: `docs/design/UI_DESIGN_SPEC_FINAL.md`
 - Branding: `docs/design/UI_BRANDING.md`
+- FENIX AI System: `docs/ai/AI_SYSTEM.md`
+- Comandos de sessao: `docs/ai/commands/SESSION_COMMANDS.md`
+- Protocolos: `docs/ai/protocols/`
+- Memoria de engenharia: `docs/ai/memory/`
 
 ## Build Desktop (.exe Portátil — Electron)
 - **Guia completo:** `docs/architecture/ADR-005-electron-desktop-build.md`

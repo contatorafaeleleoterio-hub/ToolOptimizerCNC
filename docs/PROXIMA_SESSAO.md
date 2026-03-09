@@ -839,6 +839,7 @@ git status
 ✅ Story-006: HistoryPage Responsiva + Plausible Analytics (v0.4.0)
 ✅ Story-007: Slider Bounds Dinâmicos (v0.4.1)
 ✅ Unificação Indicadores: 4 barras unidirecionais (v0.4.2)
+✅ FENIX: AI Engineering System (docs/ai/) — ADR-007
 🟡 Fix: 1 teste falhando (fz step mobile)
 ⬜ Story-008: [A DEFINIR com usuário]
 ⬜ Landing Page (Cloudflare Pages — setup manual pendente)
