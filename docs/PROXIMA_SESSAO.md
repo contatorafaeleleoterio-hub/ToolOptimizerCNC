@@ -13,8 +13,8 @@
 | Item | Valor |
 |------|-------|
 | **Branch** | `main` |
-| **Versão** | `0.4.2` |
-| **Último commit** | `b6b9812` feat(ajuste-fino): unify fz/ae/ap indicators to unidirectional pattern matching Vc |
+| **Versão** | `0.4.3` |
+| **Último commit** | `e39689b` chore: bump version to 0.4.3 |
 | **Testes** | **572 passando** (35 arquivos) — 1 falha pré-existente (`mobile-fine-tune-section` fz step) |
 | **TypeScript** | **zero erros** |
 | **Build** | **limpo** — JS 95.03KB gzip, CSS 13.02KB |
@@ -50,6 +50,47 @@ npx vite build 2>&1 | tail -5
 ---
 
 ## ✅ O QUE FOI FEITO (histórico recente)
+
+### Sessão 09/03 — Fix Bug: Thumb do Slider Sobrepondo Botões +/- no Ajuste Fino (v0.4.3)
+
+**Contexto:** O thumb (círculo) dos sliders no painel "Ajuste Fino" sobrepunha visualmente os botões +/- quando estava nos extremos (mínimo ou máximo). Ao mínimo, o thumb encobria o botão −; ao máximo, o thumb encobria o botão +. Replicava nos 4 sliders desktop (Vc, fz, ae, ap) e nos 2 sliders bidirecionais (RPM, Feed Rate).
+
+**Causa raiz descoberta — Double Translation em Tailwind v4:**
+No Tailwind v4, a classe `-translate-x-1/2` gera a propriedade CSS `translate` (propriedade standalone nova), enquanto o `style={{ transform: "translateX(-50%) scale(...)" }}` usa a propriedade CSS `transform`. Essas são **propriedades CSS distintas** — ambas se aplicam simultaneamente:
+- `translate: -50% 0` (da classe) = deslocamento de 14px para a esquerda
+- `transform: translateX(-50%)` (do style inline) = mais 14px para a esquerda
+- **Total: 28px de deslocamento** ao invés dos 14px esperados!
+
+Isso causava assimetria:
+- No mínimo (`left: 0%`): thumb vai 28px para ESQUERDA → invade o botão −
+- No máximo (`left: 100%`): thumb vai 28px para ESQUERDA → entra no track (clearance 24px do lado +)
+- Mobile funcionava pois `TouchSlider` usava **apenas** `-translate-x-1/2` (sem inline transform)
+
+**Fix aplicado:**
+1. **Removida a classe `-translate-x-1/2`** do thumb div em `StyledSlider` e `BidirectionalSlider` — mantido apenas o inline `transform: translateX(-50%) scale(...)` como única fonte de translação
+2. **`mx-[18px]`** adicionado nos 3 componentes de track (matching mobile que já funcionava)
+   - Cálculo: 18px margin + 6px gap − 14px thumb_half = **10px clearance = raio do glow** → glow apenas toca a borda sem encobrir o texto
+
+**Verificado via JS (getBoundingClientRect):**
+- `fz at min (lado −): gapLeft = 10px` ✅ (era −4px)
+- `vc at max (lado +): gapRight = 10px` ✅
+- Ambos os lados simétricos
+
+**Arquivos modificados:**
+- `src/components/styled-slider.tsx` — `mx-[18px]` + removida classe `-translate-x-1/2` do thumb
+- `src/components/bidirectional-slider.tsx` — `mx-[18px]` + removida classe `-translate-x-1/2` do thumb
+- `src/components/mobile/mobile-fine-tune-section.tsx` — `mx-[18px]` (sem remoção de classe — sem double translation no mobile)
+
+**Lições aprendidas desta sessão:**
+- Tailwind v4 usa **propriedade CSS `translate`** (standalone) para as classes `translate-*` — DIFERENTE de `transform`
+- Combinar classe `translate-x-*` com inline `style={{ transform }}` = double translation
+- Sempre usar **uma única fonte de verdade** para translação: ou a classe, ou o inline style, nunca os dois
+
+**Commits desta sessão:**
+- `a37cb95` fix(slider): remove double-translation bug and add mx-[18px] margin
+- `e39689b` chore: bump version to 0.4.3
+
+---
 
 ### Sessão 07/03 — Unificação Indicadores Ajuste Fino (4 unidirecionais)
 
@@ -441,9 +482,8 @@ npx vite build 2>&1 | tail -5
 
 **Sugestões de melhoria contínua (gradual):**
 1. **Fix teste falhando:** `mobile-fine-tune-section` fz step — corrigir para 573/573
-2. **Version bump:** package.json 0.4.0 → 0.4.2 (Story-007 + unificação indicadores)
-3. **Story-008:** A definir — ver sugestões em `docs/MELHORIAS_CONTINUAS.md`
-4. **Login Google L1:** Quando houver demanda validada
+2. **Story-008:** A definir — ver sugestões em `docs/MELHORIAS_CONTINUAS.md`
+3. **Login Google L1:** Quando houver demanda validada
 
 > **REGRA DE SEQUÊNCIA (para o próximo assistente):**
 > 1. Ler este arquivo completo primeiro
@@ -823,7 +863,8 @@ git status
 | 0.3.4 | 5aed1ae | Auditoria completa (5 fases) + Fix UX Ajuste Fino |
 | 0.4.0 | 3ce840e | Story-006: HistoryPage + Plausible Analytics |
 | 0.4.1 | 139f13f | Story-007: Slider Bounds Dinâmicos |
-| **0.4.2** | **b6b9812** | **Unificação 4 indicadores unidirecionais** |
+| 0.4.2 | b6b9812 | Unificação 4 indicadores unidirecionais |
+| **0.4.3** | **a37cb95** | **Fix: thumb slider double-translation + mx-[18px]** |
 
 ---
 
@@ -840,6 +881,7 @@ git status
 ✅ Story-007: Slider Bounds Dinâmicos (v0.4.1)
 ✅ Unificação Indicadores: 4 barras unidirecionais (v0.4.2)
 ✅ FENIX: AI Engineering System (docs/ai/) — ADR-007
+✅ Fix: thumb slider sobrepondo botões +/- (v0.4.3)
 🟡 Fix: 1 teste falhando (fz step mobile)
 ⬜ Story-008: [A DEFINIR com usuário]
 ⬜ Landing Page (Cloudflare Pages — setup manual pendente)
@@ -850,5 +892,5 @@ git status
 
 ---
 
-*Última atualização: 07/03/2026 — Sessão 07/03 (Unificação 4 indicadores unidirecionais — v0.4.2)*
-*Próximo assistente: leia este arquivo + corrigir teste fz step + escolher próxima feature com o usuário*
+*Última atualização: 09/03/2026 — Sessão 09/03 (Fix thumb slider double-translation Tailwind v4 — v0.4.3)*
+*Próximo assistente: leia este arquivo + corrigir teste fz step mobile + escolher próxima feature com o usuário*
