@@ -128,7 +128,7 @@ export function BidirectionalSlider({
         {/* Custom div-based slider track */}
         <div
           ref={trackRef}
-          className="relative h-10 flex-1 flex items-center cursor-pointer select-none"
+          className="relative h-10 flex-1 mx-[18px] flex items-center cursor-pointer select-none"
           onMouseDown={handleMouseDown}
           role="slider"
           aria-label={`${label} slider`}
@@ -177,7 +177,7 @@ export function BidirectionalSlider({
 
           {/* Thumb — same as StyledSlider: ring + inner dot + glow */}
           <div
-            className="absolute -translate-x-1/2 pointer-events-none transition-transform duration-100 z-30"
+            className="absolute pointer-events-none transition-transform duration-100 z-30"
             style={{
               left: `${progressPercent}%`,
               transform: `translateX(-50%) scale(${pressed ? 1.15 : 1})`,

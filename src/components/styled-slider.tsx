@@ -46,7 +46,7 @@ export function StyledSlider({ value, min, max, step, color, rgb, label, recomen
   return (
     <div
       ref={trackRef}
-      className="relative h-10 flex items-center cursor-pointer select-none"
+      className="relative h-10 mx-[18px] flex items-center cursor-pointer select-none"
       onMouseDown={handleMouseDown}
       role="slider"
       aria-label={`${label} slider`}
@@ -88,7 +88,7 @@ export function StyledSlider({ value, min, max, step, color, rgb, label, recomen
 
       {/* Thumb */}
       <div
-        className="absolute -translate-x-1/2 pointer-events-none transition-transform duration-100"
+        className="absolute pointer-events-none transition-transform duration-100"
         style={{ left: `${pct}%`, transform: `translateX(-50%) scale(${pressed ? 1.15 : 1})` }}
       >
         {/* Outer ring (glow on press) */}

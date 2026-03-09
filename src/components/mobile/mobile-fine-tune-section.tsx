@@ -97,7 +97,7 @@ function TouchSlider({ value, min, max, step, rgb, onChange, label, recomendado 
   return (
     <div
       ref={trackRef}
-      className="relative h-12 flex items-center cursor-pointer touch-none select-none"
+      className="relative h-12 mx-[18px] flex items-center cursor-pointer touch-none select-none"
       onTouchStart={handleTouchStart}
       onTouchMove={handleTouchMove}
       onTouchEnd={handleTouchEnd}
