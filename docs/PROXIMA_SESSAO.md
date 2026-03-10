@@ -14,17 +14,17 @@
 |------|-------|
 | **Branch** | `main` |
 | **Versão** | `0.4.3` |
-| **Último commit** | `e39689b` chore: bump version to 0.4.3 |
-| **Testes** | **572 passando** (35 arquivos) — 1 falha pré-existente (`mobile-fine-tune-section` fz step) |
+| **Último commit** | `1e195fb` feat: add 3 parametric gauges for dashboard top section |
+| **Testes** | **603 passando** (36 arquivos) — +32 testes de health-score |
 | **TypeScript** | **zero erros** |
-| **Build** | **limpo** — JS 95.03KB gzip, CSS 13.02KB |
+| **Build** | **limpo** — JS 95.63KB gzip, CSS 13.05KB |
 | **Remote** | `origin/main` sincronizado (GitHub) |
 | **Worker** | ✅ LIVE — `https://tooloptimizercnc.contatorafaeleleoterio.workers.dev` |
 | **GitHub Pages** | ✅ LIVE — deploy automático funciona |
 | **CI (testes)** | ✅ passando no GitHub Actions |
 | **Cloudflare Pages app** | ❌ projeto não existe — workflow usa `wrangler deploy` agora |
 | **DNS Registro.br** | ✅ Propagado — nameservers `fatima` + `odin` ativos |
-| **Custom Domains** | ✅ `tooloptimizercnc.com.br` + `app.tooloptimizercnc.com.br` configurados no Worker |
+| **Custom Domains** | ✅ `tooloctimizercnc.com.br` + `app.tooloptimizercnc.com.br` configurados no Worker |
 | **GitHub Secrets** | ✅ `CF_API_TOKEN` + `CF_ACCOUNT_ID` configurados |
 | **CF_ACCOUNT_ID** | `6b8c90369455a504e560d9fac74eea0c` |
 | **Desktop** | `.exe` 85MB em `Sistema_Desktop_Pen_driver/` |
@@ -50,6 +50,55 @@ npx vite build 2>&1 | tail -5
 ---
 
 ## ✅ O QUE FOI FEITO (histórico recente)
+
+### Sessão 09/03 — Feature: 3 Parametric Gauges para Dashboard Top (v0.4.3 → v0.5.0 pending)
+
+**Contexto:** Usuário pediu reorganizar dashboard com 3 gauges inteligentes no topo. Problema: fresadores querem ir rápido mas não sabem os limites da ferramenta. Solução: indicadores visuais de potência restante e saúde agregada da ferramenta.
+
+**O que foi feito:**
+- ✅ **Refactor gauge.tsx — Parametrização com 3 paletas:**
+  - `palette: 'avanco' | 'power' | 'health'` — tipos de gauge diferentes
+  - 3 funções de cor no objeto `COLOR_PALETTES`
+  - Suporte a badge opcional abaixo do percentual central
+
+- ✅ **Novo arquivo: src/utils/health-score.ts (182 linhas + 32 testes)**
+  - `calculateHealthScore(vcZone, fzZone, aeZone, apZone)` — Weighted average
+    - ap: 40% (deflexão = maior risco em fresagem)
+    - fz: 30% (vibração/chatter)
+    - ae: 20% (engajamento radial)
+    - Vc: 10% (desgaste lento)
+  - 4 funções de zona: `getVcZone()`, `getFzZone()`, `getAeZone()`, `getApZone()` — usadas no store
+  - Mapeamento zona→score: verde=100, amarelo=60, vermelho=20, bloqueado=0
+
+- ✅ **Atualizado machining-store.ts:**
+  - Cálculo automático de `powerHeadroom = (maxPotencia - potenciaMotor) / maxPotencia × 100` em cada `calcular()`
+  - Cálculo automático de `healthScore` em cada `calcular()`
+  - Adicionados 2 campos a `ResultadoUsinagem`
+
+- ✅ **Refator results-panel.tsx — Layout novo:**
+  - Grid 3×1 no **topo** com 3 gauges
+  - Gauge 1: Eficiência de Avanço (existente, movido para topo)
+  - Gauge 2: Margem de Potência (NOVO) — mostra kW restante em badge
+  - Gauge 3: Saúde da Ferramenta (NOVO) — agregado weighted, alerta dinâmico
+  - Resultados gerais + Ajuste Fino abaixo
+
+- ✅ **Testes:**
+  - `src/utils/health-score.test.ts` — 32 testes (zoneToScore, calculateHealthScore, getHealthBadge, 4 funções de zona)
+  - `gauge.test.tsx` — testes de parametrização já existentes, verificados
+
+- ✅ **Status:**
+  - **Build:** limpo (JS 95.63KB gzip, CSS 13.05KB)
+  - **Testes:** 603 passando (+32 novos em health-score) | 605 total (2 falhas pré-existentes)
+  - **TypeScript:** zero erros
+  - **Commit:** `1e195fb` feat: add 3 parametric gauges for dashboard top section
+
+**Próximas ações (para próxima sessão ou quando necessário):**
+1. `npm run dev` — visualizar os 3 gauges no navegador
+2. Versionar para `0.5.0` (story completa de 3 gauges)
+3. Deploy para produção (Cloudflare Worker)
+4. Terminar 2 testes falhando se necessário (MobileFineTuneSection + ResultsPanel L/D > 6)
+
+---
 
 ### Sessão 09/03 — Fix Bug: Thumb do Slider Sobrepondo Botões +/- no Ajuste Fino (v0.4.3)
 
