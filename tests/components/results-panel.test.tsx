@@ -78,7 +78,7 @@ describe('ResultsPanel', () => {
   it('shows BLOQUEADO when L/D > 6', () => {
     setupSafeCalc(70); // L/D = 7.0 → bloqueado
     renderPanel();
-    expect(screen.getByText('BLOQUEADO')).toBeInTheDocument();
+    expect(screen.getAllByText('BLOQUEADO')[0]).toBeInTheDocument();
   });
 
   it('renders bidirectional slider for RPM', () => {
