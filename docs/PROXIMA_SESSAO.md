@@ -14,11 +14,11 @@
 |------|-------|
 | **Branch** | `main` |
 | **Versão** | `0.4.3` |
-| **Último commit** | `1e195fb` feat: add 3 parametric gauges for dashboard top section |
-| **Testes** | **603 passando** (36 arquivos) — +32 testes de health-score |
+| **Último commit** | `9abfeff` feat(gauge): replace power-headroom with MRR productivity gauge |
+| **Testes** | **603 passando** (36 arquivos) — 2 falhas pré-existentes inalteradas |
 | **TypeScript** | **zero erros** |
 | **Build** | **limpo** — JS 95.63KB gzip, CSS 13.05KB |
-| **Remote** | `origin/main` sincronizado (GitHub) |
+| **Remote** | `origin/main` sincronizado (GitHub) ✅ push feito |
 | **Worker** | ✅ LIVE — `https://tooloptimizercnc.contatorafaeleleoterio.workers.dev` |
 | **GitHub Pages** | ✅ LIVE — deploy automático funciona |
 | **CI (testes)** | ✅ passando no GitHub Actions |
@@ -50,6 +50,28 @@ npx vite build 2>&1 | tail -5
 ---
 
 ## ✅ O QUE FOI FEITO (histórico recente)
+
+### Sessão 10/03 — Fix + Feature: Gauge 2 substituído por Produtividade MRR
+
+**Contexto:** Auditoria da sessão anterior identificou que "Margem de Potência" era dado de máquina sem relevância para otimização. Substituído por gauge de produtividade focado em usinagem.
+
+**O que foi feito:**
+- ✅ **`gauge.tsx`** — Nova paleta `'mrr'`: vermelho ≤30% → amarelo 30-60% → verde 60-100% → ciano >100% benchmark
+- ✅ **`results-panel.tsx`** — Import `TipoUsinagem`, constante `MRR_BENCHMARKS` (Desbaste: 50 / Semi: 20 / Acabamento: 5 cm³/min), `mrrPct` calculado em render, Gauge 2 substituído, ProgressCard "MRR" removido (era duplicata — grid 3→2 cols)
+- ✅ **`tests/components/results-panel.test.tsx`** — Teste `shows progress cards` atualizado (sem MRR ProgressCard, verifica label do gauge)
+- ✅ **Commit:** `9abfeff` | **Push:** feito | **603 testes passando** | **TypeScript zero erros**
+
+**Auditoria da sessão anterior:**
+- Todas as implementações dos 3 gauges (09/03) estavam corretas
+- 1 falha detectada como "pré-existente" no PROXIMA_SESSAO era nova (introduzida pelo badge BLOQUEADO no Gauge 3 — `getByText` múltiplos elementos). Ainda não corrigida.
+
+**Próximas ações:**
+1. `npm run dev` — visualizar Gauge 2 com palette mrr
+2. Versionar para `0.5.0` (story dos 3 gauges completa com fix)
+3. Deploy Cloudflare Worker (`wrangler deploy`)
+4. Fix opcional: `results-panel.test.tsx` linha 80 → `getByText('BLOQUEADO')` → `getAllByText('BLOQUEADO')[0]`
+
+---
 
 ### Sessão 09/03 — Feature: 3 Parametric Gauges para Dashboard Top (v0.4.3 → v0.5.0 pending)
 
