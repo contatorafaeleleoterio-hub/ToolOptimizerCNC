@@ -54,8 +54,9 @@ describe('ResultsPanel', () => {
     setupSafeCalc();
     renderPanel();
     expect(screen.getByText('Potência Est.')).toBeInTheDocument();
-    expect(screen.getByText('MRR')).toBeInTheDocument();
     expect(screen.getByText('Vel. Superficial')).toBeInTheDocument();
+    // MRR ProgressCard removed — MRR now shown as "Produtividade MRR" gauge at top
+    expect(screen.getByText('Produtividade MRR')).toBeInTheDocument();
   });
 
   it('shows warnings when L/D is critical', () => {

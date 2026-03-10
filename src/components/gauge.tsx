@@ -1,7 +1,7 @@
 import { useMemo } from 'react';
 import { useSimulationAnimation } from '@/hooks/use-simulation-animation';
 
-type ColorPalette = 'avanco' | 'power' | 'health';
+type ColorPalette = 'avanco' | 'power' | 'health' | 'mrr';
 
 interface GaugeProps {
   value: number;
@@ -41,6 +41,13 @@ const COLOR_PALETTES: Record<ColorPalette, (pct: number) => string> = {
     if (pct > 75) return '#39FF14';
     if (pct >= 40) return '#FFD700';
     return '#E74C3C';
+  },
+  mrr: (pct: number) => {
+    // Produtividade MRR: vermelho (<30%) → amarelo (30-60%) → verde (60-100%) → ciano (>100% benchmark)
+    if (pct <= 30) return '#E74C3C';
+    if (pct <= 60) return '#FFD700';
+    if (pct <= 100) return '#39FF14';
+    return '#00D9FF';
   },
 };
 

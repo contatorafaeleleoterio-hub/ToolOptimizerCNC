@@ -1,10 +1,18 @@
 import { useMachiningStore } from '@/store';
+import { TipoUsinagem } from '@/types/index';
 import type { ResultadoUsinagem } from '@/types/index';
 import { Gauge } from './gauge';
 import { FormulaCard, Fraction } from './formula-card';
 import { ToolSummaryViewer } from './tool-summary-viewer';
 import { fmt, SafetyBadge, BigNumber, ProgressCard, WarningsSection } from './shared-result-parts';
 import { useSimulationAnimation } from '@/hooks/use-simulation-animation';
+
+// MRR benchmarks by operation type (cm³/min) — based on Sandvik/Kennametal reference values
+const MRR_BENCHMARKS: Record<TipoUsinagem, number> = {
+  [TipoUsinagem.DESBASTE]: 50,
+  [TipoUsinagem.SEMI_ACABAMENTO]: 20,
+  [TipoUsinagem.ACABAMENTO]: 5,
+};
 
 const EMPTY_RESULTADO: ResultadoUsinagem = {
   rpm: 0,
@@ -29,6 +37,7 @@ export function ResultsPanel() {
   const baseRPM = useMachiningStore((s) => s.baseRPM);
   const baseFeed = useMachiningStore((s) => s.baseFeed);
   const manualOverrides = useMachiningStore((s) => s.manualOverrides);
+  const tipoOperacao = useMachiningStore((s) => s.tipoOperacao);
   const setManualRPMPercent = useMachiningStore((s) => s.setManualRPMPercent);
   const setManualFeedPercent = useMachiningStore((s) => s.setManualFeedPercent);
 
@@ -39,6 +48,8 @@ export function ResultsPanel() {
   const rpmPct = Math.min((rpm / limites.maxRPM) * 100, 100);
   const feedPct = Math.min((avanco / limites.maxAvanco) * 100, 100);
   const powerPct = Math.min((potenciaMotor / limites.maxPotencia) * 100, 100);
+  const mrrBenchmark = MRR_BENCHMARKS[tipoOperacao] ?? MRR_BENCHMARKS[TipoUsinagem.DESBASTE];
+  const mrrPct = mrrBenchmark > 0 ? (mrr / mrrBenchmark) * 100 : 0;
 
   const pulseClass = triggerPulse && safetyLevel === 'verde'
     ? 'animate-[subtlePulse_0.9s_ease-in-out]' // 0.6s → 0.9s (+50%)
@@ -62,13 +73,13 @@ export function ResultsPanel() {
           palette="avanco"
         />
 
-        {/* Gauge 2: Power Headroom */}
+        {/* Gauge 2: MRR Productivity */}
         <Gauge
-          value={resultado.powerHeadroom}
+          value={mrrPct}
           maxValue={100}
-          label="Margem de Potência"
-          palette="power"
-          badge={storeResultado ? `${(limites.maxPotencia - resultado.potenciaMotor).toFixed(1)} kW` : undefined}
+          label="Produtividade MRR"
+          palette="mrr"
+          badge={storeResultado ? `${mrr.toFixed(1)} cm³/min` : undefined}
         />
 
         {/* Gauge 3: Tool Health */}
@@ -117,11 +128,9 @@ export function ResultsPanel() {
       </div>
 
       {/* Progress bars */}
-      <div className="grid grid-cols-3 gap-3">
+      <div className="grid grid-cols-2 gap-3">
         <ProgressCard label="Potência Est." value={potenciaMotor.toFixed(2)} unit="kW" pct={powerPct}
           barColor="bg-accent-orange" barShadow="rgba(249,115,22,0.5)" />
-        <ProgressCard label="MRR" value={mrr.toFixed(1)} unit="cm³/min" pct={Math.min(mrr / 100 * 100, 100)}
-          barColor="bg-accent-purple" barShadow="rgba(168,85,247,0.5)" />
         <ProgressCard label="Vel. Superficial" value={vcReal.toFixed(0)} unit="m/min" pct={Math.min(vcReal / 500 * 100, 100)}
           barColor="bg-blue-500" barShadow="rgba(59,130,246,0.5)" />
       </div>
