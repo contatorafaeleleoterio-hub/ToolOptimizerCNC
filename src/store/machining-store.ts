@@ -16,10 +16,14 @@ import {
 import {
   calculateRPM, calculateEffectiveFz, calculateFeedRate, calculateMRR,
   calculatePower, calculateTorque, validateLDRatio, validateInputs, validateMachineLimits,
+  calcularSliderBounds,
 } from '@/engine/index';
 import { getMaterialById } from '@/data/index';
 import { getRecommendedParams } from '@/engine/recommendations';
 import { useHistoryStore } from './history-store';
+import {
+  calculateHealthScore, getVcZone, getFzZone, getAeZone, getApZone,
+} from '@/utils/health-score';
 
 const DEFAULT_FERRAMENTA: Ferramenta = {
   tipo: 'toroidal',
@@ -332,7 +336,7 @@ export const useMachiningStore = create<MachiningState & MachiningActions>()(
         },
 
         calcular: () => {
-          const { materialId, ferramenta, parametros, limitesMaquina, safetyFactor, manualOverrides, safetyRules, customMaterials, toolCorrectionFactors } = get();
+          const { materialId, ferramenta, parametros, limitesMaquina, safetyFactor, manualOverrides, safetyRules, customMaterials, toolCorrectionFactors, tipoOperacao } = get();
           const { ap, ae } = parametros;
           const { diametro: D, numeroArestas: Z, balanco } = ferramenta;
 
@@ -402,6 +406,17 @@ export const useMachiningStore = create<MachiningState & MachiningActions>()(
           else if (ldNivel === 'vermelho' || avisos.some((a) => a.includes('excede'))) nivel = 'vermelho';
           else if (ldNivel === 'amarelo') nivel = 'amarelo';
 
+          // Calculate power headroom (%)
+          const powerHeadroom = Math.max(0, ((limitesMaquina.maxPotencia - potenciaMotor) / limitesMaquina.maxPotencia) * 100);
+
+          // Calculate health score from parameter zones
+          const bounds = calcularSliderBounds(material, ferramenta, tipoOperacao);
+          const vcZone = getVcZone(vc, bounds.vc.recomendado);
+          const fzZone = getFzZone(chipResult.fzEfetivo, bounds.fz.recomendado);
+          const aeZone = getAeZone(ae, bounds.ae.recomendado);
+          const apZone = getApZone(ap, bounds.ap.recomendado, D, balanco);
+          const healthScore = calculateHealthScore(vcZone, fzZone, aeZone, apZone);
+
           set({
             resultado: {
               rpm,
@@ -413,6 +428,8 @@ export const useMachiningStore = create<MachiningState & MachiningActions>()(
               vcReal: (Math.PI * D * rpm) / 1000,
               fzEfetivo: chipResult.fzEfetivo,
               seguranca: { nivel, avisos, razaoLD, ctf: chipResult.ctfFactor },
+              powerHeadroom,
+              healthScore,
             },
           });
         },

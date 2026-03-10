@@ -1,10 +1,14 @@
 import { useMemo } from 'react';
 import { useSimulationAnimation } from '@/hooks/use-simulation-animation';
 
+type ColorPalette = 'avanco' | 'power' | 'health';
+
 interface GaugeProps {
   value: number;
   maxValue: number;
   label?: string;
+  palette?: ColorPalette;
+  badge?: string;
 }
 
 const TOTAL_SEGMENTS = 40;
@@ -17,12 +21,33 @@ const CY = 100;
 
 const SCALE_MARKS = [0, 20, 40, 60, 80, 100, 120, 140, 150];
 
-export function getSegmentColor(idx: number): string {
+// Color palettes for different gauge types
+const COLOR_PALETTES: Record<ColorPalette, (pct: number) => string> = {
+  avanco: (pct: number) => {
+    // Eficiência de Avanço: verde → ciano → amarelo → vermelho
+    if (pct <= 50) return '#39FF14';
+    if (pct <= 100) return '#00FF88';
+    if (pct <= 120) return '#00D9FF';
+    return '#FFD700';
+  },
+  power: (pct: number) => {
+    // Margem de Potência: verde (>80%) → amarelo (40-80%) → vermelho (<40%)
+    if (pct >= 80) return '#39FF14';
+    if (pct >= 40) return '#FFD700';
+    return '#E74C3C';
+  },
+  health: (pct: number) => {
+    // Saúde da Ferramenta: verde (>75%) → amarelo (40-75%) → vermelho (<40%)
+    if (pct > 75) return '#39FF14';
+    if (pct >= 40) return '#FFD700';
+    return '#E74C3C';
+  },
+};
+
+export function getSegmentColor(idx: number, palette: ColorPalette = 'avanco'): string {
   const pct = (idx / TOTAL_SEGMENTS) * MAX_PCT;
-  if (pct <= 50) return '#39FF14';
-  if (pct <= 100) return '#00FF88';
-  if (pct <= 120) return '#00D9FF';
-  return '#FFD700';
+  const colorFn = COLOR_PALETTES[palette];
+  return colorFn(pct);
 }
 
 function toRad(deg: number): number {
@@ -45,11 +70,19 @@ function markerPos(val: number): { x: number; y: number } {
   };
 }
 
-export function Gauge({ value, maxValue, label = 'Eficiência' }: GaugeProps) {
+export function Gauge({
+  value,
+  maxValue,
+  label = 'Eficiência',
+  palette = 'avanco',
+  badge,
+}: GaugeProps) {
   const { gaugeAnimating } = useSimulationAnimation();
   const pct = Math.min((value / maxValue) * 100, MAX_PCT);
   const activeCount = Math.round((pct / MAX_PCT) * TOTAL_SEGMENTS);
-  const isCritical = pct > 120;
+
+  // Critical threshold varies by palette
+  const isCritical = palette === 'avanco' ? pct > 120 : pct < 40;
 
   const segments = useMemo(() =>
     Array.from({ length: TOTAL_SEGMENTS }, (_, i) => {
@@ -87,7 +120,7 @@ export function Gauge({ value, maxValue, label = 'Eficiência' }: GaugeProps) {
             {segments.map((seg, i) =>
               i < activeCount ? (
                 <path key={`a-${i}`} d={arcPath(seg.startAngle, seg.endAngle)}
-                  stroke={getSegmentColor(i)} fill="none" strokeWidth="8"
+                  stroke={getSegmentColor(i, palette)} fill="none" strokeWidth="8"
                   className={isCritical ? 'animate-pulse' : ''}
                   data-testid="gauge-segment-active" />
               ) : null
@@ -112,8 +145,17 @@ export function Gauge({ value, maxValue, label = 'Eficiência' }: GaugeProps) {
         {/* Center display */}
         <div className="absolute inset-0 flex items-center justify-center">
           <div className={`transition-all duration-450 ${gaugeAnimating ? 'scale-110' : ''} ${isCritical ? 'animate-pulse' : ''}`}>
-            <span className="text-5xl font-bold text-white font-mono">{Math.round(pct)}</span>
-            <span className="text-xl text-gray-500">%</span>
+            {badge ? (
+              <div className="flex flex-col items-center gap-1">
+                <span className="text-3xl font-bold text-white font-mono">{Math.round(pct)}</span>
+                <span className="text-xs text-gray-400 text-center max-w-24 leading-tight">{badge}</span>
+              </div>
+            ) : (
+              <>
+                <span className="text-5xl font-bold text-white font-mono">{Math.round(pct)}</span>
+                <span className="text-xl text-gray-500">%</span>
+              </>
+            )}
           </div>
         </div>
       </div>

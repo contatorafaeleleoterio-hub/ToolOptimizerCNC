@@ -16,6 +16,8 @@ const EMPTY_RESULTADO: ResultadoUsinagem = {
   vcReal: 0,
   fzEfetivo: 0,
   seguranca: { nivel: 'verde', avisos: [], razaoLD: 0, ctf: 1 },
+  powerHeadroom: 100,
+  healthScore: 100,
 };
 
 export function ResultsPanel() {
@@ -49,6 +51,35 @@ export function ResultsPanel() {
   return (
     <div className="flex flex-col gap-3">
       <ToolSummaryViewer />
+
+      {/* Three Gauges: Feed Efficiency, Power Headroom, Tool Health (TOP) */}
+      <div className="grid grid-cols-3 gap-3">
+        {/* Gauge 1: Feed Efficiency */}
+        <Gauge
+          value={avanco}
+          maxValue={limites.maxAvanco}
+          label="Eficiência de Avanço"
+          palette="avanco"
+        />
+
+        {/* Gauge 2: Power Headroom */}
+        <Gauge
+          value={resultado.powerHeadroom}
+          maxValue={100}
+          label="Margem de Potência"
+          palette="power"
+          badge={storeResultado ? `${(limites.maxPotencia - resultado.potenciaMotor).toFixed(1)} kW` : undefined}
+        />
+
+        {/* Gauge 3: Tool Health */}
+        <Gauge
+          value={resultado.healthScore}
+          maxValue={100}
+          label="Saúde da Ferramenta"
+          palette="health"
+          badge={storeResultado ? (resultado.healthScore === 0 ? 'BLOQUEADO' : undefined) : undefined}
+        />
+      </div>
 
       {/* Reset feedback message */}
       {showResetMessage && (
@@ -84,9 +115,6 @@ export function ResultsPanel() {
           onPercentChange={setManualFeedPercent}
           rgb="57,255,20" />
       </div>
-
-      {/* Gauge */}
-      <Gauge value={avanco} maxValue={limites.maxAvanco} label="Eficiência de Avanço" />
 
       {/* Progress bars */}
       <div className="grid grid-cols-3 gap-3">

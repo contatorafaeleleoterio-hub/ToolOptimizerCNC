@@ -120,6 +120,8 @@ export interface ResultadoUsinagem {
   vcReal: number;
   fzEfetivo: number;
   seguranca: StatusSeguranca;
+  powerHeadroom: number; // Percentage of available power remaining
+  healthScore: number; // Weighted aggregate of Vc/fz/ae/ap zones [0, 100]
 }
 
 /** Default machine limits */
