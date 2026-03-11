@@ -93,9 +93,20 @@ npx vite build 2>&1 | tail -5
 
 **Próximas ações:**
 1. ✅ Commitar BugReportButton — DONE
-2. Deploy v0.5.0 (`wrangler deploy`) — ainda pendente
-3. Implementar simplificação da aba Máquina nas Settings (Phase 14)
-4. Atualizar timeline + PROXIMA_SESSAO.md para próxima sessão
+2. **Fix BugReportModal (v0.5.1)** — card semi-transparente + textarea limit + send order — plano em `docs/plans/PLAN_Fix_BugReportModal.md`
+3. Deploy v0.5.0 (`wrangler deploy`) — ainda pendente (após fix → deploy v0.5.1)
+4. Implementar simplificação da aba Máquina nas Settings (Phase 14)
+
+### ⚠️ Bugs Identificados (11/03) — aguardando implementação
+
+**BugReportModal — 3 bugs:**
+1. **Card semi-transparente** — `bg-surface-dark` = `rgba(22,27,34,0.7)` (70%), app aparece atrás do modal
+   - Fix: `style={{ backgroundColor: '#161B22' }}` no card inner
+2. **Textarea sem limite** — `maxLength={500}` + contador `{description.length}/500`
+3. **Ordem `onClose` + `mailto`** — `onClose()` primeiro, depois `setTimeout(() => window.location.href = ..., 50)`
+
+**Plano completo:** `docs/plans/PLAN_Fix_BugReportModal.md`
+**Arquivo único:** `src/components/bug-report-button.tsx`
 
 ---
 
