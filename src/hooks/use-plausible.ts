@@ -21,7 +21,8 @@ export type PlausibleEvent =
   | 'Material_Selecionado'
   | 'Historico_Acessado'
   | 'Settings_Acessado'
-  | 'Resultado_Copiado';
+  | 'Resultado_Copiado'
+  | 'Bug_Reportado';
 
 export function usePlausible() {
   /**

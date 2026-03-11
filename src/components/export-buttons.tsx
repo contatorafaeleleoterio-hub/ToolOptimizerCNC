@@ -1,10 +1,8 @@
-import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { useMachiningStore } from '@/store';
-import { usePlausible } from '@/hooks/use-plausible';
 import { getMaterialById, OPERACOES } from '@/data';
 import type { ResultadoUsinagem, Ferramenta, ParametrosUsinagem, LimitesMaquina } from '@/types';
 import { TipoUsinagem } from '@/types';
+import { BugReportButton } from './bug-report-button';
 
 interface ReportState {
   resultado: ResultadoUsinagem | null;
@@ -58,34 +56,10 @@ export function formatReport(state: ReportState): string {
 
 export function ExportButtons() {
   const navigate = useNavigate();
-  const resultado = useMachiningStore((s) => s.resultado);
-  const materialId = useMachiningStore((s) => s.materialId);
-  const ferramenta = useMachiningStore((s) => s.ferramenta);
-  const tipoOperacao = useMachiningStore((s) => s.tipoOperacao);
-  const parametros = useMachiningStore((s) => s.parametros);
-  const limitesMaquina = useMachiningStore((s) => s.limitesMaquina);
-  const safetyFactor = useMachiningStore((s) => s.safetyFactor);
-  const [copied, setCopied] = useState(false);
-  const { track } = usePlausible();
-
-  const handleCopy = async () => {
-    const text = formatReport({ resultado, materialId, ferramenta, tipoOperacao, parametros, limitesMaquina, safetyFactor });
-    if (!text) return;
-    try {
-      await navigator.clipboard.writeText(text);
-      setCopied(true);
-      track('Resultado_Copiado');
-      setTimeout(() => setCopied(false), 2000);
-    } catch { /* clipboard not available */ }
-  };
 
   return (
     <div className="flex items-center gap-2">
-      <button disabled={!resultado} onClick={handleCopy}
-        className="flex items-center gap-2 px-4 py-2 rounded-lg bg-white/5 border border-white/10 text-gray-400 hover:bg-white/10 hover:text-white transition-all active:scale-[0.98] disabled:opacity-30 disabled:cursor-not-allowed">
-        <span className="material-symbols-outlined text-lg">{copied ? 'check_circle' : 'content_copy'}</span>
-        <span className="text-xs font-medium">{copied ? 'Copiado!' : 'Copiar'}</span>
-      </button>
+      <BugReportButton />
       <button onClick={() => navigate('/history')}
         className="flex items-center gap-2 px-4 py-2 rounded-lg bg-white/5 border border-white/10 text-gray-400 hover:bg-white/10 hover:text-white transition-all active:scale-[0.98]">
         <span className="material-symbols-outlined text-lg">history</span>
