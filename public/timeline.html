@@ -321,14 +321,16 @@
 
   <!-- TODAY CARD -->
   <div class="today-card">
-    <h2>⚡ Atividades de Hoje — 10/03/2026</h2>
+    <h2>⚡ Atividades de Hoje — 11/03/2026</h2>
     <div class="today-items">
-      <div class="today-item"><span class="dot dot-green"></span>Gauge 2 substituído: Margem de Potência → MRR Productivity</div>
-      <div class="today-item"><span class="dot dot-green"></span>Logo real no header (substitui ícone genérico)</div>
-      <div class="today-item"><span class="dot dot-green"></span>3 gauges funcionando: Feed Headroom · MRR · Tool Health</div>
-      <div class="today-item"><span class="dot dot-cyan"></span>Versão bump → v0.5.0</div>
-      <div class="today-item"><span class="dot dot-cyan"></span>603 testes passando</div>
+      <div class="today-item"><span class="dot dot-green"></span>BugReportButton — Commit 905cb87 (Phase 13 ✅)</div>
+      <div class="today-item"><span class="dot dot-green"></span>Modal com textarea + checkbox "Incluir estado da app"</div>
+      <div class="today-item"><span class="dot dot-green"></span>Email via mailto com timestamp, navegador, resolução, estado (opcional)</div>
+      <div class="today-item"><span class="dot dot-green"></span>Desktop + mobile variants implementadas</div>
+      <div class="today-item"><span class="dot dot-cyan"></span>614 testes passando (3 novos no BugReportButton)</div>
+      <div class="today-item"><span class="dot dot-cyan"></span>Phase 14 (Settings Simplificação) — atual</div>
       <div class="today-item"><span class="dot dot-yellow"></span>Deploy v0.5.0 pendente (wrangler deploy)</div>
+      <div class="today-item"><span class="dot dot-yellow"></span>Testes mobile-page + mobile-fz-step pré-existentes ainda falhando</div>
     </div>
   </div>
 
@@ -857,19 +859,19 @@
       </div>
     </div>
 
-    <!-- 12 - 3 Gauges + Logo (HOJE) -->
-    <div class="phase" data-status="current">
-      <div class="phase-dot">●</div>
+    <!-- 12 - 3 Gauges + Logo -->
+    <div class="phase" data-status="done">
+      <div class="phase-dot">✓</div>
       <div class="phase-card" onclick="toggle(this)">
         <div class="phase-header">
           <span class="phase-icon">🌡️</span>
           <div class="phase-meta">
-            <div class="phase-title">3 Gauges Analíticos + Logo Real ← Hoje</div>
+            <div class="phase-title">3 Gauges Analíticos + Logo Real</div>
             <div class="phase-sub">Feed Headroom · MRR Productivity · Tool Health Score</div>
           </div>
           <div class="phase-right">
             <span class="phase-version">v0.5.0</span>
-            <span class="phase-tag">Atual</span>
+            <span class="phase-tag">Concluído</span>
           </div>
           <span class="phase-chevron">›</span>
         </div>
@@ -903,7 +905,88 @@
       </div>
     </div>
 
-    <!-- 13 - Story 007 -->
+    <!-- 13 - BugReportButton ✅ -->
+    <div class="phase" data-status="done">
+      <div class="phase-dot">●</div>
+      <div class="phase-card" onclick="toggle(this)">
+        <div class="phase-header">
+          <span class="phase-icon">🐛</span>
+          <div class="phase-meta">
+            <div class="phase-title">BugReportButton — Substituição do "Copiar" ✅</div>
+            <div class="phase-sub">Modal com mailto · desktop + mobile · Plausible Bug_Reportado</div>
+          </div>
+          <div class="phase-right">
+            <span class="phase-version">v0.5.0</span>
+            <span class="phase-tag">Completo</span>
+          </div>
+          <span class="phase-chevron">›</span>
+        </div>
+        <div class="phase-details">
+          <div class="phase-body">
+            <div class="detail-group">
+              <h4>Entregas</h4>
+              <ul>
+                <li>bug-report-button.tsx — botão desktop (texto) + variante mobile (ícone)</li>
+                <li>Modal com textarea de descrição + checkbox "incluir estado da app"</li>
+                <li>Abre cliente de e-mail via mailto com dados da sessão + User Agent</li>
+                <li>export-buttons.tsx e mobile-header.tsx atualizados (removido "Copiar")</li>
+                <li>use-plausible.ts: novo evento Bug_Reportado</li>
+              </ul>
+            </div>
+            <div class="detail-group">
+              <h4>Testes</h4>
+              <ul>
+                <li>bug-report-button.test.tsx — 3 testes (desktop + mobile variant)</li>
+                <li>export-buttons.test.tsx — atualizado para novo layout</li>
+                <li>Status: Commitado (commit 905cb87)</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 14 - Simplificação Settings Máquina ← HOJE -->
+    <div class="phase" data-status="current">
+      <div class="phase-dot">●</div>
+      <div class="phase-card" onclick="toggle(this)">
+        <div class="phase-header">
+          <span class="phase-icon">⚙️</span>
+          <div class="phase-meta">
+            <div class="phase-title">Simplificação Settings — Aba Máquina ← Hoje</div>
+            <div class="phase-sub">Manter só RPM Máximo + Avanço Máximo · remover demais campos</div>
+          </div>
+          <div class="phase-right">
+            <span class="phase-version">v0.5.1</span>
+            <span class="phase-tag">Atual</span>
+          </div>
+          <span class="phase-chevron">›</span>
+        </div>
+        <div class="phase-details">
+          <div class="phase-body">
+            <div class="detail-group">
+              <h4>Decisão</h4>
+              <ul>
+                <li>Manter: <strong>maxRPM</strong> (12.000) — semáforo e barra de contexto RPM</li>
+                <li>Manter: <strong>maxAvanco</strong> (5.000 mm/min) — semáforo e slider</li>
+                <li>Remover UI: maxPotencia, maxTorque, eficiencia, machineName</li>
+                <li>Valores removidos ficam fixos nos defaults (15 kW · 80 Nm · η 0.85)</li>
+              </ul>
+            </div>
+            <div class="detail-group">
+              <h4>Impacto nos Cálculos</h4>
+              <ul>
+                <li>Fórmula de potência: η fixo em 0.85 — aceitável para MVP</li>
+                <li>Gauge MRR e semáforo de potência: continuam funcionando com default</li>
+                <li>Zero risco nos cálculos de RPM e Avanço (esses têm UI)</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 15 - Story 007 -->
     <div class="phase" data-status="pending">
       <div class="phase-dot">○</div>
       <div class="phase-card" onclick="toggle(this)">
@@ -942,7 +1025,7 @@
       </div>
     </div>
 
-    <!-- 14 - Fix fz step test -->
+    <!-- 16 - Fix fz step test -->
     <div class="phase" data-status="pending">
       <div class="phase-dot">○</div>
       <div class="phase-card" onclick="toggle(this)">
@@ -980,7 +1063,7 @@
       </div>
     </div>
 
-    <!-- 15 - Deploy v0.5.0 -->
+    <!-- 17 - Deploy v0.5.0 -->
     <div class="phase" data-status="pending">
       <div class="phase-dot">○</div>
       <div class="phase-card" onclick="toggle(this)">
@@ -1021,7 +1104,7 @@
       </div>
     </div>
 
-    <!-- 16 - MVP v1.0.0 -->
+    <!-- 18 - MVP v1.0.0 -->
     <div class="phase" data-status="pending">
       <div class="phase-dot">○</div>
       <div class="phase-card" onclick="toggle(this)">

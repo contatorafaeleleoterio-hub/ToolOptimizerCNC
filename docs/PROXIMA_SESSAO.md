@@ -13,8 +13,8 @@
 | Item | Valor |
 |------|-------|
 | **Branch** | `main` |
-| **Versão** | `0.4.3` |
-| **Último commit** | `9abfeff` feat(gauge): replace power-headroom with MRR productivity gauge |
+| **Versão** | `0.5.0` |
+| **Último commit** | `466d03a` docs: add interactive project timeline page |
 | **Testes** | **603 passando** (36 arquivos) — 2 falhas pré-existentes inalteradas |
 | **TypeScript** | **zero erros** |
 | **Build** | **limpo** — JS 95.63KB gzip, CSS 13.05KB |
@@ -50,6 +50,62 @@ npx vite build 2>&1 | tail -5
 ---
 
 ## ✅ O QUE FOI FEITO (histórico recente)
+
+### Sessão 10/03 (noite) — Analytics Cloudflare descoberto + consultas rápidas
+
+**O que foi feito:**
+- ✅ **Cloudflare Web Analytics já estava ativo** — configurado há 13 dias via Automatic setup
+  - Dashboard: `dash.cloudflare.com` → Analytics & logs → Web analytics → `tooloptimizercnc.com.br`
+  - 30 visitas nas últimas 24h, 905ms load time, 96% LCP Good
+  - Não precisa de script no HTML — o Worker rastreia automaticamente
+- ✅ **Plausible removível** — script no `index.html` é inativo (sem conta cadastrada); pode ser removido em próxima sessão
+- ✅ Confirmado: sem conflito em cálculos simultâneos (toda lógica roda no browser do usuário, Worker é só servidor de arquivos estáticos)
+
+**Nenhum código alterado nesta sessão.**
+
+---
+
+### Sessão 11/03 — BugReportButton Commitado (Phase 13 completa)
+
+**Contexto:** WIP do BugReportButton da sessão anterior foi commitado. Feature completa: novo componente para relatos de bug com modal, integração email via mailto:, tracking Plausible.
+
+**O que foi feito:**
+- ✅ **Commit `905cb87` — BugReportButton Phase 13 completa:**
+  - Novo arquivo: `src/components/bug-report-button.tsx` (150 linhas)
+    - Componente BugReportButton: 2 variantes (desktop + mobile)
+    - Modal BugReportModal: textarea + checkbox "Incluir estado da app"
+    - Integração email: mailto: com subject + body automáticos
+    - Tracking: evento Plausible `Bug_Reportado`
+    - Dados enviados: timestamp, navegador, resolução tela, estado da app (opcional)
+  - Refatorado: `export-buttons.tsx` — extraído `formatReport()` para reutilização
+  - Atualizado: `mobile-header.tsx` — substituiu botão "Copiar" por BugReportButton
+  - Atualizado: `use-plausible.ts` — hook tipado, no-op sem script
+  - Adicionado: `tests/components/bug-report-button.test.tsx` (3 testes)
+  - **Status:** 614 testes passando | 2 falhas pré-existentes (mobile fz step + mobile page title)
+  - **TypeScript:** zero erros | **Build:** limpo
+  - **Push:** feito para origin/main ✅
+
+- ✅ **Decisão confirmada — Simplificação Settings Máquina:**
+  - Manter UI apenas: `maxRPM` + `maxAvanco`
+  - Remover UI: `maxPotencia`, `maxTorque`, `eficiencia`, `machineName` (ficam fixos nos defaults)
+  - Impacto: zero nos cálculos; η=0.85 aceitável para MVP
+  - **Phase 14 próxima:** implementar simplificação
+
+**Próximas ações:**
+1. ✅ Commitar BugReportButton — DONE
+2. Deploy v0.5.0 (`wrangler deploy`) — ainda pendente
+3. Implementar simplificação da aba Máquina nas Settings (Phase 14)
+4. Atualizar timeline + PROXIMA_SESSAO.md para próxima sessão
+
+---
+
+### Sessão 10/03 (tarde) — Timeline + BugReportButton (WIP) + Decisão Settings
+
+**Contexto:** Sessão de revisão do projeto — sem features commitadas. Trabalho em progresso (BugReportButton) deixado para próxima sessão.
+
+**Resumo:** Preparação para BugReportButton (testes criados, componentes estruturados). Decisão Settings confirmada. Ver seção acima para resultado final.
+
+---
 
 ### Sessão 10/03 — Fix + Feature: Gauge 2 substituído por Produtividade MRR
 
@@ -893,9 +949,18 @@ git push origin main
 
 # 8. Atualizar memory/MEMORY.md
 
-# 9. Commit docs
-git add docs/ && git commit -m "docs: session summary ..."
+# 9. ⚠️ OBRIGATÓRIO: Atualizar docs/timeline.html + public/timeline.html
+#    - Mover cards concluídos: data-status="pending" → data-status="done"
+#    - Atualizar card "Atividades de Hoje" com data e itens da sessão
+#    - Atualizar métricas (testes, versão, bundle)
+#    - Ambos os arquivos devem ser IDÊNTICOS (docs/ = fonte, public/ = servido online)
+
+# 10. Commit docs (inclui timeline)
+git add docs/ public/timeline.html && git commit -m "docs: update timeline + session summary vX.Y.Z"
 git push origin main
+
+# 11. ⚠️ LEMBRAR AO RAFAEL: rodar wrangler deploy para publicar timeline online
+#     npx wrangler deploy  (requer autenticação interativa — apenas Rafael pode fazer)
 ```
 
 ---
