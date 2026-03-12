@@ -20,8 +20,7 @@ describe('MobilePage', () => {
 
   it('renders mobile header with title', () => {
     renderMobile();
-    expect(screen.getByText(/ToolOptimizer/)).toBeInTheDocument();
-    expect(screen.getByText('CNC')).toBeInTheDocument();
+    expect(screen.getByAltText('ToolOptimizer CNC')).toBeInTheDocument();
   });
 
   it('adds mobile-active class to body on mount', () => {

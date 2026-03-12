@@ -9,7 +9,9 @@ function renderWithRouter(ui: React.ReactElement) {
 }
 
 describe('ExportButtons', () => {
-  beforeEach(() => { useMachiningStore.getState().reset(); });
+  beforeEach(() => {
+    useMachiningStore.getState().reset();
+  });
 
   it('renders bug report button', () => {
     renderWithRouter(<ExportButtons />);
@@ -18,17 +20,24 @@ describe('ExportButtons', () => {
 
   it('renders history button', () => {
     renderWithRouter(<ExportButtons />);
-    expect(screen.getByText('Histórico')).toBeInTheDocument();
+    expect(screen.getByText('Historico')).toBeInTheDocument();
+  });
+
+  it('renders architecture button', () => {
+    renderWithRouter(<ExportButtons />);
+    expect(screen.getByText('Mapa')).toBeInTheDocument();
   });
 
   it('renders settings button', () => {
     renderWithRouter(<ExportButtons />);
-    expect(screen.getByText('Configurações')).toBeInTheDocument();
+    expect(screen.getByText('Configuracoes')).toBeInTheDocument();
   });
 });
 
 describe('formatReport', () => {
-  beforeEach(() => { useMachiningStore.getState().reset(); });
+  beforeEach(() => {
+    useMachiningStore.getState().reset();
+  });
 
   it('returns empty string when no result', () => {
     const state = useMachiningStore.getState();
@@ -57,13 +66,13 @@ describe('formatReport', () => {
   it('includes safety level', () => {
     useMachiningStore.getState().calcular();
     const text = formatReport(useMachiningStore.getState());
-    expect(text).toContain('SEGURANÇA:');
+    expect(text).toContain('SEGURANCA:');
   });
 
   it('includes warnings when present', () => {
     const store = useMachiningStore.getState();
     store.setFerramenta({ balanco: 50, diametro: 10 });
-    store.setParametros({ ap: 2, ae: 5, fz: 0.1, vc: 100 }); // explicit params
+    store.setParametros({ ap: 2, ae: 5, fz: 0.1, vc: 100 });
     store.calcular();
     const text = formatReport(useMachiningStore.getState());
     expect(text).toContain('L/D');

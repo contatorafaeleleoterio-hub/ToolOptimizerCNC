@@ -2,6 +2,8 @@ import { render, screen, fireEvent } from '@testing-library/react';
 import { describe, it, expect, beforeEach } from 'vitest';
 import { BrowserRouter } from 'react-router-dom';
 import { MobileFineTuneSection } from '@/components/mobile/mobile-fine-tune-section';
+import { MATERIAIS } from '@/data';
+import { calcularSliderBounds } from '@/engine';
 import { useMachiningStore } from '@/store';
 
 function renderSection() {
@@ -61,9 +63,12 @@ describe('MobileFineTuneSection', () => {
   it('increase button increases fz by step', () => {
     renderSection();
     const initial = useMachiningStore.getState().parametros.fz;
+    const state = useMachiningStore.getState();
+    const material = MATERIAIS.find((item) => item.id === state.materialId) ?? null;
+    const expectedStep = calcularSliderBounds(material, state.ferramenta, state.tipoOperacao).fz.step;
     fireEvent.click(screen.getByLabelText('Increase fz'));
     const next = useMachiningStore.getState().parametros.fz;
-    expect(next).toBeCloseTo(initial + 0.01, 4); // step=0.01 for fz
+    expect(next).toBeCloseTo(initial + expectedStep, 4);
   });
 
   it('renders info drawer toggle button for Vc (aria-expanded=false initially)', () => {

@@ -14,7 +14,7 @@
 |------|-------|
 | **Branch** | `main` |
 | **Versão** | `0.5.0` |
-| **Último commit** | `466d03a` docs: add interactive project timeline page |
+| **Último commit** | `caa15c4` docs: close session 11/03 — update PROXIMA_SESSAO footer |
 | **Testes** | **603 passando** (36 arquivos) — 2 falhas pré-existentes inalteradas |
 | **TypeScript** | **zero erros** |
 | **Build** | **limpo** — JS 95.63KB gzip, CSS 13.05KB |
@@ -50,6 +50,25 @@ npx vite build 2>&1 | tail -5
 ---
 
 ## ✅ O QUE FOI FEITO (histórico recente)
+
+### Sessão 11/03 (tarde) — Diagnóstico Bug TouchSlider Mobile (sem código commitado)
+
+**Contexto:** Usuário reportou bug na seção "Ajuste Fino" mobile — ao rolar a página e tocar na área do slider, o valor muda acidentalmente. O slider deveria mover apenas quando o usuário arrasta o círculo (thumb).
+
+**O que foi feito:**
+- ✅ **Diagnóstico completo do bug identificado:**
+  - Causa raiz: `handleTouchStart` no track inteiro dispara `onChange(getValueFromX(...))` imediatamente no toque
+  - Agravante: `touch-none` no track bloqueia scroll da página quando dedo toca qualquer ponto do slider
+  - Componente: `TouchSlider` em `src/components/mobile/mobile-fine-tune-section.tsx` (linhas 79–104)
+- ✅ **Plano de fix documentado:** `docs/plans/PLAN_Fix_TouchSlider_Mobile.md`
+  - Solução: Thumb hit zone invisível (60×60px) com `touch-none` + handlers de toque
+  - Remover handlers e `touch-none` do track inteiro → scroll volta a funcionar
+  - Remover `onChange` do `handleTouchStart` → valor muda apenas no movimento (touchMove)
+  - Nenhum código alterado nesta sessão — implementar na próxima
+
+**Nenhum commit nesta sessão.**
+
+---
 
 ### Sessão 10/03 (noite) — Analytics Cloudflare descoberto + consultas rápidas
 
@@ -93,9 +112,17 @@ npx vite build 2>&1 | tail -5
 
 **Próximas ações:**
 1. ✅ Commitar BugReportButton — DONE
-2. **Fix BugReportModal (v0.5.1)** — card semi-transparente + textarea limit + send order — plano em `docs/plans/PLAN_Fix_BugReportModal.md`
-3. Deploy v0.5.0 (`wrangler deploy`) — ainda pendente (após fix → deploy v0.5.1)
-4. Implementar simplificação da aba Máquina nas Settings (Phase 14)
+2. **Fix TouchSlider Mobile (PRIORITÁRIO)** — slider muda ao scroll — plano em `docs/plans/PLAN_Fix_TouchSlider_Mobile.md`
+   - Arquivo: `src/components/mobile/mobile-fine-tune-section.tsx` (função `TouchSlider`)
+   - Mudanças: hit zone no thumb + remover handlers do track + remover onChange do touchStart
+3. **Fix BugReportModal (v0.5.1)** — card semi-transparente + textarea limit + send order — plano em `docs/plans/PLAN_Fix_BugReportModal.md`
+4. Deploy v0.5.0 (`wrangler deploy`) — ainda pendente (após fixes → deploy v0.5.1)
+5. Implementar simplificação da aba Máquina nas Settings (Phase 14)
+6. **Favicon + Ícone Electron** — web + desktop — plano em `docs/plans/PLAN_Favicon_Icons.md`
+   - Logo-fonte: `logo_p_favcon.png` (raiz do projeto) ✅ já existe
+   - Script gerador: `scripts/generate-icons.mjs` (usar `sharp` + `png-to-ico`)
+   - Targets: `public/favicon*.png` + `Sistema_Desktop_Pen_driver/build/icon.ico`
+   - Modificar: `index.html` (web + desktop) + `electron-builder.json`
 
 ### ⚠️ Bugs Identificados (11/03) — aguardando implementação
 
@@ -1039,5 +1066,5 @@ git status
 
 ---
 
-*Última atualização: 11/03/2026 — Sessão 11/03 (Phase 13 BugReportButton commitado + plano fix modal v0.5.1)*
-*Próximo assistente: leia este arquivo → implementar `docs/plans/PLAN_Fix_BugReportModal.md` → deploy v0.5.1*
+*Última atualização: 11/03/2026 — Sessão 11/03 (Plano Favicon + Ícone Electron documentado)*
+*Próximo assistente: leia este arquivo → opções: Fix BugReportModal (`PLAN_Fix_BugReportModal.md`) OU Favicon/Ícone (`PLAN_Favicon_Icons.md`) → perguntar ao usuário*

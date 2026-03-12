@@ -67,6 +67,11 @@ body {
   to { opacity: 0.3; }
 }
 
+@keyframes dashFlow {
+  from { stroke-dashoffset: 24; }
+  to { stroke-dashoffset: 0; }
+}
+
 ::-webkit-scrollbar { width: 6px; }
 ::-webkit-scrollbar-track { background: #0F1419; }
 ::-webkit-scrollbar-thumb { background: #333; border-radius: 4px; }

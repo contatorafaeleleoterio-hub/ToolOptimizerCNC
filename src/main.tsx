@@ -1,4 +1,4 @@
-import { StrictMode } from 'react';
+import { StrictMode, Suspense, lazy } from 'react';
 import { createRoot } from 'react-dom/client';
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import App from './App';
@@ -7,6 +7,8 @@ import { HistoryPage } from './pages/history-page';
 import { MobilePage } from './pages/mobile-page';
 import { ViewportRedirect } from './components/viewport-redirect';
 import './index.css';
+
+const ArchitecturePage = lazy(() => import('./pages/architecture-page'));
 
 const baseUrl = import.meta.env.BASE_URL || '/ToolOptimizerCNC/';
 const basename = baseUrl.endsWith('/') ? baseUrl.slice(0, -1) : baseUrl;
@@ -20,6 +22,14 @@ createRoot(document.getElementById('root')!).render(
         <Route path="/mobile" element={<MobilePage />} />
         <Route path="/history" element={<HistoryPage />} />
         <Route path="/settings" element={<SettingsPage />} />
+        <Route
+          path="/architecture"
+          element={
+            <Suspense fallback={<div className="min-h-screen bg-background-dark" />}>
+              <ArchitecturePage />
+            </Suspense>
+          }
+        />
       </Routes>
     </BrowserRouter>
   </StrictMode>,
