@@ -266,4 +266,25 @@
 
 ---
 
-*FENIX AI System — ToolOptimizer CNC | Criado: 09/03/2026*
+## 13. `sync-arch`
+
+**Objetivo:** Sincronizar o grafo de arquitetura com o estado atual do codigo.
+
+**Quando usar:** Fim de sessao com mudancas em `src/` (novos arquivos, delecoes, renames, line count drift).
+
+**Protocolo:** `docs/ai/protocols/ARCH_SYNC_PROTOCOL.md`
+
+**Acoes do assistente:**
+1. Executar `bash scripts/arch-sync-diff.sh`
+2. Analisar output (ADD/DEL/DRIFT/VERSION)
+3. Se houver diferencas: aplicar patches cirurgicos em `src/data/architecture-graph.ts`
+4. Validar: `npx vitest run tests/architecture-graph.test.ts` + `npm run typecheck`
+5. Commit: `docs(arch-sync): update architecture graph [auto-sync]`
+
+**Custo:** ~800-2000 tokens (85% menos que varredura completa).
+
+**Resultado:** Grafo atualizado, testes passando, commit feito.
+
+---
+
+*FENIX AI System — ToolOptimizer CNC | Criado: 09/03/2026 | Atualizado: 12/03/2026*

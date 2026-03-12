@@ -1,6 +1,7 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { ArchitectureMap } from '@/components/architecture/architecture-map';
+import { MobileArchitectureView } from '@/components/architecture/mobile-architecture-view';
 import { SeoHead } from '@/components/seo-head';
 import { useIsMobile } from '@/hooks/use-is-mobile';
 import { usePageTitle } from '@/hooks/use-page-title';
@@ -18,6 +19,24 @@ export default function ArchitecturePage() {
 
   usePageTitle('Arquitetura - ToolOptimizer CNC');
 
+  // Mobile: apply body class for proper scrolling (same pattern as MobilePage)
+  useEffect(() => {
+    if (!isMobile) return;
+    document.body.classList.add('mobile-active');
+    return () => {
+      document.body.classList.remove('mobile-active');
+    };
+  }, [isMobile]);
+
+  if (isMobile) {
+    return (
+      <>
+        <SeoHead title="Arquitetura - ToolOptimizer CNC" />
+        <MobileArchitectureView onBack={() => navigate('/mobile')} />
+      </>
+    );
+  }
+
   return (
     <div className="min-h-screen overflow-y-auto bg-background-dark p-3 sm:p-6">
       <SeoHead title="Arquitetura - ToolOptimizer CNC" />
@@ -25,7 +44,7 @@ export default function ArchitecturePage() {
       <header className="mb-4 flex flex-wrap items-center gap-3 rounded-2xl border border-white/5 bg-surface-dark px-4 py-3 shadow-glass backdrop-blur-xl">
         <button
           type="button"
-          onClick={() => navigate(isMobile ? '/mobile' : '/')}
+          onClick={() => navigate('/')}
           className="min-h-[44px] shrink-0 rounded-xl border border-white/10 bg-white/5 px-4 py-2 text-sm text-gray-300 transition-all hover:bg-white/10 hover:text-white"
         >
           Voltar
