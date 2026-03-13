@@ -31,10 +31,11 @@ describe('SettingsPage', () => {
   it('shows Máquina section by default with limit inputs', () => {
     renderPage();
     expect(screen.getByText('RPM Máximo')).toBeInTheDocument();
-    expect(screen.getByText('Potência Máxima (kW)')).toBeInTheDocument();
-    expect(screen.getByText('Torque Máximo (Nm)')).toBeInTheDocument();
     expect(screen.getByText('Avanço Máximo (mm/min)')).toBeInTheDocument();
-    expect(screen.getByText('Eficiência (η)')).toBeInTheDocument();
+    // Simplified: maxPotencia, maxTorque, eficiencia hidden (use factory defaults)
+    expect(screen.queryByText('Potência Máxima (kW)')).not.toBeInTheDocument();
+    expect(screen.queryByText('Torque Máximo (Nm)')).not.toBeInTheDocument();
+    expect(screen.queryByText('Eficiência (η)')).not.toBeInTheDocument();
   });
 
   it('navigates to Segurança section when sidebar is clicked', () => {
@@ -91,11 +92,10 @@ describe('SettingsPage', () => {
     expect(useMachiningStore.getState().limitesMaquina.maxRPM).toBe(8000);
   });
 
-  it('updates machine name in preferences', () => {
+  it('machine name input is not shown (simplified settings)', () => {
     renderPage();
-    const nameInput = screen.getByPlaceholderText(/Haas/);
-    fireEvent.change(nameInput, { target: { value: 'Romi D800' } });
-    expect(useMachiningStore.getState().preferences.machineName).toBe('Romi D800');
+    // machineName field removed from UI in Phase 14 simplification
+    expect(screen.queryByPlaceholderText(/Haas/)).not.toBeInTheDocument();
   });
 
   it('changes safety factor via − button (styled slider)', () => {

@@ -92,24 +92,10 @@ export function SettingsPage() {
 function MaquinaSection() {
   const limites = useMachiningStore((s) => s.limitesMaquina);
   const setLimites = useMachiningStore((s) => s.setLimitesMaquina);
-  const preferences = useMachiningStore((s) => s.preferences);
-  const setPreferences = useMachiningStore((s) => s.setPreferences);
 
   return (
     <div>
-      <SectionHeader icon="precision_manufacturing" title="Máquina" desc="Limites físicos e identificação da máquina CNC" />
-
-      <div className={CARD}>
-        <h3 className="text-xs font-bold text-gray-400 uppercase tracking-widest mb-4 flex items-center gap-2">
-          <span className="w-1 h-3 bg-primary rounded-full" />
-          Identificação
-        </h3>
-        <label className={LABEL}>Nome / Modelo da Máquina</label>
-        <input type="text" value={preferences.machineName}
-          onChange={(e) => setPreferences({ machineName: e.target.value })}
-          placeholder="Ex: Haas VF-2, Romi D800..."
-          className="w-full min-h-[44px] bg-black/40 border border-white/10 rounded-lg py-2 px-3 text-sm text-white focus:ring-1 focus:ring-primary outline-none placeholder:text-gray-600" />
-      </div>
+      <SectionHeader icon="precision_manufacturing" title="Máquina" desc="Limites operacionais da máquina CNC" />
 
       <div className={CARD}>
         <h3 className="text-xs font-bold text-gray-400 uppercase tracking-widest mb-4 flex items-center gap-2">
@@ -118,19 +104,9 @@ function MaquinaSection() {
         </h3>
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
           <NumInput label="RPM Máximo" value={limites.maxRPM} onChange={(v) => setLimites({ maxRPM: v })} min={100} max={40000} step={100} />
-          <NumInput label="Potência Máxima (kW)" value={limites.maxPotencia} onChange={(v) => setLimites({ maxPotencia: v })} min={0.5} max={100} step={0.5} />
-          <NumInput label="Torque Máximo (Nm)" value={limites.maxTorque} onChange={(v) => setLimites({ maxTorque: v })} min={1} max={500} step={1} />
           <NumInput label="Avanço Máximo (mm/min)" value={limites.maxAvanco} onChange={(v) => setLimites({ maxAvanco: v })} min={100} max={20000} step={100} />
         </div>
-      </div>
-
-      <div className={CARD}>
-        <h3 className="text-xs font-bold text-gray-400 uppercase tracking-widest mb-4 flex items-center gap-2">
-          <span className="w-1 h-3 bg-secondary rounded-full" />
-          Eficiência do Fuso
-        </h3>
-        <NumInput label="Eficiência (η)" value={limites.eficiencia} onChange={(v) => setLimites({ eficiencia: v })} min={0.5} max={1.0} step={0.01} />
-        <p className="text-2xs text-gray-500 mt-2">Relação entre potência entregue no fuso e potência consumida. Valor típico: 0.80–0.90</p>
+        <p className="text-2xs text-gray-500 mt-3">Os demais parâmetros (potência, torque, eficiência) utilizam valores padrão de fábrica adequados para a maioria das máquinas.</p>
       </div>
     </div>
   );
