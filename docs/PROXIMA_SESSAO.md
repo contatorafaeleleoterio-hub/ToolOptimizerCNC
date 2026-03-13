@@ -14,10 +14,10 @@
 |------|-------|
 | **Branch** | `main` |
 | **Versão** | `0.5.0` |
-| **Último commit** | `caa15c4` docs: close session 11/03 — update PROXIMA_SESSAO footer |
-| **Testes** | **603 passando** (36 arquivos) — 2 falhas pré-existentes inalteradas |
+| **Último commit** | `71ecb12` feat: add mobile architecture view + ARCH-SYNC protocol |
+| **Testes** | **637 passando** (40 arquivos) — 2 falhas pré-existentes inalteradas |
 | **TypeScript** | **zero erros** |
-| **Build** | **limpo** — JS 95.63KB gzip, CSS 13.05KB |
+| **Build** | **limpo** — JS 96.88KB gzip, CSS 13.66KB |
 | **Remote** | `origin/main` sincronizado (GitHub) ✅ push feito |
 | **Worker** | ✅ LIVE — `https://tooloptimizercnc.contatorafaeleleoterio.workers.dev` |
 | **GitHub Pages** | ✅ LIVE — deploy automático funciona |
@@ -110,19 +110,14 @@ npx vite build 2>&1 | tail -5
   - Impacto: zero nos cálculos; η=0.85 aceitável para MVP
   - **Phase 14 próxima:** implementar simplificação
 
-**Próximas ações:**
-1. ✅ Commitar BugReportButton — DONE
-2. **Fix TouchSlider Mobile (PRIORITÁRIO)** — slider muda ao scroll — plano em `docs/plans/PLAN_Fix_TouchSlider_Mobile.md`
-   - Arquivo: `src/components/mobile/mobile-fine-tune-section.tsx` (função `TouchSlider`)
-   - Mudanças: hit zone no thumb + remover handlers do track + remover onChange do touchStart
-3. **Fix BugReportModal (v0.5.1)** — card semi-transparente + textarea limit + send order — plano em `docs/plans/PLAN_Fix_BugReportModal.md`
-4. Deploy v0.5.0 (`wrangler deploy`) — ainda pendente (após fixes → deploy v0.5.1)
-5. Implementar simplificação da aba Máquina nas Settings (Phase 14)
-6. **Favicon + Ícone Electron** — web + desktop — plano em `docs/plans/PLAN_Favicon_Icons.md`
-   - Logo-fonte: `logo_p_favcon.png` (raiz do projeto) ✅ já existe
-   - Script gerador: `scripts/generate-icons.mjs` (usar `sharp` + `png-to-ico`)
-   - Targets: `public/favicon*.png` + `Sistema_Desktop_Pen_driver/build/icon.ico`
-   - Modificar: `index.html` (web + desktop) + `electron-builder.json`
+**Próximas ações — versão consolidada (ver plano completo: `docs/plans/PLAN_Divida_Tecnica_v051_v052.md`):**
+1. 🔴 **ARCH-SYNC** — corrigir `grep -P` no script (Windows bug) + adicionar 4 nós mobile + atualizar FILE_LINES drifts — SEM bump de versão
+2. 🟠 **Fix BugReportModal** (v0.5.1) — 3 bugs: card semi-transparente + textarea maxLength + ordem mailto/close — `docs/plans/PLAN_Fix_BugReportModal.md`
+3. 🟡 **Remover Plausible** do `index.html` — script inativo (sem conta); CF Web Analytics cobre
+4. 🟠 **Deploy v0.5.1** — `wrangler deploy` após itens 2+3
+5. 🟢 **Favicon + Ícone** (v0.5.2) — `scripts/generate-icons.mjs` com `sharp` + `png-to-ico` — `docs/plans/PLAN_Favicon_Icons.md`
+6. 🔵 **Fix TouchSlider Mobile** (v0.5.3) — hit zone no thumb, remover handlers do track — `docs/plans/PLAN_Fix_TouchSlider_Mobile.md`
+7. ⬜ **Simplificação Settings Máquina** (Phase 14) — manter só `maxRPM` + `maxAvanco`
 
 ### ⚠️ Bugs Identificados (11/03) — aguardando implementação
 
