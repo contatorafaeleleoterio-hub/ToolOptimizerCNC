@@ -4,7 +4,7 @@ import { usePlausible } from '@/hooks/use-plausible';
 import { formatReport } from './export-buttons';
 
 const BUG_EMAIL = 'contatorafaeleleoterio@gmail.com';
-const APP_VERSION = '0.5.0';
+const APP_VERSION = '0.5.1';
 
 interface Props {
   variant?: 'desktop' | 'mobile';
@@ -75,9 +75,12 @@ function BugReportModal({ onClose }: { onClose: () => void }) {
 
     const subject = encodeURIComponent(`[Bug Report] ToolOptimizer CNC v${APP_VERSION}`);
     const body = encodeURIComponent(bodyLines.join('\n'));
-    window.location.href = `mailto:${BUG_EMAIL}?subject=${subject}&body=${body}`;
+    const mailtoUrl = `mailto:${BUG_EMAIL}?subject=${subject}&body=${body}`;
     track('Bug_Reportado');
     onClose();
+    setTimeout(() => {
+      window.location.href = mailtoUrl;
+    }, 50);
   };
 
   return (
@@ -87,7 +90,7 @@ function BugReportModal({ onClose }: { onClose: () => void }) {
         if (e.target === e.currentTarget) onClose();
       }}
     >
-      <div className="w-full max-w-md rounded-2xl bg-surface-dark border border-white/10 shadow-glass p-6 mx-4 flex flex-col gap-4">
+      <div className="w-full max-w-md rounded-2xl border border-white/10 shadow-glass p-6 mx-4 flex flex-col gap-4" style={{ backgroundColor: '#161B22' }}>
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-2 text-white">
             <span className="material-symbols-outlined text-xl" style={{ color: '#f39c12' }}>
@@ -101,12 +104,16 @@ function BugReportModal({ onClose }: { onClose: () => void }) {
         </div>
 
         <div className="flex flex-col gap-1">
-          <label className="text-xs text-gray-400">Descreva o problema encontrado</label>
+          <div className="flex items-center justify-between">
+            <label className="text-xs text-gray-400">Descreva o problema encontrado</label>
+            <span className="text-xs text-gray-600 font-mono">{description.length}/500</span>
+          </div>
           <textarea
             value={description}
             onChange={(e) => setDescription(e.target.value)}
             placeholder="Ex: O cálculo de RPM retornou um valor inesperado ao selecionar..."
             rows={4}
+            maxLength={500}
             className="w-full rounded-lg bg-white/5 border border-white/10 text-white text-sm px-3 py-2 resize-none focus:outline-none focus:border-white/30 placeholder:text-gray-600"
           />
         </div>

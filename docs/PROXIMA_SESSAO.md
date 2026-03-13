@@ -13,9 +13,9 @@
 | Item | Valor |
 |------|-------|
 | **Branch** | `main` |
-| **Versão** | `0.5.0` |
-| **Último commit** | `71ecb12` feat: add mobile architecture view + ARCH-SYNC protocol |
-| **Testes** | **637 passando** (40 arquivos) — 2 falhas pré-existentes inalteradas |
+| **Versão** | `0.5.1` |
+| **Último commit** | `(ver git log)` fix(bug-report): 3 fixes modal + bump v0.5.1 |
+| **Testes** | **637 passando** (40 arquivos) — 0 falhas |
 | **TypeScript** | **zero erros** |
 | **Build** | **limpo** — JS 96.88KB gzip, CSS 13.66KB |
 | **Remote** | `origin/main` sincronizado (GitHub) ✅ push feito |
@@ -111,10 +111,10 @@ npx vite build 2>&1 | tail -5
   - **Phase 14 próxima:** implementar simplificação
 
 **Próximas ações — versão consolidada (ver plano completo: `docs/plans/PLAN_Divida_Tecnica_v051_v052.md`):**
-1. 🔴 **ARCH-SYNC** — corrigir `grep -P` no script (Windows bug) + adicionar 4 nós mobile + atualizar FILE_LINES drifts — SEM bump de versão
-2. 🟠 **Fix BugReportModal** (v0.5.1) — 3 bugs: card semi-transparente + textarea maxLength + ordem mailto/close — `docs/plans/PLAN_Fix_BugReportModal.md`
+1. ✅ **ARCH-SYNC** — concluído (commit `765dbaf`)
+2. ✅ **Fix BugReportModal** (v0.5.1) — 3 bugs corrigidos: card opaco + maxLength 500 + ordem onClose/mailto — commitado
 3. 🟡 **Remover Plausible** do `index.html` — script inativo (sem conta); CF Web Analytics cobre
-4. 🟠 **Deploy v0.5.1** — `wrangler deploy` após itens 2+3
+4. 🟠 **Deploy v0.5.1** — `wrangler deploy` (próxima sessão)
 5. 🟢 **Favicon + Ícone** (v0.5.2) — `scripts/generate-icons.mjs` com `sharp` + `png-to-ico` — `docs/plans/PLAN_Favicon_Icons.md`
 6. 🔵 **Fix TouchSlider Mobile** (v0.5.3) — hit zone no thumb, remover handlers do track — `docs/plans/PLAN_Fix_TouchSlider_Mobile.md`
 7. ⬜ **Simplificação Settings Máquina** (Phase 14) — manter só `maxRPM` + `maxAvanco`
@@ -638,16 +638,24 @@ Isso causava assimetria:
 - ✅ `b6b9812` — fz/ae/ap convertidos para padrão unidirecional (matching Vc)
 - ✅ 572 testes passando (35 arquivos)
 
-#### 🟡 Próximas tarefas (a definir com usuário)
+#### 🟡 Planos Pendentes (ver `docs/plans/BACKLOG_IMPLEMENTACAO.md` para detalhes)
 
-**Sugestões de melhoria contínua (gradual):**
-1. **Fix teste falhando:** `mobile-fine-tune-section` fz step — corrigir para 573/573
-2. **Story-008:** A definir — ver sugestões em `docs/MELHORIAS_CONTINUAS.md`
-3. **Login Google L1:** Quando houver demanda validada
+| # | Plano | Tipo | Versao Alvo | Status |
+|---|-------|------|-------------|--------|
+| 1 | Fix BugReportModal | Bug Fix | v0.5.1 | NEXT |
+| 2 | Fix TouchSlider Mobile | Bug Fix | v0.5.2 | Pendente |
+| 3 | Unificar Indicadores Ajuste Fino | Feature | v0.5.3 | Pendente |
+| 4 | Favicon e Icones | Polish | v0.5.4 | Pendente |
+| 5 | Seguranca Cibernetica | Security | v0.5.5 | Pendente |
+
+**Outros pendentes:**
+- Fix teste falhando: `mobile-fine-tune-section` fz step
+- Story-008: A definir com usuario
+- Login Google L1: Quando houver demanda validada
 
 > **REGRA DE SEQUÊNCIA (para o próximo assistente):**
 > 1. Ler este arquivo completo primeiro
-> 2. Corrigir o 1 teste falhando (fz step mobile) — meta: 573/573 zero falhas
+> 2. Consultar `docs/plans/BACKLOG_IMPLEMENTACAO.md` para ordem de implementacao
 > 3. Perguntar qual próxima feature ao usuário
 > 4. Só iniciar após escolha explícita do usuário
 
