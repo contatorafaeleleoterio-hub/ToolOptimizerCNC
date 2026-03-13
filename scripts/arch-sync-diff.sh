@@ -23,8 +23,8 @@ mapfile -t SRC_FILES < <(
 
 # 2. Extract known file paths from architecture-graph.ts
 mapfile -t GRAPH_FILES < <(
-  grep -oP "filePath:\s*'[^']+'" "$GRAPH_FILE" \
-    | sed "s/filePath: '//;s/'//" \
+  grep -oE "filePath:[[:space:]]*'[^']+'" "$GRAPH_FILE" \
+    | sed "s/filePath: '//;s/filePath:'//;s/'//" \
     | sort
 )
 
@@ -52,8 +52,8 @@ done
 
 # 5. Find DRIFT (line count mismatch > 20 lines)
 while IFS= read -r line; do
-  file_path=$(echo "$line" | grep -oP "'[^']+'" | head -1 | tr -d "'")
-  graph_lines=$(echo "$line" | grep -oP '\d+' | tail -1)
+  file_path=$(echo "$line" | grep -oE "'[^']+'" | head -1 | tr -d "'")
+  graph_lines=$(echo "$line" | grep -oE '[0-9]+' | tail -1)
   if [[ -f "$PROJECT_ROOT/$file_path" ]]; then
     actual_lines=$(wc -l < "$PROJECT_ROOT/$file_path")
     diff=$((actual_lines - graph_lines))
@@ -62,11 +62,11 @@ while IFS= read -r line; do
       echo "DRIFT $file_path ${graph_lines}->${actual_lines}"
     fi
   fi
-done < <(grep -oP "'src/[^']+'\s*:\s*\d+" "$GRAPH_FILE")
+done < <(grep -oE "'src/[^']+': [0-9]+" "$GRAPH_FILE")
 
 # 6. Version check
-GRAPH_VERSION=$(grep -oP "version:\s*'[^']+'" "$GRAPH_FILE" | head -1 | sed "s/version: '//;s/'//")
-PKG_VERSION=$(grep -oP '"version":\s*"[^"]+"' "$PACKAGE_JSON" | sed 's/"version": "//;s/"//')
+GRAPH_VERSION=$(grep -oE "version: '[^']+'" "$GRAPH_FILE" | head -1 | sed "s/version: '//;s/'//")
+PKG_VERSION=$(grep -oE '"version": "[^"]+"' "$PACKAGE_JSON" | sed 's/"version": "//;s/"//')
 if [[ "$GRAPH_VERSION" != "$PKG_VERSION" ]]; then
   echo "VERSION ${GRAPH_VERSION}->${PKG_VERSION}"
 fi

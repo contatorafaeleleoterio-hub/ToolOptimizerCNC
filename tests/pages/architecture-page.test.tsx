@@ -30,7 +30,7 @@ describe('ArchitecturePage', () => {
     renderPage();
     fireEvent.click(screen.getByText('Components'));
     expect(screen.getByText('config-panel.tsx')).toBeInTheDocument();
-    expect(screen.getAllByText('28 arquivos').length).toBeGreaterThanOrEqual(1);
+    expect(screen.getAllByText('32 arquivos').length).toBeGreaterThanOrEqual(1);
   });
 
   it('opens and closes the data flow overlay', () => {
