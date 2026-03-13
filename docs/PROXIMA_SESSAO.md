@@ -14,10 +14,10 @@
 |------|-------|
 | **Branch** | `main` |
 | **Versão** | `0.5.1` |
-| **Último commit** | `(ver git log)` fix(bug-report): 3 fixes modal + bump v0.5.1 |
+| **Último commit** | `9fbb34b` fix(mobile): fix accidental value changes on page scroll in TouchSlider |
 | **Testes** | **637 passando** (40 arquivos) — 0 falhas |
 | **TypeScript** | **zero erros** |
-| **Build** | **limpo** — JS 96.88KB gzip, CSS 13.66KB |
+| **Build** | **limpo** — JS 96.98KB gzip, CSS 13.66KB |
 | **Remote** | `origin/main` sincronizado (GitHub) ✅ push feito |
 | **Worker** | ✅ LIVE — `https://tooloptimizercnc.contatorafaeleleoterio.workers.dev` |
 | **GitHub Pages** | ✅ LIVE — deploy automático funciona |
@@ -50,6 +50,35 @@ npx vite build 2>&1 | tail -5
 ---
 
 ## ✅ O QUE FOI FEITO (histórico recente)
+
+### Sessão 13/03 — Deploy v0.5.1 Ready + Plausible & TouchSlider Fixes Commitados
+
+**Contexto:** Verificação de status antes de deploy — descobertos commits adicionais não documentados que implementaram 2 das tarefas pendentes.
+
+**O que foi feito:**
+- ✅ **Commit `4c79541` — Plausible script removido:**
+  - Script inativo removido de `index.html` (sem conta cadastrada)
+  - CF Web Analytics já fornece tracking automático via Worker
+
+- ✅ **Commit `9fbb34b` — TouchSlider Mobile Fix:**
+  - Bug de "accidental value changes on page scroll" foi corrigido
+  - Implementação do plano descrito em sessão anterior
+
+- ✅ **Verificação de deployment:**
+  - 637 testes passando ✅
+  - TypeScript zero erros ✅
+  - Build limpo (JS 96.98KB gzip) ✅
+  - Git sincronizado com origin/main ✅
+  - **Pronto para GitHub Actions deploy automático**
+
+**Próximas ações:**
+1. ✅ **Deploy v0.5.1** — GitHub Actions acionado automaticamente ao push para main (já sincronizado)
+2. 🟢 **Favicon + Ícone** (v0.5.2) — `docs/plans/PLAN_Favicon_Icons.md`
+3. ⬜ **Simplificação Settings Máquina** (Phase 14) — manter só `maxRPM` + `maxAvanco`
+
+**Status:** Deploy aguardando confirmação em https://dash.cloudflare.com. v0.5.1 deve estar LIVE em breve.
+
+---
 
 ### Sessão 11/03 (tarde) — Diagnóstico Bug TouchSlider Mobile (sem código commitado)
 
@@ -638,15 +667,23 @@ Isso causava assimetria:
 - ✅ `b6b9812` — fz/ae/ap convertidos para padrão unidirecional (matching Vc)
 - ✅ 572 testes passando (35 arquivos)
 
+#### ✅ v0.5.1 — Deploy Ready (Plausible + BugReportModal + TouchSlider)
+
+**Completado em 13/03:**
+- ✅ `53bcb51` — Fix BugReportModal (3 bugs: card opaco + maxLength + ordem onClose/mailto)
+- ✅ `4c79541` — Remove Plausible script inativo (CF Web Analytics suficiente)
+- ✅ `9fbb34b` — Fix TouchSlider Mobile (accidental value changes on scroll)
+- ⏳ **Deploy via GitHub Actions** — aguardando confirmação em Cloudflare dashboard
+
 #### 🟡 Planos Pendentes (ver `docs/plans/BACKLOG_IMPLEMENTACAO.md` para detalhes)
 
 | # | Plano | Tipo | Versao Alvo | Status |
 |---|-------|------|-------------|--------|
-| 1 | Fix BugReportModal | Bug Fix | v0.5.1 | NEXT |
-| 2 | Fix TouchSlider Mobile | Bug Fix | v0.5.2 | Pendente |
-| 3 | Unificar Indicadores Ajuste Fino | Feature | v0.5.3 | Pendente |
-| 4 | Favicon e Icones | Polish | v0.5.4 | Pendente |
-| 5 | Seguranca Cibernetica | Security | v0.5.5 | Pendente |
+| 1 | Favicon e Icones | Polish | v0.5.2 | NEXT |
+| 2 | Simplificação Settings Máquina | Feature | Phase 14 | Pendente |
+| 3 | Story-008 | TBD | v0.5.3+ | A definir com usuário |
+| 4 | Seguranca Cibernetica | Security | v0.5.5+ | Pendente |
+| 5 | Login Google | Feature | Pausado | Retomar com demanda |
 
 **Outros pendentes:**
 - Fix teste falhando: `mobile-fine-tune-section` fz step
