@@ -13,21 +13,21 @@
 | Item | Valor |
 |------|-------|
 | **Branch** | `main` |
-| **Versão** | `0.5.1` |
-| **Último commit** | `9fbb34b` fix(mobile): fix accidental value changes on page scroll in TouchSlider |
+| **Versão** | `0.5.2` |
+| **Último commit** | `efcb1e4` refactor(settings): simplify machine settings UI — Phase 14 |
 | **Testes** | **637 passando** (40 arquivos) — 0 falhas |
 | **TypeScript** | **zero erros** |
-| **Build** | **limpo** — JS 96.98KB gzip, CSS 13.66KB |
+| **Build** | **limpo** — JS 96.78KB gzip, CSS 13.66KB |
 | **Remote** | `origin/main` sincronizado (GitHub) ✅ push feito |
 | **Worker** | ✅ LIVE — `https://tooloptimizercnc.contatorafaeleleoterio.workers.dev` |
-| **GitHub Pages** | ✅ LIVE — deploy automático funciona |
+| **GitHub Actions** | ✅ LIVE — deploy automático ao push para main |
 | **CI (testes)** | ✅ passando no GitHub Actions |
 | **Cloudflare Pages app** | ❌ projeto não existe — workflow usa `wrangler deploy` agora |
 | **DNS Registro.br** | ✅ Propagado — nameservers `fatima` + `odin` ativos |
-| **Custom Domains** | ✅ `tooloctimizercnc.com.br` + `app.tooloptimizercnc.com.br` configurados no Worker |
+| **Custom Domains** | ✅ `tooloptimizercnc.com.br` + `app.tooloptimizercnc.com.br` configurados no Worker |
 | **GitHub Secrets** | ✅ `CF_API_TOKEN` + `CF_ACCOUNT_ID` configurados |
 | **CF_ACCOUNT_ID** | `6b8c90369455a504e560d9fac74eea0c` |
-| **Desktop** | `.exe` 85MB em `Sistema_Desktop_Pen_driver/` |
+| **Desktop** | `.exe` 85MB em `Sistema_Desktop_Pen_driver/` (submodule) |
 
 ---
 
@@ -51,7 +51,34 @@ npx vite build 2>&1 | tail -5
 
 ## ✅ O QUE FOI FEITO (histórico recente)
 
-### Sessão 13/03 — Deploy v0.5.1 Ready + Plausible & TouchSlider Fixes Commitados
+### Sessão 13/03 (tarde) — v0.5.2 completo: Favicon + Phase 14 Settings
+
+**Contexto:** Continuação da sessão matinal. Backlog completo desta release foi executado.
+
+**O que foi feito:**
+
+- ✅ **Favicon + Ícones (v0.5.2)** — commit `51b272a`:
+  - `scripts/generate-icons.mjs` — gerador com `sharp` + `png-to-ico`
+  - `npm run icons` — gera todos os tamanhos de `logo_p_favcon.png`
+  - `public/favicon.ico` (16+32+48px) + 5 PNGs (16/32/180/192/512px)
+  - `index.html` (web) — 4 tags `<link>` favicon + `theme-color #0F1419`
+  - `Sistema_Desktop_Pen_driver/public/` — mesmos arquivos para desktop
+  - `Sistema_Desktop_Pen_driver/build/icon.ico` (16+32+48+256px — ícone do .exe)
+  - `electron-builder.json` — `win.icon` + `build/**/*` em `files`
+  - `package.json` — bump v0.5.1 → v0.5.2 + script `"icons"`
+
+- ✅ **Simplificação Settings Máquina (Phase 14)** — commit `efcb1e4`:
+  - `MaquinaSection` simplificada: mantém apenas `maxRPM` + `maxAvanco`
+  - Removido da UI: `machineName`, `maxPotencia`, `maxTorque`, `eficiencia`
+  - Esses campos **continuam no tipo** `LimitesMaquina` e usam defaults (η=0.85, etc.)
+  - `architecture-graph.ts`: versão atualizada para 0.5.2
+  - Testes atualizados: 2 testes da settings-page ajustados
+
+**Estado final da sessão:** 637 testes ✅ | TS zero erros ✅ | Build 96.78KB ✅ | pushed
+
+---
+
+### Sessão 13/03 (manhã) — Deploy v0.5.1 Ready + Plausible & TouchSlider Fixes Commitados
 
 **Contexto:** Verificação de status antes de deploy — descobertos commits adicionais não documentados que implementaram 2 das tarefas pendentes.
 
@@ -675,20 +702,20 @@ Isso causava assimetria:
 - ✅ `9fbb34b` — Fix TouchSlider Mobile (accidental value changes on scroll)
 - ⏳ **Deploy via GitHub Actions** — aguardando confirmação em Cloudflare dashboard
 
+#### ✅ Planos Concluídos nesta sessão
+
+| # | Plano | Tipo | Versão | Status |
+|---|-------|------|--------|--------|
+| 1 | Favicon + Ícones Electron | Polish | v0.5.2 | ✅ DONE `51b272a` |
+| 2 | Simplificação Settings Máquina | Feature | Phase 14 | ✅ DONE `efcb1e4` |
+
 #### 🟡 Planos Pendentes (ver `docs/plans/BACKLOG_IMPLEMENTACAO.md` para detalhes)
 
 | # | Plano | Tipo | Versao Alvo | Status |
 |---|-------|------|-------------|--------|
-| 1 | Favicon e Icones | Polish | v0.5.2 | NEXT |
-| 2 | Simplificação Settings Máquina | Feature | Phase 14 | Pendente |
-| 3 | Story-008 | TBD | v0.5.3+ | A definir com usuário |
-| 4 | Seguranca Cibernetica | Security | v0.5.5+ | Pendente |
-| 5 | Login Google | Feature | Pausado | Retomar com demanda |
-
-**Outros pendentes:**
-- Fix teste falhando: `mobile-fine-tune-section` fz step
-- Story-008: A definir com usuario
-- Login Google L1: Quando houver demanda validada
+| 1 | Story-008 | TBD | v0.5.3+ | A definir com usuário — **PRÓXIMA SESSÃO** |
+| 2 | Seguranca Cibernetica | Security | v0.5.5+ | Pendente |
+| 3 | Login Google | Feature | Pausado | Retomar com demanda |
 
 > **REGRA DE SEQUÊNCIA (para o próximo assistente):**
 > 1. Ler este arquivo completo primeiro
