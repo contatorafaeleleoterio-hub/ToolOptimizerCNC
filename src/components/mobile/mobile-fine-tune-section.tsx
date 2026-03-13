@@ -76,11 +76,10 @@ function TouchSlider({ value, min, max, step, rgb, onChange, label, recomendado 
     return clampToStep(min + pct * (max - min));
   }, [min, max, value, clampToStep]);
 
-  const handleTouchStart = useCallback((e: React.TouchEvent) => {
+  const handleTouchStart = useCallback(() => {
     setDragging(true);
-    const touch = e.touches[0];
-    if (touch) onChange(getValueFromX(touch.clientX));
-  }, [onChange, getValueFromX]);
+    // Don't change value on initial touch — only on drag (handled by handleTouchMove)
+  }, []);
 
   const handleTouchMove = useCallback((e: React.TouchEvent) => {
     e.preventDefault();
@@ -97,11 +96,7 @@ function TouchSlider({ value, min, max, step, rgb, onChange, label, recomendado 
   return (
     <div
       ref={trackRef}
-      className="relative h-12 mx-[18px] flex items-center cursor-pointer touch-none select-none"
-      onTouchStart={handleTouchStart}
-      onTouchMove={handleTouchMove}
-      onTouchEnd={handleTouchEnd}
-      onTouchCancel={handleTouchEnd}
+      className="relative h-12 mx-[18px] flex items-center cursor-pointer select-none"
       role="slider"
       aria-label={`${label} slider`}
       aria-valuenow={value}
@@ -141,20 +136,36 @@ function TouchSlider({ value, min, max, step, rgb, onChange, label, recomendado 
         style={{ width: `${pct}%`, backgroundColor: `rgba(${rgb},1)`, boxShadow: `0 0 8px rgba(${rgb},0.6)` }}
       />
 
-      {/* Thumb */}
+      {/* Thumb with invisible hit zone (60×60px) */}
       <div
-        className="absolute -translate-x-1/2 pointer-events-none"
-        style={{ left: `${pct}%` }}
+        className="absolute"
+        style={{
+          left: `${pct}%`,
+          transform: 'translate(-50%, -50%)',
+          top: '50%',
+          width: '60px',
+          height: '60px',
+          touchAction: 'none',
+        }}
+        onTouchStart={handleTouchStart}
+        onTouchMove={handleTouchMove}
+        onTouchEnd={handleTouchEnd}
+        onTouchCancel={handleTouchEnd}
       >
-        <div
-          className="w-9 h-9 rounded-full flex items-center justify-center border-2 border-transparent transition-all duration-150"
-          style={dragging ? { borderColor: `rgba(${rgb},1)`, boxShadow: `0 0 20px rgba(${rgb},0.9)`, transform: 'scale(1.15)' } : undefined}
-        >
+        {/* Invisible hit zone */}
+        <div className="absolute inset-0" />
+        {/* Visual thumb (centered inside hit zone) */}
+        <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
           <div
-            className="w-7 h-7 bg-background-dark border-2 rounded-full flex items-center justify-center"
-            style={{ borderColor: `rgba(${rgb},1)`, boxShadow: `0 0 12px rgba(${rgb},0.8)` }}
+            className="w-9 h-9 rounded-full flex items-center justify-center border-2 border-transparent transition-all duration-150"
+            style={dragging ? { borderColor: `rgba(${rgb},1)`, boxShadow: `0 0 20px rgba(${rgb},0.9)`, transform: 'scale(1.15)' } : undefined}
           >
-            <div className="w-2.5 h-2.5 rounded-full" style={{ backgroundColor: `rgba(${rgb},1)` }} />
+            <div
+              className="w-7 h-7 bg-background-dark border-2 rounded-full flex items-center justify-center"
+              style={{ borderColor: `rgba(${rgb},1)`, boxShadow: `0 0 12px rgba(${rgb},0.8)` }}
+            >
+              <div className="w-2.5 h-2.5 rounded-full" style={{ backgroundColor: `rgba(${rgb},1)` }} />
+            </div>
           </div>
         </div>
       </div>
