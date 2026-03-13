@@ -81,6 +81,7 @@ scripts/          # Scripts auxiliares
 6. O sistema RECOMENDA, o operador DECIDE (disclaimer obrigatório)
 7. **Store NÃO auto-recalcula:** `setMaterial/setFerramenta/setTipoOperacao/setParametros/setSafetyFactor` zerão `resultado=null` mas NÃO chamam `calcular()`. Usuário deve clicar em "Simular". Exceção: `setLimitesMaquina` ainda chama `calcular()`.
 8. **Testes do store:** chamar `getState().calcular()` explicitamente após `setParametros/setFerramenta` nos testes — NÃO depender de auto-recalc.
+9. **Ao criar plano de implementação:** SEMPRE atualizar `docs/plans/BACKLOG_IMPLEMENTACAO.md` (adicionar entrada na tabela + detalhe) e a tabela de planos pendentes em `docs/PROXIMA_SESSAO.md`. Incrementar contagem total de planos.
 
 ## Estado Atual do Código (atualizado 17/02/2026)
 

@@ -73,7 +73,26 @@
       "mcp__Windows-MCP__Type",
       "Bash(test -f \"C:\\\\Users\\\\USUARIO\\\\Desktop\\\\INICIO_TOOLOPTIMIZERCNC\\\\public\\\\og-image.png\")",
       "Bash(git merge:*)",
-      "Bash(VITE_BASE_URL=/ npx vite build:*)"
+      "Bash(VITE_BASE_URL=/ npx vite build:*)",
+      "mcp__Control_Chrome__get_current_tab",
+      "WebFetch(domain:api.github.com)",
+      "Bash(nslookup:*)",
+      "WebFetch(domain:registro.br)",
+      "WebFetch(domain:rdap.registro.br)",
+      "Bash(git checkout:*)",
+      "Bash(ipconfig:*)",
+      "Bash(git -C \"C:/Users/USUARIO/Desktop/INICIO_TOOLOPTIMIZERCNC\" log --oneline -3)",
+      "Bash(xargs grep:*)",
+      "Bash(grep -r 6b8c90369455a504e560d9fac74eea0c . --include=*.ts --include=*.tsx --include=*.json --include=*.md)",
+      "Bash(find /c/Users/USUARIO/Desktop/INICIO_TOOLOPTIMIZERCNC/Sistema_Desktop_Pen_driver -name main.js -o -name preload.js -o -name electron* -type f)",
+      "Bash(grep -r \"process.env\\\\|import.meta.env\" src/ --include=*.ts --include=*.tsx)",
+      "Bash(grep -E \"actions/checkout|uses:\" .github/workflows/*.yml)",
+      "Bash(grep -r \"try\\\\|catch\\\\|console\\\\.log\\\\|console\\\\.error\" /c/Users/USUARIO/Desktop/INICIO_TOOLOPTIMIZERCNC/src --include=*.ts --include=*.tsx)",
+      "Bash(grep -r \"rate\\\\|limit\\\\|cors\\\\|headers\\\\|security\" wrangler.*)",
+      "Bash(find /c/Users/USUARIO/Desktop/INICIO_TOOLOPTIMIZERCNC -name .env* -o -name *.env)",
+      "Bash(grep -rn \"window\\\\.\\\\|document\\\\.\\\\|eval\\\\|Function\\\\|with {\\\\|setTimeout\\\\|setInterval\" /c/Users/USUARIO/Desktop/INICIO_TOOLOPTIMIZERCNC/src --include=*.tsx --include=*.ts)",
+      "Bash(find /c/Users/USUARIO/Desktop/INICIO_TOOLOPTIMIZERCNC -name *worker* -o -name *wrangler*)",
+      "Bash(grep -r \"telegram\\\\|bot\\\\|webhook\\\\|máquina virtual\\\\|requisição.*mobile\" C:/Users/USUARIO/Desktop/INICIO_TOOLOPTIMIZERCNC --include=*.md --include=*.txt)"
     ]
   }
 }
