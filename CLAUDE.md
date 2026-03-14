@@ -1,11 +1,21 @@
 ﻿# ToolOptimizer CNC - Contexto do Projeto
 
 ## ⚡ Regra de Início de Sessão (OBRIGATÓRIO)
-**PRIMEIRA AÇÃO de toda sessão:** Ler o arquivo abaixo antes de qualquer outra coisa:
+**PRIMEIRA AÇÃO de toda sessão:** Ler os arquivos abaixo nesta ordem:
+
+**1. Ponto de entrada principal (prioridades + protocolo):**
+```
+C:\Users\USUARIO\Desktop\INICIO_TOOLOPTIMIZERCNC\docs\ROADMAP_SESSAO_ATUAL.md
+```
+- Contém: estado atual, prioridades da sessão, protocolo fim de sessão.
+- **Se PRIORIDADE 1 tiver itens `⬜ Pendente` → executar antes de qualquer outra coisa.**
+- Se PRIORIDADE 1 estiver toda `✅ Concluído` → oferecer opções da PRIORIDADE 2.
+
+**2. Histórico de sessões (apenas se precisar de contexto detalhado):**
 ```
 C:\Users\USUARIO\Desktop\INICIO_TOOLOPTIMIZERCNC\docs\PROXIMA_SESSAO.md
 ```
-Este arquivo contém: estado atual do projeto, último commit, tarefas pendentes e regras da sessão.
+- Contém: histórico completo de sessões anteriores, commits, decisões.
 
 ---
 
@@ -81,7 +91,8 @@ scripts/          # Scripts auxiliares
 6. O sistema RECOMENDA, o operador DECIDE (disclaimer obrigatório)
 7. **Store NÃO auto-recalcula:** `setMaterial/setFerramenta/setTipoOperacao/setParametros/setSafetyFactor` zerão `resultado=null` mas NÃO chamam `calcular()`. Usuário deve clicar em "Simular". Exceção: `setLimitesMaquina` ainda chama `calcular()`.
 8. **Testes do store:** chamar `getState().calcular()` explicitamente após `setParametros/setFerramenta` nos testes — NÃO depender de auto-recalc.
-9. **Ao criar plano de implementação:** SEMPRE atualizar `docs/plans/BACKLOG_IMPLEMENTACAO.md` (adicionar entrada na tabela + detalhe) e a tabela de planos pendentes em `docs/PROXIMA_SESSAO.md`. Incrementar contagem total de planos.
+9. **Ao criar plano de implementação:** SEMPRE atualizar (1) `docs/plans/BACKLOG_IMPLEMENTACAO.md` (adicionar entrada na tabela + detalhe), (2) tabela PRIORIDADE 1 em `docs/ROADMAP_SESSAO_ATUAL.md`. Incrementar contagem total de planos. NÃO adicionar em `docs/PROXIMA_SESSAO.md` — esse arquivo é só histórico.
+10. **Protocolo "fim de sessão":** Quando Rafael disser "fim de sessão", executar o checklist completo descrito na seção "PROTOCOLO FIM DE SESSÃO" de `docs/ROADMAP_SESSAO_ATUAL.md`.
 
 ## Estado Atual do Código (atualizado 17/02/2026)
 
