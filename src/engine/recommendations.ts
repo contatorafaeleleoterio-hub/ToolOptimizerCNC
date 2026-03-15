@@ -1,14 +1,14 @@
 /**
  * Recommended cutting parameter engine for ToolOptimizer CNC
  * Provides sensible defaults based on material, operation type, and tool diameter.
- * Source: docs/PADRONIZAÇÃO ADOTADA.md
+ * Source: docs/technical/padronizacao-adotada.md
  */
 
 import type { Material, ParametrosUsinagem, ClasseISO } from '@/types';
 import { TipoUsinagem } from '@/types';
 
 // ── Vc/fz lookup tables per material group and diameter ──
-// Source: PADRONIZAÇÃO ADOTADA - Tabela por diâmetro
+// Source: padronizacao-adotada.md - Tabela por diâmetro
 
 interface VcFzEntry {
   d: number;

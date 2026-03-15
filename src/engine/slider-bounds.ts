@@ -5,7 +5,7 @@
  * com base no material selecionado, ferramenta e tipo de operação.
  *
  * Fonte técnica: docs/AUDITORIA_AJUSTE_FINO_FENIX.md
- *                docs/PLANO_IMPLEMENTACAO_SLIDER_BOUNDS.md
+ *                docs/_archive/plans-completed/PLANO_IMPLEMENTACAO_SLIDER_BOUNDS.md
  *
  * Validação externa: Sandvik Coromant, Kennametal, Mitsubishi, Seco, Walter
  */
