@@ -42,8 +42,28 @@ npx tsc --noEmit
 | 3 | Unificar Indicadores Ajuste Fino | ✨ Feature | v0.5.3 | ✅ Concluído |
 | 4 | Favicon e Ícones | 💄 Polish | v0.5.4 | ✅ Concluído |
 | 5 | Segurança Cibernética | 🔒 Security | v0.5.5 | ⬜ Pendente |
+| 6 | Reestruturação Documental | 🏗️ Infra | v0.6.0 | ⬜ Pendente |
 
-### ⬜ PRÓXIMO: Segurança Cibernética (v0.5.5)
+### ⬜ PRÓXIMO: Reestruturação Documental (v0.6.0) — PRIORIDADE MÁXIMA
+
+**Diretrizes:** `docs/plans/phases/EXECUTION_DIRECTIVES.md`
+**Phase briefs:** `docs/plans/phases/PHASE-{1,2,3,4}-*.md`
+
+**Regra de execução:** UMA fase por sessão → commit → push → encerrar sessão.
+**Sem perguntar:** Ler o phase brief da fase pendente e executar diretamente.
+
+| Fase | Brief | Status | Objetivo |
+|------|-------|--------|----------|
+| 1 | `PHASE-1-archive-dead-weight.md` | ⬜ Pendente | Archive sessions, stories, planos concluidos |
+| 2 | `PHASE-2-eliminate-duplicates.md` | ⬜ Pendente | Eliminar duplicatas + update refs codigo |
+| 3 | `PHASE-3-trim-consolidate.md` | ⬜ Pendente | Trim PROXIMA_SESSAO + clean workflows |
+| 4 | `PHASE-4-update-references.md` | ⬜ Pendente | Update CLAUDE.md + sweep + bump v0.6.0 |
+
+**Resultado esperado:** 91→~35 arquivos ativos, leitura/sessão 1.300→375 linhas.
+
+---
+
+### ⬜ Segurança Cibernética (v0.5.5)
 
 **Plano completo:** `docs/plans/PLAN_Seguranca_Cibernetica.md`
 

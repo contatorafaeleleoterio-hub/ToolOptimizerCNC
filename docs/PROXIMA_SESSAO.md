@@ -8,6 +8,42 @@
 
 ---
 
+## 🚨 ACAO IMEDIATA — Reestruturacao Documental (v0.6.0)
+
+> **Esta seção tem PRIORIDADE ABSOLUTA sobre qualquer outro item.**
+> Siga as diretrizes abaixo sem perguntar — execute diretamente.
+
+### O que fazer
+
+1. Ler `docs/plans/phases/EXECUTION_DIRECTIVES.md` — contém regras obrigatórias
+2. Identificar a **fase pendente** (⬜) na tabela de fases
+3. Ler APENAS o phase brief da fase pendente (ex: `PHASE-1-archive-dead-weight.md`)
+4. Executar TODAS as ações do phase brief
+5. Verificar (vitest + tsc + build)
+6. Commit + push
+7. Atualizar status da fase no EXECUTION_DIRECTIVES.md
+8. **ENCERRAR SESSÃO** — não executar outra fase
+
+### Onde estão os documentos
+
+```
+docs/plans/phases/
+  EXECUTION_DIRECTIVES.md          ← Regras + mapa de fases
+  PHASE-1-archive-dead-weight.md   ← Fase 1 (primeira a executar)
+  PHASE-2-eliminate-duplicates.md   ← Fase 2
+  PHASE-3-trim-consolidate.md      ← Fase 3
+  PHASE-4-update-references.md     ← Fase 4 (última)
+```
+
+### Regras criticas
+
+- **UMA fase por sessão** — nunca executar mais de uma
+- **Ordem fixa:** 1 → 2 → 3 → 4
+- **Sem perguntar** — ler brief e executar diretamente
+- **Cada phase brief é auto-contido** (~60 linhas) — não precisa ler o brief original de 281 linhas
+
+---
+
 ## 📍 ESTADO DO PROJETO (início da próxima sessão)
 
 | Item | Valor |
