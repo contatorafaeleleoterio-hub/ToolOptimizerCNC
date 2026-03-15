@@ -10,9 +10,9 @@
 | Item | Valor |
 |------|-------|
 | **Branch** | `main` |
-| **Versão** | `0.5.2` |
-| **Último commit** | `efcb1e4` refactor(settings): simplify machine settings UI — Phase 14 |
-| **Testes** | **637 passando** (40 arquivos) — 0 falhas |
+| **Versão** | `0.6.0` |
+| **Último commit** | `f058230` docs: update all references after restructuring — bump v0.6.0 (Phase 4/4) |
+| **Testes** | **637 passando** (40 arquivos) — 1 pré-existente (fz step mobile) |
 | **TypeScript** | **zero erros** |
 | **Build** | **limpo** — JS 96.78KB gzip, CSS 13.66KB |
 | **Remote** | `origin/main` sincronizado ✅ |
@@ -32,15 +32,29 @@ npx tsc --noEmit
 
 ## Ultimas 3 Sessoes
 
+### Sessão 15/03 — Reestruturação Documental Phase 4 (v0.6.0 COMPLETO)
+
+**O que foi feito:**
+- ✅ **Phase 4** (`f058230`) — Update all references + bump v0.6.0
+  - CLAUDE.md: folder structure atualizado (docs/_archive, docs/plans, docs/ai)
+  - ROADMAP_SESSAO_ATUAL.md: Reestruturação marcada ✅, versão 0.6.0
+  - BACKLOG_IMPLEMENTACAO.md: Plan #6 ✅, todas as 4 fases ✅
+  - docs/ai/protocols/: refs quebradas corrigidas (MELHORIAS_CONTINUAS → BACKLOG_IMPLEMENTACAO)
+  - package.json: 0.5.2 → 0.6.0
+  - Phase briefs arquivados: docs/_archive/phases/
+
+**Estado:** REESTRUTURAÇÃO DOCUMENTAL COMPLETA ✅ | Próximo: Segurança Cibernética (v0.5.5)
+
+---
+
 ### Sessão 14/03 — Reestruturação Documental Phases 1 e 2
 
 **O que foi feito:**
 - ✅ **Phase 1** (`2651a89`) — Archived 29 completed session logs, stories, and plans
 - ✅ **Phase 2** (`d2faf15`) — Eliminated duplicates and archived superseded files
-- ✅ EXECUTION_DIRECTIVES atualizado: Phases 1 e 2 marcadas como ✅ Concluído
 - ✅ ROADMAP_SESSAO_ATUAL criado como ponto de entrada unificado
 
-**Estado:** Phase 3 (trim PROXIMA_SESSAO + clean workflows) pendente.
+**Estado:** Phase 3 (`9770648`) também concluída nessa sessão.
 
 ---
 
@@ -75,6 +89,7 @@ npx tsc --noEmit
 
 | Versão | Commit | Descrição |
 |--------|--------|-----------|
+| v0.6.0 | `f058230` | Reestruturação Documental completa (4 fases) |
 | v0.5.2 | `efcb1e4` | Favicon + Ícones + Simplificação Settings Máquina |
 | v0.5.1 | `53bcb51` | Fix BugReportModal + Plausible removed + TouchSlider fix |
 | v0.5.0 | `9abfeff` | 3 Parametric Gauges (Feed Headroom · MRR · Tool Health) + Logo |
@@ -93,9 +108,9 @@ npx tsc --noEmit
 ✅ v0.3.x — Auditoria (5 fases) + Testes (637)
 ✅ v0.4.x — Story-006/007/Unificação + Gauges
 ✅ v0.5.x — Deploy CF + Favicon + Settings + BugReport
-⬜ v0.6.0 — Reestruturação Documental (Phase 3/4 pendentes)
+✅ v0.6.0 — Reestruturação Documental (4 fases completas)
 ⬜ v0.5.5 — Segurança Cibernética (7 fases — parcialmente manual)
 ⬜ Story-008 — A definir com Rafael
 ```
 
-**Próxima sessão:** Phase 3 da Reestruturação Documental → ver `docs/ROADMAP_SESSAO_ATUAL.md`
+**Próxima sessão:** Segurança Cibernética (v0.5.5) ou Story-008 → ver `docs/ROADMAP_SESSAO_ATUAL.md`
