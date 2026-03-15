@@ -50,7 +50,7 @@
    - Próxima story/fase pendente
    - Qualquer decisão pendente ou bloqueio
 
-2. **Atualizar `docs/PROMPT_PROXIMA_SESSAO.md`** com prompt pronto copiar/colar contendo:
+2. **Atualizar `docs/ROADMAP_SESSAO_ATUAL.md`** com estado atualizado:
    - Localização do projeto
    - GitHub remote
    - Estado resumido (último commit, testes, o que falta)

@@ -1,8 +1,8 @@
 # Backlog de Implementação — ToolOptimizer CNC
 
-> **Última atualização:** 14/03/2026
-> **Versão atual:** v0.5.2
-> **Total de planos pendentes:** 2
+> **Última atualização:** 15/03/2026
+> **Versão atual:** v0.6.0
+> **Total de planos pendentes:** 1
 
 Esta lista define a ordem de implementação dos planos criados e ainda não executados.
 A ordem garante estabilidade progressiva: bugs corrigidos antes de features, features antes de polish.
@@ -20,7 +20,7 @@ A ordem garante estabilidade progressiva: bugs corrigidos antes de features, fea
 | 3 | Unificar Indicadores Ajuste Fino | ✨ Feature | v0.5.3 | 2 arquivos | ✅ Concluído (`b6b9812`) |
 | 4 | Favicon e Ícones | 💄 Polish | v0.5.4 | 4+ arquivos | ✅ Concluído (`51b272a`) |
 | 5 | [Segurança Cibernética](#5-segurança-cibernética) | 🔒 Security | v0.5.5 | 6 arquivos + config manual | ⬜ Pendente |
-| 6 | [Reestruturação Documental](#6-reestruturação-documental) | 🏗️ Infra | v0.6.0 | ~150 arquivos docs | ⬜ Pendente — **PRIORIDADE MÁXIMA** |
+| 6 | [Reestruturação Documental](#6-reestruturação-documental) | 🏗️ Infra | v0.6.0 | ~150 arquivos docs | ✅ Concluído (4 fases) |
 
 ---
 
@@ -101,10 +101,10 @@ v0.5.5 — Segurança Cibernética ⬜
 
 | Fase | Brief | Status | Escopo |
 |------|-------|--------|--------|
-| 1 | `phases/PHASE-1-archive-dead-weight.md` | ⬜ Pendente | 29 arquivos → archive (~6.600 linhas) |
-| 2 | `phases/PHASE-2-eliminate-duplicates.md` | ⬜ Pendente | ~15 arquivos duplicatas/superseded (~2.400 linhas) |
-| 3 | `phases/PHASE-3-trim-consolidate.md` | ⬜ Pendente | Trim PROXIMA_SESSAO + clean workflows (~1.000 linhas) |
-| 4 | `phases/PHASE-4-update-references.md` | ⬜ Pendente | Update CLAUDE.md + sweep + bump v0.6.0 |
+| 1 | `phases/PHASE-1-archive-dead-weight.md` | ✅ Concluído (`2651a89`) | 29 arquivos → archive (~6.600 linhas) |
+| 2 | `phases/PHASE-2-eliminate-duplicates.md` | ✅ Concluído (`d2faf15`) | ~15 arquivos duplicatas/superseded (~2.400 linhas) |
+| 3 | `phases/PHASE-3-trim-consolidate.md` | ✅ Concluído (`9770648`) | Trim PROXIMA_SESSAO + clean workflows (~1.000 linhas) |
+| 4 | `phases/PHASE-4-update-references.md` | ✅ Concluído (15/03) | Update refs + sweep + bump v0.6.0 |
 
 **Resultado esperado:** 91→~35 arquivos ativos (62%), leitura/sessão 1.300→375 linhas (71%)
 

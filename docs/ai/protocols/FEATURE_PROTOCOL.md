@@ -84,7 +84,7 @@ Convencoes: `feat:`, `fix:`, `test:`, `docs:`, `refactor:`, `style:`
 Sugerir atualizacoes em:
 - `docs/PROXIMA_SESSAO.md` — estado, sessao summary
 - `docs/stories/` — story status
-- `docs/MELHORIAS_CONTINUAS.md` — remover itens feitos, adicionar novos
+- `docs/plans/BACKLOG_IMPLEMENTACAO.md` — remover itens feitos, adicionar novos
 - `docs/ai/memory/` — aprendizados
 
 ---

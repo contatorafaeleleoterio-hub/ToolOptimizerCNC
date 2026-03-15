@@ -27,7 +27,7 @@ FENIX e uma camada documental e operacional que complementa a infraestrutura exi
 | `docs/architecture/ADR-*` | Decisoes arquiteturais | DECISION_PROTOCOL padroniza criacao |
 | `docs/stories/` | Features story-driven | FEATURE_PROTOCOL guia implementacao |
 | `docs/sessions/` | Notas de sessao | HANDOFF_PROTOCOL padroniza formato |
-| `docs/MELHORIAS_CONTINUAS.md` | Backlog de melhorias | Comandos sugerem atualizacoes |
+| `docs/plans/BACKLOG_IMPLEMENTACAO.md` | Backlog de melhorias | Comandos sugerem atualizacoes |
 
 ---
 

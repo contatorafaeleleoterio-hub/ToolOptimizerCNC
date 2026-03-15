@@ -11,7 +11,7 @@
 | Item | Valor |
 |------|-------|
 | **Branch** | `main` |
-| **Versão** | `0.5.2` |
+| **Versão** | `0.6.0` |
 | **Testes** | **637 passando** (40 arquivos) — 0 falhas |
 | **TypeScript** | **zero erros** |
 | **Build** | **limpo** — JS 96.78KB gzip, CSS 13.66KB |
@@ -42,24 +42,16 @@ npx tsc --noEmit
 | 3 | Unificar Indicadores Ajuste Fino | ✨ Feature | v0.5.3 | ✅ Concluído |
 | 4 | Favicon e Ícones | 💄 Polish | v0.5.4 | ✅ Concluído |
 | 5 | Segurança Cibernética | 🔒 Security | v0.5.5 | ⬜ Pendente |
-| 6 | Reestruturação Documental | 🏗️ Infra | v0.6.0 | ⬜ Pendente |
+| 6 | Reestruturação Documental | 🏗️ Infra | v0.6.0 | ✅ Concluído |
 
-### ⬜ PRÓXIMO: Reestruturação Documental (v0.6.0) — PRIORIDADE MÁXIMA
-
-**Diretrizes:** `docs/plans/phases/EXECUTION_DIRECTIVES.md`
-**Phase briefs:** `docs/plans/phases/PHASE-{1,2,3,4}-*.md`
-
-**Regra de execução:** UMA fase por sessão → commit → push → encerrar sessão.
-**Sem perguntar:** Ler o phase brief da fase pendente e executar diretamente.
+### ✅ Reestruturação Documental (v0.6.0) — CONCLUÍDA
 
 | Fase | Brief | Status | Objetivo |
 |------|-------|--------|----------|
-| 1 | `PHASE-1-archive-dead-weight.md` | ⬜ Pendente | Archive sessions, stories, planos concluidos |
-| 2 | `PHASE-2-eliminate-duplicates.md` | ⬜ Pendente | Eliminar duplicatas + update refs codigo |
-| 3 | `PHASE-3-trim-consolidate.md` | ⬜ Pendente | Trim PROXIMA_SESSAO + clean workflows |
-| 4 | `PHASE-4-update-references.md` | ⬜ Pendente | Update CLAUDE.md + sweep + bump v0.6.0 |
-
-**Resultado esperado:** 91→~35 arquivos ativos, leitura/sessão 1.300→375 linhas.
+| 1 | `PHASE-1-archive-dead-weight.md` | ✅ Concluído (`2651a89`) | Archive sessions, stories, planos concluidos |
+| 2 | `PHASE-2-eliminate-duplicates.md` | ✅ Concluído (`d2faf15`) | Eliminar duplicatas + update refs codigo |
+| 3 | `PHASE-3-trim-consolidate.md` | ✅ Concluído (`9770648`) | Trim PROXIMA_SESSAO + clean workflows |
+| 4 | `PHASE-4-update-references.md` | ✅ Concluído (sessão 15/03) | Update refs + bump v0.6.0 |
 
 ---
 
@@ -176,4 +168,4 @@ Quando uma nova implementação for planejada durante a sessão:
 
 ---
 
-*Última atualização: 14/03/2026 — Sessão 14/03 — Criação do ROADMAP unificado*
+*Última atualização: 15/03/2026 — Sessão 15/03 — Phase 4 Reestruturação Documental (v0.6.0)*

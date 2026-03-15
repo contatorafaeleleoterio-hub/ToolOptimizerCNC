@@ -19,7 +19,7 @@ Antes de comecar qualquer trabalho:
 1. **Ler contexto** — `docs/PROXIMA_SESSAO.md` (obrigatorio, mandatado por CLAUDE.md)
 2. **Verificar estado** — executar quality gates e comparar com estado reportado
 3. **Identificar divergencias** — se testes falhando ou build quebrado, tratar antes de avancar
-4. **Propor plano** — baseado no pedido do usuario + backlog de `docs/MELHORIAS_CONTINUAS.md`
+4. **Propor plano** — baseado no pedido do usuario + backlog de `docs/plans/BACKLOG_IMPLEMENTACAO.md`
 5. **Alinhar com usuario** — confirmar scope antes de implementar
 
 ---
@@ -54,8 +54,8 @@ Antes de comecar qualquer trabalho:
 
 ## Referencia
 
-- Checklist fim de sessao: `docs/PROXIMA_SESSAO.md` linhas 756-788
-- Regras obrigatorias: `docs/REGRAS_TRABALHO_OBRIGATORIAS.md`
+- Checklist fim de sessao: `docs/ROADMAP_SESSAO_ATUAL.md` secao "PROTOCOLO FIM DE SESSAO"
+- Regras obrigatorias: `CLAUDE.md`
 - Convencoes de codigo: `CLAUDE.md`
 
 ---

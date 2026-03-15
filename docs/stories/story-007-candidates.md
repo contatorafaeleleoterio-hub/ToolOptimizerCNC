@@ -175,7 +175,7 @@ CNC — não complexidade técnica.
 ### Login Google
 - **Motivo:** Sem demanda validada, LGPD complexa, perfil conservador dos operadores CNC
 - **Pré-req:** Firebase Console setup + `.env.local`
-- **Planos:** `docs/PLANO_LOGIN_GOOGLE.md` + `docs/IMPLEMENTACAO_LOGIN.md`
+- **Planos:** `docs/_archive/superseded/PLANO_LOGIN_GOOGLE.md` + `docs/_archive/superseded/IMPLEMENTACAO_LOGIN.md`
 - **Retomar quando:** Usuários pedirem sync entre dispositivos explicitamente
 
 ### Export PDF
@@ -186,7 +186,7 @@ CNC — não complexidade técnica.
 - **Motivo:** Pré-requisitos manuais pendentes no Cloudflare Pages
 - **Pré-req A:** Criar projeto `tooloptimizer-landing` no Cloudflare Pages
 - **Pré-req B:** Atualizar token `CF_API_TOKEN` com permissão `Cloudflare Pages: Edit`
-- **Plano:** `docs/ESTRATEGIA_DUAL_DOMAIN_SEO_TOOLOPTIMIZER.md`
+- **Plano:** `docs/_archive/superseded/ESTRATEGIA_DUAL_DOMAIN_SEO_TOOLOPTIMIZER.md`
 
 ---
 

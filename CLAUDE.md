@@ -61,6 +61,9 @@ docs/specs/       # PRDs e especificações
 docs/technical/   # Dados técnicos (Kienzle, Vc, test cases)
 docs/design/      # UI specs, branding, dashboard prototype
 docs/architecture/# ADRs e visão arquitetural
+docs/plans/       # Backlog e planos de implementação
+docs/ai/          # Protocolos, comandos e memória de engenharia
+docs/_archive/    # Sessões, stories e planos concluídos/arquivados
 scripts/          # Scripts auxiliares
 .claude/          # Context Engineering
 ```
@@ -94,7 +97,7 @@ scripts/          # Scripts auxiliares
 9. **Ao criar plano de implementação:** SEMPRE atualizar (1) `docs/plans/BACKLOG_IMPLEMENTACAO.md` (adicionar entrada na tabela + detalhe), (2) tabela PRIORIDADE 1 em `docs/ROADMAP_SESSAO_ATUAL.md`. Incrementar contagem total de planos. NÃO adicionar em `docs/PROXIMA_SESSAO.md` — esse arquivo é só histórico.
 10. **Protocolo "fim de sessão":** Quando Rafael disser "fim de sessão", executar o checklist completo descrito na seção "PROTOCOLO FIM DE SESSÃO" de `docs/ROADMAP_SESSAO_ATUAL.md`.
 
-## Estado Atual do Código (atualizado 17/02/2026)
+## Estado Atual do Código (atualizado 15/03/2026)
 
 ### Componentes Implementados
 - `bidirectional-slider.tsx` — Slider -150% a +150%, botões +/-, tick marks, RGB glow

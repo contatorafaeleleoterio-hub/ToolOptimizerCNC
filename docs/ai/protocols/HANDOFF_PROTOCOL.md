@@ -67,7 +67,7 @@ Sugerir (nao executar) atualizacoes em:
 - Proximos passos recomendados
 - Roadmap visual atualizado
 
-### 2. `docs/MELHORIAS_CONTINUAS.md`
+### 2. `docs/plans/BACKLOG_IMPLEMENTACAO.md`
 - Remover itens concluidos
 - Adicionar novos itens descobertos
 - Reordenar prioridades se necessario
@@ -128,7 +128,7 @@ Sugerir (nao executar) atualizacoes em:
 
 ## Referencia
 
-- Checklist existente: `docs/PROXIMA_SESSAO.md` linhas 756-788
+- Checklist existente: `docs/ROADMAP_SESSAO_ATUAL.md` secao "PROTOCOLO FIM DE SESSAO"
 - Exemplos de session notes: `docs/sessions/`
 
 ---

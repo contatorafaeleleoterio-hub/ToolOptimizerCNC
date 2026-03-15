@@ -80,7 +80,7 @@ Seguir template dos ADRs existentes (modelo: `ADR-004-adocao-synkra-aios.md`):
 | Electron para desktop | ADR | ADR-005 |
 | SemVer estrategia | ADR | ADR-006 |
 | Login Google pausado | Leve | story-006 notes |
-| Export PDF descartado | Leve | MELHORIAS_CONTINUAS.md |
+| Export PDF descartado | Leve | BACKLOG_IMPLEMENTACAO.md |
 | Indicadores unidirecionais | Leve | session 07/03 notes |
 
 ---

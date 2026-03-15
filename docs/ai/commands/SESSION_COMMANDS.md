@@ -36,7 +36,7 @@
 - `docs/PROXIMA_SESSAO.md`
 - `.claude/.../memory/MEMORY.md`
 - `docs/ai/memory/ENGINEERING_MEMORY.md`
-- `docs/MELHORIAS_CONTINUAS.md`
+- `docs/plans/BACKLOG_IMPLEMENTACAO.md`
 
 **Acoes do assistente:**
 1. Ler os 5 arquivos acima
@@ -55,7 +55,7 @@
 **Quando usar:** Apos `iniciar sessao`, antes de comecar a trabalhar.
 
 **Arquivos consultados:**
-- `docs/MELHORIAS_CONTINUAS.md` (backlog priorizado)
+- `docs/plans/BACKLOG_IMPLEMENTACAO.md` (backlog priorizado)
 - `docs/PROXIMA_SESSAO.md` (proximos passos)
 - Pedido do usuario (se houver)
 
@@ -182,7 +182,7 @@
 
 **Arquivos a atualizar (sugerir, nao auto-escrever):**
 - `docs/PROXIMA_SESSAO.md` — estado do projeto, sessao summary
-- `docs/MELHORIAS_CONTINUAS.md` — novas sugestoes ou remocao de itens feitos
+- `docs/plans/BACKLOG_IMPLEMENTACAO.md` — novas sugestoes ou remocao de itens feitos
 - `docs/sessions/` — criar nota de sessao
 - `docs/ai/memory/` — aprendizados da sessao
 
