@@ -21,7 +21,7 @@
 | Fase | Brief | Status | Objetivo |
 |------|-------|--------|----------|
 | 1 | `PHASE-1-archive-dead-weight.md` | ✅ Concluído | Archive sessions, stories S1-S6, planos concluidos |
-| 2 | `PHASE-2-eliminate-duplicates.md` | ⬜ Pendente | Eliminar duplicatas + superseded + update refs codigo |
+| 2 | `PHASE-2-eliminate-duplicates.md` | ✅ Concluído | Eliminar duplicatas + superseded + update refs codigo |
 | 3 | `PHASE-3-trim-consolidate.md` | ⬜ Pendente | Trim PROXIMA_SESSAO (1137→200 linhas) + clean workflows |
 | 4 | `PHASE-4-update-references.md` | ⬜ Pendente | Update CLAUDE.md + ROADMAP + sweep final + bump v0.6.0 |
 
