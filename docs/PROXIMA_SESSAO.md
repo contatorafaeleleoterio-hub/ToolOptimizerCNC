@@ -43,7 +43,10 @@ npx tsc --noEmit
   - package.json: 0.5.2 → 0.6.0
   - Phase briefs arquivados: docs/_archive/phases/
 
-**Estado:** REESTRUTURAÇÃO DOCUMENTAL COMPLETA ✅ | Próximo: Segurança Cibernética (v0.5.5)
+**Estado:** REESTRUTURAÇÃO DOCUMENTAL COMPLETA ✅ | Próximo: Refinamento de pendências
+
+> **IMPORTANTE — Próxima sessão:** Ler `docs/plans/TIMELINE_PENDENCIAS.md` para refinamento.
+> Contém 8 pendências priorizadas (Bug BugReportModal, Logo CNC, Segurança, timeline, etc.)
 
 ---
 

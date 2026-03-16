@@ -1,10 +1,11 @@
 import { useState } from 'react';
+import { createPortal } from 'react-dom';
 import { useMachiningStore } from '@/store';
 import { usePlausible } from '@/hooks/use-plausible';
 import { formatReport } from './export-buttons';
 
 const BUG_EMAIL = 'contatorafaeleleoterio@gmail.com';
-const APP_VERSION = '0.5.1';
+const APP_VERSION = '0.6.0';
 
 interface Props {
   variant?: 'desktop' | 'mobile';
@@ -83,7 +84,7 @@ function BugReportModal({ onClose }: { onClose: () => void }) {
     }, 50);
   };
 
-  return (
+  return createPortal(
     <div
       className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm"
       onClick={(e) => {
@@ -152,6 +153,7 @@ function BugReportModal({ onClose }: { onClose: () => void }) {
           </button>
         </div>
       </div>
-    </div>
+    </div>,
+    document.body
   );
 }
