@@ -16,6 +16,17 @@ describe('ToolSummaryViewer', () => {
     expect(screen.getByTestId('tool-summary')).toBeInTheDocument();
   });
 
+  // GROUP 1 — Identity
+  it('shows material name', () => {
+    renderViewer();
+    expect(screen.getByText('Aço 1045')).toBeInTheDocument();
+  });
+
+  it('shows operation type', () => {
+    renderViewer();
+    expect(screen.getByText('Desbaste')).toBeInTheDocument();
+  });
+
   it('shows diameter value', () => {
     renderViewer();
     expect(screen.getByText('Ø6mm')).toBeInTheDocument();
@@ -48,9 +59,32 @@ describe('ToolSummaryViewer', () => {
     expect(screen.getByText('25mm')).toBeInTheDocument();
   });
 
-  it('shows cutting parameters', () => {
+  // GROUP 2 — Parameters
+  it('shows Vc with full label and value', () => {
     renderViewer();
-    expect(screen.getByText('100.00')).toBeInTheDocument(); // Vc (toFixed(2))
-    expect(screen.getByText('0.10')).toBeInTheDocument(); // fz (toFixed(2))
+    expect(screen.getByText('Veloc. Corte')).toBeInTheDocument();
+    expect(screen.getByText('100.00')).toBeInTheDocument();
+    expect(screen.getByText('Vc')).toBeInTheDocument();
+  });
+
+  it('shows fz with full label and value (3 decimal places)', () => {
+    renderViewer();
+    expect(screen.getByText('Avanço/Dente')).toBeInTheDocument();
+    expect(screen.getByText('0.100')).toBeInTheDocument();
+    expect(screen.getByText('fz')).toBeInTheDocument();
+  });
+
+  it('shows ae with full label and value', () => {
+    renderViewer();
+    expect(screen.getByText('Eng. Radial')).toBeInTheDocument();
+    expect(screen.getByText('5.00')).toBeInTheDocument();
+    expect(screen.getByText('ae')).toBeInTheDocument();
+  });
+
+  it('shows ap with full label and value', () => {
+    renderViewer();
+    expect(screen.getByText('Prof. Axial')).toBeInTheDocument();
+    expect(screen.getByText('2.00')).toBeInTheDocument();
+    expect(screen.getByText('ap')).toBeInTheDocument();
   });
 });

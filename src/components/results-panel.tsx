@@ -25,7 +25,7 @@ const EMPTY_RESULTADO: ResultadoUsinagem = {
   fzEfetivo: 0,
   seguranca: { nivel: 'verde', avisos: [], razaoLD: 0, ctf: 1 },
   powerHeadroom: 100,
-  healthScore: 100,
+  healthScore: 0,
 };
 
 export function ResultsPanel() {
