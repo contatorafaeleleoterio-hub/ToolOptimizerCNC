@@ -55,11 +55,6 @@ describe('FineTunePanel', () => {
     expect(screen.getByLabelText('fz slider')).toBeInTheDocument();
   });
 
-  it('shows MRR section', () => {
-    render(<FineTunePanel />);
-    expect(screen.getByText('MRR')).toBeInTheDocument();
-  });
-
   it('renders info toggle button for each slider', () => {
     render(<FineTunePanel />);
     expect(screen.getByLabelText('Informações sobre VEL. DE CORTE')).toBeInTheDocument();

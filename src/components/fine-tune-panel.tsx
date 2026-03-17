@@ -38,7 +38,6 @@ export function FineTunePanel() {
   const parametros = useMachiningStore((s) => s.parametros);
   const ajustarParametros = useMachiningStore((s) => s.ajustarParametros);
   const materialId = useMachiningStore((s) => s.materialId);
-  const resultado = useMachiningStore((s) => s.resultado);
   const ferramenta = useMachiningStore((s) => s.ferramenta);
   const tipoOperacao = useMachiningStore((s) => s.tipoOperacao);
   const material = MATERIAIS.find((m) => m.id === materialId);
@@ -167,19 +166,6 @@ export function FineTunePanel() {
         })}
       </div>
 
-      {/* MRR summary */}
-      <div className="mt-4 pt-3 border-t border-white/5">
-        <div className="bg-black/30 p-3 rounded-xl flex items-center justify-between border border-white/5 shadow-inner-glow">
-          <div className="flex items-center gap-2">
-            <span className="material-symbols-outlined text-gray-600 text-sm">delete_sweep</span>
-            <span className="text-xs text-gray-400">MRR</span>
-          </div>
-          <span className="font-mono text-base font-bold text-white">
-            {resultado ? resultado.mrr.toFixed(1) : '—'} <span className="text-xs text-gray-600">cm³/min</span>
-          </span>
-        </div>
-        {material && <p className="text-fine text-gray-600 mt-1">{material.nome} — {material.dureza}</p>}
-      </div>
     </div>
   );
 }
