@@ -11,8 +11,8 @@
 |------|-------|
 | **Branch** | `main` |
 | **Versão** | `0.6.0` |
-| **Último commit** | `f058230` docs: update all references after restructuring — bump v0.6.0 (Phase 4/4) |
-| **Testes** | **637 passando** (40 arquivos) — 1 pré-existente (fz step mobile) |
+| **Último commit** | `a3635b0` fix(ui): zero Tool Health gauge + redesign ToolSummaryViewer |
+| **Testes** | **641 passando** (40 arquivos) — 0 falhas |
 | **TypeScript** | **zero erros** |
 | **Build** | **limpo** — JS 96.78KB gzip, CSS 13.66KB |
 | **Remote** | `origin/main` sincronizado ✅ |
@@ -31,6 +31,23 @@ npx tsc --noEmit
 ---
 
 ## Ultimas 3 Sessoes
+
+### Sessão 17/03 (3) — Fix gauge + Redesign ToolSummaryViewer
+
+**O que foi feito:**
+- ✅ Fix: `EMPTY_RESULTADO.healthScore` 100→0 — gauge "Saúde da Ferramenta" agora inicia zerado como os outros dois
+- ✅ Redesign `ToolSummaryViewer` em 2 grupos visuais:
+  - Grupo 1 (Identidade): Material + badge Operação | Tipo / Diâm. / Raio / Fix.
+  - Grupo 2 (Parâmetros): nome completo em destaque, valor em branco, sigla+unidade no rodapé com cor
+- ✅ Material e Operação adicionados ao visor (antes ausentes)
+- ✅ Menos cor: valores em `text-white`, neon apenas nas siglas (Vc/fz/ae/ap)
+- ✅ fz agora usa `toFixed(3)` para maior precisão
+- ✅ +5 testes novos — total: **641 passando** (40 arquivos)
+- ✅ Commit `a3635b0` + push para main
+
+**Próxima sessão:** Fase 1 Admin Dashboard (Fundação + Dashboard)
+
+---
 
 ### Sessão 17/03 (2) — Fix UI: remover seção MRR do FineTunePanel
 

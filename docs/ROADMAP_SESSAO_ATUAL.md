@@ -12,7 +12,7 @@
 |------|-------|
 | **Branch** | `main` |
 | **Versão** | `0.6.0` |
-| **Testes** | **637 passando** (40 arquivos) — 0 falhas |
+| **Testes** | **641 passando** (40 arquivos) — 0 falhas |
 | **TypeScript** | **zero erros** |
 | **Build** | **limpo** — JS 96.78KB gzip, CSS 13.66KB |
 | **Remote** | `origin/main` sincronizado ✅ |
@@ -190,4 +190,4 @@ Quando uma nova implementação for planejada durante a sessão:
 
 ---
 
-*Última atualização: 17/03/2026 — Sessão 17/03 — Fix UI: remover seção MRR do FineTunePanel (`fa57167`)*
+*Última atualização: 17/03/2026 — Sessão 17/03 (3) — Fix gauge healthScore + Redesign ToolSummaryViewer (`a3635b0`)*
