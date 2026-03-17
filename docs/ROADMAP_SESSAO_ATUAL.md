@@ -11,10 +11,10 @@
 | Item | Valor |
 |------|-------|
 | **Branch** | `main` |
-| **Versão** | `0.6.0` |
-| **Testes** | **641 passando** (40 arquivos) — 0 falhas |
+| **Versão** | `0.6.0` (admin: `v0.7.0-alpha.1`) |
+| **Testes** | **658 passando** (42 arquivos) — 0 falhas |
 | **TypeScript** | **zero erros** |
-| **Build** | **limpo** — JS 96.78KB gzip, CSS 13.66KB |
+| **Build** | **limpo** — JS 97.33KB gzip, CSS 14.35KB |
 | **Remote** | `origin/main` sincronizado ✅ |
 | **Worker** | ✅ LIVE — `https://tooloptimizercnc.contatorafaeleleoterio.workers.dev` |
 | **Custom Domains** | ✅ `tooloptimizercnc.com.br` + `app.tooloptimizercnc.com.br` |
@@ -43,7 +43,7 @@ npx tsc --noEmit
 | 4 | Favicon e Ícones | 💄 Polish | v0.5.4 | ✅ Concluído |
 | 5 | Segurança Cibernética | 🔒 Security | v0.5.5 | ⬜ Pendente |
 | 6 | Reestruturação Documental | 🏗️ Infra | v0.6.0 | ✅ Concluído |
-| 7 | Admin Dashboard (8 fases) | ✨ Feature | v0.7.0 | ⬜ Pendente |
+| 7 | Admin Dashboard (8 fases) | ✨ Feature | v0.7.0 | 🔄 Em Progresso (Fase 1 ✅) |
 
 ### ✅ Reestruturação Documental (v0.6.0) — CONCLUÍDA
 
@@ -64,7 +64,7 @@ npx tsc --noEmit
 
 | Fase | Titulo | Status |
 |------|--------|--------|
-| 1 | Fundação + Dashboard | ⬜ Pendente |
+| 1 | Fundação + Dashboard | ✅ Concluído (`bc4c98b`) |
 | 2 | Tarefas + Auto-Sync | ⬜ Pendente |
 | 3 | Inbox de Bugs | ⬜ Pendente |
 | 4 | Error Tracking | ⬜ Pendente |
@@ -73,7 +73,7 @@ npx tsc --noEmit
 | 7 | Flags + Changelog + Health | ⬜ Pendente |
 | 8 | Polish + Integração | ⬜ Pendente |
 
-**Próxima sessão:** Executar Fase 1 (Fundação + Dashboard)
+**Próxima sessão:** Executar Fase 2 (Tarefas + Auto-Sync)
 
 ---
 
@@ -190,4 +190,4 @@ Quando uma nova implementação for planejada durante a sessão:
 
 ---
 
-*Última atualização: 17/03/2026 — Sessão 17/03 (3) — Fix gauge healthScore + Redesign ToolSummaryViewer (`a3635b0`)*
+*Última atualização: 17/03/2026 — Sessão 17/03 (4) — Admin Dashboard Fase 1: Fundação + Dashboard (`bc4c98b`)*

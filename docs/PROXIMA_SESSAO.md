@@ -10,11 +10,11 @@
 | Item | Valor |
 |------|-------|
 | **Branch** | `main` |
-| **Versão** | `0.6.0` |
-| **Último commit** | `a3635b0` fix(ui): zero Tool Health gauge + redesign ToolSummaryViewer |
-| **Testes** | **641 passando** (40 arquivos) — 0 falhas |
+| **Versão** | `0.6.0` (admin: `v0.7.0-alpha.1`) |
+| **Último commit** | `bc4c98b` feat(admin): Admin Dashboard Fase 1 — fundação + dashboard |
+| **Testes** | **658 passando** (42 arquivos) — 0 falhas |
 | **TypeScript** | **zero erros** |
-| **Build** | **limpo** — JS 96.78KB gzip, CSS 13.66KB |
+| **Build** | **limpo** — JS 97.33KB gzip, CSS 14.35KB |
 | **Remote** | `origin/main` sincronizado ✅ |
 | **Worker** | ✅ LIVE — `https://tooloptimizercnc.contatorafaeleleoterio.workers.dev` |
 | **Custom Domains** | ✅ `tooloptimizercnc.com.br` + `app.tooloptimizercnc.com.br` |
@@ -31,6 +31,24 @@ npx tsc --noEmit
 ---
 
 ## Ultimas 3 Sessoes
+
+### Sessão 17/03 (4) — Admin Dashboard Fase 1: Fundação + Dashboard
+
+**O que foi feito:**
+- ✅ `src/admin/types/admin-types.ts` — tipos: AdminTask, BugReport, ErrorEntry, FeatureFlag
+- ✅ `src/admin/store/admin-store.ts` — Zustand + persist (`tooloptimizer-admin`) — CRUD tasks/bugs/errors/flags
+- ✅ `src/admin/layout/` — AdminLayout + AdminSidebar (9 rotas) + AdminHeader
+- ✅ `src/admin/components/` — KpiCard + StatusBadge
+- ✅ `src/admin/pages/admin-dashboard-page.tsx` — 4 KPI cards + 8 quick links
+- ✅ `src/admin/pages/admin-*-page.tsx` (×8) — placeholders para Fases 2-7
+- ✅ `src/main.tsx` — rotas `/admin/*` lazy-loaded (zero impacto no bundle principal)
+- ✅ 17 testes novos — store CRUD + layout render — **658 total, 0 falhas**
+- ✅ TypeScript: zero erros | Build: 97.33KB gzip (inalterado)
+- ✅ Commit `bc4c98b` + push para main → auto-deploy CF
+
+**Próxima sessão:** Fase 2 — Tarefas + Auto-Sync (CRUD completo + Vite plugin JSON sync para Claude)
+
+---
 
 ### Sessão 17/03 (3) — Fix gauge + Redesign ToolSummaryViewer
 
