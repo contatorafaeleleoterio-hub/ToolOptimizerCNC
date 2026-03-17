@@ -3,6 +3,7 @@ import { createPortal } from 'react-dom';
 import { useMachiningStore } from '@/store';
 import { usePlausible } from '@/hooks/use-plausible';
 import { formatReport } from './export-buttons';
+import { useAdminStore } from '@/admin/store/admin-store';
 
 const BUG_EMAIL = 'contatorafaeleleoterio@gmail.com';
 const APP_VERSION = '0.6.0';
@@ -42,6 +43,7 @@ function BugReportModal({ onClose }: { onClose: () => void }) {
   const [description, setDescription] = useState('');
   const [includeState, setIncludeState] = useState(true);
   const { track } = usePlausible();
+  const addBugReport = useAdminStore((s) => s.addBugReport);
 
   const resultado = useMachiningStore((s) => s.resultado);
   const materialId = useMachiningStore((s) => s.materialId);
@@ -77,6 +79,15 @@ function BugReportModal({ onClose }: { onClose: () => void }) {
     const subject = encodeURIComponent(`[Bug Report] ToolOptimizer CNC v${APP_VERSION}`);
     const body = encodeURIComponent(bodyLines.join('\n'));
     const mailtoUrl = `mailto:${BUG_EMAIL}?subject=${subject}&body=${body}`;
+
+    // Save to admin store (persisted locally — visible in /admin/inbox)
+    addBugReport({
+      description: description || '(sem descrição)',
+      severity: 'media',
+      appState: includeState && stateReport ? stateReport : undefined,
+      version: APP_VERSION,
+    });
+
     track('Bug_Reportado');
     onClose();
     setTimeout(() => {
