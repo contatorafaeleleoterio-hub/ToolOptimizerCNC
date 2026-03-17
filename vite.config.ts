@@ -4,10 +4,11 @@ import tailwindcss from '@tailwindcss/vite';
 import path from 'path';
 
 import { cloudflare } from "@cloudflare/vite-plugin";
+import { adminSyncPlugin } from './src/admin/vite-plugin-admin-sync';
 
 export default defineConfig({
   base: process.env.VITE_BASE_URL || '/',
-  plugins: [tailwindcss(), react(), cloudflare()],
+  plugins: [tailwindcss(), react(), cloudflare(), adminSyncPlugin()],
   build: {
     cssMinify: false,
   },

@@ -11,7 +11,14 @@ C:\Users\USUARIO\Desktop\INICIO_TOOLOPTIMIZERCNC\docs\ROADMAP_SESSAO_ATUAL.md
 - **Se PRIORIDADE 1 tiver itens `⬜ Pendente` → executar antes de qualquer outra coisa.**
 - Se PRIORIDADE 1 estiver toda `✅ Concluído` → oferecer opções da PRIORIDADE 2.
 
-**2. Histórico de sessões (apenas se precisar de contexto detalhado):**
+**2. Requisições do admin (ler SEMPRE — contém tarefas criadas pelo Rafael):**
+```
+C:\Users\USUARIO\Desktop\INICIO_TOOLOPTIMIZERCNC\docs\admin-requests.json
+```
+- Contém: tarefas/requisições criadas em `/admin/tasks` — gravadas automaticamente via Vite plugin.
+- **Se houver tarefas com `status: "aberta"` ou `"em_progresso"` → considerar como contexto adicional.**
+
+**3. Histórico de sessões (apenas se precisar de contexto detalhado):**
 ```
 C:\Users\USUARIO\Desktop\INICIO_TOOLOPTIMIZERCNC\docs\PROXIMA_SESSAO.md
 ```
