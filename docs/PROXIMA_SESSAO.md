@@ -10,11 +10,11 @@
 | Item | Valor |
 |------|-------|
 | **Branch** | `main` |
-| **Versão** | `0.6.0` (admin: `v0.7.0-alpha.2`) |
-| **Último commit** | `99c188a` fix(admin): corrigir loop infinito de reload no auto-sync |
-| **Testes** | **680 passando** (43 arquivos) — 0 falhas |
+| **Versão** | `0.6.0` (admin: `v0.7.0-alpha.3`) |
+| **Último commit** | `4f5cf19` feat(admin): Admin Dashboard Fase 3 — Inbox de Bugs |
+| **Testes** | **698 passando** (44 arquivos) — 0 falhas |
 | **TypeScript** | **zero erros** |
-| **Build** | **limpo** — JS 97.47KB gzip, CSS 14.35KB |
+| **Build** | **limpo** — JS 98.17KB gzip, CSS 14.35KB |
 | **Remote** | `origin/main` sincronizado ✅ |
 | **Worker** | ✅ LIVE — `https://tooloptimizercnc.contatorafaeleleoterio.workers.dev` |
 | **Custom Domains** | ✅ `tooloptimizercnc.com.br` + `app.tooloptimizercnc.com.br` |
@@ -31,6 +31,21 @@ npx tsc --noEmit
 ---
 
 ## Ultimas 3 Sessoes
+
+### Sessão 17/03 (6) — Admin Dashboard Fase 3: Inbox de Bugs
+
+**O que foi feito:**
+- ✅ `src/admin/components/bug-report-card.tsx` — card com cycle novo→lido→resolvido, botão ignorar, app state colapsável, version + data relativa
+- ✅ `src/admin/pages/admin-inbox-page.tsx` — implementação completa (era placeholder): filtros por status/severidade, badge contador "Novos" no título, empty state
+- ✅ `src/components/bug-report-button.tsx` — `handleSend()` conectado ao admin-store via `addBugReport()` (além do mailto)
+- ✅ 18 testes novos — `BugReportCard` (8) + `AdminInboxPage` (7) + integração BugReportButton→store (3) — **698 total, 0 falhas**
+- ✅ KPI "Bugs novos" no Dashboard mostra dados reais (`getNewBugCount()`)
+- ✅ TypeScript: zero erros | Build: 98.17KB gzip | `admin-inbox-page` lazy-loaded 1.83KB gzip
+- ✅ Commit `4f5cf19` + push → auto-deploy CF
+
+**Próxima sessão:** Fase 4 — Error Tracking (`window.onerror` + `unhandledrejection` → `/admin/errors` com deduplicação)
+
+---
 
 ### Sessão 17/03 (5) — Admin Dashboard Fase 2: Tarefas + Auto-Sync
 
