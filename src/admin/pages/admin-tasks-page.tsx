@@ -18,7 +18,9 @@ async function syncTasksToFile(tasks: AdminTask[]): Promise<void> {
     await fetch('/api/admin-sync', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ tasks, updatedAt: new Date().toISOString() }),
+      // No volatile timestamp — the plugin compares content before writing,
+      // so omitting updatedAt here avoids unnecessary file changes.
+      body: JSON.stringify({ tasks }),
     });
   } catch {
     // Silently ignore — sync is dev-only, failures must not break the UI

@@ -18,6 +18,13 @@ export function adminSyncPlugin(): Plugin {
     apply: 'serve',
 
     configureServer(server) {
+      const outPath = path.resolve(process.cwd(), 'docs/admin-requests.json');
+
+      // Exclude the output file from Vite's HMR watcher to prevent reload loops.
+      // Without this, every write to admin-requests.json would trigger a full page
+      // reload, which would re-run the sync effect, causing an infinite loop.
+      server.watcher.unwatch(outPath);
+
       server.middlewares.use('/api/admin-sync', (req, res, next) => {
         if (req.method !== 'POST') {
           next();
@@ -32,8 +39,14 @@ export function adminSyncPlugin(): Plugin {
         req.on('end', () => {
           try {
             const data: unknown = JSON.parse(body);
-            const outPath = path.resolve(process.cwd(), 'docs/admin-requests.json');
-            fs.writeFileSync(outPath, JSON.stringify(data, null, 2), 'utf-8');
+            const newContent = JSON.stringify(data, null, 2);
+
+            // Skip write if content is identical (extra guard against spurious reloads)
+            let existingContent = '';
+            try { existingContent = fs.readFileSync(outPath, 'utf-8'); } catch { /* first write */ }
+            if (existingContent !== newContent) {
+              fs.writeFileSync(outPath, newContent, 'utf-8');
+            }
 
             res.statusCode = 200;
             res.setHeader('Content-Type', 'application/json');

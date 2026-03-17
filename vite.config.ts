@@ -17,4 +17,12 @@ export default defineConfig({
       '@': path.resolve(__dirname, './src'),
     },
   },
+  server: {
+    watch: {
+      // Prevent admin-requests.json writes from triggering HMR reloads.
+      // Without this, the sync effect in AdminTasksPage would create an
+      // infinite loop: write → Vite reloads → effect runs → write → ...
+      ignored: ['**/docs/admin-requests.json'],
+    },
+  },
 });
