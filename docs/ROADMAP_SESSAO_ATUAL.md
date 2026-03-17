@@ -190,4 +190,4 @@ Quando uma nova implementação for planejada durante a sessão:
 
 ---
 
-*Última atualização: 15/03/2026 — Sessão 15/03 — Phase 4 Reestruturação Documental (v0.6.0)*
+*Última atualização: 17/03/2026 — Sessão 17/03 — Fix UI: remover seção MRR do FineTunePanel (`fa57167`)*

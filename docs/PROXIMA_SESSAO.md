@@ -32,6 +32,19 @@ npx tsc --noEmit
 
 ## Ultimas 3 Sessoes
 
+### Sessão 17/03 (2) — Fix UI: remover seção MRR do FineTunePanel
+
+**O que foi feito:**
+- ✅ Removida seção "MRR summary" (MRR + material info) do rodapé do `FineTunePanel`
+- ✅ Removida declaração `resultado` não utilizada após a remoção
+- ✅ Removido teste `shows MRR section` do `fine-tune-panel.test.tsx`
+- ✅ Build limpo, TypeScript zero erros, 636 testes passando
+- ✅ Commit `fa57167` + push para main
+
+**Próxima sessão:** Fase 1 Admin Dashboard (Fundação + Dashboard)
+
+---
+
 ### Sessão 17/03 — Planejamento Admin Dashboard (v0.7.0)
 
 **O que foi feito:**
