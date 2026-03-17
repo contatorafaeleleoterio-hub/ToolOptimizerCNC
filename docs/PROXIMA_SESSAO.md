@@ -32,6 +32,25 @@ npx tsc --noEmit
 
 ## Ultimas 3 Sessoes
 
+### Sessão 17/03 — Planejamento Admin Dashboard (v0.7.0)
+
+**O que foi feito:**
+- ✅ **Planejamento completo** do Admin Dashboard — 9 páginas, 3 stores, ~30 arquivos
+- ✅ Plano criado: `docs/plans/PLAN_Admin_Dashboard.md` (8 fases, 1 por sessão)
+- ✅ Backlog atualizado: item #7 adicionado em `BACKLOG_IMPLEMENTACAO.md`
+- ✅ Roadmap atualizado: Admin Dashboard na PRIORIDADE 1
+
+**Decisões:**
+- Analytics: Cloudflare GraphQL API grátis (token no browser, sem custos)
+- Requisições: Auto-sync via Vite plugin dev-only → `docs/admin-requests.json` (Claude lê automaticamente)
+- Sem lib de gráficos: SVG custom
+- Sem backend: localStorage + CF API
+- Lazy loading: admin não impacta bundle principal
+
+**Próxima sessão:** Fase 1 — Fundação + Dashboard (layout, store, rotas, KPI cards)
+
+---
+
 ### Sessão 15/03 — Reestruturação Documental Phase 4 (v0.6.0 COMPLETO)
 
 **O que foi feito:**
@@ -78,16 +97,6 @@ npx tsc --noEmit
 
 ---
 
-### Sessão 13/03 (manhã) — Deploy v0.5.1 Ready + Fixes
-
-**O que foi feito:**
-- ✅ **Commit `4c79541`** — Plausible script removido (CF Web Analytics cobre tracking)
-- ✅ **Commit `9fbb34b`** — TouchSlider Mobile Fix: thumb hit zone 60×60px, handlers removidos do track
-- ✅ **Commit `53bcb51`** — Fix BugReportModal: card opaco + maxLength 500 + ordem onClose/mailto
-- ✅ Deploy automático via GitHub Actions ao push para main
-
----
-
 ## Historico de Versoes
 
 | Versão | Commit | Descrição |
@@ -112,8 +121,8 @@ npx tsc --noEmit
 ✅ v0.4.x — Story-006/007/Unificação + Gauges
 ✅ v0.5.x — Deploy CF + Favicon + Settings + BugReport
 ✅ v0.6.0 — Reestruturação Documental (4 fases completas)
+⬜ v0.7.0 — Admin Dashboard (8 fases — planejamento concluído 17/03)
 ⬜ v0.5.5 — Segurança Cibernética (7 fases — parcialmente manual)
-⬜ Story-008 — A definir com Rafael
 ```
 
-**Próxima sessão:** Segurança Cibernética (v0.5.5) ou Story-008 → ver `docs/ROADMAP_SESSAO_ATUAL.md`
+**Próxima sessão:** Admin Dashboard Fase 1 (Fundação + Dashboard) → ver `docs/ROADMAP_SESSAO_ATUAL.md`

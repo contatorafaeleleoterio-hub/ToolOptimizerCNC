@@ -43,6 +43,7 @@ npx tsc --noEmit
 | 4 | Favicon e Ícones | 💄 Polish | v0.5.4 | ✅ Concluído |
 | 5 | Segurança Cibernética | 🔒 Security | v0.5.5 | ⬜ Pendente |
 | 6 | Reestruturação Documental | 🏗️ Infra | v0.6.0 | ✅ Concluído |
+| 7 | Admin Dashboard (8 fases) | ✨ Feature | v0.7.0 | ⬜ Pendente |
 
 ### ✅ Reestruturação Documental (v0.6.0) — CONCLUÍDA
 
@@ -52,6 +53,27 @@ npx tsc --noEmit
 | 2 | `PHASE-2-eliminate-duplicates.md` | ✅ Concluído (`d2faf15`) | Eliminar duplicatas + update refs codigo |
 | 3 | `PHASE-3-trim-consolidate.md` | ✅ Concluído (`9770648`) | Trim PROXIMA_SESSAO + clean workflows |
 | 4 | `PHASE-4-update-references.md` | ✅ Concluído (sessão 15/03) | Update refs + bump v0.6.0 |
+
+---
+
+### ⬜ Admin Dashboard (v0.7.0)
+
+**Plano completo:** `docs/plans/PLAN_Admin_Dashboard.md`
+
+**8 fases — 1 fase por sessão:**
+
+| Fase | Titulo | Status |
+|------|--------|--------|
+| 1 | Fundação + Dashboard | ⬜ Pendente |
+| 2 | Tarefas + Auto-Sync | ⬜ Pendente |
+| 3 | Inbox de Bugs | ⬜ Pendente |
+| 4 | Error Tracking | ⬜ Pendente |
+| 5 | Usage Stats | ⬜ Pendente |
+| 6 | Analytics Cloudflare | ⬜ Pendente |
+| 7 | Flags + Changelog + Health | ⬜ Pendente |
+| 8 | Polish + Integração | ⬜ Pendente |
+
+**Próxima sessão:** Executar Fase 1 (Fundação + Dashboard)
 
 ---
 
