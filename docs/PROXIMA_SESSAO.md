@@ -10,11 +10,11 @@
 | Item | Valor |
 |------|-------|
 | **Branch** | `main` |
-| **Versão** | `0.6.0` (admin: `v0.7.0-alpha.1`) |
-| **Último commit** | `bc4c98b` feat(admin): Admin Dashboard Fase 1 — fundação + dashboard |
-| **Testes** | **658 passando** (42 arquivos) — 0 falhas |
+| **Versão** | `0.6.0` (admin: `v0.7.0-alpha.2`) |
+| **Último commit** | `99c188a` fix(admin): corrigir loop infinito de reload no auto-sync |
+| **Testes** | **680 passando** (43 arquivos) — 0 falhas |
 | **TypeScript** | **zero erros** |
-| **Build** | **limpo** — JS 97.33KB gzip, CSS 14.35KB |
+| **Build** | **limpo** — JS 97.47KB gzip, CSS 14.35KB |
 | **Remote** | `origin/main` sincronizado ✅ |
 | **Worker** | ✅ LIVE — `https://tooloptimizercnc.contatorafaeleleoterio.workers.dev` |
 | **Custom Domains** | ✅ `tooloptimizercnc.com.br` + `app.tooloptimizercnc.com.br` |
@@ -31,6 +31,26 @@ npx tsc --noEmit
 ---
 
 ## Ultimas 3 Sessoes
+
+### Sessão 17/03 (5) — Admin Dashboard Fase 2: Tarefas + Auto-Sync
+
+**O que foi feito:**
+- ✅ `src/admin/utils/format-admin.ts` — `formatRelativeDate`, `formatDate`, `parseTags`, `formatTagsInput`
+- ✅ `src/admin/components/admin-modal.tsx` — modal via `createPortal` + Escape key + overlay click
+- ✅ `src/admin/components/task-card.tsx` — card com StatusBadge, quick-status (Iniciar/Concluir), edit/delete
+- ✅ `src/admin/pages/admin-tasks-page.tsx` — CRUD completo + filtros status/prioridade/busca + auto-sync
+- ✅ `src/admin/vite-plugin-admin-sync.ts` — `POST /api/admin-sync` → `docs/admin-requests.json` (dev-only)
+- ✅ `docs/admin-requests.json` — arquivo criado, auto-atualizado ao salvar tarefa
+- ✅ `CLAUDE.md` — instrução para ler `admin-requests.json` no início de sessão
+- ✅ `vite.config.ts` — `server.watch.ignored` para `admin-requests.json` (fix loop reload)
+- ✅ 22 testes novos — `format-admin`, `admin-modal`, `task-card`, `admin-tasks-page` — **680 total, 0 falhas**
+- ✅ TypeScript: zero erros | Build: 97.47KB gzip
+- ✅ Commits `df7cc38` + `99c188a` + push → auto-deploy CF
+- 🐛 **Bug encontrado e corrigido:** `docs/admin-requests.json` no watch do Vite → loop de reload infinito (fix: `server.watch.ignored` + `watcher.unwatch()` + remoção do `updatedAt` volátil)
+
+**Próxima sessão:** Fase 3 — Inbox de Bugs (`BugReportButton` → admin store → `/admin/inbox` com listagem, filtros e atualização de status)
+
+---
 
 ### Sessão 17/03 (4) — Admin Dashboard Fase 1: Fundação + Dashboard
 

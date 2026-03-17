@@ -11,10 +11,10 @@
 | Item | Valor |
 |------|-------|
 | **Branch** | `main` |
-| **Versão** | `0.6.0` (admin: `v0.7.0-alpha.1`) |
-| **Testes** | **658 passando** (42 arquivos) — 0 falhas |
+| **Versão** | `0.6.0` (admin: `v0.7.0-alpha.2`) |
+| **Testes** | **680 passando** (43 arquivos) — 0 falhas |
 | **TypeScript** | **zero erros** |
-| **Build** | **limpo** — JS 97.33KB gzip, CSS 14.35KB |
+| **Build** | **limpo** — JS 97.47KB gzip, CSS 14.35KB |
 | **Remote** | `origin/main` sincronizado ✅ |
 | **Worker** | ✅ LIVE — `https://tooloptimizercnc.contatorafaeleleoterio.workers.dev` |
 | **Custom Domains** | ✅ `tooloptimizercnc.com.br` + `app.tooloptimizercnc.com.br` |
@@ -65,7 +65,7 @@ npx tsc --noEmit
 | Fase | Titulo | Status |
 |------|--------|--------|
 | 1 | Fundação + Dashboard | ✅ Concluído (`bc4c98b`) |
-| 2 | Tarefas + Auto-Sync | ⬜ Pendente |
+| 2 | Tarefas + Auto-Sync | ✅ Concluído (`df7cc38` + `99c188a`) |
 | 3 | Inbox de Bugs | ⬜ Pendente |
 | 4 | Error Tracking | ⬜ Pendente |
 | 5 | Usage Stats | ⬜ Pendente |
@@ -73,7 +73,7 @@ npx tsc --noEmit
 | 7 | Flags + Changelog + Health | ⬜ Pendente |
 | 8 | Polish + Integração | ⬜ Pendente |
 
-**Próxima sessão:** Executar Fase 2 (Tarefas + Auto-Sync)
+**Próxima sessão:** Executar Fase 3 (Inbox de Bugs)
 
 ---
 
@@ -190,4 +190,4 @@ Quando uma nova implementação for planejada durante a sessão:
 
 ---
 
-*Última atualização: 17/03/2026 — Sessão 17/03 (4) — Admin Dashboard Fase 1: Fundação + Dashboard (`bc4c98b`)*
+*Última atualização: 17/03/2026 — Sessão 17/03 (5) — Admin Dashboard Fase 2: Tarefas + Auto-Sync (`df7cc38` + fix `99c188a`)*

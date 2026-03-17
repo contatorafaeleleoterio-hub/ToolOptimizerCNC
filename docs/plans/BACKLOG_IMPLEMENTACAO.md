@@ -21,7 +21,7 @@ A ordem garante estabilidade progressiva: bugs corrigidos antes de features, fea
 | 4 | Favicon e Ícones | 💄 Polish | v0.5.4 | 4+ arquivos | ✅ Concluído (`51b272a`) |
 | 5 | [Segurança Cibernética](#5-segurança-cibernética) | 🔒 Security | v0.5.5 | 6 arquivos + config manual | ⬜ Pendente |
 | 6 | [Reestruturação Documental](#6-reestruturação-documental) | 🏗️ Infra | v0.6.0 | ~150 arquivos docs | ✅ Concluído (4 fases) |
-| 7 | [Admin Dashboard](#7-admin-dashboard) | ✨ Feature | v0.7.0 | 9 páginas, 3 stores, ~30 arquivos | 🔄 Em Progresso — Fase 1 ✅ (`bc4c98b`) |
+| 7 | [Admin Dashboard](#7-admin-dashboard) | ✨ Feature | v0.7.0 | 9 páginas, 3 stores, ~30 arquivos | 🔄 Em Progresso — Fases 1+2 ✅ (`99c188a`) |
 
 ---
 
@@ -122,8 +122,8 @@ v0.5.5 — Segurança Cibernética ⬜
 
 | Fase | Ação | Versão | Escopo |
 |------|------|--------|--------|
-| 1 | Fundação + Dashboard | v0.7.0-alpha.1 | Layout, store, rotas, KPI cards |
-| 2 | Tarefas + Auto-Sync | v0.7.0-alpha.2 | CRUD tarefas, Vite plugin, JSON sync |
+| 1 | Fundação + Dashboard | v0.7.0-alpha.1 | Layout, store, rotas, KPI cards | ✅ |
+| 2 | Tarefas + Auto-Sync | v0.7.0-alpha.2 | CRUD tarefas, Vite plugin, JSON sync | ✅ |
 | 3 | Inbox de Bugs | v0.7.0-alpha.3 | BugReportButton → admin store, inbox page |
 | 4 | Error Tracking | v0.7.0-alpha.4 | Global handler, Error Boundary, errors page |
 | 5 | Usage Stats | v0.7.0-alpha.5 | Hook calcular(), bar charts SVG, usage page |
