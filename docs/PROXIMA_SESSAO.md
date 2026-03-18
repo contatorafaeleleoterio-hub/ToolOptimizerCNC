@@ -10,9 +10,9 @@
 | Item | Valor |
 |------|-------|
 | **Branch** | `main` |
-| **Versão** | `0.6.0` (admin: `v0.7.0-alpha.5`) |
-| **Último commit** | `14a8491` feat(admin): Admin Dashboard Fase 5 — Usage Stats |
-| **Testes** | **734 passando** (46 arquivos) — 0 falhas |
+| **Versão** | `0.6.0` (admin: `v0.7.0-alpha.6`) |
+| **Último commit** | `9afc325` feat(admin): Admin Dashboard Fase 6 — Analytics Cloudflare |
+| **Testes** | **762 passando** (47 arquivos) — 0 falhas |
 | **TypeScript** | **zero erros** |
 | **Build** | **limpo** — JS 98.78KB gzip, CSS 14.35KB |
 | **Remote** | `origin/main` sincronizado ✅ |
@@ -31,6 +31,23 @@ npx tsc --noEmit
 ---
 
 ## Ultimas 3 Sessoes
+
+### Sessão 18/03 (2) — Admin Dashboard Fase 6: Analytics Cloudflare
+
+**O que foi feito:**
+- ✅ `src/admin/types/admin-types.ts` — adicionado `DailyTraffic`, `WebVitalsResult`, `VitalRating`, `AnalyticsStatus`, `AnalyticsState`
+- ✅ `src/admin/utils/cf-analytics-client.ts` — GraphQL client para Cloudflare Analytics API: `fetchDailyTraffic` (httpRequests1dGroups, últimos 7 dias) + `fetchWebVitals` (rumPerformanceEventsAdaptiveGroups, best-effort com fallback null)
+- ✅ `src/admin/store/analytics-store.ts` — Zustand + persist parcial (só credenciais): `setCredentials`, `clearCredentials`, `fetchData`, `clearData`, `hasCredentials`
+- ✅ `src/admin/pages/admin-analytics-page.tsx` — Setup form com instruções CF; KPI cards pageviews+visitantes; 2 gráficos MiniChart (por dia); 3 cards Web Vitals (LCP/INP/CLS) com semáforo; estados loading/error/empty/vitals-unavailable
+- ✅ Fix: hooks de `useMemo` movidos para antes do early return (evitar "rendered fewer hooks" error)
+- ✅ `tests/admin/admin-analytics.test.tsx` — 28 testes (store CRUD + fetchData mocking + page renders + ratings)
+- ✅ 47 arquivos, 762 testes passando — 0 falhas
+- ✅ TypeScript zero erros | Build 98.84KB gzip (admin-analytics-page 4.19KB lazy)
+- ✅ Commit `9afc325` + push → deploy automático
+
+**Próxima sessão:** Admin Dashboard Fase 7 — Flags + Changelog + Health
+
+---
 
 ### Sessão 18/03 (1) — Admin Dashboard Fase 5: Usage Stats
 
