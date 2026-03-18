@@ -14,9 +14,43 @@ import type {
   ErrorEntry,
 } from '../types/admin-types';
 
-// Default feature flags — extended in Phase 7
+// Default feature flags — all system feature flags
 const DEFAULT_FLAGS = [
-  { id: 'admin_dashboard', name: 'Admin Dashboard', description: 'Ativa área administrativa', enabled: true, updatedAt: new Date().toISOString() },
+  {
+    id: 'admin_dashboard',
+    name: 'Admin Dashboard',
+    description: 'Ativa área administrativa em /admin',
+    enabled: true,
+    updatedAt: new Date().toISOString(),
+  },
+  {
+    id: 'bug_report_button',
+    name: 'Botão de Bug Report',
+    description: 'Exibe o botão flutuante de reporte de bugs no app',
+    enabled: true,
+    updatedAt: new Date().toISOString(),
+  },
+  {
+    id: 'usage_tracking',
+    name: 'Rastreamento de Uso',
+    description: 'Registra simulações no painel de estatísticas de uso',
+    enabled: true,
+    updatedAt: new Date().toISOString(),
+  },
+  {
+    id: 'error_tracking',
+    name: 'Error Tracking',
+    description: 'Captura automaticamente erros JS e promessas rejeitadas',
+    enabled: true,
+    updatedAt: new Date().toISOString(),
+  },
+  {
+    id: 'fine_tune_panel',
+    name: 'Painel de Ajuste Fino',
+    description: 'Exibe o painel de ajuste fino de parâmetros após simulação',
+    enabled: true,
+    updatedAt: new Date().toISOString(),
+  },
 ];
 
 function generateId(): string {
@@ -147,7 +181,17 @@ export const useAdminStore = create<AdminState & AdminActions>()(
     }),
     {
       name: 'tooloptimizer-admin',
-      version: 1,
+      version: 2,
+      migrate: (persistedState, version) => {
+        // v1 → v2: merge in any new default flags not present in stored state
+        if (version < 2) {
+          const state = persistedState as AdminState & AdminActions;
+          const existingIds = new Set(state.flags.map((f) => f.id));
+          const newFlags = DEFAULT_FLAGS.filter((df) => !existingIds.has(df.id));
+          return { ...state, flags: [...state.flags, ...newFlags] };
+        }
+        return persistedState as AdminState & AdminActions;
+      },
     }
   )
 );
