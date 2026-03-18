@@ -147,7 +147,7 @@ git commit -m "docs: update roadmap + timeline vX.Y.Z"
 git push origin main
 ```
 
-> ⚠️ **Lembrar Rafael:** rodar `npx wrangler deploy` para publicar timeline online (requer autenticação interativa).
+> ✅ **Deploy automático:** o `git push origin main` já publica tudo — o GitHub Actions (`deploy-cloudflare.yml`) executa `npm run build` + `wrangler deploy` com token de API. A `public/timeline.html` é copiada para `dist/` no build e servida automaticamente pelo Worker. **Não é necessária nenhuma ação manual.**
 
 ---
 
