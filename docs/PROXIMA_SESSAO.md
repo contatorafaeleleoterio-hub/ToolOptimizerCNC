@@ -32,6 +32,29 @@ npx tsc --noEmit
 
 ## Ultimas 3 Sessoes
 
+### Sessão 18/03 (6) — Plano de Reestruturação: Docs Marketing & Monetização
+
+**Commit:** nenhum (docs externos) | **Versão:** v0.7.0 (inalterada) | **Testes:** 824 (49 arquivos)
+
+**O que foi feito:**
+- ✅ Análise completa dos 8 documentos em `DOCUMENTACAO_MARKETING_MONETIZACAO/`
+- ✅ Diagnóstico: redundância massiva, conteúdo genérico, dados desatualizados, sem funil, mercado BR fraco
+- ✅ Plano de reestruturação criado: `DOCUMENTACAO_MARKETING_MONETIZACAO/PLANO_REESTRUTURACAO_DOCS.md`
+- ✅ Estrutura: 12 novos documentos em 4 fases, substituindo os 8 atuais
+- ✅ Mapeamento completo: doc atual → doc novo
+
+**Próxima sessão — Refinamento Doc 01 (VISÃO DO PRODUTO):**
+- 📋 **Atividade:** Refinar e criar o documento `01-VISAO-PRODUTO.md`
+- 📂 **Plano completo:** `DOCUMENTACAO_MARKETING_MONETIZACAO/PLANO_REESTRUTURACAO_DOCS.md`
+- 📂 **Docs originais de referência:** `DOCUMENTACAO_MARKETING_MONETIZACAO/` (8 arquivos existentes)
+- 🎯 **Escopo do doc 01:** Visão do produto, proposta de valor única, diferenciais competitivos reais (v0.7.0), personas resumidas
+- 🔄 **Fontes a consolidar:** "ToolOptimizer CNC - Informações do Projeto.md" + "Análise de Monetização e Aderência.md" + dados reais do sistema
+- ⚠️ **Estratégia:** 1 documento por sessão — foco total para evitar erros/equívocos e usar melhor a janela de contexto do Claude
+- ⚠️ **Ordem das sessões seguintes:** Doc 01 → Doc 02 (Análise Competitiva) → Doc 03 (Personas) → ... → Doc 12 (Índice Master)
+- ⚠️ **NÃO executar código** — sessões dedicadas exclusivamente a refinamento documental
+
+---
+
 ### Sessão 18/03 (5) — Fim de sessão sem implementação
 
 **Commit:** nenhum | **Versão:** v0.7.0 (inalterada) | **Testes:** 824 (49 arquivos)
@@ -323,4 +346,4 @@ npx tsc --noEmit
 ⬜ v0.5.5 — Segurança Cibernética (fases 2-5 automáticas; 1/6/7 manuais Rafael)
 ```
 
-**Próxima sessão:** Segurança Cibernética Fases 2-5 → ver `docs/ROADMAP_SESSAO_ATUAL.md`
+**Próxima sessão:** Refinamento Doc Marketing #01 (Visão do Produto) — ver `DOCUMENTACAO_MARKETING_MONETIZACAO/PLANO_REESTRUTURACAO_DOCS.md` | Alternativa: Segurança Cibernética Fases 2-5
