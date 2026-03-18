@@ -6,7 +6,11 @@ import { SettingsPage } from './pages/settings-page';
 import { HistoryPage } from './pages/history-page';
 import { MobilePage } from './pages/mobile-page';
 import { ViewportRedirect } from './components/viewport-redirect';
+import { installErrorTracker } from './admin/hooks/use-error-tracker';
 import './index.css';
+
+// Install global error tracker before first render
+installErrorTracker();
 
 const ArchitecturePage = lazy(() => import('./pages/architecture-page'));
 

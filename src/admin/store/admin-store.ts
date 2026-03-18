@@ -114,6 +114,10 @@ export const useAdminStore = create<AdminState & AdminActions>()(
         }
       },
 
+      removeError: (id) => {
+        set((s) => ({ errors: s.errors.filter((e) => e.id !== id) }));
+      },
+
       clearErrors: () => {
         set({ errors: [] });
       },

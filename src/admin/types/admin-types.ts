@@ -83,6 +83,7 @@ export interface AdminActions {
 
   // Errors
   addError: (error: Omit<ErrorEntry, 'id' | 'count' | 'firstSeenAt' | 'lastSeenAt'>) => void;
+  removeError: (id: string) => void;
   clearErrors: () => void;
 
   // Flags
