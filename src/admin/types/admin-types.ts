@@ -76,6 +76,36 @@ export interface UsageSummary {
   count: number;
 }
 
+// ── Analytics (Cloudflare) ────────────────────────────────────────────────────
+
+export interface DailyTraffic {
+  date: string; // YYYY-MM-DD
+  pageViews: number;
+  uniques: number;
+}
+
+export type VitalRating = 'good' | 'needs-improvement' | 'poor';
+
+export interface WebVitalsResult {
+  lcpMs: number | null;
+  inpMs: number | null;
+  cls: number | null;
+  count: number;
+}
+
+export type AnalyticsStatus = 'idle' | 'loading' | 'success' | 'error';
+
+export interface AnalyticsState {
+  token: string;
+  zoneId: string;
+  dailyTraffic: DailyTraffic[];
+  webVitals: WebVitalsResult | null;
+  vitalsUnavailable: boolean; // true when RUM dataset returned no data or errored
+  status: AnalyticsStatus;
+  error: string | null;
+  fetchedAt: string | null; // ISO date
+}
+
 // ── Admin Store State (aggregate) ────────────────────────────────────────────
 
 export interface AdminState {
