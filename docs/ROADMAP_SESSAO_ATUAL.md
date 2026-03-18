@@ -44,6 +44,7 @@ npx tsc --noEmit
 | 5 | Segurança Cibernética | 🔒 Security | v0.5.5 | ⬜ Pendente |
 | 6 | Reestruturação Documental | 🏗️ Infra | v0.6.0 | ✅ Concluído |
 | 7 | Admin Dashboard (8 fases) | ✨ Feature | v0.7.0 | ✅ Concluído (`ab5eb8f`) |
+| 8 | Reestruturação Docs Marketing & Monetização (12 docs) | 📄 Docs | — | ⬜ Pendente |
 
 ### ✅ Reestruturação Documental (v0.6.0) — CONCLUÍDA
 
@@ -93,6 +94,37 @@ npx tsc --noEmit
 
 **Testes necessários:** casos de importação com valores inválidos
 **Arquivos:** `public/_headers`, `.github/ci.yml`, `dependabot.yml`, stores, `index.html`, `use-plausible.ts`
+
+---
+
+### ⬜ Reestruturação Docs Marketing & Monetização (Item #8)
+
+**Plano completo:** `DOCUMENTACAO_MARKETING_MONETIZACAO/PLANO_REESTRUTURACAO_DOCS.md`
+
+**Contexto:** 8 documentos existentes em `DOCUMENTACAO_MARKETING_MONETIZACAO/` foram analisados e diagnosticados com problemas: redundância massiva, conteúdo genérico, dados desatualizados (referem ao GitHub em vez do estado real v0.7.0), sem funil de aquisição, mercado BR fraco.
+
+**Estratégia:** Criar 12 novos documentos substituindo os 8 atuais. **1 documento por sessão** para máxima qualidade e evitar erros/equívocos (melhor uso da janela de contexto).
+
+**4 fases — 12 sessões — 1 doc por sessão:**
+
+| Sessão | Documento | Fase | Status |
+|--------|-----------|------|--------|
+| 1 | `01-VISAO-PRODUTO.md` — Visão, proposta de valor, diferenciais v0.7.0 | Fase 1: Fundação | ⬜ Pendente |
+| 2 | `02-ANALISE-COMPETITIVA.md` — SWOT, pricing BRL, gaps de mercado | Fase 1: Fundação | ⬜ Pendente |
+| 3 | `03-PERSONAS-E-JORNADA.md` — 4 personas, jornada de compra, dores | Fase 1: Fundação | ⬜ Pendente |
+| 4 | `04-ESTRATEGIA-SEO.md` — SEO técnico + on-page + conteúdo (consolida 3 docs) | Fase 2: Aquisição | ⬜ Pendente |
+| 5 | `05-PLANO-GOOGLE-ADS.md` — Campanha detalhada, orçamento R$, CPC | Fase 2: Aquisição | ⬜ Pendente |
+| 6 | `06-ESTRATEGIA-CONTEUDO.md` — Calendário editorial, LinkedIn, YouTube | Fase 2: Aquisição | ⬜ Pendente |
+| 7 | `07-MODELO-MONETIZACAO.md` — Freemium, pricing BR, projeções 3 cenários | Fase 3: Monetização | ⬜ Pendente |
+| 8 | `08-PLANO-LANCAMENTO.md` — Go-to-market, beta, parcerias SENAI | Fase 3: Monetização | ⬜ Pendente |
+| 9 | `09-METRICAS-E-KPIs.md` — AARRR, integração CF Analytics | Fase 3: Monetização | ⬜ Pendente |
+| 10 | `10-LANDING-PAGE-SPEC.md` — Wireframe, copy PT-BR, CTAs | Fase 4: Execução | ⬜ Pendente |
+| 11 | `11-MATERIAIS-MARKETING.md` — Templates email, LinkedIn, pitch | Fase 4: Execução | ⬜ Pendente |
+| 12 | `00-INDICE-MASTER.md` — Índice + resumo executivo | Fase 4: Execução | ⬜ Pendente |
+
+**Docs de referência (originais):** `DOCUMENTACAO_MARKETING_MONETIZACAO/` (8 arquivos existentes — serão movidos para `_originais/` quando os novos forem criados)
+
+**⚠️ IMPORTANTE:** Sessões de refinamento documental — NÃO executar código. Ler o plano completo e os docs originais de referência no início da sessão.
 
 ---
 
@@ -190,4 +222,4 @@ Quando uma nova implementação for planejada durante a sessão:
 
 ---
 
-*Última atualização: 18/03/2026 — Sessão 18/03 (5) — Fim de sessão sem implementação — 824 testes ✅ | ⚠️ `public/_headers` tem CSP não commitado: `connect-src 'self'` bloqueia `api.cloudflare.com` — corrigir na Fase 2 da Segurança*
+*Última atualização: 18/03/2026 — Sessão 18/03 (6) — Plano reestruturação docs marketing (item #8 adicionado) — 824 testes ✅ | ⚠️ `public/_headers` tem CSP não commitado: `connect-src 'self'` bloqueia `api.cloudflare.com` — corrigir na Fase 2 da Segurança*
