@@ -21,6 +21,7 @@ import {
 import { getMaterialById } from '@/data/index';
 import { getRecommendedParams } from '@/engine/recommendations';
 import { useHistoryStore } from './history-store';
+import { useUsageStore } from '@/admin/store/usage-store';
 import {
   calculateHealthScore, getVcZone, getFzZone, getAeZone, getApZone,
 } from '@/utils/health-score';
@@ -446,6 +447,13 @@ export const useMachiningStore = create<MachiningState & MachiningActions>()(
             tipoOperacao,
             parametros: { ...parametros },
             resultado: { ...resultado },
+          });
+          // Track usage for admin stats
+          useUsageStore.getState().trackUsage({
+            materialNome: material?.nome ?? 'Desconhecido',
+            tipoOperacao: String(tipoOperacao),
+            ferramentaTipo: ferramenta.tipo,
+            ferramentaDiametro: ferramenta.diametro,
           });
         },
 

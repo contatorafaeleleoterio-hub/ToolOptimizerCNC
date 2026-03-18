@@ -61,6 +61,21 @@ export interface FeatureFlag {
   updatedAt: string; // ISO date
 }
 
+// ── Usage Event ───────────────────────────────────────────────────────────────
+
+export interface UsageEvent {
+  materialNome: string;
+  tipoOperacao: string; // TipoUsinagem value (e.g. 'desbaste', 'semi', 'acabamento')
+  ferramentaTipo: string;
+  ferramentaDiametro: number;
+  timestamp: string; // ISO date
+}
+
+export interface UsageSummary {
+  label: string;
+  count: number;
+}
+
 // ── Admin Store State (aggregate) ────────────────────────────────────────────
 
 export interface AdminState {
