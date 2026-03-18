@@ -49,6 +49,6 @@ describe('AdminDashboardPage — renders via KpiCards', () => {
     expect(screen.getByText('Tarefas Abertas')).toBeInTheDocument();
     expect(screen.getByText('Bugs Novos')).toBeInTheDocument();
     expect(screen.getByText('Erros (24h)')).toBeInTheDocument();
-    expect(screen.getByText('Visitantes (7d)')).toBeInTheDocument();
+    expect(screen.getByText('Simulações Hoje')).toBeInTheDocument();
   });
 });

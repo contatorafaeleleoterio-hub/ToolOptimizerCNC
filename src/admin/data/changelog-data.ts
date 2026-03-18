@@ -15,6 +15,18 @@ export interface ChangelogEntry {
 
 export const CHANGELOG: ChangelogEntry[] = [
   {
+    version: '0.7.0',
+    date: '2026-03-18',
+    tag: 'feat',
+    title: 'Admin Dashboard — Versão Estável',
+    items: [
+      'Dashboard com KPIs em tempo real (tarefas, bugs, erros, simulações hoje)',
+      'Feed de atividade recente unificado (bugs, tarefas, erros, simulações)',
+      'Painel de analytics com sparkline de visitantes Cloudflare',
+      'Sidebar com versão atualizada para v0.7.0',
+    ],
+  },
+  {
     version: '0.7.0-alpha.7',
     date: '2026-03-18',
     tag: 'feat',

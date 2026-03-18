@@ -36,8 +36,8 @@ describe('CHANGELOG data', () => {
     expect(CHANGELOG.length).toBeGreaterThanOrEqual(10);
   });
 
-  it('newest entry is v0.7.0-alpha.7', () => {
-    expect(CHANGELOG[0].version).toBe('0.7.0-alpha.7');
+  it('newest entry is v0.7.0', () => {
+    expect(CHANGELOG[0].version).toBe('0.7.0');
   });
 
   it('all entries have required fields', () => {
@@ -182,7 +182,7 @@ describe('AdminChangelogPage', () => {
 
   it('renders the latest version entry', async () => {
     await renderChangelog();
-    expect(screen.getByText(/v0\.7\.0-alpha\.7/)).toBeInTheDocument();
+    expect(screen.getAllByText(/v0\.7\.0\b/).length).toBeGreaterThan(0);
   });
 
   it('shows "Atual" badge on newest entry', async () => {
@@ -243,7 +243,7 @@ describe('AdminHealthPage', () => {
 
   it('renders app version info', async () => {
     await renderHealth();
-    expect(screen.getByText('0.7.0-alpha.7')).toBeInTheDocument();
+    expect(screen.getByText('0.7.0')).toBeInTheDocument();
   });
 
   it('shows React version', async () => {

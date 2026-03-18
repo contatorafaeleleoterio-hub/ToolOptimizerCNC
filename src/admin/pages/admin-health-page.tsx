@@ -133,7 +133,7 @@ function HealthRow({ item }: { item: HealthItem }) {
 
 // ── Main page ─────────────────────────────────────────────────────────────────
 
-const APP_VERSION = '0.7.0-alpha.7';
+const APP_VERSION = '0.7.0';
 const BUILD_JS_GZIP = '~99 KB';
 const BUILD_CSS_GZIP = '~14 KB';
 
