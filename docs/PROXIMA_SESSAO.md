@@ -10,11 +10,11 @@
 | Item | Valor |
 |------|-------|
 | **Branch** | `main` |
-| **Versão** | `0.6.0` (admin: `v0.7.0-alpha.3`) |
-| **Último commit** | `3c8088d` docs: corrigir protocolo fim de sessão — deploy já é automático |
-| **Testes** | **698 passando** (44 arquivos) — 0 falhas |
+| **Versão** | `0.6.0` (admin: `v0.7.0-alpha.4`) |
+| **Último commit** | `0b8a580` feat(admin): Admin Dashboard Fase 4 — Error Tracking |
+| **Testes** | **718 passando** (45 arquivos) — 0 falhas |
 | **TypeScript** | **zero erros** |
-| **Build** | **limpo** — JS 98.17KB gzip, CSS 14.35KB |
+| **Build** | **limpo** — JS 98.46KB gzip, CSS 14.35KB |
 | **Remote** | `origin/main` sincronizado ✅ |
 | **Worker** | ✅ LIVE — `https://tooloptimizercnc.contatorafaeleleoterio.workers.dev` |
 | **Custom Domains** | ✅ `tooloptimizercnc.com.br` + `app.tooloptimizercnc.com.br` |
@@ -31,6 +31,22 @@ npx tsc --noEmit
 ---
 
 ## Ultimas 3 Sessoes
+
+### Sessão 17/03 (8) — Admin Dashboard Fase 4: Error Tracking
+
+**O que foi feito:**
+- ✅ `src/admin/hooks/use-error-tracker.ts` — `installErrorTracker()`: window.onerror + unhandledrejection → admin store; guard idempotente; cleanup function
+- ✅ `src/admin/components/error-entry.tsx` — card: severity badge, count dedup (N×), source, stack trace colapsável, delete
+- ✅ `src/admin/pages/admin-errors-page.tsx` — lista filtável por severidade, Limpar Tudo, estado vazio com ícone verde
+- ✅ `admin-store.ts` + `admin-types.ts` — adicionado `removeError(id)`
+- ✅ `src/main.tsx` — `installErrorTracker()` chamado antes do primeiro render
+- ✅ `tests/admin/admin-errors.test.tsx` — 20 testes (tracker, ErrorEntry, AdminErrorsPage)
+- ✅ 45 arquivos, 718 testes passando — 0 falhas
+- ✅ Commit `0b8a580` + push → deploy automático
+
+**Próxima sessão:** Admin Dashboard Fase 5 — Usage Stats
+
+---
 
 ### Sessão 17/03 (7) — Fix protocolo: deploy já automatizado
 

@@ -11,8 +11,8 @@
 | Item | Valor |
 |------|-------|
 | **Branch** | `main` |
-| **Versão** | `0.6.0` (admin: `v0.7.0-alpha.3`) |
-| **Testes** | **698 passando** (44 arquivos) — 0 falhas |
+| **Versão** | `0.6.0` (admin: `v0.7.0-alpha.4`) |
+| **Testes** | **718 passando** (45 arquivos) — 0 falhas |
 | **TypeScript** | **zero erros** |
 | **Build** | **limpo** — JS 98.17KB gzip, CSS 14.35KB |
 | **Remote** | `origin/main` sincronizado ✅ |
@@ -67,13 +67,13 @@ npx tsc --noEmit
 | 1 | Fundação + Dashboard | ✅ Concluído (`bc4c98b`) |
 | 2 | Tarefas + Auto-Sync | ✅ Concluído (`df7cc38` + `99c188a`) |
 | 3 | Inbox de Bugs | ✅ Concluído (`4f5cf19`) |
-| 4 | Error Tracking | ⬜ Pendente |
+| 4 | Error Tracking | ✅ Concluído (`0b8a580`) |
 | 5 | Usage Stats | ⬜ Pendente |
 | 6 | Analytics Cloudflare | ⬜ Pendente |
 | 7 | Flags + Changelog + Health | ⬜ Pendente |
 | 8 | Polish + Integração | ⬜ Pendente |
 
-**Próxima sessão:** Executar Fase 4 (Error Tracking)
+**Próxima sessão:** Executar Fase 5 (Usage Stats)
 
 ---
 
@@ -190,4 +190,4 @@ Quando uma nova implementação for planejada durante a sessão:
 
 ---
 
-*Última atualização: 17/03/2026 — Sessão 17/03 (6) — Admin Dashboard Fase 3: Inbox de Bugs (`4f5cf19`)*
+*Última atualização: 17/03/2026 — Sessão 17/03 (7) — Admin Dashboard Fase 4: Error Tracking (`0b8a580`)*
