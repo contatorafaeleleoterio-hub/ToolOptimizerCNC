@@ -11,7 +11,7 @@
 |------|-------|
 | **Branch** | `main` |
 | **Versão** | `0.6.0` (admin: `v0.7.0-alpha.3`) |
-| **Último commit** | `4f5cf19` feat(admin): Admin Dashboard Fase 3 — Inbox de Bugs |
+| **Último commit** | `3c8088d` docs: corrigir protocolo fim de sessão — deploy já é automático |
 | **Testes** | **698 passando** (44 arquivos) — 0 falhas |
 | **TypeScript** | **zero erros** |
 | **Build** | **limpo** — JS 98.17KB gzip, CSS 14.35KB |
@@ -31,6 +31,17 @@ npx tsc --noEmit
 ---
 
 ## Ultimas 3 Sessoes
+
+### Sessão 17/03 (7) — Fix protocolo: deploy já automatizado
+
+**O que foi feito:**
+- ✅ Identificado que `⚠️ Lembrar Rafael: rodar npx wrangler deploy` era nota incorreta — o `deploy-cloudflare.yml` já executa `wrangler deploy` com `CF_API_TOKEN` em todo push
+- ✅ Corrigido `PROTOCOLO FIM DE SESSÃO` em `ROADMAP_SESSAO_ATUAL.md`: substituída nota de ação manual por confirmação de deploy automático
+- ✅ Commit `3c8088d` + push → zero impacto no código
+
+**Próxima sessão:** Admin Dashboard Fase 4 — Error Tracking
+
+---
 
 ### Sessão 17/03 (6) — Admin Dashboard Fase 3: Inbox de Bugs
 
