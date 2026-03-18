@@ -21,7 +21,7 @@ A ordem garante estabilidade progressiva: bugs corrigidos antes de features, fea
 | 4 | Favicon e Ícones | 💄 Polish | v0.5.4 | 4+ arquivos | ✅ Concluído (`51b272a`) |
 | 5 | [Segurança Cibernética](#5-segurança-cibernética) | 🔒 Security | v0.5.5 | 6 arquivos + config manual | ⬜ Pendente |
 | 6 | [Reestruturação Documental](#6-reestruturação-documental) | 🏗️ Infra | v0.6.0 | ~150 arquivos docs | ✅ Concluído (4 fases) |
-| 7 | [Admin Dashboard](#7-admin-dashboard) | ✨ Feature | v0.7.0 | 9 páginas, 3 stores, ~30 arquivos | 🔄 Em Progresso — Fases 1+2+3+4+5+6 ✅ (`9afc325`) |
+| 7 | [Admin Dashboard](#7-admin-dashboard) | ✨ Feature | v0.7.0 | 9 páginas, 3 stores, ~30 arquivos | 🔄 Em Progresso — Fases 1+2+3+4+5+6+7 ✅ (`5be515a`) |
 
 ---
 
@@ -128,8 +128,8 @@ v0.5.5 — Segurança Cibernética ⬜
 | 4 | Error Tracking | v0.7.0-alpha.4 | Global handler, Error Boundary, errors page | ✅ (`0b8a580`) |
 | 5 | Usage Stats | v0.7.0-alpha.5 | Hook calcular(), bar charts SVG, usage page | ✅ (`14a8491`) |
 | 6 | Analytics Cloudflare | v0.7.0-alpha.6 | GraphQL API, charts, Web Vitals | ✅ (`9afc325`) |
-| 7 | Flags + Changelog + Health | v0.7.0-alpha.7 | 3 páginas restantes |
-| 8 | Polish + Integração | v0.7.0 | Dashboard real, feed atividade, testes finais |
+| 7 | Flags + Changelog + Health | v0.7.0-alpha.7 | 3 páginas restantes | ✅ (`5be515a`) |
+| 8 | Polish + Integração | v0.7.0 | Dashboard real, feed atividade, testes finais | ⬜ |
 
 **Testes:** Store CRUD, layout render, integração bug report, error capture, usage tracking
 

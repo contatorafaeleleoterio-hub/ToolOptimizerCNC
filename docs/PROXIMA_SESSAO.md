@@ -10,11 +10,11 @@
 | Item | Valor |
 |------|-------|
 | **Branch** | `main` |
-| **Versão** | `0.6.0` (admin: `v0.7.0-alpha.6`) |
-| **Último commit** | `9afc325` feat(admin): Admin Dashboard Fase 6 — Analytics Cloudflare |
-| **Testes** | **762 passando** (47 arquivos) — 0 falhas |
+| **Versão** | `0.6.0` (admin: `v0.7.0-alpha.7`) |
+| **Último commit** | `5be515a` feat(admin): Admin Dashboard Fase 7 — Flags + Changelog + Health |
+| **Testes** | **796 passando** (48 arquivos) — 0 falhas |
 | **TypeScript** | **zero erros** |
-| **Build** | **limpo** — JS 98.78KB gzip, CSS 14.35KB |
+| **Build** | **limpo** — JS 99.16KB gzip, CSS 14.35KB |
 | **Remote** | `origin/main` sincronizado ✅ |
 | **Worker** | ✅ LIVE — `https://tooloptimizercnc.contatorafaeleleoterio.workers.dev` |
 | **Custom Domains** | ✅ `tooloptimizercnc.com.br` + `app.tooloptimizercnc.com.br` |
@@ -31,6 +31,24 @@ npx tsc --noEmit
 ---
 
 ## Ultimas 3 Sessoes
+
+### Sessão 18/03 (3) — Admin Dashboard Fase 7: Flags + Changelog + Health
+
+**Commit:** `5be515a` | **Versão:** v0.7.0-alpha.7 | **Testes:** 796 (48 arquivos)
+
+**O que foi feito:**
+- ✅ `src/admin/data/changelog-data.ts` — 17 entradas estáticas v0.3.0→v0.7.0-alpha.7
+- ✅ `src/admin/hooks/use-feature-flag.ts` — hook `useFeatureFlag(id): boolean`
+- ✅ `src/admin/pages/admin-flags-page.tsx` — toggles de 5 flags em runtime, counter ativas, notice sobre localStorage
+- ✅ `src/admin/pages/admin-changelog-page.tsx` — timeline visual, filtro por tag (feat/fix/infra/polish), badge "Atual" no newest
+- ✅ `src/admin/pages/admin-health-page.tsx` — 5 checks (localStorage, AdminStore, UsageStore, Navegador, Resolução), banner status geral, "Verificar Agora", seção Informações do App
+- ✅ `src/admin/store/admin-store.ts` — DEFAULT_FLAGS expandido para 5 flags + persist v2 com migrate (merge automático)
+- ✅ `tests/admin/admin-phase7.test.tsx` — 34 novos testes
+- ✅ `src/data/architecture-graph.ts` — versão bumped para 0.7.0-alpha.7
+
+**Próxima sessão:** Fase 8 — Polish + Integração Final (dashboard com dados reais, feed de atividade, bump v0.7.0 estável)
+
+---
 
 ### Sessão 18/03 (2) — Admin Dashboard Fase 6: Analytics Cloudflare
 
