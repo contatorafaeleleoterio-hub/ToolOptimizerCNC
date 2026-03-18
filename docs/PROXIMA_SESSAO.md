@@ -10,11 +10,11 @@
 | Item | Valor |
 |------|-------|
 | **Branch** | `main` |
-| **Versão** | `0.6.0` (admin: `v0.7.0-alpha.7`) |
-| **Último commit** | `5be515a` feat(admin): Admin Dashboard Fase 7 — Flags + Changelog + Health |
-| **Testes** | **796 passando** (48 arquivos) — 0 falhas |
+| **Versão** | `0.7.0` |
+| **Último commit** | `ab5eb8f` feat(admin): Admin Dashboard Fase 8 — Polish + Integração Final → v0.7.0 |
+| **Testes** | **824 passando** (49 arquivos) — 0 falhas |
 | **TypeScript** | **zero erros** |
-| **Build** | **limpo** — JS 99.16KB gzip, CSS 14.35KB |
+| **Build** | **limpo** — JS 99.20KB gzip, CSS 14.35KB |
 | **Remote** | `origin/main` sincronizado ✅ |
 | **Worker** | ✅ LIVE — `https://tooloptimizercnc.contatorafaeleleoterio.workers.dev` |
 | **Custom Domains** | ✅ `tooloptimizercnc.com.br` + `app.tooloptimizercnc.com.br` |

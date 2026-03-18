@@ -11,10 +11,10 @@
 | Item | Valor |
 |------|-------|
 | **Branch** | `main` |
-| **Versão** | `0.6.0` (admin: `v0.7.0-alpha.7`) |
-| **Testes** | **796 passando** (48 arquivos) — 0 falhas |
+| **Versão** | `0.7.0` |
+| **Testes** | **824 passando** (49 arquivos) — 0 falhas |
 | **TypeScript** | **zero erros** |
-| **Build** | **limpo** — JS 99.16KB gzip, CSS 14.35KB |
+| **Build** | **limpo** — JS 99.20KB gzip, CSS 14.35KB |
 | **Remote** | `origin/main` sincronizado ✅ |
 | **Worker** | ✅ LIVE — `https://tooloptimizercnc.contatorafaeleleoterio.workers.dev` |
 | **Custom Domains** | ✅ `tooloptimizercnc.com.br` + `app.tooloptimizercnc.com.br` |
@@ -43,7 +43,7 @@ npx tsc --noEmit
 | 4 | Favicon e Ícones | 💄 Polish | v0.5.4 | ✅ Concluído |
 | 5 | Segurança Cibernética | 🔒 Security | v0.5.5 | ⬜ Pendente |
 | 6 | Reestruturação Documental | 🏗️ Infra | v0.6.0 | ✅ Concluído |
-| 7 | Admin Dashboard (8 fases) | ✨ Feature | v0.7.0 | 🔄 Em Progresso (Fases 1+2+3+4+5+6+7 ✅) |
+| 7 | Admin Dashboard (8 fases) | ✨ Feature | v0.7.0 | ✅ Concluído (`ab5eb8f`) |
 
 ### ✅ Reestruturação Documental (v0.6.0) — CONCLUÍDA
 
@@ -71,9 +71,9 @@ npx tsc --noEmit
 | 5 | Usage Stats | ✅ Concluído (`14a8491`) |
 | 6 | Analytics Cloudflare | ✅ Concluído (`9afc325`) |
 | 7 | Flags + Changelog + Health | ✅ Concluído (`5be515a`) |
-| 8 | Polish + Integração | ⬜ Pendente |
+| 8 | Polish + Integração | ✅ Concluído (`ab5eb8f`) |
 
-**Próxima sessão:** Executar Fase 8 (Polish + Integração Final → v0.7.0 estável)
+**Admin Dashboard v0.7.0 completo.** Próxima: Segurança Cibernética v0.5.5 (fases 2-5) ou Story-008.
 
 ---
 
@@ -190,4 +190,4 @@ Quando uma nova implementação for planejada durante a sessão:
 
 ---
 
-*Última atualização: 18/03/2026 — Sessão 18/03 (3) — Admin Dashboard Fase 7: Flags + Changelog + Health (`5be515a`) — 796 testes ✅*
+*Última atualização: 18/03/2026 — Sessão 18/03 (4) — Admin Dashboard Fase 8: Polish + Integração Final → v0.7.0 (`ab5eb8f`) — 824 testes ✅*
