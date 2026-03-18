@@ -11,7 +11,7 @@
 |------|-------|
 | **Branch** | `main` |
 | **Versão** | `0.7.0` |
-| **Último commit** | `ab5eb8f` feat(admin): Admin Dashboard Fase 8 — Polish + Integração Final → v0.7.0 |
+| **Último commit** | `33d7dfb` docs: update roadmap + timeline v0.7.0 |
 | **Testes** | **824 passando** (49 arquivos) — 0 falhas |
 | **TypeScript** | **zero erros** |
 | **Build** | **limpo** — JS 99.20KB gzip, CSS 14.35KB |
@@ -31,6 +31,40 @@ npx tsc --noEmit
 ---
 
 ## Ultimas 3 Sessoes
+
+### Sessão 18/03 (5) — Fim de sessão sem implementação
+
+**Commit:** nenhum | **Versão:** v0.7.0 (inalterada) | **Testes:** 824 (49 arquivos)
+
+**O que foi feito:**
+- ✅ Protocolo de início de sessão executado (leitura de roadmap + admin-requests)
+- ✅ Verificação: 824 testes ✅ | TypeScript zero erros ✅ | Build 99.20KB ✅
+- ⚠️ **Detectado:** `public/_headers` tem `Content-Security-Policy` não commitado com bug crítico:
+  - `connect-src 'self'` bloqueia `https://api.cloudflare.com/client/v4/graphql` (usado em AdminAnalyticsPage)
+  - Arquivo **NÃO commitado** propositalmente — precisa ser corrigido na Fase 2 da Segurança
+
+**Próxima sessão:** Segurança Cibernética Fases 2-5 (fases 1/6/7 são manuais — Rafael) ou Story-008.
+
+---
+
+### Sessão 18/03 (4) — Admin Dashboard Fase 8: Polish + Integração Final → v0.7.0
+
+**Commit:** `ab5eb8f` (feat) + `33d7dfb` (docs) | **Versão:** v0.7.0 | **Testes:** 824 (49 arquivos)
+
+**O que foi feito:**
+- ✅ `src/admin/pages/admin-dashboard-page.tsx` — KPIs reais (bugs/tasks/erros/simulações) do store
+- ✅ `src/admin/components/activity-feed.tsx` — feed unificado com ícones por tipo (bug/task/erro/simulação), scroll, empty state
+- ✅ `src/admin/pages/admin-analytics-page.tsx` — Analytics banner fixo quando CF não configurado + sparkline nos KPIs
+- ✅ `src/admin/store/admin-store.ts` — `getActivityFeed()` unificando todas as entidades por data
+- ✅ `tests/admin/admin-phase8.test.tsx` — 28 novos testes (ActivityFeed + dashboard integração + admin-store)
+- ✅ `package.json` — bump 0.7.0-alpha.7 → 0.7.0
+- ✅ `src/data/architecture-graph.ts` — versão bumped para 0.7.0
+- ✅ TypeScript: zero erros | Build: 99.20KB gzip | 49 arquivos, 824 testes ✅
+- ✅ Commits `ab5eb8f` + `33d7dfb` + push → auto-deploy CF
+
+**Próxima sessão:** Segurança Cibernética v0.5.5 (fases 2-5) ou Story-008
+
+---
 
 ### Sessão 18/03 (3) — Admin Dashboard Fase 7: Flags + Changelog + Health
 
@@ -264,6 +298,7 @@ npx tsc --noEmit
 
 | Versão | Commit | Descrição |
 |--------|--------|-----------|
+| v0.7.0 | `ab5eb8f` | Admin Dashboard completo (8 fases) |
 | v0.6.0 | `f058230` | Reestruturação Documental completa (4 fases) |
 | v0.5.2 | `efcb1e4` | Favicon + Ícones + Simplificação Settings Máquina |
 | v0.5.1 | `53bcb51` | Fix BugReportModal + Plausible removed + TouchSlider fix |
@@ -284,8 +319,8 @@ npx tsc --noEmit
 ✅ v0.4.x — Story-006/007/Unificação + Gauges
 ✅ v0.5.x — Deploy CF + Favicon + Settings + BugReport
 ✅ v0.6.0 — Reestruturação Documental (4 fases completas)
-⬜ v0.7.0 — Admin Dashboard (8 fases — planejamento concluído 17/03)
-⬜ v0.5.5 — Segurança Cibernética (7 fases — parcialmente manual)
+✅ v0.7.0 — Admin Dashboard (8 fases — concluído 18/03/2026)
+⬜ v0.5.5 — Segurança Cibernética (fases 2-5 automáticas; 1/6/7 manuais Rafael)
 ```
 
-**Próxima sessão:** Admin Dashboard Fase 1 (Fundação + Dashboard) → ver `docs/ROADMAP_SESSAO_ATUAL.md`
+**Próxima sessão:** Segurança Cibernética Fases 2-5 → ver `docs/ROADMAP_SESSAO_ATUAL.md`
