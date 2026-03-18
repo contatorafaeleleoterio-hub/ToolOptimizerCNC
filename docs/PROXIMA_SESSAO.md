@@ -10,11 +10,11 @@
 | Item | Valor |
 |------|-------|
 | **Branch** | `main` |
-| **Versão** | `0.6.0` (admin: `v0.7.0-alpha.4`) |
-| **Último commit** | `0b8a580` feat(admin): Admin Dashboard Fase 4 — Error Tracking |
-| **Testes** | **718 passando** (45 arquivos) — 0 falhas |
+| **Versão** | `0.6.0` (admin: `v0.7.0-alpha.5`) |
+| **Último commit** | `14a8491` feat(admin): Admin Dashboard Fase 5 — Usage Stats |
+| **Testes** | **734 passando** (46 arquivos) — 0 falhas |
 | **TypeScript** | **zero erros** |
-| **Build** | **limpo** — JS 98.46KB gzip, CSS 14.35KB |
+| **Build** | **limpo** — JS 98.78KB gzip, CSS 14.35KB |
 | **Remote** | `origin/main` sincronizado ✅ |
 | **Worker** | ✅ LIVE — `https://tooloptimizercnc.contatorafaeleleoterio.workers.dev` |
 | **Custom Domains** | ✅ `tooloptimizercnc.com.br` + `app.tooloptimizercnc.com.br` |
@@ -31,6 +31,24 @@ npx tsc --noEmit
 ---
 
 ## Ultimas 3 Sessoes
+
+### Sessão 18/03 (1) — Admin Dashboard Fase 5: Usage Stats
+
+**O que foi feito:**
+- ✅ `src/admin/types/admin-types.ts` — adicionado `UsageEvent` + `UsageSummary`
+- ✅ `src/admin/store/usage-store.ts` — Zustand + persist (`tooloptimizer-usage`): `trackUsage`, `clearUsage`, `getTotalSimulations`, `getTodayCount`, `getTopMaterials/Operacoes/Ferramentas`
+- ✅ `src/admin/components/mini-chart.tsx` — bar chart CSS reutilizável (3 cores: cyan/green/purple); reutilizável na Fase 6
+- ✅ `src/admin/pages/admin-usage-page.tsx` — KPIs (total + hoje) + 3 seções top 10 (materiais/operações/ferramentas); computed via `useMemo` no componente
+- ✅ `src/store/machining-store.ts` — `simular()` chama `trackUsage()` após cada simulação
+- ✅ `tests/admin/admin-usage.test.ts` — 16 testes (store + trackUsage + topN + getTodayCount)
+- ✅ Fix: getters do store causavam infinite loop no `useSyncExternalStore` — solução: `useMemo` no componente selecionando apenas `events`
+- ✅ 46 arquivos, 734 testes passando — 0 falhas
+- ✅ TypeScript zero erros | Build 98.78KB gzip | Verificação visual preview ✅
+- ✅ Commit `14a8491` + push → deploy automático
+
+**Próxima sessão:** Admin Dashboard Fase 6 — Analytics Cloudflare
+
+---
 
 ### Sessão 17/03 (8) — Admin Dashboard Fase 4: Error Tracking
 

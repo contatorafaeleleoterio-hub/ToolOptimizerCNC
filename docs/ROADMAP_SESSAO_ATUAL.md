@@ -11,10 +11,10 @@
 | Item | Valor |
 |------|-------|
 | **Branch** | `main` |
-| **Versão** | `0.6.0` (admin: `v0.7.0-alpha.4`) |
-| **Testes** | **718 passando** (45 arquivos) — 0 falhas |
+| **Versão** | `0.6.0` (admin: `v0.7.0-alpha.5`) |
+| **Testes** | **734 passando** (46 arquivos) — 0 falhas |
 | **TypeScript** | **zero erros** |
-| **Build** | **limpo** — JS 98.46KB gzip, CSS 14.35KB |
+| **Build** | **limpo** — JS 98.78KB gzip, CSS 14.35KB |
 | **Remote** | `origin/main` sincronizado ✅ |
 | **Worker** | ✅ LIVE — `https://tooloptimizercnc.contatorafaeleleoterio.workers.dev` |
 | **Custom Domains** | ✅ `tooloptimizercnc.com.br` + `app.tooloptimizercnc.com.br` |
@@ -43,7 +43,7 @@ npx tsc --noEmit
 | 4 | Favicon e Ícones | 💄 Polish | v0.5.4 | ✅ Concluído |
 | 5 | Segurança Cibernética | 🔒 Security | v0.5.5 | ⬜ Pendente |
 | 6 | Reestruturação Documental | 🏗️ Infra | v0.6.0 | ✅ Concluído |
-| 7 | Admin Dashboard (8 fases) | ✨ Feature | v0.7.0 | 🔄 Em Progresso (Fases 1+2+3+4 ✅) |
+| 7 | Admin Dashboard (8 fases) | ✨ Feature | v0.7.0 | 🔄 Em Progresso (Fases 1+2+3+4+5 ✅) |
 
 ### ✅ Reestruturação Documental (v0.6.0) — CONCLUÍDA
 
@@ -68,12 +68,12 @@ npx tsc --noEmit
 | 2 | Tarefas + Auto-Sync | ✅ Concluído (`df7cc38` + `99c188a`) |
 | 3 | Inbox de Bugs | ✅ Concluído (`4f5cf19`) |
 | 4 | Error Tracking | ✅ Concluído (`0b8a580`) |
-| 5 | Usage Stats | ⬜ Pendente |
+| 5 | Usage Stats | ✅ Concluído (`14a8491`) |
 | 6 | Analytics Cloudflare | ⬜ Pendente |
 | 7 | Flags + Changelog + Health | ⬜ Pendente |
 | 8 | Polish + Integração | ⬜ Pendente |
 
-**Próxima sessão:** Executar Fase 5 (Usage Stats)
+**Próxima sessão:** Executar Fase 6 (Analytics Cloudflare)
 
 ---
 
@@ -190,4 +190,4 @@ Quando uma nova implementação for planejada durante a sessão:
 
 ---
 
-*Última atualização: 17/03/2026 — Sessão 17/03 (8) — Admin Dashboard Fase 4: Error Tracking (`0b8a580`) — Verificação visual preview ✅*
+*Última atualização: 18/03/2026 — Sessão 18/03 (1) — Admin Dashboard Fase 5: Usage Stats (`14a8491`) — Verificação visual preview ✅*
