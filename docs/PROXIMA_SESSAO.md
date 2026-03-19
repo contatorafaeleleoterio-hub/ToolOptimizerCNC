@@ -32,6 +32,38 @@ npx tsc --noEmit
 
 ## Ultimas 3 Sessoes
 
+### Sessão 18/03 (7) — Doc 01 Visão do Produto v2.0 (Refinamento)
+
+**Commit:** `d7d25ae` (docs) | **Versão:** v0.7.0 (inalterada) | **Testes:** 824 (49 arquivos)
+
+**O que foi feito:**
+- ✅ Revisão completa item a item do Doc 01 com Rafael (9 perguntas de refinamento)
+- ✅ §1 Problema reescrito: operadores NÃO calculam, usam valores genéricos por classe
+- ✅ §5 Competitiva expandida: pesquisa de 20+ concorrentes (G-Wizard, FSWizard, Machining Doctor, HSMAdvisor, Sandvik, Kennametal, Walter, ISCAR, Seco, apps mobile, open-source)
+- ✅ §6 Público-Alvo: +2 personas (Encarregado de Compras + Encarregado de Chão de Fábrica)
+- ✅ §7 Distribuição: MestreCNC como canal de conteúdo + fases de lançamento (validação → retenção → monetização)
+- ✅ §4 Estado Atual: escopo definido como "fresas de metal duro" (3 tipos), materiais editáveis, futuros dashboards por classe
+- ✅ §9 Futuro: features pós-lançamento (trig, G-code, gamificação, API CAM), novos dashboards (pastilhas, brocas)
+- ✅ §11 Origem: nova seção com história e visão do Rafael
+- ✅ Removido: badge "Estimado", .exe como estratégia de distribuição, "materiais validados 33%"
+- ✅ Investigação tipo de operação: mantido (impacta Vc, fz, ae, ap significativamente — todos concorrentes usam)
+
+**Decisões importantes desta sessão:**
+- **Materiais são editáveis** pelo usuário — sem conceito de "validado vs estimado"
+- **Dashboard atual = fresas de metal duro** — futuros dashboards separados para outras classes
+- **Tipo de operação mantido** — impacto significativo nos cálculos (Vc varia até 67%)
+- **MestreCNC** = canal de conteúdo/tráfego separado do ToolOptimizer
+- **Login pós-validação** — lançar sem login, implementar após feedback
+- **.exe portátil** = uso pessoal de teste, não é estratégia de distribuição
+
+**Próxima sessão — Doc 02 (ANÁLISE COMPETITIVA):**
+- 📋 **Atividade:** Refinar e criar `02-ANALISE-COMPETITIVA.md`
+- 📂 **Base:** pesquisa de 20+ concorrentes já realizada nesta sessão
+- 🎯 **Escopo:** SWOT, pricing BRL, gaps de mercado, posicionamento
+- ⚠️ **NÃO executar código** — sessão dedicada a refinamento documental
+
+---
+
 ### Sessão 18/03 (6) — Plano de Reestruturação: Docs Marketing & Monetização
 
 **Commit:** nenhum (docs externos) | **Versão:** v0.7.0 (inalterada) | **Testes:** 824 (49 arquivos)

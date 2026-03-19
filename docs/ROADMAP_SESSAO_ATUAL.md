@@ -109,7 +109,7 @@ npx tsc --noEmit
 
 | Sessão | Documento | Fase | Status |
 |--------|-----------|------|--------|
-| 1 | `01-VISAO-PRODUTO.md` — Visão, proposta de valor, diferenciais v0.7.0 | Fase 1: Fundação | ⬜ Pendente |
+| 1 | `01-VISAO-PRODUTO.md` — Visão, proposta de valor, diferenciais v0.7.0 | Fase 1: Fundação | ✅ Concluído (`d7d25ae`) |
 | 2 | `02-ANALISE-COMPETITIVA.md` — SWOT, pricing BRL, gaps de mercado | Fase 1: Fundação | ⬜ Pendente |
 | 3 | `03-PERSONAS-E-JORNADA.md` — 4 personas, jornada de compra, dores | Fase 1: Fundação | ⬜ Pendente |
 | 4 | `04-ESTRATEGIA-SEO.md` — SEO técnico + on-page + conteúdo (consolida 3 docs) | Fase 2: Aquisição | ⬜ Pendente |
@@ -222,4 +222,4 @@ Quando uma nova implementação for planejada durante a sessão:
 
 ---
 
-*Última atualização: 18/03/2026 — Sessão 18/03 (6) — Plano reestruturação docs marketing (item #8 adicionado) — 824 testes ✅ | ⚠️ `public/_headers` tem CSP não commitado: `connect-src 'self'` bloqueia `api.cloudflare.com` — corrigir na Fase 2 da Segurança*
+*Última atualização: 18/03/2026 — Sessão 18/03 (7) — Doc 01 Visão do Produto v2.0 refinado (`d7d25ae`) — 824 testes ✅ | ⚠️ `public/_headers` tem CSP não commitado: `connect-src 'self'` bloqueia `api.cloudflare.com` — corrigir na Fase 2 da Segurança*
