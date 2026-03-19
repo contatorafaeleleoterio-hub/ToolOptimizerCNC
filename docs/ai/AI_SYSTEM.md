@@ -49,6 +49,7 @@ docs/ai/
     ENGINEERING_MEMORY.md          # Aprendizados tecnicos gerais
     ARCHITECTURE_LEARNINGS.md      # Padroes e anti-padroes
     COMMON_MISTAKES.md             # Catalogo de erros + prevencao
+    PRODUCT_CONTEXT.md             # Contexto de negocio, produto e decisoes estrategicas
 ```
 
 ---
