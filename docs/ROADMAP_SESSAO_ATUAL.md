@@ -117,9 +117,9 @@ npx tsc --noEmit
 | 6 | `06-ESTRATEGIA-CONTEUDO.md` — Calendário editorial, LinkedIn, YouTube | Fase 2: Aquisição | ✅ Concluído |
 | 7 | `07-MODELO-MONETIZACAO.md` — Freemium, pricing BR, projeções 3 cenários | Fase 3: Monetização | ✅ Concluído |
 | 8 | `08-PLANO-LANCAMENTO.md` — Go-to-market, beta, parcerias SENAI | Fase 3: Monetização | ✅ Concluído |
-| 9 | `09-METRICAS-E-KPIs.md` — AARRR, integração CF Analytics | Fase 3: Monetização | ⬜ Pendente |
-| 10 | `10-LANDING-PAGE-SPEC.md` — Wireframe, copy PT-BR, CTAs | Fase 4: Execução | ⬜ Pendente |
-| 11 | `11-MATERIAIS-MARKETING.md` — Templates email, LinkedIn, pitch | Fase 4: Execução | ⬜ Pendente |
+| 9 | `09-METRICAS-E-KPIs.md` — AARRR, integração CF Analytics | Fase 3: Monetização | ✅ Concluído |
+| 10 | `10-LANDING-PAGE-SPEC.md` — Wireframe, copy PT-BR, CTAs | Fase 4: Execução | ✅ Concluído |
+| 11 | `11-MATERIAIS-MARKETING.md` — Templates email, LinkedIn, pitch | Fase 4: Execução | ✅ Concluído |
 | 12 | `00-INDICE-MASTER.md` — Índice + resumo executivo | Fase 4: Execução | ⬜ Pendente |
 
 **Docs de referência (originais):** `DOCUMENTACAO_MARKETING_MONETIZACAO/` (8 arquivos existentes — serão movidos para `_originais/` quando os novos forem criados)
