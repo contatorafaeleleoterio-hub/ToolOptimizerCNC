@@ -11,7 +11,7 @@
 |------|-------|
 | **Branch** | `main` |
 | **Versão** | `0.7.0` |
-| **Último commit** | `33d7dfb` docs: update roadmap + timeline v0.7.0 |
+| **Último commit** | `d030ca9` docs: criar Doc 11 — Materiais de Marketing v1.0 |
 | **Testes** | **824 passando** (49 arquivos) — 0 falhas |
 | **TypeScript** | **zero erros** |
 | **Build** | **limpo** — JS 99.20KB gzip, CSS 14.35KB |
@@ -31,6 +31,20 @@ npx tsc --noEmit
 ---
 
 ## Ultimas 3 Sessoes
+
+### Sessão 20/03 (tarde) — Doc 11 Materiais de Marketing v1.0
+
+**Commit:** `d030ca9` | **Versão:** v0.7.0 (inalterada) | **Testes:** 824 (49 arquivos)
+
+**O que foi feito:**
+- ✅ Criado `11-MATERIAIS-MARKETING.md` — templates prontos para execução de marketing
+- ✅ 16 seções: 4 emails, 8 posts LinkedIn, 3 descrições YouTube, 4 mensagens WhatsApp, 3 pitches 30s, 2 one-pagers (SENAI + distribuidores), guia de aula 3 páginas, flyer QR code, bios, assinatura email, og:image spec, checklist pré-lançamento
+- ✅ Roadmap atualizado (Doc 11 → ✅ Concluído)
+
+**Próxima sessão:**
+- Doc 12: `00-INDICE-MASTER.md` — índice mestre + resumo executivo (último doc da reestruturação)
+
+---
 
 ### Sessão 20/03 — Doc 05 Plano Google Ads v1.0 (NOVO)
 

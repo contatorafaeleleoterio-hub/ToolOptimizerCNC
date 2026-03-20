@@ -222,4 +222,4 @@ Quando uma nova implementação for planejada durante a sessão:
 
 ---
 
-*Última atualização: 20/03/2026 — Sessão 20/03 — Doc 08 Plano Lançamento v1.0 — 824 testes ✅ | ⚠️ `public/_headers` tem CSP não commitado: `connect-src 'self'` bloqueia `api.cloudflare.com` — corrigir na Fase 2 da Segurança*
+*Última atualização: 20/03/2026 — Sessão 20/03 (tarde) — Doc 11 Materiais de Marketing v1.0 — 824 testes ✅ | ⚠️ `public/_headers` tem CSP não commitado: `connect-src 'self'` bloqueia `api.cloudflare.com` — corrigir na Fase 2 da Segurança*
