@@ -32,6 +32,27 @@ npx tsc --noEmit
 
 ## Ultimas 3 Sessoes
 
+### Sessão 20/03 — Doc 02 Análise Competitiva v2.0 (Trimmed)
+
+**Commit:** `fa29eac` (docs) | **Versão:** v0.7.0 (inalterada) | **Testes:** 824 (49 arquivos)
+
+**O que foi feito:**
+- ✅ Revisão completa do `02-ANALISE-COMPETITIVA.md` (já existia como rascunho v1.0)
+- ✅ Filtragem de redundâncias com Doc 01: removidas §5 (Matriz Comparativa), §8 (Posicionamento), §10 (Comparativos Top 5)
+- ✅ §2 (Realidade Chão de Fábrica) removida — dado único "diversidade fabricantes" movido para §1
+- ✅ Fabricantes menores (Seco, Mitsubishi) comprimidos em lista
+- ✅ Web grátis + Open-source comprimidos em lista (ameaça negligível)
+- ✅ Resultado: 515 → 263 linhas (-49% economia de tokens)
+- ✅ Mantidas intactas: Contexto de Mercado, Mapa de Concorrentes, SWOT, Gaps, Pricing BRL, Referências
+
+**Próxima sessão — Doc 03 (PERSONAS E JORNADA):**
+- 📋 **Atividade:** Criar `03-PERSONAS-E-JORNADA.md`
+- 🎯 **Escopo:** 4-6 personas detalhadas (operador, programador CAM, professor SENAI, dono oficina, encarregado compras, encarregado chão), jornada de compra, dores específicas
+- 📂 **Base:** personas resumidas em Doc 01 §6 + gaps de Doc 02 §5
+- ⚠️ **NÃO executar código** — sessão dedicada a refinamento documental
+
+---
+
 ### Sessão 18/03 (7) — Doc 01 Visão do Produto v2.0 (Refinamento)
 
 **Commit:** `d7d25ae` (docs) | **Versão:** v0.7.0 (inalterada) | **Testes:** 824 (49 arquivos)
@@ -87,37 +108,14 @@ npx tsc --noEmit
 
 ---
 
-### Sessão 18/03 (5) — Fim de sessão sem implementação
+### Sessão 18/03 (4-5) — Admin Dashboard Fase 8 (v0.7.0) + Verificação
 
-**Commit:** nenhum | **Versão:** v0.7.0 (inalterada) | **Testes:** 824 (49 arquivos)
+**Commits:** `ab5eb8f` (feat) + `33d7dfb` (docs) | **Versão:** v0.7.0 | **Testes:** 824 (49 arquivos)
 
 **O que foi feito:**
-- ✅ Protocolo de início de sessão executado (leitura de roadmap + admin-requests)
+- ✅ Admin Dashboard Fase 8 completa: KPIs reais, activity feed, analytics sparkline, bump v0.7.0
 - ✅ Verificação: 824 testes ✅ | TypeScript zero erros ✅ | Build 99.20KB ✅
-- ⚠️ **Detectado:** `public/_headers` tem `Content-Security-Policy` não commitado com bug crítico:
-  - `connect-src 'self'` bloqueia `https://api.cloudflare.com/client/v4/graphql` (usado em AdminAnalyticsPage)
-  - Arquivo **NÃO commitado** propositalmente — precisa ser corrigido na Fase 2 da Segurança
-
-**Próxima sessão:** Segurança Cibernética Fases 2-5 (fases 1/6/7 são manuais — Rafael) ou Story-008.
-
----
-
-### Sessão 18/03 (4) — Admin Dashboard Fase 8: Polish + Integração Final → v0.7.0
-
-**Commit:** `ab5eb8f` (feat) + `33d7dfb` (docs) | **Versão:** v0.7.0 | **Testes:** 824 (49 arquivos)
-
-**O que foi feito:**
-- ✅ `src/admin/pages/admin-dashboard-page.tsx` — KPIs reais (bugs/tasks/erros/simulações) do store
-- ✅ `src/admin/components/activity-feed.tsx` — feed unificado com ícones por tipo (bug/task/erro/simulação), scroll, empty state
-- ✅ `src/admin/pages/admin-analytics-page.tsx` — Analytics banner fixo quando CF não configurado + sparkline nos KPIs
-- ✅ `src/admin/store/admin-store.ts` — `getActivityFeed()` unificando todas as entidades por data
-- ✅ `tests/admin/admin-phase8.test.tsx` — 28 novos testes (ActivityFeed + dashboard integração + admin-store)
-- ✅ `package.json` — bump 0.7.0-alpha.7 → 0.7.0
-- ✅ `src/data/architecture-graph.ts` — versão bumped para 0.7.0
-- ✅ TypeScript: zero erros | Build: 99.20KB gzip | 49 arquivos, 824 testes ✅
-- ✅ Commits `ab5eb8f` + `33d7dfb` + push → auto-deploy CF
-
-**Próxima sessão:** Segurança Cibernética v0.5.5 (fases 2-5) ou Story-008
+- ⚠️ `public/_headers` tem CSP não commitado — bug: `connect-src 'self'` bloqueia `api.cloudflare.com`
 
 ---
 
