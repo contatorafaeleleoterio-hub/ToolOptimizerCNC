@@ -32,6 +32,93 @@ npx tsc --noEmit
 
 ## Ultimas 3 Sessoes
 
+### Sessão 20/03 — Doc 05 Plano Google Ads v1.0 (NOVO)
+
+**Commit:** pendente | **Versão:** v0.7.0 (inalterada) | **Testes:** 824 (49 arquivos)
+
+**O que foi feito:**
+- ✅ Criado `05-PLANO-GOOGLE-ADS.md` — consolida parte de "Investigação de SEO e Estratégia de Anúncios" (textos de anúncios revisados e expandidos)
+- ✅ Estratégia: Rede de Pesquisa, CPC manual → otimizado, 3 cenários de orçamento (R$20-100/dia)
+- ✅ Estimativa CPC Brasil: R$0.50-R$5.00 por faixa, CPC médio ponderado ~R$3.00
+- ✅ 4 grupos de anúncios mapeados por persona:
+  - GA1 Calculadora CNC (P1+P2, 40% orçamento) — alta intenção
+  - GA2 Segurança CNC (P1+P4, 25%) — diferencial L/D
+  - GA3 Educação CNC (P3, 20%) — professores + aprendizado
+  - GA4 Nicho Avançado (P2, 15%) — Kienzle, CTF, termos EN
+- ✅ Textos RSA completos: 8-10 títulos (30 chars) + 4 descrições (90 chars) por grupo + extensões
+- ✅ Keywords de negativação expandidas: 6 categorias (ref Doc 04 §3.3)
+- ✅ Landing pages por grupo: MVP com âncoras na LP única → LPs dedicadas pós-validação
+- ✅ Tracking: Google Tag + UTMs + 4 conversões + nota CSP
+- ✅ Cronograma 90 dias: semana a semana até Smart Bidding
+- ✅ KPIs: CTR >3%, CPC <R$5, conversão >15%, CPA <R$10
+- ✅ 5 riscos com mitigação + 7 dependências priorizadas
+- ✅ ROADMAP atualizado — sessão 5 marcada ✅ Concluído
+
+**Próxima sessão — Doc 06 (ESTRATEGIA CONTEUDO):**
+- 📋 **Atividade:** Criar `06-ESTRATEGIA-CONTEUDO.md`
+- 🎯 **Escopo:** Calendário editorial: posts LinkedIn, vídeos YouTube, artigos técnicos mestrecnc.com.br. Temas mapeados por persona e etapa do funil
+- 📂 **Referências:** personas `03-PERSONAS-E-JORNADA.md` + keywords `04-ESTRATEGIA-SEO.md` §5.2 + mensagens `05-PLANO-GOOGLE-ADS.md`
+- ⚠️ **NÃO executar código** — sessão dedicada a refinamento documental
+
+---
+
+### Sessão 20/03 — Doc 04 Estratégia SEO v1.0 (NOVO)
+
+**Commit:** pendente | **Versão:** v0.7.0 (inalterada) | **Testes:** 824 (49 arquivos)
+
+**O que foi feito:**
+- ✅ Criado `04-ESTRATEGIA-SEO.md` — consolida 3 docs originais (Pesquisa SEO + Investigação SEO + Guia Implementação SEO)
+- ✅ Auditoria técnica completa baseada no estado real do código v0.7.0:
+  - index.html: meta tags, OG, Twitter Card, Schema.org (SoftwareApplication + FAQPage), favicons
+  - robots.txt: OK
+  - sitemap.xml: desatualizado (lastmod 2026-02-24, domínio app. vs raiz)
+  - _headers: não commitado, bug CSP connect-src
+- ✅ 7 problemas técnicos identificados e priorizados (P1-P7)
+- ✅ Keyword map: primária + 6 secundárias + 11 cauda longa + 4 nicho avançado
+- ✅ Keywords mapeadas por persona (P1-P4, alinhado com Doc 03)
+- ✅ Checklist SEO on-page completo (meta tags, HTML semântico, OG, canonical)
+- ✅ Plano de conteúdo SEO: 3 pilares (glossário, tutoriais mestrecnc, landing pages específicas)
+- ✅ Core Web Vitals: estado atual + otimizações aplicadas + riscos
+- ✅ Análise SPA vs indexação: 3 opções (landing estática, prerender, SSR) — recomendação: landing estática
+- ✅ Plano de ação priorizado: 3 imediatas (A1-A3) + 6 código (C1-C6) + 4 estratégicas (E1-E4)
+- ✅ KPIs de sucesso SEO definidos (orgânicos, técnicos, conteúdo)
+- ✅ ROADMAP atualizado — sessão 4 marcada ✅ Concluído
+
+**Próxima sessão — Doc 05 (PLANO GOOGLE ADS):**
+- 📋 **Atividade:** Criar `05-PLANO-GOOGLE-ADS.md`
+- 🎯 **Escopo:** Campanha Google Ads detalhada: orçamento R$, grupos de anúncios, textos revisados, negativação, CPC BR, landing page por grupo
+- 📂 **Referências:** keywords de `04-ESTRATEGIA-SEO.md` §3 + personas `03-PERSONAS-E-JORNADA.md` + parte de "Investigação de SEO" (textos de anúncios originais)
+- ⚠️ **NÃO executar código** — sessão dedicada a refinamento documental
+
+---
+
+### Sessão 20/03 — Doc 03 Personas e Jornada v1.0 (NOVO)
+
+**Commit:** pendente | **Versão:** v0.7.0 (inalterada) | **Testes:** 824 (49 arquivos)
+
+**O que foi feito:**
+- ✅ Criado `03-PERSONAS-E-JORNADA.md` — documento novo, não existia rascunho anterior
+- ✅ 4 personas primárias detalhadas em YAML estruturado (LLM-optimized):
+  - P1 Carlos (Operador CNC) — chão de fábrica, boca a boca, decisão rápida
+  - P2 André (Programador CAM) — escritório técnico, validação L/D como diferencial decisivo
+  - P3 Marcelo (Professor SENAI) — multiplicador (30-120 alunos/ano), formulas educativas como gancho
+  - P4 Rogério (Dono de Oficina) — decide por ROI (R$15-50k/ano em quebras)
+- ✅ 2 personas secundárias: Encarregado de Chão de Fábrica + Encarregado de Compras
+- ✅ Mapa de jornada AARRR completo por persona (Aquisição → Referência)
+- ✅ Pontos de fricção + mitigações por persona
+- ✅ 7 insights cross-persona (boca a boca, gratuidade, multiplicador SENAI, ROI para dono)
+- ✅ Tabela Proposta de Valor por persona (mensagem + benefício + diferencial decisivo)
+- ✅ ROADMAP atualizado — sessão 3 marcada ✅ Concluído
+
+**Próxima sessão — Doc 04 (ESTRATÉGIA SEO):**
+- 📋 **Atividade:** Criar `04-ESTRATEGIA-SEO.md` — consolidar 3 docs SEO existentes
+- 🎯 **Escopo:** SEO técnico + on-page + keywords por persona + estado real do `index.html`
+- 📂 **Referências:** `Pesquisa de SEO e Palavras-Chave.md` + `Investigação de SEO.md` + `Guia de Implementação SEO.md`
+- ⚠️ **NÃO executar código** — sessão dedicada a refinamento documental
+- 🔑 **Instrução:** Este documento é o **PRIMEIRO a executar** na próxima sessão (Item #8, Sessão 4)
+
+---
+
 ### Sessão 20/03 — Doc 02 Análise Competitiva v2.0 (Trimmed)
 
 **Commit:** `fa29eac` (docs) | **Versão:** v0.7.0 (inalterada) | **Testes:** 824 (49 arquivos)

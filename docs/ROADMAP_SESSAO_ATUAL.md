@@ -111,9 +111,9 @@ npx tsc --noEmit
 |--------|-----------|------|--------|
 | 1 | `01-VISAO-PRODUTO.md` — Visão, proposta de valor, diferenciais v0.7.0 | Fase 1: Fundação | ✅ Concluído (`d7d25ae`) |
 | 2 | `02-ANALISE-COMPETITIVA.md` — SWOT, pricing BRL, gaps de mercado | Fase 1: Fundação | ✅ Concluído (`fa29eac`) |
-| 3 | `03-PERSONAS-E-JORNADA.md` — 4 personas, jornada de compra, dores | Fase 1: Fundação | ⬜ Pendente |
-| 4 | `04-ESTRATEGIA-SEO.md` — SEO técnico + on-page + conteúdo (consolida 3 docs) | Fase 2: Aquisição | ⬜ Pendente |
-| 5 | `05-PLANO-GOOGLE-ADS.md` — Campanha detalhada, orçamento R$, CPC | Fase 2: Aquisição | ⬜ Pendente |
+| 3 | `03-PERSONAS-E-JORNADA.md` — 4 personas, jornada de compra, dores | Fase 1: Fundação | ✅ Concluído |
+| 4 | `04-ESTRATEGIA-SEO.md` — SEO técnico + on-page + conteúdo (consolida 3 docs) | Fase 2: Aquisição | ✅ Concluído |
+| 5 | `05-PLANO-GOOGLE-ADS.md` — Campanha detalhada, orçamento R$, CPC | Fase 2: Aquisição | ✅ Concluído |
 | 6 | `06-ESTRATEGIA-CONTEUDO.md` — Calendário editorial, LinkedIn, YouTube | Fase 2: Aquisição | ⬜ Pendente |
 | 7 | `07-MODELO-MONETIZACAO.md` — Freemium, pricing BR, projeções 3 cenários | Fase 3: Monetização | ⬜ Pendente |
 | 8 | `08-PLANO-LANCAMENTO.md` — Go-to-market, beta, parcerias SENAI | Fase 3: Monetização | ⬜ Pendente |
@@ -222,4 +222,4 @@ Quando uma nova implementação for planejada durante a sessão:
 
 ---
 
-*Última atualização: 20/03/2026 — Sessão 20/03 — Doc 02 Análise Competitiva v2.0 trimmed (`fa29eac`) — 824 testes ✅ | ⚠️ `public/_headers` tem CSP não commitado: `connect-src 'self'` bloqueia `api.cloudflare.com` — corrigir na Fase 2 da Segurança*
+*Última atualização: 20/03/2026 — Sessão 20/03 — Doc 05 Plano Google Ads v1.0 — 824 testes ✅ | ⚠️ `public/_headers` tem CSP não commitado: `connect-src 'self'` bloqueia `api.cloudflare.com` — corrigir na Fase 2 da Segurança*
