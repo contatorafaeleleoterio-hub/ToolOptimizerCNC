@@ -44,7 +44,7 @@ npx tsc --noEmit
 | 5 | Segurança Cibernética | 🔒 Security | v0.5.5 | ⬜ Pendente |
 | 6 | Reestruturação Documental | 🏗️ Infra | v0.6.0 | ✅ Concluído |
 | 7 | Admin Dashboard (8 fases) | ✨ Feature | v0.7.0 | ✅ Concluído (`ab5eb8f`) |
-| 8 | Reestruturação Docs Marketing & Monetização (12 docs) | 📄 Docs | — | ⬜ Pendente |
+| 8 | Reestruturação Docs Marketing & Monetização (12 docs) | 📄 Docs | — | ✅ Concluído |
 
 ### ✅ Reestruturação Documental (v0.6.0) — CONCLUÍDA
 
@@ -97,7 +97,7 @@ npx tsc --noEmit
 
 ---
 
-### ⬜ Reestruturação Docs Marketing & Monetização (Item #8)
+### ✅ Reestruturação Docs Marketing & Monetização (Item #8) — CONCLUÍDA
 
 **Plano completo:** `DOCUMENTACAO_MARKETING_MONETIZACAO/PLANO_REESTRUTURACAO_DOCS.md`
 
@@ -120,7 +120,7 @@ npx tsc --noEmit
 | 9 | `09-METRICAS-E-KPIs.md` — AARRR, integração CF Analytics | Fase 3: Monetização | ✅ Concluído |
 | 10 | `10-LANDING-PAGE-SPEC.md` — Wireframe, copy PT-BR, CTAs | Fase 4: Execução | ✅ Concluído |
 | 11 | `11-MATERIAIS-MARKETING.md` — Templates email, LinkedIn, pitch | Fase 4: Execução | ✅ Concluído |
-| 12 | `00-INDICE-MASTER.md` — Índice + resumo executivo | Fase 4: Execução | ⬜ Pendente |
+| 12 | `00-INDICE-MASTER.md` — Índice + resumo executivo | Fase 4: Execução | ✅ Concluído |
 
 **Docs de referência (originais):** `DOCUMENTACAO_MARKETING_MONETIZACAO/` (8 arquivos existentes — serão movidos para `_originais/` quando os novos forem criados)
 
@@ -222,4 +222,4 @@ Quando uma nova implementação for planejada durante a sessão:
 
 ---
 
-*Última atualização: 20/03/2026 — Sessão 20/03 (tarde) — Doc 11 Materiais de Marketing v1.0 — 824 testes ✅ | ⚠️ `public/_headers` tem CSP não commitado: `connect-src 'self'` bloqueia `api.cloudflare.com` — corrigir na Fase 2 da Segurança*
+*Última atualização: 20/03/2026 — Doc 12 Índice Master v1.0 — Reestruturação Docs Marketing COMPLETA (12/12 docs) — 824 testes ✅ | ⚠️ `public/_headers` tem CSP não commitado: `connect-src 'self'` bloqueia `api.cloudflare.com` — corrigir na Fase 2 da Segurança*
