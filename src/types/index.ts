@@ -230,3 +230,39 @@ export interface HistoricoCalculo {
 
 /** Maximum history entries stored */
 export const HISTORICO_MAX_ENTRIES = 50;
+
+/** Machining objective — affects visual threshold zones of indicators (does NOT alter calculations) */
+export type ObjetivoUsinagem = 'velocidade' | 'balanceado' | 'vida_util';
+
+/**
+ * Saved tool — physical configuration only, no result.
+ * Auto-saved after each simulation with a new tool config.
+ */
+export interface SavedTool {
+  id: string;           // crypto.randomUUID()
+  nome: string;         // "Topo Ø10 - H20 - A4" | "Toroidal Ø10 - R1 - H20 - A4"
+  tipo: Ferramenta['tipo'];
+  diametro: number;
+  raioQuina?: number;   // toroidal only
+  numeroArestas: number;
+  balanco: number;
+  createdAt: string;    // ISO 8601
+}
+
+/**
+ * Validated simulation — full snapshot approved by operator.
+ * Loaded without recalculating (resultado comes from snapshot).
+ */
+export interface ValidatedSimulation {
+  id: string;                 // crypto.randomUUID()
+  nome: string;               // "Topo Ø10 - Aço 1045 - Desbaste"
+  ferramentaNome: string;     // denormalized for quick display
+  materialNome: string;       // denormalized for quick display
+  materialId: number;
+  tipoOperacao: TipoUsinagem;
+  objetivoUsinagem: ObjetivoUsinagem;
+  parametros: ParametrosUsinagem;
+  resultado: ResultadoUsinagem;
+  ferramenta: Pick<SavedTool, 'tipo' | 'diametro' | 'raioQuina' | 'numeroArestas' | 'balanco'>;
+  createdAt: string;          // ISO 8601
+}

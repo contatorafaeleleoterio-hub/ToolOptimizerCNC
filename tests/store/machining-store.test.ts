@@ -1,6 +1,7 @@
 import { describe, it, expect, beforeEach } from 'vitest';
 import { useMachiningStore } from '@/store/machining-store';
 import { TipoUsinagem, LIMITES_PADRAO_MAQUINA } from '@/types/index';
+import type { ResultadoUsinagem, ValidatedSimulation } from '@/types/index';
 
 function getState() {
   return useMachiningStore.getState();
@@ -596,5 +597,188 @@ describe('machining-store', () => {
       expect(getState().preferences.decimals).toBe(2);
       expect(getState().customMaterials).toEqual([]);
     });
+  });
+});
+
+// ─── ObjetivoUsinagem ────────────────────────────────────────────────────────
+
+describe('ObjetivoUsinagem', () => {
+  beforeEach(() => { getState().reset(); });
+
+  it('setObjetivoUsinagem updates state', () => {
+    useMachiningStore.getState().setObjetivoUsinagem('velocidade');
+    expect(useMachiningStore.getState().objetivoUsinagem).toBe('velocidade');
+  });
+
+  it('setObjetivoUsinagem does NOT clear resultado', () => {
+    useMachiningStore.setState({ resultado: { rpm: 3000 } as ResultadoUsinagem });
+    useMachiningStore.getState().setObjetivoUsinagem('vida_util');
+    expect(useMachiningStore.getState().resultado).not.toBeNull();
+  });
+});
+
+// ─── SavedTools CRUD ─────────────────────────────────────────────────────────
+
+describe('SavedTools CRUD', () => {
+  beforeEach(() => { getState().reset(); });
+
+  it('addSavedTool creates entry with id and createdAt', () => {
+    useMachiningStore.getState().addSavedTool({
+      tipo: 'topo', diametro: 10, numeroArestas: 4, balanco: 20,
+    });
+    const { savedTools } = useMachiningStore.getState();
+    expect(savedTools).toHaveLength(1);
+    expect(savedTools[0].id).toBeTruthy();
+    expect(savedTools[0].createdAt).toBeTruthy();
+  });
+
+  it('addSavedTool generates correct nome for tipo topo', () => {
+    useMachiningStore.getState().addSavedTool({
+      tipo: 'topo', diametro: 10, numeroArestas: 4, balanco: 20,
+    });
+    expect(useMachiningStore.getState().savedTools[0].nome).toBe('Topo Ø10 - H20 - A4');
+  });
+
+  it('addSavedTool generates correct nome for tipo toroidal', () => {
+    useMachiningStore.getState().addSavedTool({
+      tipo: 'toroidal', diametro: 10, raioQuina: 1, numeroArestas: 4, balanco: 20,
+    });
+    expect(useMachiningStore.getState().savedTools[0].nome).toBe('Toroidal Ø10 - R1 - H20 - A4');
+  });
+
+  it('addSavedTool generates correct nome for tipo esferica', () => {
+    useMachiningStore.getState().addSavedTool({
+      tipo: 'esferica', diametro: 8, numeroArestas: 2, balanco: 30,
+    });
+    expect(useMachiningStore.getState().savedTools[0].nome).toBe('Esférica Ø8 - H30 - A2');
+  });
+
+  it('removeSavedTool removes by id', () => {
+    useMachiningStore.getState().addSavedTool({
+      tipo: 'topo', diametro: 10, numeroArestas: 4, balanco: 20,
+    });
+    const { savedTools } = useMachiningStore.getState();
+    useMachiningStore.getState().removeSavedTool(savedTools[0].id);
+    expect(useMachiningStore.getState().savedTools).toHaveLength(0);
+  });
+
+  it('removeSavedTool ignores unknown id', () => {
+    useMachiningStore.getState().addSavedTool({
+      tipo: 'topo', diametro: 10, numeroArestas: 4, balanco: 20,
+    });
+    useMachiningStore.getState().removeSavedTool('id-inexistente');
+    expect(useMachiningStore.getState().savedTools).toHaveLength(1);
+  });
+
+  it('loadSavedTool populates ferramenta and clears resultado', () => {
+    useMachiningStore.setState({ resultado: { rpm: 3000 } as ResultadoUsinagem });
+    useMachiningStore.getState().addSavedTool({
+      tipo: 'esferica', diametro: 8, numeroArestas: 2, balanco: 30,
+    });
+    const id = useMachiningStore.getState().savedTools[0].id;
+    useMachiningStore.getState().loadSavedTool(id);
+    const state = useMachiningStore.getState();
+    expect(state.ferramenta.tipo).toBe('esferica');
+    expect(state.ferramenta.diametro).toBe(8);
+    expect(state.ferramenta.numeroArestas).toBe(2);
+    expect(state.ferramenta.balanco).toBe(30);
+    expect(state.resultado).toBeNull();
+  });
+
+  it('loadSavedTool ignores unknown id', () => {
+    useMachiningStore.setState({ resultado: { rpm: 3000 } as ResultadoUsinagem });
+    useMachiningStore.getState().loadSavedTool('id-inexistente');
+    expect(useMachiningStore.getState().resultado).not.toBeNull();
+  });
+});
+
+// ─── ValidatedSimulations CRUD ───────────────────────────────────────────────
+
+describe('ValidatedSimulations CRUD', () => {
+  const mockSim = (): Omit<ValidatedSimulation, 'id' | 'createdAt'> => ({
+    nome: 'Topo Ø10 - Aço 1045 - Desbaste',
+    ferramentaNome: 'Topo Ø10 - H20 - A4',
+    materialNome: 'Aço 1045',
+    materialId: 2,
+    tipoOperacao: TipoUsinagem.DESBASTE,
+    objetivoUsinagem: 'balanceado',
+    parametros: { ap: 2, ae: 5, fz: 0.1, vc: 100 },
+    resultado: { rpm: 5305 } as ResultadoUsinagem,
+    ferramenta: { tipo: 'topo', diametro: 10, numeroArestas: 4, balanco: 20 },
+  });
+
+  beforeEach(() => { getState().reset(); });
+
+  it('addValidatedSimulation creates entry with id and createdAt', () => {
+    useMachiningStore.getState().addValidatedSimulation(mockSim());
+    const { validatedSimulations } = useMachiningStore.getState();
+    expect(validatedSimulations).toHaveLength(1);
+    expect(validatedSimulations[0].id).toBeTruthy();
+    expect(validatedSimulations[0].createdAt).toBeTruthy();
+  });
+
+  it('addValidatedSimulation stores correct data', () => {
+    useMachiningStore.getState().addValidatedSimulation(mockSim());
+    const sim = useMachiningStore.getState().validatedSimulations[0];
+    expect(sim.nome).toBe('Topo Ø10 - Aço 1045 - Desbaste');
+    expect(sim.materialId).toBe(2);
+    expect(sim.objetivoUsinagem).toBe('balanceado');
+  });
+
+  it('removeValidatedSimulation removes by id', () => {
+    useMachiningStore.getState().addValidatedSimulation(mockSim());
+    const id = useMachiningStore.getState().validatedSimulations[0].id;
+    useMachiningStore.getState().removeValidatedSimulation(id);
+    expect(useMachiningStore.getState().validatedSimulations).toHaveLength(0);
+  });
+
+  it('loadValidatedSimulation restores full state without recalculating', () => {
+    useMachiningStore.getState().addValidatedSimulation(mockSim());
+    const id = useMachiningStore.getState().validatedSimulations[0].id;
+    useMachiningStore.getState().loadValidatedSimulation(id);
+    const state = useMachiningStore.getState();
+    expect(state.materialId).toBe(2);
+    expect(state.tipoOperacao).toBe(TipoUsinagem.DESBASTE);
+    expect(state.objetivoUsinagem).toBe('balanceado');
+    expect(state.parametros.vc).toBe(100);
+    // resultado comes from snapshot — not recalculated
+    expect(state.resultado?.rpm).toBe(5305);
+  });
+
+  it('loadValidatedSimulation ignores unknown id', () => {
+    useMachiningStore.setState({ resultado: null });
+    useMachiningStore.getState().loadValidatedSimulation('id-inexistente');
+    expect(useMachiningStore.getState().resultado).toBeNull();
+  });
+});
+
+// ─── simular() auto-save ─────────────────────────────────────────────────────
+
+describe('simular() auto-save ferramenta', () => {
+  beforeEach(() => { getState().reset(); });
+
+  it('simular saves new ferramenta to savedTools', () => {
+    useMachiningStore.getState().simular();
+    expect(useMachiningStore.getState().savedTools).toHaveLength(1);
+  });
+
+  it('simular does NOT duplicate if same ferramenta is used again', () => {
+    useMachiningStore.getState().simular();
+    useMachiningStore.getState().simular();
+    expect(useMachiningStore.getState().savedTools).toHaveLength(1);
+  });
+
+  it('simular saves second entry when ferramenta diametro changes', () => {
+    useMachiningStore.getState().simular();
+    useMachiningStore.getState().setFerramenta({ diametro: 16 });
+    useMachiningStore.getState().calcular();
+    useMachiningStore.getState().simular();
+    expect(useMachiningStore.getState().savedTools).toHaveLength(2);
+  });
+
+  it('saved ferramenta has correct nome', () => {
+    useMachiningStore.getState().simular();
+    const { savedTools, ferramenta } = useMachiningStore.getState();
+    expect(savedTools[0].nome).toContain(`Ø${ferramenta.diametro}`);
   });
 });

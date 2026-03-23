@@ -7,7 +7,7 @@ import { subscribeWithSelector, persist } from 'zustand/middleware';
 import type {
   Ferramenta, LimitesMaquina, ParametrosUsinagem, ResultadoUsinagem,
   StatusSeguranca, SafetyRules, Preferences, CustomMaterial, CustomToolConfig,
-  ToolCorrectionFactor,
+  ToolCorrectionFactor, ObjetivoUsinagem, SavedTool, ValidatedSimulation,
 } from '@/types/index';
 import {
   TipoUsinagem, LIMITES_PADRAO_MAQUINA, PREFERENCES_PADRAO,
@@ -64,6 +64,9 @@ interface MachiningState {
   customMaterials: CustomMaterial[];
   customToolConfig: CustomToolConfig;
   toolCorrectionFactors: ToolCorrectionFactor[];
+  objetivoUsinagem: ObjetivoUsinagem;
+  savedTools: SavedTool[];
+  validatedSimulations: ValidatedSimulation[];
 }
 
 interface MachiningActions {
@@ -94,6 +97,13 @@ interface MachiningActions {
   calcular: () => void;
   simular: () => void;
   reset: () => void;
+  setObjetivoUsinagem: (objetivo: ObjetivoUsinagem) => void;
+  addSavedTool: (tool: Pick<Ferramenta, 'tipo' | 'diametro' | 'raioQuina' | 'numeroArestas' | 'balanco'>) => void;
+  removeSavedTool: (id: string) => void;
+  loadSavedTool: (id: string) => void;
+  addValidatedSimulation: (sim: Omit<ValidatedSimulation, 'id' | 'createdAt'>) => void;
+  removeValidatedSimulation: (id: string) => void;
+  loadValidatedSimulation: (id: string) => void;
 }
 
 const INITIAL_STATE: MachiningState = {
@@ -113,6 +123,9 @@ const INITIAL_STATE: MachiningState = {
   customMaterials: [],
   customToolConfig: CUSTOM_TOOL_CONFIG_PADRAO,
   toolCorrectionFactors: [],
+  objetivoUsinagem: 'balanceado' as ObjetivoUsinagem,
+  savedTools: [],
+  validatedSimulations: [],
 };
 
 /** Lookup material from built-in list or custom materials */
@@ -120,6 +133,15 @@ function findMaterial(id: number, customMaterials: CustomMaterial[]) {
   const custom = customMaterials.find((m) => m.id === id);
   if (custom) return custom;
   return getMaterialById(id);
+}
+
+/** Generate industry-standard tool name for savedTools */
+function gerarNomeFerramenta(
+  f: Pick<Ferramenta, 'tipo' | 'diametro' | 'raioQuina' | 'numeroArestas' | 'balanco'>
+): string {
+  const tipoLabel = f.tipo === 'toroidal' ? 'Toroidal' : f.tipo === 'esferica' ? 'Esférica' : 'Topo';
+  const raio = f.tipo === 'toroidal' && f.raioQuina != null ? ` - R${f.raioQuina}` : '';
+  return `${tipoLabel} Ø${f.diametro}${raio} - H${f.balanco} - A${f.numeroArestas}`;
 }
 
 /** Auto-populate cutting parameters from recommendation engine */
@@ -455,13 +477,106 @@ export const useMachiningStore = create<MachiningState & MachiningActions>()(
             ferramentaTipo: ferramenta.tipo,
             ferramentaDiametro: ferramenta.diametro,
           });
+          // Auto-save ferramenta if it's a new configuration
+          const { savedTools, ferramenta: currentFerramenta } = get();
+          const jaExiste = savedTools.some(
+            (t) =>
+              t.tipo === currentFerramenta.tipo &&
+              t.diametro === currentFerramenta.diametro &&
+              t.numeroArestas === currentFerramenta.numeroArestas &&
+              t.balanco === currentFerramenta.balanco &&
+              (currentFerramenta.tipo !== 'toroidal' || t.raioQuina === currentFerramenta.raioQuina)
+          );
+          if (!jaExiste) {
+            get().addSavedTool({
+              tipo: currentFerramenta.tipo,
+              diametro: currentFerramenta.diametro,
+              raioQuina: currentFerramenta.raioQuina,
+              numeroArestas: currentFerramenta.numeroArestas,
+              balanco: currentFerramenta.balanco,
+            });
+          }
+        },
+
+        setObjetivoUsinagem: (objetivo) => {
+          // Does NOT clear resultado — only affects visual indicator zones
+          set({ objetivoUsinagem: objetivo });
+        },
+
+        addSavedTool: (toolData) => {
+          const nome = gerarNomeFerramenta(toolData);
+          const newTool: SavedTool = {
+            id: crypto.randomUUID(),
+            nome,
+            createdAt: new Date().toISOString(),
+            ...toolData,
+          };
+          set((state) => ({ savedTools: [...state.savedTools, newTool] }));
+        },
+
+        removeSavedTool: (id) => {
+          set((state) => ({ savedTools: state.savedTools.filter((t) => t.id !== id) }));
+        },
+
+        loadSavedTool: (id) => {
+          const { savedTools } = get();
+          const tool = savedTools.find((t) => t.id === id);
+          if (!tool) return;
+          const { id: _id, nome: _nome, createdAt: _createdAt, ...ferramentaFields } = tool;
+          set({
+            ferramenta: { ...get().ferramenta, ...ferramentaFields },
+            resultado: null,
+            manualOverrides: {},
+          });
+        },
+
+        addValidatedSimulation: (sim) => {
+          const newSim: ValidatedSimulation = {
+            id: crypto.randomUUID(),
+            createdAt: new Date().toISOString(),
+            ...sim,
+          };
+          set((state) => ({ validatedSimulations: [...state.validatedSimulations, newSim] }));
+        },
+
+        removeValidatedSimulation: (id) => {
+          set((state) => ({
+            validatedSimulations: state.validatedSimulations.filter((s) => s.id !== id),
+          }));
+        },
+
+        loadValidatedSimulation: (id) => {
+          const { validatedSimulations } = get();
+          const sim = validatedSimulations.find((s) => s.id === id);
+          if (!sim) return;
+          set({
+            materialId: sim.materialId,
+            tipoOperacao: sim.tipoOperacao,
+            objetivoUsinagem: sim.objetivoUsinagem,
+            parametros: { ...sim.parametros },
+            ferramenta: { ...get().ferramenta, ...sim.ferramenta },
+            resultado: { ...sim.resultado },
+            manualOverrides: {},
+          });
+          // No calcular() call — resultado comes from snapshot
         },
 
         reset: () => set({ ...INITIAL_STATE }),
       }),
       {
         name: 'tooloptimizer-cnc-settings',
-        version: 1,
+        version: 2,
+        migrate: (persistedState, fromVersion) => {
+          if (fromVersion < 2) {
+            return {
+              ...(persistedState as object),
+              objetivoUsinagem: 'balanceado' as ObjetivoUsinagem,
+              savedTools: [] as SavedTool[],
+              validatedSimulations: [] as ValidatedSimulation[],
+            };
+          }
+          return persistedState;
+        },
         partialize: (state) => ({
           limitesMaquina: state.limitesMaquina,
           safetyFactor: state.safetyFactor,
@@ -470,6 +585,9 @@ export const useMachiningStore = create<MachiningState & MachiningActions>()(
           customMaterials: state.customMaterials,
           customToolConfig: state.customToolConfig,
           toolCorrectionFactors: state.toolCorrectionFactors,
+          objetivoUsinagem: state.objetivoUsinagem,
+          savedTools: state.savedTools,
+          validatedSimulations: state.validatedSimulations,
         }),
       },
     ),
