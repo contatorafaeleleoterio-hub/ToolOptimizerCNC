@@ -97,7 +97,7 @@ export function FineTunePanel({ embedded = false }: { embedded?: boolean }) {
                     aria-expanded={isOpen}
                     aria-label={`Informações sobre ${fullLabel}`}
                   >
-                    <span className={`text-sm font-bold font-mono text-${color}`}>{label}</span>
+                    <span className={`text-base font-bold font-mono text-${color}`}>{label}</span>
                     <span className="text-xs font-bold tracking-wider text-gray-500 uppercase">{fullLabel}</span>
                     <span
                       className="material-symbols-outlined text-gray-600 transition-transform duration-300"
@@ -116,7 +116,7 @@ export function FineTunePanel({ embedded = false }: { embedded?: boolean }) {
                     className={`w-20 bg-transparent border-none text-right font-mono text-xl font-bold text-${color} outline-none [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none`}
                     style={{ filter: `drop-shadow(0 0 8px rgba(${rgb},0.4))` }}
                     aria-label={`valor de ${label}`} />
-                  <div className="text-fine text-gray-500 font-mono tracking-wider">{unit}</div>
+                  <div className="text-xs text-gray-500 font-mono tracking-wider">{unit}</div>
                 </div>
               </div>
 

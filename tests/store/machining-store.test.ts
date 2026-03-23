@@ -752,33 +752,6 @@ describe('ValidatedSimulations CRUD', () => {
   });
 });
 
-// ─── simular() auto-save ─────────────────────────────────────────────────────
-
-describe('simular() auto-save ferramenta', () => {
-  beforeEach(() => { getState().reset(); });
-
-  it('simular saves new ferramenta to savedTools', () => {
-    useMachiningStore.getState().simular();
-    expect(useMachiningStore.getState().savedTools).toHaveLength(1);
-  });
-
-  it('simular does NOT duplicate if same ferramenta is used again', () => {
-    useMachiningStore.getState().simular();
-    useMachiningStore.getState().simular();
-    expect(useMachiningStore.getState().savedTools).toHaveLength(1);
-  });
-
-  it('simular saves second entry when ferramenta diametro changes', () => {
-    useMachiningStore.getState().simular();
-    useMachiningStore.getState().setFerramenta({ diametro: 16 });
-    useMachiningStore.getState().calcular();
-    useMachiningStore.getState().simular();
-    expect(useMachiningStore.getState().savedTools).toHaveLength(2);
-  });
-
-  it('saved ferramenta has correct nome', () => {
-    useMachiningStore.getState().simular();
-    const { savedTools, ferramenta } = useMachiningStore.getState();
-    expect(savedTools[0].nome).toContain(`Ø${ferramenta.diametro}`);
-  });
-});
+// ─── simular() auto-save removed (Fase 5) ────────────────────────────────────
+// Auto-save silencioso removido em v0.8.0-alpha.5. Testes de regressão agora
+// vivem em tests/components/config-panel.test.tsx ("simular() does NOT auto-save").

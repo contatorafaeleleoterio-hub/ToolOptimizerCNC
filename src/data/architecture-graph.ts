@@ -428,7 +428,7 @@ export const ARCHITECTURE_GRAPH: ArchGraph = {
   edges: [...LEVEL1_EDGES, ...LEVEL2_EDGES],
   groups: GROUPS,
   metadata: {
-    version: '0.8.0-alpha.3',
+    version: '0.8.0',
     totalFiles: Object.keys(FILE_LINES).length,
     totalLines,
     lastUpdated: '2026-03-13',

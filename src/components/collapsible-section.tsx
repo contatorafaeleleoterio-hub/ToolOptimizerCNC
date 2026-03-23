@@ -20,10 +20,10 @@ export function CollapsibleSection({
         className="w-full flex items-center justify-between px-3 py-2.5 hover:bg-white/5 transition-colors"
         aria-expanded={isOpen}
       >
-        <span className="text-xs font-bold uppercase tracking-widest text-gray-300">{title}</span>
+        <span className="text-sm font-bold uppercase tracking-widest text-gray-300">{title}</span>
         <div className="flex items-center gap-2">
           {!isOpen && summary && (
-            <span className="text-xs text-gray-500 truncate max-w-[140px]">{summary}</span>
+            <span className="text-[13px] text-gray-500 truncate max-w-[140px]">{summary}</span>
           )}
           <span
             className="material-symbols-outlined text-gray-500 transition-transform duration-300 text-base"

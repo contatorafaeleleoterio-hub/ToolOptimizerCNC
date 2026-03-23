@@ -36,12 +36,12 @@ function DropdownRow({
       className="flex items-center justify-between gap-3 rounded-md px-3 py-2"
       style={{ background: 'linear-gradient(135deg, rgba(255,255,255,0.05), rgba(255,255,255,0.02))' }}
     >
-      <span className="text-sm font-semibold text-white/85 leading-none">{label}</span>
+      <span className="text-base font-semibold text-white/85 leading-none">{label}</span>
       <select
         value={String(value)}
         onChange={(e) => onChange(Number(e.target.value))}
         aria-label={label}
-        className="bg-black/50 border border-white/15 rounded px-2 py-1 text-sm text-white font-mono focus:outline-none focus:border-primary cursor-pointer min-w-[90px] appearance-none select-chevron"
+        className="bg-black/50 border border-white/15 rounded px-2 py-1 text-base text-white font-mono focus:outline-none focus:border-primary cursor-pointer min-w-[90px] appearance-none select-chevron"
       >
         {options.map((opt) => (
           <option key={opt} value={String(opt)}>
@@ -125,7 +125,7 @@ export function ConfigPanel() {
         </div>
       </div>
 
-      <div className="bg-surface-dark backdrop-blur-xl border border-white/5 rounded-2xl p-2 shadow-glass flex flex-col gap-2">
+      <div className="bg-surface-dark backdrop-blur-xl border border-white/5 rounded-2xl p-2 shadow-glass flex flex-col gap-3">
 
         {/* Seção 1: Configuração Base */}
         <CollapsibleSection
@@ -159,7 +159,7 @@ export function ConfigPanel() {
               <div className="grid grid-cols-3 gap-2">
                 {Object.values(TipoUsinagem).map((t) => (
                   <button key={t} onClick={() => setTipoOperacao(t)}
-                    className={`py-2 rounded border text-sm transition-colors ${tipoOperacao === t
+                    className={`py-2 rounded border text-base transition-colors ${tipoOperacao === t
                       ? 'bg-primary text-black font-bold border-primary shadow-neon-cyan'
                       : 'bg-black/40 text-gray-400 hover:text-white hover:bg-white/5 border-white/10'}`}>
                     {OPERACAO_LABELS[t]}
@@ -220,7 +220,7 @@ export function ConfigPanel() {
               <div className="grid grid-cols-3 gap-2">
                 {FERRAMENTAS_PADRAO.map((f) => (
                   <button key={f.tipo} onClick={() => setFerramenta({ tipo: f.tipo, numeroArestas: f.zPadrao })}
-                    className={`py-2 rounded border text-sm transition-colors ${ferramenta.tipo === f.tipo
+                    className={`py-2 rounded border text-base transition-colors ${ferramenta.tipo === f.tipo
                       ? 'bg-primary text-black font-bold border-primary shadow-neon-cyan'
                       : 'bg-black/40 text-gray-400 hover:text-white hover:bg-white/5 border-white/10'}`}>
                     {f.descricao.split(' ')[0]}
