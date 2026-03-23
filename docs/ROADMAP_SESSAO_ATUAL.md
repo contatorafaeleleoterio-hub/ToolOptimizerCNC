@@ -11,10 +11,10 @@
 | Item | Valor |
 |------|-------|
 | **Branch** | `main` |
-| **Versão** | `0.7.0` |
-| **Testes** | **824 passando** (49 arquivos) — 0 falhas |
+| **Versão** | `0.8.0` |
+| **Testes** | **864 passando** (50 arquivos) — 0 falhas |
 | **TypeScript** | **zero erros** |
-| **Build** | **limpo** — JS 99.20KB gzip, CSS 14.35KB |
+| **Build** | **limpo** — JS 100.11KB gzip, CSS 14.35KB |
 | **Remote** | `origin/main` sincronizado ✅ |
 | **Worker** | ✅ LIVE — `https://tooloptimizercnc.contatorafaeleleoterio.workers.dev` |
 | **Custom Domains** | ✅ `tooloptimizercnc.com.br` + `app.tooloptimizercnc.com.br` |
@@ -45,6 +45,7 @@ npx tsc --noEmit
 | 6 | Reestruturação Documental | 🏗️ Infra | v0.6.0 | ✅ Concluído |
 | 7 | Admin Dashboard (8 fases) | ✨ Feature | v0.7.0 | ✅ Concluído (`ab5eb8f`) |
 | 8 | Reestruturação Docs Marketing & Monetização (12 docs) | 📄 Docs | — | ✅ Concluído |
+| 9 | [Redesign Dashboard Principal (8 fases)](#-redesign-dashboard-principal-v080) | 🎨 Redesign | v0.8.0 | ✅ Concluído (Fases 1-6) |
 
 ### ✅ Reestruturação Documental (v0.6.0) — CONCLUÍDA
 
@@ -125,6 +126,29 @@ npx tsc --noEmit
 **Docs de referência (originais):** `DOCUMENTACAO_MARKETING_MONETIZACAO/` (8 arquivos existentes — serão movidos para `_originais/` quando os novos forem criados)
 
 **⚠️ IMPORTANTE:** Sessões de refinamento documental — NÃO executar código. Ler o plano completo e os docs originais de referência no início da sessão.
+
+---
+
+### ⬜ Redesign Dashboard Principal (v0.8.0)
+
+**Plano completo:** `docs/plans/PLAN_Redesign_Dashboard_v0.8.0.md`
+**Plano de execução:** `docs/plans/redesign-v0.8.0/PLANO-EXECUCAO-SESSAO.md`
+
+**8 fases — renumeradas após auditoria 23/03/2026:**
+
+| Fase | Titulo | Documento | Status |
+|------|--------|-----------|--------|
+| 1 | Fundação — Tipos, Store, Dados | `FASE-1-fundacao-tipos-store-dados.md` | ✅ Concluído (`5f98c9d`) |
+| 2 | Layout 2 Colunas + Accordion | `FASE-2-layout-2-colunas-accordion.md` | ✅ Concluído (`7afbe82`) |
+| 3 | Ferramenta → Dropdowns | `FASE-3-ferramenta-dropdowns.md` | ✅ Concluído (`70cf508`) |
+| 4 | Fix Atômico Store | `FASE-4-fix-atomico-store.md` | ✅ Concluído (`274cf28`) |
+| 5 | Biblioteca de Ferramentas (Manual) | `FASE-5-biblioteca-ferramentas.md` | ✅ Concluído (`293547a`) |
+| 6 | Fontes + Polish + Release v0.8.0 | `FASE-6-fontes-polish-release.md` | ✅ Concluído (`78d6a0e`) |
+| 7 | Objetivo Usinagem | `FASE-7-v2-objetivo-usinagem.md` | ⬜ Pendente (desbloqueado) |
+| 8A | Favoritar Simulação | `FASE-8A-favoritar-simulacao.md` | ⬜ Pendente (desbloqueado) |
+| 8B | Tornar Input Padrão | `FASE-8B-tornar-input-padrao.md` | ⬜ Pendente (desbloqueado) |
+
+**v0.8.0 lançado.** Próxima sessão: F7 → F8A → F8B → release v0.8.3 (~80% contexto).
 
 ---
 
@@ -222,4 +246,4 @@ Quando uma nova implementação for planejada durante a sessão:
 
 ---
 
-*Última atualização: 20/03/2026 — Doc 12 Índice Master v1.0 — Reestruturação Docs Marketing COMPLETA (12/12 docs) — 824 testes ✅ | ⚠️ `public/_headers` tem CSP não commitado: `connect-src 'self'` bloqueia `api.cloudflare.com` — corrigir na Fase 2 da Segurança*
+*Última atualização: 23/03/2026 — Auditoria completa dos planos v0.8.0: fases renumeradas (4=fix store, 5=biblioteca ferramentas, 6=fontes+release), fases 7-8 bloqueadas. Planos legados em `_legado/`. Próxima sessão: implementar Fases 4→5→6 em sequência | ⚠️ `public/_headers` tem CSP não commitado: `connect-src 'self'` bloqueia `api.cloudflare.com` — corrigir na Fase 2 da Segurança*

@@ -10,11 +10,11 @@
 | Item | Valor |
 |------|-------|
 | **Branch** | `main` |
-| **Versão** | `0.7.0` |
-| **Último commit** | `47c08d1` docs: planos v2 — fase 7 objetivo usinagem + fase 8A favoritar + fase 8B pin defaults |
-| **Testes** | **824 passando** (49 arquivos) — 0 falhas |
+| **Versão** | `0.8.0` |
+| **Último commit** | `78d6a0e` feat: redesign fase 6 — fontes polish quality gates v0.8.0 |
+| **Testes** | **864 passando** (50 arquivos) — 0 falhas |
 | **TypeScript** | **zero erros** |
-| **Build** | **limpo** — JS 99.20KB gzip, CSS 14.35KB |
+| **Build** | **limpo** — JS 100.11KB gzip, CSS 14.35KB |
 | **Remote** | `origin/main` sincronizado ✅ |
 | **Worker** | ✅ LIVE — `https://tooloptimizercnc.contatorafaeleleoterio.workers.dev` |
 | **Custom Domains** | ✅ `tooloptimizercnc.com.br` + `app.tooloptimizercnc.com.br` |
@@ -31,6 +31,32 @@ npx tsc --noEmit
 ---
 
 ## Ultimas 3 Sessoes
+
+### Sessão 23/03 (noite-2) — Redesign v0.8.0 Fases 4, 5 e 6
+
+**Commit:** `78d6a0e` feat: redesign fase 6 — fontes polish quality gates v0.8.0 | **Versão:** v0.8.0 | **Testes:** 864 (50 arquivos)
+
+**O que foi feito:**
+- ✅ **Fase 4:** Fix atômico `set()` em `calcular()` — removido `set({ baseRPM, baseFeed })` duplo, mesclado no `set()` único da linha ~443. +2 testes. Commit `274cf28`
+- ✅ **Fase 5:** Removido auto-save silencioso de `simular()` (anti-pattern). Adicionado dropdown "Ferramentas Salvas" + botão 💾 manual no topo da seção Ferramenta. +9 testes. Commit `293547a`
+- ✅ **Fase 6:** Fontes aumentadas (`text-xs→text-sm` titles, `text-sm→text-base` labels/selects/botões, `text-fine→text-xs` unidades). Gap `gap-2→gap-3`. Version bump `0.8.0`. Commit `78d6a0e`
+- ✅ Merge worktree → main + push → deploy automático
+- ✅ 864 testes passando (4 testes de auto-save removidos + 11 novos adicionados = net +40 vs 824)
+
+**Estado dos planos (pós-release v0.8.0):**
+
+| Fase | Arquivo | Status |
+|------|---------|--------|
+| 1-6 | FASE-1/2/3/4/5/6-*.md | ✅ Implementado |
+| 7 | `FASE-7-v2-objetivo-usinagem.md` | ⬜ Pendente (desbloqueado) |
+| 8A | `FASE-8A-favoritar-simulacao.md` | ⬜ Pendente (desbloqueado) |
+| 8B | `FASE-8B-tornar-input-padrao.md` | ⬜ Pendente (desbloqueado) |
+
+**Próxima sessão:**
+- F7 → F8A → F8B (~80% contexto, ~135 min) → release v0.8.3
+- Plano de execução: `docs/plans/redesign-v0.8.0/PLANO-EXECUCAO-SESSAO.md`
+
+---
 
 ### Sessão 23/03 (noite) — Planos v2 para Fases 7, 8A, 8B
 
