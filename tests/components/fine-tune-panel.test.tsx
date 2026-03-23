@@ -127,4 +127,19 @@ describe('FineTunePanel', () => {
     // Drawer is open, but health bar is still in DOM (rendered before drawer)
     expect(screen.getByTestId('health-bar-vc')).toBeInTheDocument();
   });
+
+  it('renders pin buttons for all 4 sliders', () => {
+    render(<FineTunePanel />);
+    expect(screen.getByRole('button', { name: 'Fixar Vc como padrão' })).toBeInTheDocument();
+    expect(screen.getByRole('button', { name: 'Fixar fz como padrão' })).toBeInTheDocument();
+    expect(screen.getByRole('button', { name: 'Fixar ae como padrão' })).toBeInTheDocument();
+    expect(screen.getByRole('button', { name: 'Fixar ap como padrão' })).toBeInTheDocument();
+  });
+
+  it('clicking pin Vc button stores vc in userDefaults', () => {
+    render(<FineTunePanel />);
+    fireEvent.click(screen.getByRole('button', { name: 'Fixar Vc como padrão' }));
+    const { userDefaults, parametros } = useMachiningStore.getState();
+    expect(userDefaults.vc).toBe(parametros.vc);
+  });
 });

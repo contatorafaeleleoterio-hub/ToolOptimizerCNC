@@ -7,7 +7,7 @@ import { subscribeWithSelector, persist } from 'zustand/middleware';
 import type {
   Ferramenta, LimitesMaquina, ParametrosUsinagem, ResultadoUsinagem,
   StatusSeguranca, SafetyRules, Preferences, CustomMaterial, CustomToolConfig,
-  ToolCorrectionFactor, ObjetivoUsinagem, SavedTool, ValidatedSimulation,
+  ToolCorrectionFactor, ObjetivoUsinagem, SavedTool, ValidatedSimulation, UserDefaults,
 } from '@/types/index';
 import {
   TipoUsinagem, LIMITES_PADRAO_MAQUINA, PREFERENCES_PADRAO,
@@ -67,6 +67,7 @@ interface MachiningState {
   objetivoUsinagem: ObjetivoUsinagem;
   savedTools: SavedTool[];
   validatedSimulations: ValidatedSimulation[];
+  userDefaults: UserDefaults;
 }
 
 interface MachiningActions {
@@ -104,6 +105,9 @@ interface MachiningActions {
   addValidatedSimulation: (sim: Omit<ValidatedSimulation, 'id' | 'createdAt'>) => void;
   removeValidatedSimulation: (id: string) => void;
   loadValidatedSimulation: (id: string) => void;
+  pinDefault: (field: keyof UserDefaults, value: UserDefaults[keyof UserDefaults]) => void;
+  unpinDefault: (field: keyof UserDefaults) => void;
+  clearAllDefaults: () => void;
 }
 
 const INITIAL_STATE: MachiningState = {
@@ -126,6 +130,7 @@ const INITIAL_STATE: MachiningState = {
   objetivoUsinagem: 'balanceado' as ObjetivoUsinagem,
   savedTools: [],
   validatedSimulations: [],
+  userDefaults: {},
 };
 
 /** Lookup material from built-in list or custom materials */
@@ -544,21 +549,69 @@ export const useMachiningStore = create<MachiningState & MachiningActions>()(
           // No calcular() call — resultado comes from snapshot
         },
 
+        pinDefault: (field, value) => {
+          set((state) => ({ userDefaults: { ...state.userDefaults, [field]: value } }));
+        },
+
+        unpinDefault: (field) => {
+          set((state) => {
+            const next = { ...state.userDefaults };
+            delete next[field];
+            return { userDefaults: next };
+          });
+        },
+
+        clearAllDefaults: () => {
+          set({ userDefaults: {} });
+        },
+
         reset: () => set({ ...INITIAL_STATE }),
       }),
       {
         name: 'tooloptimizer-cnc-settings',
-        version: 2,
+        version: 3,
         migrate: (persistedState, fromVersion) => {
+          const s = persistedState as Record<string, unknown>;
           if (fromVersion < 2) {
-            return {
-              ...(persistedState as object),
-              objetivoUsinagem: 'balanceado' as ObjetivoUsinagem,
-              savedTools: [] as SavedTool[],
-              validatedSimulations: [] as ValidatedSimulation[],
+            s.objetivoUsinagem = 'balanceado' as ObjetivoUsinagem;
+            s.savedTools = [] as SavedTool[];
+            s.validatedSimulations = [] as ValidatedSimulation[];
+          }
+          if (fromVersion < 3) {
+            s.userDefaults = {};
+          }
+          return s;
+        },
+        onRehydrateStorage: () => (state) => {
+          // Apply user defaults to store after rehydration
+          if (!state) return;
+          const d = state.userDefaults;
+          if (!d || Object.keys(d).length === 0) return;
+          const updates: Partial<MachiningState> = {};
+          if (d.materialId !== undefined) updates.materialId = d.materialId;
+          if (d.tipoOperacao !== undefined) updates.tipoOperacao = d.tipoOperacao;
+          if (d.ferramentaTipo !== undefined || d.diametro !== undefined || d.raioQuina !== undefined || d.numeroArestas !== undefined || d.balanco !== undefined) {
+            updates.ferramenta = {
+              ...state.ferramenta,
+              ...(d.ferramentaTipo !== undefined && { tipo: d.ferramentaTipo }),
+              ...(d.diametro !== undefined && { diametro: d.diametro }),
+              ...(d.raioQuina !== undefined && { raioQuina: d.raioQuina }),
+              ...(d.numeroArestas !== undefined && { numeroArestas: d.numeroArestas }),
+              ...(d.balanco !== undefined && { balanco: d.balanco }),
             };
           }
-          return persistedState;
+          if (d.vc !== undefined || d.fz !== undefined || d.ae !== undefined || d.ap !== undefined) {
+            updates.parametros = {
+              ...state.parametros,
+              ...(d.vc !== undefined && { vc: d.vc }),
+              ...(d.fz !== undefined && { fz: d.fz }),
+              ...(d.ae !== undefined && { ae: d.ae }),
+              ...(d.ap !== undefined && { ap: d.ap }),
+            };
+          }
+          if (Object.keys(updates).length > 0) {
+            useMachiningStore.setState(updates);
+          }
         },
         partialize: (state) => ({
           limitesMaquina: state.limitesMaquina,
@@ -571,6 +624,7 @@ export const useMachiningStore = create<MachiningState & MachiningActions>()(
           objetivoUsinagem: state.objetivoUsinagem,
           savedTools: state.savedTools,
           validatedSimulations: state.validatedSimulations,
+          userDefaults: state.userDefaults,
         }),
       },
     ),

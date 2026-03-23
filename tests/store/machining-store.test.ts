@@ -755,3 +755,45 @@ describe('ValidatedSimulations CRUD', () => {
 // ─── simular() auto-save removed (Fase 5) ────────────────────────────────────
 // Auto-save silencioso removido em v0.8.0-alpha.5. Testes de regressão agora
 // vivem em tests/components/config-panel.test.tsx ("simular() does NOT auto-save").
+
+// ─── UserDefaults (Fase 8B) ──────────────────────────────────────────────────
+
+describe('userDefaults', () => {
+  beforeEach(() => { useMachiningStore.getState().reset(); });
+
+  it('starts with empty userDefaults', () => {
+    expect(useMachiningStore.getState().userDefaults).toEqual({});
+  });
+
+  it('pinDefault stores a field value', () => {
+    useMachiningStore.getState().pinDefault('materialId', 5);
+    expect(useMachiningStore.getState().userDefaults.materialId).toBe(5);
+  });
+
+  it('pinDefault overwrites a previous value', () => {
+    useMachiningStore.getState().pinDefault('materialId', 5);
+    useMachiningStore.getState().pinDefault('materialId', 7);
+    expect(useMachiningStore.getState().userDefaults.materialId).toBe(7);
+  });
+
+  it('unpinDefault removes a field', () => {
+    useMachiningStore.getState().pinDefault('materialId', 5);
+    useMachiningStore.getState().unpinDefault('materialId');
+    expect(useMachiningStore.getState().userDefaults.materialId).toBeUndefined();
+  });
+
+  it('clearAllDefaults removes all fields', () => {
+    useMachiningStore.getState().pinDefault('materialId', 5);
+    useMachiningStore.getState().pinDefault('vc', 120);
+    useMachiningStore.getState().clearAllDefaults();
+    expect(useMachiningStore.getState().userDefaults).toEqual({});
+  });
+
+  it('pinDefault can store multiple fields independently', () => {
+    useMachiningStore.getState().pinDefault('vc', 150);
+    useMachiningStore.getState().pinDefault('fz', 0.08);
+    const { userDefaults } = useMachiningStore.getState();
+    expect(userDefaults.vc).toBe(150);
+    expect(userDefaults.fz).toBe(0.08);
+  });
+});

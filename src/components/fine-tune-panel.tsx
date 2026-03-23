@@ -5,6 +5,7 @@ import { calcularSliderBounds } from '@/engine';
 import type { ParametrosUsinagem } from '@/types';
 import { ParameterHealthBar } from './parameter-health-bar';
 import { StyledSlider, BTN_CLS } from './styled-slider';
+import { PinDefaultButton } from './pin-default-button';
 
 /** Configuração visual (labels, cores, textos educacionais) — constante */
 const SLIDER_VISUAL = [
@@ -41,6 +42,9 @@ export function FineTunePanel({ embedded = false }: { embedded?: boolean }) {
   const ferramenta = useMachiningStore((s) => s.ferramenta);
   const tipoOperacao = useMachiningStore((s) => s.tipoOperacao);
   const objetivoUsinagem = useMachiningStore((s) => s.objetivoUsinagem);
+  const userDefaults = useMachiningStore((s) => s.userDefaults);
+  const pinDefault = useMachiningStore((s) => s.pinDefault);
+  const unpinDefault = useMachiningStore((s) => s.unpinDefault);
   const material = MATERIAIS.find((m) => m.id === materialId);
 
   const [openKey, setOpenKey] = useState<string | null>(null);
@@ -108,16 +112,26 @@ export function FineTunePanel({ embedded = false }: { embedded?: boolean }) {
                     </span>
                   </button>
                 </div>
-                <div className="text-right">
-                  <input type="number" value={display} step={step} min={min} max={max}
-                    onChange={(e) => {
-                      const n = Number(e.target.value);
-                      if (!isNaN(n) && n >= min && n <= max) ajustarParametros({ [key]: n });
-                    }}
-                    className={`w-20 bg-transparent border-none text-right font-mono text-xl font-bold text-${color} outline-none [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none`}
-                    style={{ filter: `drop-shadow(0 0 8px rgba(${rgb},0.4))` }}
-                    aria-label={`valor de ${label}`} />
-                  <div className="text-xs text-gray-500 font-mono tracking-wider">{unit}</div>
+                <div className="flex items-center gap-1">
+                  <PinDefaultButton
+                    isPinned={userDefaults[key as keyof typeof userDefaults] === val}
+                    onClick={() => userDefaults[key as keyof typeof userDefaults] === val
+                      ? unpinDefault(key as keyof typeof userDefaults)
+                      : pinDefault(key as keyof typeof userDefaults, val)
+                    }
+                    label={`Fixar ${label} como padrão`}
+                  />
+                  <div className="text-right">
+                    <input type="number" value={display} step={step} min={min} max={max}
+                      onChange={(e) => {
+                        const n = Number(e.target.value);
+                        if (!isNaN(n) && n >= min && n <= max) ajustarParametros({ [key]: n });
+                      }}
+                      className={`w-20 bg-transparent border-none text-right font-mono text-xl font-bold text-${color} outline-none [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none`}
+                      style={{ filter: `drop-shadow(0 0 8px rgba(${rgb},0.4))` }}
+                      aria-label={`valor de ${label}`} />
+                    <div className="text-xs text-gray-500 font-mono tracking-wider">{unit}</div>
+                  </div>
                 </div>
               </div>
 

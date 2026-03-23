@@ -3,6 +3,7 @@ import { useMachiningStore } from '@/store';
 import { MATERIAIS, FERRAMENTAS_PADRAO, DIAMETROS_COMPLETOS, RAIOS_PONTA, ARESTAS_OPTIONS, ALTURAS_FIXACAO } from '@/data';
 import { TipoUsinagem } from '@/types';
 import type { ObjetivoUsinagem } from '@/types';
+import { PinDefaultButton } from './pin-default-button';
 import { FieldGroup } from './ui-helpers';
 import { useSimulationAnimation } from '@/hooks/use-simulation-animation';
 import { usePlausible } from '@/hooks/use-plausible';
@@ -61,6 +62,7 @@ export function ConfigPanel() {
     simular, reset,
     savedTools, loadSavedTool, addSavedTool,
     objetivoUsinagem, setObjetivoUsinagem,
+    userDefaults, pinDefault, unpinDefault,
   } = useMachiningStore();
 
   const OBJETIVO_LABELS: Record<ObjetivoUsinagem, string> = {
@@ -142,17 +144,24 @@ export function ConfigPanel() {
         >
           <div className="space-y-3 pt-1">
             <FieldGroup label="Material da Peça">
-              <select value={materialId} onChange={(e) => {
-                const id = Number(e.target.value);
-                setMaterial(id);
-                const mat = MATERIAIS.find((m) => m.id === id);
-                if (mat) track('Material_Selecionado', { material: mat.nome });
-              }}
-                className="w-full bg-black/40 border border-white/10 rounded-lg py-3 pl-3 pr-10 text-base text-gray-200 focus:ring-1 focus:ring-primary focus:border-primary outline-none appearance-none transition-all hover:border-white/20 select-chevron">
-                {MATERIAIS.map((m) => (
-                  <option key={m.id} value={m.id}>{m.nome}{m.status === 'estimado' ? ' ⚠' : ''}</option>
-                ))}
-              </select>
+              <div className="flex items-center gap-2">
+                <select value={materialId} onChange={(e) => {
+                  const id = Number(e.target.value);
+                  setMaterial(id);
+                  const mat = MATERIAIS.find((m) => m.id === id);
+                  if (mat) track('Material_Selecionado', { material: mat.nome });
+                }}
+                  className="flex-1 bg-black/40 border border-white/10 rounded-lg py-3 pl-3 pr-10 text-base text-gray-200 focus:ring-1 focus:ring-primary focus:border-primary outline-none appearance-none transition-all hover:border-white/20 select-chevron">
+                  {MATERIAIS.map((m) => (
+                    <option key={m.id} value={m.id}>{m.nome}{m.status === 'estimado' ? ' ⚠' : ''}</option>
+                  ))}
+                </select>
+                <PinDefaultButton
+                  isPinned={userDefaults.materialId === materialId}
+                  onClick={() => userDefaults.materialId === materialId ? unpinDefault('materialId') : pinDefault('materialId', materialId)}
+                  label="Fixar material como padrão"
+                />
+              </div>
               {material && (
                 <div className="flex justify-between mt-1 px-1">
                   <span className="text-xs text-gray-600">{material.dureza}</span>
@@ -164,15 +173,22 @@ export function ConfigPanel() {
               )}
             </FieldGroup>
             <FieldGroup label="Tipo de Usinagem">
-              <div className="grid grid-cols-3 gap-2">
-                {Object.values(TipoUsinagem).map((t) => (
-                  <button key={t} onClick={() => setTipoOperacao(t)}
-                    className={`py-2 rounded border text-base transition-colors ${tipoOperacao === t
-                      ? 'bg-primary text-black font-bold border-primary shadow-neon-cyan'
-                      : 'bg-black/40 text-gray-400 hover:text-white hover:bg-white/5 border-white/10'}`}>
-                    {OPERACAO_LABELS[t]}
-                  </button>
-                ))}
+              <div className="flex items-center gap-2">
+                <div className="grid grid-cols-3 gap-2 flex-1">
+                  {Object.values(TipoUsinagem).map((t) => (
+                    <button key={t} onClick={() => setTipoOperacao(t)}
+                      className={`py-2 rounded border text-base transition-colors ${tipoOperacao === t
+                        ? 'bg-primary text-black font-bold border-primary shadow-neon-cyan'
+                        : 'bg-black/40 text-gray-400 hover:text-white hover:bg-white/5 border-white/10'}`}>
+                      {OPERACAO_LABELS[t]}
+                    </button>
+                  ))}
+                </div>
+                <PinDefaultButton
+                  isPinned={userDefaults.tipoOperacao === tipoOperacao}
+                  onClick={() => userDefaults.tipoOperacao === tipoOperacao ? unpinDefault('tipoOperacao') : pinDefault('tipoOperacao', tipoOperacao)}
+                  label="Fixar operação como padrão"
+                />
               </div>
             </FieldGroup>
             <FieldGroup label="Objetivo de Usinagem">
@@ -240,55 +256,98 @@ export function ConfigPanel() {
 
             {/* 1. Tool type */}
             <FieldGroup label="Tipo">
-              <div className="grid grid-cols-3 gap-2">
-                {FERRAMENTAS_PADRAO.map((f) => (
-                  <button key={f.tipo} onClick={() => setFerramenta({ tipo: f.tipo, numeroArestas: f.zPadrao })}
-                    className={`py-2 rounded border text-base transition-colors ${ferramenta.tipo === f.tipo
-                      ? 'bg-primary text-black font-bold border-primary shadow-neon-cyan'
-                      : 'bg-black/40 text-gray-400 hover:text-white hover:bg-white/5 border-white/10'}`}>
-                    {f.descricao.split(' ')[0]}
-                  </button>
-                ))}
+              <div className="flex items-center gap-2">
+                <div className="grid grid-cols-3 gap-2 flex-1">
+                  {FERRAMENTAS_PADRAO.map((f) => (
+                    <button key={f.tipo} onClick={() => setFerramenta({ tipo: f.tipo, numeroArestas: f.zPadrao })}
+                      className={`py-2 rounded border text-base transition-colors ${ferramenta.tipo === f.tipo
+                        ? 'bg-primary text-black font-bold border-primary shadow-neon-cyan'
+                        : 'bg-black/40 text-gray-400 hover:text-white hover:bg-white/5 border-white/10'}`}>
+                      {f.descricao.split(' ')[0]}
+                    </button>
+                  ))}
+                </div>
+                <PinDefaultButton
+                  isPinned={userDefaults.ferramentaTipo === ferramenta.tipo}
+                  onClick={() => userDefaults.ferramentaTipo === ferramenta.tipo ? unpinDefault('ferramentaTipo') : pinDefault('ferramentaTipo', ferramenta.tipo)}
+                  label="Fixar tipo de ferramenta como padrão"
+                />
               </div>
             </FieldGroup>
 
-            {/* 2. Diameter — DropdownRow */}
-            <DropdownRow
-              label="Diâmetro (mm)"
-              value={ferramenta.diametro}
-              options={DIAMETROS_COMPLETOS}
-              onChange={(v) => setFerramenta({ diametro: v })}
-              format={(v) => `${v} mm`}
-            />
-
-            {/* 3. Corner radius — DropdownRow (toroidal only) */}
-            {ferramenta.tipo === 'toroidal' && (
-              <DropdownRow
-                label="Raio da Ponta"
-                value={ferramenta.raioQuina ?? 1.0}
-                options={RAIOS_PONTA}
-                onChange={(v) => setFerramenta({ raioQuina: v })}
-                format={(v) => `${v} mm`}
+            {/* 2. Diameter — DropdownRow + pin */}
+            <div className="flex items-center gap-2">
+              <div className="flex-1">
+                <DropdownRow
+                  label="Diâmetro (mm)"
+                  value={ferramenta.diametro}
+                  options={DIAMETROS_COMPLETOS}
+                  onChange={(v) => setFerramenta({ diametro: v })}
+                  format={(v) => `${v} mm`}
+                />
+              </div>
+              <PinDefaultButton
+                isPinned={userDefaults.diametro === ferramenta.diametro}
+                onClick={() => userDefaults.diametro === ferramenta.diametro ? unpinDefault('diametro') : pinDefault('diametro', ferramenta.diametro)}
+                label="Fixar diâmetro como padrão"
               />
+            </div>
+
+            {/* 3. Corner radius — DropdownRow + pin (toroidal only) */}
+            {ferramenta.tipo === 'toroidal' && (
+              <div className="flex items-center gap-2">
+                <div className="flex-1">
+                  <DropdownRow
+                    label="Raio da Ponta"
+                    value={ferramenta.raioQuina ?? 1.0}
+                    options={RAIOS_PONTA}
+                    onChange={(v) => setFerramenta({ raioQuina: v })}
+                    format={(v) => `${v} mm`}
+                  />
+                </div>
+                <PinDefaultButton
+                  isPinned={userDefaults.raioQuina === (ferramenta.raioQuina ?? 1.0)}
+                  onClick={() => userDefaults.raioQuina === (ferramenta.raioQuina ?? 1.0) ? unpinDefault('raioQuina') : pinDefault('raioQuina', ferramenta.raioQuina ?? 1.0)}
+                  label="Fixar raio da ponta como padrão"
+                />
+              </div>
             )}
 
-            {/* 4. Arestas — DropdownRow [2, 3, 4, 6] */}
-            <DropdownRow
-              label="Arestas (Z)"
-              value={ferramenta.numeroArestas}
-              options={ARESTAS_OPTIONS}
-              onChange={(v) => setFerramenta({ numeroArestas: v })}
-              format={(v) => `${v} arestas`}
-            />
+            {/* 4. Arestas — DropdownRow + pin */}
+            <div className="flex items-center gap-2">
+              <div className="flex-1">
+                <DropdownRow
+                  label="Arestas (Z)"
+                  value={ferramenta.numeroArestas}
+                  options={ARESTAS_OPTIONS}
+                  onChange={(v) => setFerramenta({ numeroArestas: v })}
+                  format={(v) => `${v} arestas`}
+                />
+              </div>
+              <PinDefaultButton
+                isPinned={userDefaults.numeroArestas === ferramenta.numeroArestas}
+                onClick={() => userDefaults.numeroArestas === ferramenta.numeroArestas ? unpinDefault('numeroArestas') : pinDefault('numeroArestas', ferramenta.numeroArestas)}
+                label="Fixar arestas como padrão"
+              />
+            </div>
 
-            {/* 5. Altura de Fixação — DropdownRow [15..150] */}
-            <DropdownRow
-              label="Altura Fixação (mm)"
-              value={ferramenta.balanco}
-              options={ALTURAS_FIXACAO}
-              onChange={(v) => setFerramenta({ balanco: v })}
-              format={(v) => `${v} mm`}
-            />
+            {/* 5. Altura de Fixação — DropdownRow + pin */}
+            <div className="flex items-center gap-2">
+              <div className="flex-1">
+                <DropdownRow
+                  label="Altura Fixação (mm)"
+                  value={ferramenta.balanco}
+                  options={ALTURAS_FIXACAO}
+                  onChange={(v) => setFerramenta({ balanco: v })}
+                  format={(v) => `${v} mm`}
+                />
+              </div>
+              <PinDefaultButton
+                isPinned={userDefaults.balanco === ferramenta.balanco}
+                onClick={() => userDefaults.balanco === ferramenta.balanco ? unpinDefault('balanco') : pinDefault('balanco', ferramenta.balanco)}
+                label="Fixar altura de fixação como padrão"
+              />
+            </div>
           </div>
         </CollapsibleSection>
 

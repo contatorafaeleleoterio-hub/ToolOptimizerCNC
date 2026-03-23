@@ -232,6 +232,25 @@ export interface HistoricoCalculo {
 /** Maximum history entries stored */
 export const HISTORICO_MAX_ENTRIES = 50;
 
+/**
+ * User-defined default values for dashboard inputs.
+ * Each field is optional — undefined means "use system default".
+ * Saved to localStorage via machining-store persist.
+ */
+export interface UserDefaults {
+  materialId?: number;
+  tipoOperacao?: TipoUsinagem;
+  ferramentaTipo?: Ferramenta['tipo'];
+  diametro?: number;
+  raioQuina?: number;
+  numeroArestas?: number;
+  balanco?: number;
+  vc?: number;
+  fz?: number;
+  ae?: number;
+  ap?: number;
+}
+
 /** Machining objective — affects visual threshold zones of indicators (does NOT alter calculations) */
 export type ObjetivoUsinagem = 'velocidade' | 'balanceado' | 'vida_util';
 

@@ -337,4 +337,25 @@ describe('ConfigPanel', () => {
     const vidaBtn = screen.getByRole('button', { name: 'Vida Útil' });
     expect(vidaBtn.className).toContain('bg-primary');
   });
+
+  it('renders pin button for material input', () => {
+    renderPanel();
+    fireEvent.click(screen.getByText('Configuração Base'));
+    expect(screen.getByRole('button', { name: 'Fixar material como padrão' })).toBeInTheDocument();
+  });
+
+  it('clicking pin material button stores materialId in userDefaults', () => {
+    renderPanel();
+    fireEvent.click(screen.getByText('Configuração Base'));
+    fireEvent.click(screen.getByRole('button', { name: 'Fixar material como padrão' }));
+    expect(useMachiningStore.getState().userDefaults.materialId).toBe(useMachiningStore.getState().materialId);
+  });
+
+  it('clicking pin material button again unpins (toggle)', () => {
+    renderPanel();
+    fireEvent.click(screen.getByText('Configuração Base'));
+    fireEvent.click(screen.getByRole('button', { name: 'Fixar material como padrão' }));
+    fireEvent.click(screen.getByRole('button', { name: 'Fixar material como padrão' }));
+    expect(useMachiningStore.getState().userDefaults.materialId).toBeUndefined();
+  });
 });
