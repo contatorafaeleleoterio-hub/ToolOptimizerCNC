@@ -46,45 +46,17 @@ describe('ConfigPanel', () => {
 
   it('renders diameter dropdown with chevron class and 15 options', () => {
     renderPanel();
-    const selects = screen.getAllByRole('combobox');
-    const diaSelect = selects[1];
+    const diaSelect = screen.getByRole('combobox', { name: 'Diâmetro (mm)' });
     const options = diaSelect.querySelectorAll('option');
     expect(options.length).toBe(15);
     expect(diaSelect.classList.contains('select-chevron')).toBe(true);
   });
 
-  it('shows raio da ponta for toroidal with 2 options (R0.5, R1)', () => {
-    renderPanel();
-    expect(screen.getByText('Raio da Ponta')).toBeInTheDocument();
-    expect(screen.getByText('R0.5')).toBeInTheDocument();
-    expect(screen.getAllByText('R1').length).toBeGreaterThanOrEqual(1);
-    expect(screen.queryByText('R0.2')).not.toBeInTheDocument();
-  });
-
   it('hides raio da ponta when switching to topo', () => {
     renderPanel();
     fireEvent.click(screen.getByText('Topo'));
+    // DropdownRow com label="Raio da Ponta" some do DOM quando tipo !== 'toroidal'
     expect(screen.queryByText('Raio da Ponta')).not.toBeInTheDocument();
-  });
-
-  it('renders arestas as 2 button options (2 and 4)', () => {
-    renderPanel();
-    expect(screen.getByText('2 Arestas')).toBeInTheDocument();
-    expect(screen.getByText('4 Arestas')).toBeInTheDocument();
-  });
-
-  it('changes arestas when clicking button', () => {
-    renderPanel();
-    fireEvent.click(screen.getByText('2 Arestas'));
-    expect(useMachiningStore.getState().ferramenta.numeroArestas).toBe(2);
-    fireEvent.click(screen.getByText('4 Arestas'));
-    expect(useMachiningStore.getState().ferramenta.numeroArestas).toBe(4);
-  });
-
-  it('renders altura spinner buttons', () => {
-    renderPanel();
-    expect(screen.getByLabelText('Increase height')).toBeInTheDocument();
-    expect(screen.getByLabelText('Decrease height')).toBeInTheDocument();
   });
 
   it('changes material when select changes', () => {
@@ -102,8 +74,8 @@ describe('ConfigPanel', () => {
 
   it('changes tool diameter via dropdown', () => {
     renderPanel();
-    const selects = screen.getAllByRole('combobox');
-    fireEvent.change(selects[1], { target: { value: '10' } });
+    const diaSelect = screen.getByRole('combobox', { name: 'Diâmetro (mm)' });
+    fireEvent.change(diaSelect, { target: { value: '10' } });
     expect(useMachiningStore.getState().ferramenta.diametro).toBe(10);
   });
 
@@ -136,25 +108,10 @@ describe('ConfigPanel', () => {
     expect(screen.getByText('Dados estimados')).toBeInTheDocument();
   });
 
-  it('increases altura by step of 5 on click', () => {
-    renderPanel();
-    const initial = useMachiningStore.getState().ferramenta.balanco;
-    fireEvent.click(screen.getByLabelText('Increase height'));
-    expect(useMachiningStore.getState().ferramenta.balanco).toBe(initial + 5);
-  });
-
-  it('decreases altura by step of 5 on click', () => {
-    renderPanel();
-    const initial = useMachiningStore.getState().ferramenta.balanco;
-    fireEvent.click(screen.getByLabelText('Decrease height'));
-    expect(useMachiningStore.getState().ferramenta.balanco).toBe(initial - 5);
-  });
-
   it('follows correct tool field order: Tipo → Diâmetro → Raio → Arestas → Altura', () => {
     renderPanel();
-    // Abrir seção Ferramenta para garantir que labels aparecem
     fireEvent.click(screen.getByText('Ferramenta'));
-    const toolLabels = ['Tipo', 'Diâmetro (mm)', 'Raio da Ponta', 'Arestas (Z)', 'Altura de Fixação (mm)'];
+    const toolLabels = ['Tipo', 'Diâmetro (mm)', 'Raio da Ponta', 'Arestas (Z)', 'Altura Fixação (mm)'];
     for (const label of toolLabels) {
       expect(screen.getByText(label)).toBeInTheDocument();
     }
@@ -187,7 +144,6 @@ describe('ConfigPanel', () => {
 
   it('does NOT render cutting parameter NumInputs (section removed)', () => {
     renderPanel();
-    // These were in "Parâmetros de Corte" which was removed
     expect(screen.queryByText('ap (mm)')).not.toBeInTheDocument();
     expect(screen.queryByText('Vc (m/min)')).not.toBeInTheDocument();
   });
@@ -195,8 +151,78 @@ describe('ConfigPanel', () => {
   it('renders FineTunePanel sliders inside Ajuste Fino section', () => {
     renderPanel();
     fireEvent.click(screen.getByText('Ajuste Fino'));
-    // FineTunePanel conteúdo: labels dos sliders
     expect(screen.getByText('VEL. DE CORTE')).toBeInTheDocument();
     expect(screen.getByText('AVANÇO/DENTE')).toBeInTheDocument();
+  });
+
+  // ─── Fase 3: Ferramenta → Dropdowns ──────────────────────────────────────
+
+  it('raio da ponta renders as dropdown (select) for toroidal', () => {
+    renderPanel();
+    // Default tipo is 'toroidal' — DropdownRow renders aria-label="Raio da Ponta"
+    expect(screen.getByRole('combobox', { name: 'Raio da Ponta' })).toBeInTheDocument();
+  });
+
+  it('raio da ponta dropdown has 3 options from RAIOS_PONTA', () => {
+    renderPanel();
+    const raioSelect = screen.getByRole('combobox', { name: 'Raio da Ponta' });
+    expect(raioSelect.querySelectorAll('option').length).toBe(3); // [0.2, 0.5, 1.0]
+  });
+
+  it('selecting raio dropdown updates store.ferramenta.raioQuina', () => {
+    renderPanel();
+    const raioSelect = screen.getByRole('combobox', { name: 'Raio da Ponta' });
+    fireEvent.change(raioSelect, { target: { value: '0.2' } });
+    expect(useMachiningStore.getState().ferramenta.raioQuina).toBe(0.2);
+  });
+
+  it('arestas renders as dropdown (select)', () => {
+    renderPanel();
+    expect(screen.getByRole('combobox', { name: 'Arestas (Z)' })).toBeInTheDocument();
+  });
+
+  it('arestas dropdown has 4 options from ARESTAS_OPTIONS [2,3,4,6]', () => {
+    renderPanel();
+    const arestasSelect = screen.getByRole('combobox', { name: 'Arestas (Z)' });
+    const options = arestasSelect.querySelectorAll('option');
+    expect(options.length).toBe(4);
+    expect(Array.from(options).map((o) => Number((o as HTMLOptionElement).value))).toEqual([2, 3, 4, 6]);
+  });
+
+  it('selecting arestas dropdown updates store.ferramenta.numeroArestas', () => {
+    renderPanel();
+    const arestasSelect = screen.getByRole('combobox', { name: 'Arestas (Z)' });
+    fireEvent.change(arestasSelect, { target: { value: '3' } });
+    expect(useMachiningStore.getState().ferramenta.numeroArestas).toBe(3);
+  });
+
+  it('altura de fixacao renders as dropdown (select)', () => {
+    renderPanel();
+    expect(screen.getByRole('combobox', { name: 'Altura Fixação (mm)' })).toBeInTheDocument();
+  });
+
+  it('altura dropdown has 12 options from ALTURAS_FIXACAO', () => {
+    renderPanel();
+    const alturaSelect = screen.getByRole('combobox', { name: 'Altura Fixação (mm)' });
+    expect(alturaSelect.querySelectorAll('option').length).toBe(12);
+  });
+
+  it('selecting altura dropdown updates store.ferramenta.balanco', () => {
+    renderPanel();
+    const alturaSelect = screen.getByRole('combobox', { name: 'Altura Fixação (mm)' });
+    fireEvent.change(alturaSelect, { target: { value: '50' } });
+    expect(useMachiningStore.getState().ferramenta.balanco).toBe(50);
+  });
+
+  it('steppers and NumInput for altura NOT in DOM (removed in Fase 3)', () => {
+    renderPanel();
+    expect(screen.queryByLabelText('Increase height')).not.toBeInTheDocument();
+    expect(screen.queryByLabelText('Decrease height')).not.toBeInTheDocument();
+  });
+
+  it('radio buttons for arestas NOT in DOM (replaced by dropdown)', () => {
+    renderPanel();
+    expect(screen.queryByText('2 Arestas')).not.toBeInTheDocument();
+    expect(screen.queryByText('4 Arestas')).not.toBeInTheDocument();
   });
 });

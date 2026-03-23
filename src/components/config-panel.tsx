@@ -1,5 +1,5 @@
 import { useMachiningStore } from '@/store';
-import { MATERIAIS, FERRAMENTAS_PADRAO, DIAMETROS_COMPLETOS, RAIOS_PADRAO } from '@/data';
+import { MATERIAIS, FERRAMENTAS_PADRAO, DIAMETROS_COMPLETOS, RAIOS_PONTA, ARESTAS_OPTIONS, ALTURAS_FIXACAO } from '@/data';
 import { TipoUsinagem } from '@/types';
 import { FieldGroup } from './ui-helpers';
 import { useSimulationAnimation } from '@/hooks/use-simulation-animation';
@@ -13,7 +13,44 @@ const OPERACAO_LABELS: Record<TipoUsinagem, string> = {
   [TipoUsinagem.ACABAMENTO]: 'Acabamento',
 };
 
-const ARESTAS_OPTIONS = [2, 4] as const;
+/**
+ * Compact inline dropdown row: label on the left, select on the right.
+ * Used for Ferramenta fields (Diâmetro, Raio, Arestas, Altura).
+ */
+function DropdownRow({
+  label,
+  value,
+  options,
+  onChange,
+  format,
+}: {
+  label: string;
+  value: number;
+  options: readonly number[];
+  onChange: (v: number) => void;
+  format?: (v: number) => string;
+}) {
+  return (
+    <div
+      className="flex items-center justify-between gap-3 rounded-md px-3 py-2"
+      style={{ background: 'linear-gradient(135deg, rgba(255,255,255,0.05), rgba(255,255,255,0.02))' }}
+    >
+      <span className="text-sm font-semibold text-white/85 leading-none">{label}</span>
+      <select
+        value={String(value)}
+        onChange={(e) => onChange(Number(e.target.value))}
+        aria-label={label}
+        className="bg-black/50 border border-white/15 rounded px-2 py-1 text-sm text-white font-mono focus:outline-none focus:border-primary cursor-pointer min-w-[90px] appearance-none select-chevron"
+      >
+        {options.map((opt) => (
+          <option key={opt} value={String(opt)}>
+            {format ? format(opt) : String(opt)}
+          </option>
+        ))}
+      </select>
+    </div>
+  );
+}
 
 export function ConfigPanel() {
   const {
@@ -138,58 +175,43 @@ export function ConfigPanel() {
               </div>
             </FieldGroup>
 
-            {/* 2. Diameter */}
-            <FieldGroup label="Diâmetro (mm)">
-              <select value={ferramenta.diametro} onChange={(e) => setFerramenta({ diametro: Number(e.target.value) })}
-                className="w-full bg-black/40 border border-white/10 rounded-lg py-2 pl-3 pr-10 text-base text-white font-mono focus:ring-1 focus:ring-primary outline-none appearance-none hover:border-white/20 select-chevron">
-                {DIAMETROS_COMPLETOS.map((d) => (
-                  <option key={d} value={d}>{d}mm</option>
-                ))}
-              </select>
-            </FieldGroup>
+            {/* 2. Diameter — DropdownRow */}
+            <DropdownRow
+              label="Diâmetro (mm)"
+              value={ferramenta.diametro}
+              options={DIAMETROS_COMPLETOS}
+              onChange={(v) => setFerramenta({ diametro: v })}
+              format={(v) => `${v} mm`}
+            />
 
-            {/* 3. Corner radius — toroidal only (mantido como radio buttons até Fase 3) */}
+            {/* 3. Corner radius — DropdownRow (toroidal only) */}
             {ferramenta.tipo === 'toroidal' && (
-              <FieldGroup label="Raio da Ponta">
-                <div className="grid grid-cols-2 gap-2">
-                  {RAIOS_PADRAO.map((raio) => (
-                    <button key={raio} onClick={() => setFerramenta({ raioQuina: raio })}
-                      className={`py-2 rounded-lg border text-sm font-mono transition-colors ${(ferramenta.raioQuina ?? 1.0) === raio
-                        ? 'bg-primary text-black font-bold border-primary shadow-neon-cyan'
-                        : 'bg-black/40 text-gray-400 hover:text-white hover:bg-white/5 border-white/10'}`}>
-                      R{raio}
-                    </button>
-                  ))}
-                </div>
-              </FieldGroup>
+              <DropdownRow
+                label="Raio da Ponta"
+                value={ferramenta.raioQuina ?? 1.0}
+                options={RAIOS_PONTA}
+                onChange={(v) => setFerramenta({ raioQuina: v })}
+                format={(v) => `${v} mm`}
+              />
             )}
 
-            {/* 4. Arestas — mantido como radio buttons até Fase 3 */}
-            <FieldGroup label="Arestas (Z)">
-              <div className="grid grid-cols-2 gap-2">
-                {ARESTAS_OPTIONS.map((z) => (
-                  <button key={z} onClick={() => setFerramenta({ numeroArestas: z })}
-                    className={`py-2 rounded-lg border text-sm font-mono transition-colors ${ferramenta.numeroArestas === z
-                      ? 'bg-primary text-black font-bold border-primary shadow-neon-cyan'
-                      : 'bg-black/40 text-gray-400 hover:text-white hover:bg-white/5 border-white/10'}`}>
-                    {z} Arestas
-                  </button>
-                ))}
-              </div>
-            </FieldGroup>
+            {/* 4. Arestas — DropdownRow [2, 3, 4, 6] */}
+            <DropdownRow
+              label="Arestas (Z)"
+              value={ferramenta.numeroArestas}
+              options={ARESTAS_OPTIONS}
+              onChange={(v) => setFerramenta({ numeroArestas: v })}
+              format={(v) => `${v} arestas`}
+            />
 
-            {/* 5. Altura de Fixação — mantido como NumInput até Fase 3 */}
-            <FieldGroup label="Altura de Fixação (mm)">
-              <div className="flex gap-2">
-                <input type="number" value={ferramenta.balanco}
-                  onChange={(e) => setFerramenta({ balanco: Number(e.target.value) })} min={15} max={150}
-                  className="flex-1 bg-black/40 border border-white/10 rounded-lg py-2 px-3 text-sm text-white font-mono focus:ring-1 focus:ring-primary outline-none" />
-                <button onClick={() => setFerramenta({ balanco: Math.min(150, ferramenta.balanco + 5) })}
-                  className="w-9 rounded-lg bg-black/40 border border-white/10 text-gray-400 hover:text-white hover:bg-white/10 transition-all text-lg font-bold" aria-label="Increase height">▲</button>
-                <button onClick={() => setFerramenta({ balanco: Math.max(15, ferramenta.balanco - 5) })}
-                  className="w-9 rounded-lg bg-black/40 border border-white/10 text-gray-400 hover:text-white hover:bg-white/10 transition-all text-lg font-bold" aria-label="Decrease height">&#9660;</button>
-              </div>
-            </FieldGroup>
+            {/* 5. Altura de Fixação — DropdownRow [15..150] */}
+            <DropdownRow
+              label="Altura Fixação (mm)"
+              value={ferramenta.balanco}
+              options={ALTURAS_FIXACAO}
+              onChange={(v) => setFerramenta({ balanco: v })}
+              format={(v) => `${v} mm`}
+            />
           </div>
         </CollapsibleSection>
 
