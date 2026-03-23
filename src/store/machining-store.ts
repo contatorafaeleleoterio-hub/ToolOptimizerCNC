@@ -476,25 +476,6 @@ export const useMachiningStore = create<MachiningState & MachiningActions>()(
             ferramentaTipo: ferramenta.tipo,
             ferramentaDiametro: ferramenta.diametro,
           });
-          // Auto-save ferramenta if it's a new configuration
-          const { savedTools, ferramenta: currentFerramenta } = get();
-          const jaExiste = savedTools.some(
-            (t) =>
-              t.tipo === currentFerramenta.tipo &&
-              t.diametro === currentFerramenta.diametro &&
-              t.numeroArestas === currentFerramenta.numeroArestas &&
-              t.balanco === currentFerramenta.balanco &&
-              (currentFerramenta.tipo !== 'toroidal' || t.raioQuina === currentFerramenta.raioQuina)
-          );
-          if (!jaExiste) {
-            get().addSavedTool({
-              tipo: currentFerramenta.tipo,
-              diametro: currentFerramenta.diametro,
-              raioQuina: currentFerramenta.raioQuina,
-              numeroArestas: currentFerramenta.numeroArestas,
-              balanco: currentFerramenta.balanco,
-            });
-          }
         },
 
         setObjetivoUsinagem: (objetivo) => {

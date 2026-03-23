@@ -225,4 +225,93 @@ describe('ConfigPanel', () => {
     expect(screen.queryByText('2 Arestas')).not.toBeInTheDocument();
     expect(screen.queryByText('4 Arestas')).not.toBeInTheDocument();
   });
+
+  // ─── Fase 5: Biblioteca de Ferramentas ──────────────────────────────────
+
+  it('saved tools dropdown shows "Nenhuma ferramenta salva" when empty', () => {
+    renderPanel();
+    fireEvent.click(screen.getByText('Ferramenta'));
+    const select = screen.getByRole('combobox', { name: 'Ferramenta Salva' });
+    expect(select).toBeInTheDocument();
+    expect(select).toBeDisabled();
+    expect(screen.getByText('Nenhuma ferramenta salva')).toBeInTheDocument();
+  });
+
+  it('saved tools dropdown shows saved tool names', () => {
+    const store = useMachiningStore.getState();
+    store.addSavedTool({ tipo: 'topo', diametro: 10, numeroArestas: 4, balanco: 20 });
+    renderPanel();
+    fireEvent.click(screen.getByText('Ferramenta'));
+    const select = screen.getByRole('combobox', { name: 'Ferramenta Salva' });
+    expect(select).not.toBeDisabled();
+    expect(screen.getByText('Topo Ø10 - H20 - A4')).toBeInTheDocument();
+  });
+
+  it('selecting saved tool calls loadSavedTool with correct id', () => {
+    const store = useMachiningStore.getState();
+    store.addSavedTool({ tipo: 'topo', diametro: 10, numeroArestas: 4, balanco: 20 });
+    const { savedTools } = useMachiningStore.getState();
+    const toolId = savedTools[0].id;
+    renderPanel();
+    fireEvent.click(screen.getByText('Ferramenta'));
+    const select = screen.getByRole('combobox', { name: 'Ferramenta Salva' });
+    fireEvent.change(select, { target: { value: toolId } });
+    expect(useMachiningStore.getState().ferramenta.diametro).toBe(10);
+    expect(useMachiningStore.getState().ferramenta.numeroArestas).toBe(4);
+  });
+
+  it('loadSavedTool zeros resultado', () => {
+    const store = useMachiningStore.getState();
+    store.addSavedTool({ tipo: 'topo', diametro: 10, numeroArestas: 4, balanco: 20 });
+    store.calcular();
+    expect(useMachiningStore.getState().resultado).not.toBeNull();
+    const toolId = useMachiningStore.getState().savedTools[0].id;
+    renderPanel();
+    fireEvent.click(screen.getByText('Ferramenta'));
+    const select = screen.getByRole('combobox', { name: 'Ferramenta Salva' });
+    fireEvent.change(select, { target: { value: toolId } });
+    expect(useMachiningStore.getState().resultado).toBeNull();
+  });
+
+  it('clicking save button adds current tool to saved tools', () => {
+    renderPanel();
+    fireEvent.click(screen.getByText('Ferramenta'));
+    fireEvent.click(screen.getByRole('button', { name: 'Salvar ferramenta' }));
+    expect(useMachiningStore.getState().savedTools.length).toBeGreaterThanOrEqual(1);
+    const select = screen.getByRole('combobox', { name: 'Ferramenta Salva' });
+    expect(select).not.toBeDisabled();
+  });
+
+  it('save button does NOT duplicate identical tools', () => {
+    renderPanel();
+    fireEvent.click(screen.getByText('Ferramenta'));
+    fireEvent.click(screen.getByRole('button', { name: 'Salvar ferramenta' }));
+    const countAfterFirst = useMachiningStore.getState().savedTools.length;
+    fireEvent.click(screen.getByRole('button', { name: 'Salvar ferramenta' }));
+    expect(useMachiningStore.getState().savedTools.length).toBe(countAfterFirst);
+  });
+
+  it('simular() does NOT auto-save tools (regression test)', async () => {
+    const countBefore = useMachiningStore.getState().savedTools.length;
+    renderPanel();
+    await act(async () => { fireEvent.click(screen.getByText('Simular')); });
+    await waitFor(() => expect(useMachiningStore.getState().resultado).not.toBeNull(), { timeout: 2500 });
+    expect(useMachiningStore.getState().savedTools.length).toBe(countBefore);
+  });
+
+  it('tool names follow industry format: Topo Ø{d} - H{h} - A{z}', () => {
+    const store = useMachiningStore.getState();
+    store.addSavedTool({ tipo: 'topo', diametro: 8, numeroArestas: 2, balanco: 30 });
+    renderPanel();
+    fireEvent.click(screen.getByText('Ferramenta'));
+    expect(screen.getByText('Topo Ø8 - H30 - A2')).toBeInTheDocument();
+  });
+
+  it('toroidal tool name includes raio: Toroidal Ø{d} - R{r} - H{h} - A{z}', () => {
+    const store = useMachiningStore.getState();
+    store.addSavedTool({ tipo: 'toroidal', diametro: 12, raioQuina: 1.5, numeroArestas: 4, balanco: 25 });
+    renderPanel();
+    fireEvent.click(screen.getByText('Ferramenta'));
+    expect(screen.getByText('Toroidal Ø12 - R1.5 - H25 - A4')).toBeInTheDocument();
+  });
 });

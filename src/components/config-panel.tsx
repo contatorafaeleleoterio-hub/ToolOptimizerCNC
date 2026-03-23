@@ -1,3 +1,4 @@
+import { useState } from 'react';
 import { useMachiningStore } from '@/store';
 import { MATERIAIS, FERRAMENTAS_PADRAO, DIAMETROS_COMPLETOS, RAIOS_PONTA, ARESTAS_OPTIONS, ALTURAS_FIXACAO } from '@/data';
 import { TipoUsinagem } from '@/types';
@@ -57,7 +58,24 @@ export function ConfigPanel() {
     materialId, ferramenta, tipoOperacao, parametros,
     setMaterial, setFerramenta, setTipoOperacao,
     simular, reset,
+    savedTools, loadSavedTool, addSavedTool,
   } = useMachiningStore();
+
+  const [showSavedBadge, setShowSavedBadge] = useState(false);
+
+  const handleSaveTool = () => {
+    const { tipo, diametro, raioQuina, numeroArestas, balanco } = ferramenta;
+    const jaExiste = savedTools.some(
+      (t) =>
+        t.tipo === tipo && t.diametro === diametro &&
+        t.numeroArestas === numeroArestas && t.balanco === balanco &&
+        (tipo !== 'toroidal' || t.raioQuina === raioQuina)
+    );
+    if (jaExiste) return;
+    addSavedTool({ tipo, diametro, raioQuina, numeroArestas, balanco });
+    setShowSavedBadge(true);
+    setTimeout(() => setShowSavedBadge(false), 2000);
+  };
 
   const { isCalculating, runSimulation } = useSimulationAnimation();
   const { track } = usePlausible();
@@ -159,7 +177,43 @@ export function ConfigPanel() {
           summary={summaryFerramenta}
         >
           <div className="space-y-3 pt-1">
-            {/* Dropdown Ferramentas Salvas — será adicionado na Fase 4 */}
+            {/* Saved Tools — Manual Save + Dropdown */}
+            <div className="mb-1">
+              <div className="flex items-center gap-2">
+                <select
+                  aria-label="Ferramenta Salva"
+                  value=""
+                  onChange={(e) => { if (e.target.value) loadSavedTool(e.target.value); }}
+                  disabled={savedTools.length === 0}
+                  className="flex-1 bg-black/50 border border-white/15 rounded-lg px-3 py-2 text-sm text-white focus:outline-none focus:border-primary cursor-pointer appearance-none select-chevron disabled:opacity-50 disabled:cursor-not-allowed"
+                >
+                  {savedTools.length === 0 ? (
+                    <option value="">Nenhuma ferramenta salva</option>
+                  ) : (
+                    <>
+                      <option value="">Selecionar ferramenta salva...</option>
+                      {savedTools.map((tool) => (
+                        <option key={tool.id} value={tool.id}>{tool.nome}</option>
+                      ))}
+                    </>
+                  )}
+                </select>
+                <button
+                  aria-label="Salvar ferramenta"
+                  onClick={handleSaveTool}
+                  className="p-2 rounded-lg bg-white/5 border border-white/10 hover:bg-white/10 transition-colors"
+                  title="Salvar configuração atual"
+                >
+                  <span className="material-symbols-outlined text-sm text-white/70">save</span>
+                </button>
+              </div>
+              {showSavedBadge && (
+                <span className="text-xs font-semibold mt-1 block animate-[fadeInUp_0.3s_ease]" style={{ color: '#2ecc71' }}>
+                  ✓ Ferramenta salva
+                </span>
+              )}
+              <div className="border-b border-white/5 mt-3" />
+            </div>
 
             {/* 1. Tool type */}
             <FieldGroup label="Tipo">
