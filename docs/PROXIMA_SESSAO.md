@@ -11,7 +11,7 @@
 |------|-------|
 | **Branch** | `main` |
 | **Versão** | `0.7.0` |
-| **Último commit** | `d030ca9` docs: criar Doc 11 — Materiais de Marketing v1.0 |
+| **Último commit** | `47c08d1` docs: planos v2 — fase 7 objetivo usinagem + fase 8A favoritar + fase 8B pin defaults |
 | **Testes** | **824 passando** (49 arquivos) — 0 falhas |
 | **TypeScript** | **zero erros** |
 | **Build** | **limpo** — JS 99.20KB gzip, CSS 14.35KB |
@@ -31,6 +31,178 @@ npx tsc --noEmit
 ---
 
 ## Ultimas 3 Sessoes
+
+### Sessão 23/03 (noite) — Planos v2 para Fases 7, 8A, 8B
+
+**Commit:** `47c08d1` docs: planos v2 — fase 7 objetivo usinagem + fase 8A favoritar + fase 8B pin defaults | **Versão:** v0.7.0 (inalterada, sem código) | **Testes:** 824 (49 arquivos)
+
+**O que foi feito:**
+- ✅ Análise completa do plano do assistente anterior — identificada confusão entre "favoritar simulação" e "tornar input padrão"
+- ✅ Clarificação de Rafael: são 2 features SEPARADAS (⭐ resultado ≠ 📌 input)
+- ✅ Criado `FASE-7-v2-objetivo-usinagem.md` — 3 modos com multiplicadores Vc/fz (1.15/1.10 velocidade, 1.00/1.00 balanceado, 0.80/0.85 vida_util), aplicados ao `recomendado` em `calcularSliderBounds()`, 7 testes, ~60 linhas
+- ✅ Criado `FASE-8A-favoritar-simulacao.md` — `isFavorited` em HistoricoCalculo, ⭐ toggle em history-page, filtro "Apenas Favoritos", persist v1→v2, 8 testes, ~50 linhas
+- ✅ Criado `FASE-8B-tornar-input-padrao.md` — `UserDefaults` tipo, `PinDefaultButton` componente, 📌 ao lado de 11 inputs, `onRehydrateStorage` aplica defaults, persist v2→v3, 11 testes, ~120 linhas
+- ✅ Atualizado `PLANO-EXECUCAO-SESSAO.md` — nova estrutura 9 fases, dividido em 2 sessões
+
+**Estado dos planos (pós-criação v2):**
+
+| Fase | Arquivo | Status |
+|------|---------|--------|
+| 1-3 | FASE-1/2/3-*.md | ✅ Implementado |
+| 4 | `FASE-4-fix-atomico-store.md` | ⬜ Pendente |
+| 5 | `FASE-5-biblioteca-ferramentas.md` | ⬜ Pendente |
+| 6 | `FASE-6-fontes-polish-release.md` | ⬜ Pendente |
+| 7 | `FASE-7-v2-objetivo-usinagem.md` | ⬜ Pendente (DESBLOQUEADO) |
+| 8A | `FASE-8A-favoritar-simulacao.md` | ⬜ Pendente (DESBLOQUEADO) |
+| 8B | `FASE-8B-tornar-input-padrao.md` | ⬜ Pendente (DESBLOQUEADO) |
+
+**Próxima sessão:**
+- Sessão 1: Implementar F4 → F5 → F6 (~65% contexto, ~90 min) → release v0.8.0
+- Sessão 2: Implementar F7 → F8A → F8B (~80% contexto, ~135 min) → release v0.8.3
+- Plano de execução: `docs/plans/redesign-v0.8.0/PLANO-EXECUCAO-SESSAO.md`
+
+---
+
+### Sessão 23/03 (tarde) — Auditoria Completa Redesign v0.8.0 + Renumeração Fases
+
+**Commit:** sem commit (sessão de auditoria/planejamento) | **Versão:** v0.7.0 (inalterada) | **Testes:** 824 (49 arquivos)
+
+**O que foi feito:**
+- ✅ Auditoria completa dos 8 planos de redesign contra PRD, specs e código real
+- ✅ Identificados 3 problemas críticos: (1) bug double `set()` em `calcular()` L404+L443, (2) auto-save silencioso anti-pattern em `simular()` L480-498, (3) thresholds arbitrários sem fonte técnica
+- ✅ Fases renumeradas: 4=fix atômico, 5=biblioteca ferramentas manual, 6=fontes+release
+- ✅ Fases 7-8 BLOQUEADAS: 7=objetivo usinagem (precisa pesquisa técnica), 8=validados+defaults (precisa plano v2)
+- ✅ Planos legados movidos para `_legado/` (5 arquivos antigos)
+- ✅ Novos planos criados: `FASE-4-fix-atomico-store.md`, `FASE-5-biblioteca-ferramentas.md`, `FASE-6-fontes-polish-release.md`, `FASE-7-objetivo-usinagem-BLOQUEADO.md`, `FASE-8-validados-defaults-BLOQUEADO.md`
+- ✅ Plano de execução criado: `PLANO-EXECUCAO-SESSAO.md` (3 fases em 1 sessão, ~65% contexto)
+- ✅ Roadmap e backlog atualizados com nova numeração
+
+**Decisões do Rafael:**
+- Auto-save silencioso → substituir por salvamento manual (dropdown + botão)
+- Objetivo usinagem → manter conceito mas BLOQUEAR até pesquisa técnica real (ISO/Sandvik)
+- Simulações validadas → novo escopo: estrela no histórico + lista separada + botão "definir padrão" em todos inputs → BLOQUEAR até plano v2
+- Torque ProgressCard → NÃO adicionar (painel já denso)
+
+**Estado dos planos (pós-auditoria):**
+
+| Fase | Arquivo | Status |
+|------|---------|--------|
+| 1 | `FASE-1-fundacao-tipos-store-dados.md` | ✅ Implementado (`5f98c9d`) |
+| 2 | `FASE-2-layout-2-colunas-accordion.md` | ✅ Implementado (`7afbe82`) |
+| 3 | `FASE-3-ferramenta-dropdowns.md` | ✅ Implementado (`70cf508`) |
+| 4 | `FASE-4-fix-atomico-store.md` | ⬜ Pendente (novo) |
+| 5 | `FASE-5-biblioteca-ferramentas.md` | ⬜ Pendente (novo) |
+| 6 | `FASE-6-fontes-polish-release.md` | ⬜ Pendente (novo) |
+| 7 | `FASE-7-objetivo-usinagem-BLOQUEADO.md` | ⛔ Bloqueado |
+| 8 | `FASE-8-validados-defaults-BLOQUEADO.md` | ⛔ Bloqueado |
+
+**Próxima sessão — DIRECIONAMENTO COMPLETO:**
+
+> **Plano de execução:** `docs/plans/redesign-v0.8.0/PLANO-EXECUCAO-SESSAO.md`
+> **Tudo cabe em 1 sessão** (~65% contexto, ~129 linhas código, +11 testes)
+
+**Ordem obrigatória de implementação:**
+
+| Ordem | Fase | Plano | Arquivo principal | O que fazer |
+|-------|------|-------|-------------------|-------------|
+| 1º | 4 | `docs/plans/redesign-v0.8.0/FASE-4-fix-atomico-store.md` | `src/store/machining-store.ts` | Remover `set({baseRPM, baseFeed})` da L404, mover para `set()` da L443 (1 update atômico) |
+| 2º | 5 | `docs/plans/redesign-v0.8.0/FASE-5-biblioteca-ferramentas.md` | `machining-store.ts` + `config-panel.tsx` | Deletar auto-save L480-498 de `simular()`, adicionar dropdown + botão salvar manual |
+| 3º | 6 | `docs/plans/redesign-v0.8.0/FASE-6-fontes-polish-release.md` | `collapsible-section.tsx`, `config-panel.tsx`, `fine-tune-panel.tsx`, `package.json` | Fontes `text-xs→text-sm`, `text-sm→text-base`, quality gates, bump v0.8.0 |
+
+**Commits esperados:**
+1. `fix: atomic set() in calcular() v0.8.0-alpha.4`
+2. `feat: redesign fase 5 — biblioteca ferramentas manual v0.8.0-alpha.5`
+3. `feat: redesign fase 6 — fontes polish v0.8.0`
+4. `docs: update roadmap + backlog v0.8.0`
+
+**Fases BLOQUEADAS (NÃO implementar):**
+- Fase 7 (`FASE-7-objetivo-usinagem-BLOQUEADO.md`) — precisa pesquisa técnica ISO/Sandvik/Kennametal
+- Fase 8 (`FASE-8-validados-defaults-BLOQUEADO.md`) — precisa criar plano v2 com novo escopo
+
+---
+
+### Sessão 23/03 (manhã) — Planejamento Detalhado Redesign v0.8.0 (Fases 4 a 8)
+
+**Commit:** sem commit (sessão de planejamento puro) | **Versão:** v0.7.0 (inalterada) | **Testes:** 824 (49 arquivos)
+
+**O que foi feito:**
+- ✅ Plano detalhado **Fase 4** criado (`FASE-4-ferramentas-salvas-autosave.md`) — dropdown ferramentas salvas no ConfigPanel, badge contador, auto-save já no store
+- ✅ Plano detalhado **Fase 5** criado (`FASE-5-objetivo-usinagem.md`) — `objetivo-thresholds.ts`, `OBJETIVO_THRESHOLDS`, 4 funções `compute*ByValue` recebem `thresholds` opcional
+- ✅ Plano detalhado **Fase 6** criado (`FASE-6-validar-parametros-acesso-rapido.md`) — `quick-access-button.tsx` com modal+SimCard via `createPortal`, botão em `results-panel.tsx` e `App.tsx`
+- ✅ Plano detalhado **Fase 7** criado (`FASE-7-results-panel-visual-fix.md`) — fix `calcular()` single `set()` atômico, 3 ProgressCards (Potência + Vel. Superficial + Torque), gauges `gap-5`
+- ✅ Plano detalhado **Fase 8** criado (`FASE-8-fontes-polish-quality-gates.md`) — escala de fontes, espaçamentos, Quality Gates, bump v0.8.0
+
+**Nota:** Estes planos foram substituídos pela auditoria da sessão da tarde (ver acima).
+
+**Próxima sessão:** ver sessão da tarde (auditoria)
+
+---
+
+### Sessão 22/03 — Planejamento Detalhado Redesign v0.8.0 (Fases 1, 2 e 3)
+
+**Commit:** sem commit (sessão de planejamento puro) | **Versão:** v0.7.0 (inalterada) | **Testes:** 824 (49 arquivos)
+
+**O que foi feito:**
+- ✅ Plano detalhado **Fase 1** confirmado (`FASE-1-fundacao-tipos-store-dados.md`) — tipos, store, persist migrate v1→v2, 4 suites de testes
+- ✅ Plano detalhado **Fase 2** criado (`FASE-2-layout-2-colunas-accordion.md`) — `CollapsibleSection`, grid 3→2 colunas, `FineTunePanel` embedded, remove seção "Parâmetros de Corte"
+- ✅ Plano detalhado **Fase 3** reescrito (`FASE-3-ferramenta-dropdowns.md`) — `DropdownRow` interno, 4 campos → dropdowns, remove `ARESTAS_OPTIONS` local, `RAIOS_PONTA` expande para 3 opções
+
+**Estado dos planos por fase:**
+
+| Fase | Arquivo | Detalhe |
+|------|---------|---------|
+| 1 | `FASE-1-fundacao-tipos-store-dados.md` | ✅ Completo — pronto para implementar |
+| 2 | `FASE-2-layout-2-colunas-accordion.md` | ✅ Completo — pronto para implementar |
+| 3 | `FASE-3-ferramenta-dropdowns.md` | ✅ Completo — pronto para implementar |
+| 4 | `FASE-4-ferramentas-salvas-autosave.md` | ⬜ Skeleton — precisa de plano detalhado |
+| 5 | `FASE-5-objetivo-usinagem.md` | ⬜ Skeleton — precisa de plano detalhado |
+| 6 | `FASE-6-validar-parametros-acesso-rapido.md` | ⬜ Skeleton — precisa de plano detalhado |
+| 7 | `FASE-7-results-panel-visual-fix.md` | ⬜ Skeleton — precisa de plano detalhado |
+| 8 | `FASE-8-fontes-polish-quality-gates.md` | ⬜ Skeleton — precisa de plano detalhado |
+
+**Padrão dos planos detalhados (Fases 1-3):**
+- Passo a passo com código exato (linha por linha, old→new)
+- Lista explícita de testes a remover / manter / adicionar com contagem final
+- Tabela de impacto por suite de testes
+- Checklist de verificação com comandos bash
+- Comportamentos críticos documentados
+
+**Próxima sessão:** Implementar Fase 1 + Fase 2 do Redesign v0.8.0
+
+---
+
+### Sessão 21/03 — Planejamento Redesign Dashboard Principal v0.8.0
+
+**Commit:** pendente | **Versão:** v0.7.0 (inalterada) | **Testes:** 824 (49 arquivos)
+
+**O que foi feito:**
+- ✅ Criado plano completo `docs/plans/PLAN_Redesign_Dashboard_v0.8.0.md` — 8 fases, 10 mudanças
+- ✅ Roadmap atualizado — Item #9 adicionado na PRIORIDADE 1
+- ✅ Backlog atualizado — Item #8 com detalhes das 8 fases
+
+**Resumo do Redesign (10 mudanças, 8 fases):**
+1. Ferramenta: radio buttons → dropdowns (Raio, Arestas, Altura)
+2. Dropdown de Ferramentas Salvas (auto-save ao simular, nome padrão indústria)
+3. Botão Validar Parâmetros + Acesso Rápido (salva/carrega simulações completas)
+4. Objetivo Usinagem: Velocidade | Balanceado | Vida Útil (altera ranges indicadores)
+5. Seções colapsáveis (accordion, todas fechadas por padrão)
+6. Eliminar redundância Parâmetros de Corte × Ajuste Fino
+7. Layout 3→2 colunas (Ajuste Fino movido para esquerda, ResultsPanel expandido)
+8. Revisão visual ResultsPanel + Fix re-render RPM↔Avanço
+9. Fontes maiores para desktop
+10. Polish final + bump v0.8.0
+
+**Sequência de prioridade para próximas sessões:**
+- Fase 1: Fundação (tipos, store, dados)
+- Fase 2: Layout 2 colunas + Accordion
+- Fase 3: Ferramenta → Dropdowns
+- Fase 4: Ferramentas Salvas + Auto-Save
+- Fase 5: Objetivo Usinagem
+- Fase 6: Validar Parâmetros + Acesso Rápido
+- Fase 7: ResultsPanel visual + Fix RPM↔Avanço
+- Fase 8: Fontes + Polish + Quality Gates
+
+---
 
 ### Sessão 20/03 (tarde) — Doc 11 Materiais de Marketing v1.0
 
