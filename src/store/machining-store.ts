@@ -400,9 +400,6 @@ export const useMachiningStore = create<MachiningState & MachiningActions>()(
             avanco = manualOverrides.feed;
           }
 
-          // Store base values for bidirectional slider
-          set({ baseRPM, baseFeed });
-
           const mrr = calculateMRR(ap, ae, avanco);
           const kc = material.kc1_1;
           const potenciaMotor = calculatePower(mrr, kc, limitesMaquina.eficiencia);
@@ -441,6 +438,8 @@ export const useMachiningStore = create<MachiningState & MachiningActions>()(
           const healthScore = calculateHealthScore(vcZone, fzZone, aeZone, apZone);
 
           set({
+            baseRPM,
+            baseFeed,
             resultado: {
               rpm,
               avanco,

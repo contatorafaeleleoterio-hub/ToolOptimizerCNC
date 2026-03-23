@@ -109,4 +109,21 @@ describe('ResultsPanel', () => {
     const newRpm = useMachiningStore.getState().resultado!.rpm;
     expect(newRpm).toBeGreaterThan(initialRpm);
   });
+
+  // ─── Fase 4: Fix calcular() atomico ──────────────────────────────────────
+
+  it('baseRPM and resultado.rpm are in sync after calcular()', () => {
+    setupSafeCalc();
+    const state = useMachiningStore.getState();
+    expect(state.baseRPM).toBe(state.resultado!.rpm);
+  });
+
+  it('setManualRPMPercent updates feed when feed is not manually set', () => {
+    setupSafeCalc();
+    const store = useMachiningStore.getState();
+    const initialAvanco = store.resultado!.avanco;
+    store.setManualRPMPercent(20);
+    const newAvanco = useMachiningStore.getState().resultado!.avanco;
+    expect(newAvanco).not.toBe(initialAvanco);
+  });
 });
