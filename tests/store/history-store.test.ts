@@ -184,4 +184,48 @@ describe('HistoryStore', () => {
       expect(ok).toBe(false);
     });
   });
+
+  describe('toggleFavorite', () => {
+    beforeEach(() => { useHistoryStore.getState().clearHistory(); });
+
+    it('new entry starts with isFavorited=false', () => {
+      useHistoryStore.getState().addEntry(makeEntry());
+      const entry = useHistoryStore.getState().entries[0];
+      expect(entry.isFavorited).toBe(false);
+    });
+
+    it('toggleFavorite sets isFavorited=true', () => {
+      useHistoryStore.getState().addEntry(makeEntry());
+      const id = useHistoryStore.getState().entries[0].id;
+      useHistoryStore.getState().toggleFavorite(id);
+      expect(useHistoryStore.getState().entries[0].isFavorited).toBe(true);
+    });
+
+    it('toggleFavorite called twice reverts to false', () => {
+      useHistoryStore.getState().addEntry(makeEntry());
+      const id = useHistoryStore.getState().entries[0].id;
+      useHistoryStore.getState().toggleFavorite(id);
+      useHistoryStore.getState().toggleFavorite(id);
+      expect(useHistoryStore.getState().entries[0].isFavorited).toBe(false);
+    });
+
+    it('onlyFavorites filter hides non-favorited entries', () => {
+      useHistoryStore.getState().addEntry(makeEntry({ materialNome: 'Aço A' }));
+      useHistoryStore.getState().addEntry(makeEntry({ materialNome: 'Aço B' }));
+      const id = useHistoryStore.getState().entries[0].id;
+      useHistoryStore.getState().toggleFavorite(id);
+      useHistoryStore.getState().setOnlyFavorites(true);
+      const filtered = useHistoryStore.getState().getFilteredEntries();
+      expect(filtered).toHaveLength(1);
+      expect(filtered[0].isFavorited).toBe(true);
+    });
+
+    it('setOnlyFavorites(false) shows all entries again', () => {
+      useHistoryStore.getState().addEntry(makeEntry());
+      useHistoryStore.getState().addEntry(makeEntry());
+      useHistoryStore.getState().setOnlyFavorites(true);
+      useHistoryStore.getState().setOnlyFavorites(false);
+      expect(useHistoryStore.getState().getFilteredEntries()).toHaveLength(2);
+    });
+  });
 });

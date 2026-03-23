@@ -58,6 +58,7 @@ export function HistoryPage() {
   useEffect(() => { track('Historico_Acessado'); }, []);
   const entries = useHistoryStore((s) => s.entries);
   const filters = useHistoryStore((s) => s.filters);
+  const onlyFavorites = useHistoryStore((s) => s.onlyFavorites);
   const setFilters = useHistoryStore((s) => s.setFilters);
   const resetFilters = useHistoryStore((s) => s.resetFilters);
   const getFilteredEntries = useHistoryStore((s) => s.getFilteredEntries);
@@ -67,6 +68,8 @@ export function HistoryPage() {
   const setNotas = useHistoryStore((s) => s.setNotas);
   const exportHistory = useHistoryStore((s) => s.exportHistory);
   const importHistory = useHistoryStore((s) => s.importHistory);
+  const toggleFavorite = useHistoryStore((s) => s.toggleFavorite);
+  const setOnlyFavorites = useHistoryStore((s) => s.setOnlyFavorites);
 
   const setMaterial = useMachiningStore((s) => s.setMaterial);
   const setFerramenta = useMachiningStore((s) => s.setFerramenta);
@@ -80,6 +83,7 @@ export function HistoryPage() {
 
   const filtered = getFilteredEntries();
   const hasFilters = filters.materialNome !== '' || filters.tipoOperacao !== 'todos' || filters.feedback !== 'todos';
+  const favoriteCount = entries.filter((e) => e.isFavorited).length;
 
   const handleRestore = (entry: HistoricoCalculo) => {
     setMaterial(entry.materialId);
@@ -137,7 +141,14 @@ export function HistoryPage() {
           <span className="material-symbols-outlined text-primary">history</span>
           Histórico de Cálculos
         </h1>
-        <span className="text-xs text-gray-500 ml-auto font-mono">{entries.length} registros</span>
+        <div className="ml-auto flex items-center gap-3">
+          {favoriteCount > 0 && (
+            <span className="text-xs font-mono" style={{ color: '#f39c12' }}>
+              ⭐ {favoriteCount} favorito{favoriteCount !== 1 ? 's' : ''}
+            </span>
+          )}
+          <span className="text-xs text-gray-500 font-mono">{entries.length} registros</span>
+        </div>
       </header>
 
       <div className="max-w-[1200px] mx-auto">
@@ -188,6 +199,19 @@ export function HistoryPage() {
 
         {/* Actions bar */}
         <div className="flex flex-wrap gap-2 mb-6">
+          <button
+            onClick={() => setOnlyFavorites(!onlyFavorites)}
+            aria-label="Apenas Favoritos"
+            className={`flex items-center gap-2 px-4 py-2 rounded-lg border text-xs transition-all ${
+              onlyFavorites
+                ? 'border-[#f39c12]/50 font-bold'
+                : 'bg-white/5 border-white/10 text-gray-400 hover:bg-white/10 hover:text-white'
+            }`}
+            style={onlyFavorites ? { background: 'rgba(243,156,18,0.12)', color: '#f39c12' } : undefined}
+          >
+            <span>⭐</span>
+            Apenas Favoritos
+          </button>
           <button onClick={handleExport} disabled={entries.length === 0}
             className="flex items-center gap-2 px-4 py-2 rounded-lg bg-white/5 border border-white/10 text-gray-400 hover:bg-white/10 hover:text-white transition-all text-xs disabled:opacity-30 disabled:cursor-not-allowed">
             <span className="material-symbols-outlined text-sm text-primary">download</span>
@@ -246,6 +270,7 @@ export function HistoryPage() {
               onRemove={() => removeEntry(entry.id)}
               onFeedback={(fb) => setFeedback(entry.id, fb)}
               onNotas={(n) => setNotas(entry.id, n)}
+              onToggleFavorite={() => toggleFavorite(entry.id)}
             />
           ))}
         </div>
@@ -263,9 +288,10 @@ interface EntryCardProps {
   onRemove: () => void;
   onFeedback: (fb: FeedbackOperador) => void;
   onNotas: (n: string) => void;
+  onToggleFavorite: () => void;
 }
 
-function HistoryEntryCard({ entry, isExpanded, onToggle, onRestore, onRemove, onFeedback, onNotas }: EntryCardProps) {
+function HistoryEntryCard({ entry, isExpanded, onToggle, onRestore, onRemove, onFeedback, onNotas, onToggleFavorite }: EntryCardProps) {
   const { resultado, ferramenta, parametros } = entry;
   const nivel = resultado.seguranca.nivel;
 
@@ -305,6 +331,16 @@ function HistoryEntryCard({ entry, isExpanded, onToggle, onRestore, onRemove, on
         <span className={`text-[10px] font-bold px-2.5 py-1 rounded-lg border ${SEG_COLORS[nivel]}`}>
           {SEG_LABELS[nivel]}
         </span>
+
+        {/* Favorite button */}
+        <button
+          aria-label={entry.isFavorited ? 'Remover favorito' : 'Favoritar'}
+          onClick={(e) => { e.stopPropagation(); onToggleFavorite(); }}
+          className="shrink-0 text-lg leading-none hover:scale-110 transition-transform"
+          style={{ color: entry.isFavorited ? '#f39c12' : 'rgba(255,255,255,0.3)' }}
+        >
+          ⭐
+        </button>
 
         {/* Feedback indicator */}
         {entry.feedback && (

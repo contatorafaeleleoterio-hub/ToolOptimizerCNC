@@ -130,4 +130,22 @@ describe('HistoryPage', () => {
     const actionRow = container.querySelector('.flex-wrap');
     expect(actionRow).toBeInTheDocument();
   });
+
+  it('renders favorite button for each entry', () => {
+    addTestEntry();
+    renderPage();
+    expect(screen.getByRole('button', { name: 'Favoritar' })).toBeInTheDocument();
+  });
+
+  it('clicking favorite button toggles isFavorited in store', () => {
+    addTestEntry();
+    renderPage();
+    fireEvent.click(screen.getByRole('button', { name: 'Favoritar' }));
+    expect(useHistoryStore.getState().entries[0].isFavorited).toBe(true);
+  });
+
+  it('renders "Apenas Favoritos" toggle button', () => {
+    renderPage();
+    expect(screen.getByRole('button', { name: 'Apenas Favoritos' })).toBeInTheDocument();
+  });
 });

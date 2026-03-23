@@ -226,6 +226,7 @@ export interface HistoricoCalculo {
   resultado: ResultadoUsinagem;
   feedback: FeedbackOperador;
   notas: string;
+  isFavorited: boolean;
 }
 
 /** Maximum history entries stored */

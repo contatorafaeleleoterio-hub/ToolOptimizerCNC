@@ -17,10 +17,11 @@ interface HistoryFilters {
 interface HistoryState {
   entries: HistoricoCalculo[];
   filters: HistoryFilters;
+  onlyFavorites: boolean;
 }
 
 interface HistoryActions {
-  addEntry: (entry: Omit<HistoricoCalculo, 'id' | 'timestamp' | 'feedback' | 'notas'>) => void;
+  addEntry: (entry: Omit<HistoricoCalculo, 'id' | 'timestamp' | 'feedback' | 'notas' | 'isFavorited'>) => void;
   removeEntry: (id: string) => void;
   clearHistory: () => void;
   setFeedback: (id: string, feedback: FeedbackOperador) => void;
@@ -30,6 +31,8 @@ interface HistoryActions {
   getFilteredEntries: () => HistoricoCalculo[];
   exportHistory: () => string;
   importHistory: (json: string) => boolean;
+  toggleFavorite: (id: string) => void;
+  setOnlyFavorites: (v: boolean) => void;
 }
 
 const DEFAULT_FILTERS: HistoryFilters = {
@@ -52,6 +55,7 @@ export const useHistoryStore = create<HistoryState & HistoryActions>()(
     (set, get) => ({
       entries: [],
       filters: { ...DEFAULT_FILTERS },
+      onlyFavorites: false,
 
       addEntry: (entry) => {
         const newEntry: HistoricoCalculo = {
@@ -60,6 +64,7 @@ export const useHistoryStore = create<HistoryState & HistoryActions>()(
           timestamp: Date.now(),
           feedback: null,
           notas: '',
+          isFavorited: false,
         };
         set((state) => {
           const updated = [newEntry, ...state.entries];
@@ -100,8 +105,9 @@ export const useHistoryStore = create<HistoryState & HistoryActions>()(
       },
 
       getFilteredEntries: () => {
-        const { entries, filters } = get();
+        const { entries, filters, onlyFavorites } = get();
         return entries.filter((e) => {
+          if (onlyFavorites && !e.isFavorited) return false;
           if (filters.materialNome && !e.materialNome.toLowerCase().includes(filters.materialNome.toLowerCase())) {
             return false;
           }
@@ -113,6 +119,16 @@ export const useHistoryStore = create<HistoryState & HistoryActions>()(
           }
           return true;
         });
+      },
+
+      toggleFavorite: (id) => {
+        set((state) => ({
+          entries: state.entries.map((e) => e.id === id ? { ...e, isFavorited: !e.isFavorited } : e),
+        }));
+      },
+
+      setOnlyFavorites: (v) => {
+        set({ onlyFavorites: v });
       },
 
       exportHistory: () => {
@@ -132,7 +148,18 @@ export const useHistoryStore = create<HistoryState & HistoryActions>()(
     }),
     {
       name: 'tooloptimizer-cnc-history',
-      version: 1,
+      version: 2,
+      migrate: (persistedState, fromVersion) => {
+        const state = persistedState as Partial<HistoryState>;
+        if (fromVersion < 2) {
+          return {
+            ...state,
+            onlyFavorites: false,
+            entries: (state.entries ?? []).map((e) => ({ ...e, isFavorited: e.isFavorited ?? false })),
+          };
+        }
+        return state;
+      },
     },
   ),
 );
