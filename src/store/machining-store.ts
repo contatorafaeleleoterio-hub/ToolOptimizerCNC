@@ -430,7 +430,8 @@ export const useMachiningStore = create<MachiningState & MachiningActions>()(
           const powerHeadroom = Math.max(0, ((limitesMaquina.maxPotencia - potenciaMotor) / limitesMaquina.maxPotencia) * 100);
 
           // Calculate health score from parameter zones
-          const bounds = calcularSliderBounds(material, ferramenta, tipoOperacao);
+          const { objetivoUsinagem } = get();
+          const bounds = calcularSliderBounds(material, ferramenta, tipoOperacao, undefined, objetivoUsinagem);
           const vcZone = getVcZone(vc, bounds.vc.recomendado);
           const fzZone = getFzZone(chipResult.fzEfetivo, bounds.fz.recomendado);
           const aeZone = getAeZone(ae, bounds.ae.recomendado);
@@ -479,8 +480,10 @@ export const useMachiningStore = create<MachiningState & MachiningActions>()(
         },
 
         setObjetivoUsinagem: (objetivo) => {
-          // Does NOT clear resultado — only affects visual indicator zones
+          const { resultado } = get();
           set({ objetivoUsinagem: objetivo });
+          // Re-run calcular to refresh healthScore with new objetivo-based bounds
+          if (resultado) get().calcular();
         },
 
         addSavedTool: (toolData) => {

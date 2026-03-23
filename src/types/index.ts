@@ -234,6 +234,13 @@ export const HISTORICO_MAX_ENTRIES = 50;
 /** Machining objective — affects visual threshold zones of indicators (does NOT alter calculations) */
 export type ObjetivoUsinagem = 'velocidade' | 'balanceado' | 'vida_util';
 
+/** Vc/fz multipliers per machining objective (shift the "recommended" point on health bars) */
+export const OBJETIVO_MULTIPLIERS: Record<ObjetivoUsinagem, { vc: number; fz: number }> = {
+  velocidade: { vc: 1.15, fz: 1.10 },
+  balanceado: { vc: 1.00, fz: 1.00 },
+  vida_util:  { vc: 0.80, fz: 0.85 },
+};
+
 /**
  * Saved tool — physical configuration only, no result.
  * Auto-saved after each simulation with a new tool config.

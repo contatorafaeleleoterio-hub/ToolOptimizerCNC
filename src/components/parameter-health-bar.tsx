@@ -250,9 +250,10 @@ export function ParameterHealthBar({ paramKey }: ParameterHealthBarProps) {
   const ferramenta = useMachiningStore((s) => s.ferramenta);
   const materialId = useMachiningStore((s) => s.materialId);
   const tipoOperacao = useMachiningStore((s) => s.tipoOperacao);
+  const objetivoUsinagem = useMachiningStore((s) => s.objetivoUsinagem);
 
   const material = MATERIAIS.find((m) => m.id === materialId) ?? null;
-  const bounds = calcularSliderBounds(material, ferramenta, tipoOperacao);
+  const bounds = calcularSliderBounds(material, ferramenta, tipoOperacao, undefined, objetivoUsinagem);
 
   if (paramKey === 'vc') {
     const vcResult = computeVcByValue(parametros.vc, bounds.vc.recomendado, bounds.vc.max);

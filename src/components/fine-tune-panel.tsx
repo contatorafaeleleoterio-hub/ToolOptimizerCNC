@@ -40,12 +40,13 @@ export function FineTunePanel({ embedded = false }: { embedded?: boolean }) {
   const materialId = useMachiningStore((s) => s.materialId);
   const ferramenta = useMachiningStore((s) => s.ferramenta);
   const tipoOperacao = useMachiningStore((s) => s.tipoOperacao);
+  const objetivoUsinagem = useMachiningStore((s) => s.objetivoUsinagem);
   const material = MATERIAIS.find((m) => m.id === materialId);
 
   const [openKey, setOpenKey] = useState<string | null>(null);
 
   // Calcular bounds dinâmicos baseados no contexto atual
-  const bounds = calcularSliderBounds(material ?? null, ferramenta, tipoOperacao);
+  const bounds = calcularSliderBounds(material ?? null, ferramenta, tipoOperacao, undefined, objetivoUsinagem);
 
   // Clamp automático: quando bounds mudam, corrigir valores fora do novo range
   const isFirstRender = useRef(true);

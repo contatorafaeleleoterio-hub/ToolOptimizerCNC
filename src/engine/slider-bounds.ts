@@ -10,8 +10,8 @@
  * Validação externa: Sandvik Coromant, Kennametal, Mitsubishi, Seco, Walter
  */
 
-import type { Material, Ferramenta, SliderBounds, ParamBounds, ParamRangeOverride } from '@/types';
-import { TipoUsinagem } from '@/types';
+import type { Material, Ferramenta, SliderBounds, ParamBounds, ParamRangeOverride, ObjetivoUsinagem } from '@/types';
+import { TipoUsinagem, OBJETIVO_MULTIPLIERS } from '@/types';
 import { getRecommendedParams } from './recommendations';
 
 /**
@@ -27,6 +27,7 @@ export function calcularSliderBounds(
   ferramenta: Ferramenta,
   tipoOp: TipoUsinagem,
   ldCritico?: number,
+  objetivoUsinagem?: ObjetivoUsinagem,
 ): SliderBounds {
   const D = ferramenta.diametro;
   const balanco = ferramenta.balanco;
@@ -36,11 +37,16 @@ export function calcularSliderBounds(
     ? getRecommendedParams(material, tipoOp, D, balanco)
     : null;
 
+  const mults = OBJETIVO_MULTIPLIERS[objetivoUsinagem ?? 'balanceado'];
+
+  const vcBounds = applyOverride(calcularVcBounds(material, tipoOp, recommended?.vc ?? 150), ferramenta.paramRanges?.vc);
+  const fzBounds = applyOverride(calcularFzBounds(recommended?.fz ?? 0.05), ferramenta.paramRanges?.fz);
+
   return {
-    vc: applyOverride(calcularVcBounds(material, tipoOp, recommended?.vc ?? 150), ferramenta.paramRanges?.vc),
+    vc: { ...vcBounds, recomendado: Math.min(vcBounds.max, Math.round(vcBounds.recomendado * mults.vc)) },
     ae: applyOverride(calcularAeBounds(D, recommended?.ae ?? D * 0.3), ferramenta.paramRanges?.ae),
     ap: applyOverride(calcularApBounds(D, tipoOp, balanco, ldCritico ?? 6, recommended?.ap ?? 1), ferramenta.paramRanges?.ap),
-    fz: applyOverride(calcularFzBounds(recommended?.fz ?? 0.05), ferramenta.paramRanges?.fz),
+    fz: { ...fzBounds, recomendado: Math.min(fzBounds.max, Math.round(fzBounds.recomendado * mults.fz * 10000) / 10000) },
   };
 }
 

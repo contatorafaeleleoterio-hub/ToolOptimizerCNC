@@ -308,3 +308,29 @@ describe('Consistência dos bounds', () => {
     });
   });
 });
+
+// ── Grupo: ObjetivoUsinagem multipliers ────────────────────────────────────────
+
+describe('ObjetivoUsinagem multipliers', () => {
+  const baselineBounds = calcularSliderBounds(P20, ferr10, TipoUsinagem.DESBASTE, undefined, 'balanceado');
+
+  it('velocidade: vc.recomendado = baseline × 1.15', () => {
+    const b = calcularSliderBounds(P20, ferr10, TipoUsinagem.DESBASTE, undefined, 'velocidade');
+    expect(b.vc.recomendado).toBe(Math.min(b.vc.max, Math.round(baselineBounds.vc.recomendado * 1.15)));
+  });
+
+  it('velocidade: fz.recomendado = baseline × 1.10', () => {
+    const b = calcularSliderBounds(P20, ferr10, TipoUsinagem.DESBASTE, undefined, 'velocidade');
+    expect(b.fz.recomendado).toBeCloseTo(baselineBounds.fz.recomendado * 1.10, 4);
+  });
+
+  it('vida_util: vc.recomendado = baseline × 0.80', () => {
+    const b = calcularSliderBounds(P20, ferr10, TipoUsinagem.DESBASTE, undefined, 'vida_util');
+    expect(b.vc.recomendado).toBe(Math.min(b.vc.max, Math.round(baselineBounds.vc.recomendado * 0.80)));
+  });
+
+  it('vida_util: fz.recomendado = baseline × 0.85', () => {
+    const b = calcularSliderBounds(P20, ferr10, TipoUsinagem.DESBASTE, undefined, 'vida_util');
+    expect(b.fz.recomendado).toBeCloseTo(baselineBounds.fz.recomendado * 0.85, 4);
+  });
+});

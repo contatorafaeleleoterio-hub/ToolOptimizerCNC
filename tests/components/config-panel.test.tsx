@@ -314,4 +314,27 @@ describe('ConfigPanel', () => {
     fireEvent.click(screen.getByText('Ferramenta'));
     expect(screen.getByText('Toroidal Ø12 - R1.5 - H25 - A4')).toBeInTheDocument();
   });
+
+  it('renders 3 objetivo de usinagem buttons', () => {
+    renderPanel();
+    fireEvent.click(screen.getByText('Configuração Base'));
+    expect(screen.getByRole('button', { name: 'Velocidade' })).toBeInTheDocument();
+    expect(screen.getByRole('button', { name: 'Balanceado' })).toBeInTheDocument();
+    expect(screen.getByRole('button', { name: 'Vida Útil' })).toBeInTheDocument();
+  });
+
+  it('clicking objetivo button updates store', () => {
+    renderPanel();
+    fireEvent.click(screen.getByText('Configuração Base'));
+    fireEvent.click(screen.getByRole('button', { name: 'Velocidade' }));
+    expect(useMachiningStore.getState().objetivoUsinagem).toBe('velocidade');
+  });
+
+  it('active objetivo button has primary styling', () => {
+    renderPanel();
+    fireEvent.click(screen.getByText('Configuração Base'));
+    fireEvent.click(screen.getByRole('button', { name: 'Vida Útil' }));
+    const vidaBtn = screen.getByRole('button', { name: 'Vida Útil' });
+    expect(vidaBtn.className).toContain('bg-primary');
+  });
 });

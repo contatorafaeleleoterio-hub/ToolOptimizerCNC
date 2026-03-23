@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { useMachiningStore } from '@/store';
 import { MATERIAIS, FERRAMENTAS_PADRAO, DIAMETROS_COMPLETOS, RAIOS_PONTA, ARESTAS_OPTIONS, ALTURAS_FIXACAO } from '@/data';
 import { TipoUsinagem } from '@/types';
+import type { ObjetivoUsinagem } from '@/types';
 import { FieldGroup } from './ui-helpers';
 import { useSimulationAnimation } from '@/hooks/use-simulation-animation';
 import { usePlausible } from '@/hooks/use-plausible';
@@ -59,7 +60,14 @@ export function ConfigPanel() {
     setMaterial, setFerramenta, setTipoOperacao,
     simular, reset,
     savedTools, loadSavedTool, addSavedTool,
+    objetivoUsinagem, setObjetivoUsinagem,
   } = useMachiningStore();
+
+  const OBJETIVO_LABELS: Record<ObjetivoUsinagem, string> = {
+    velocidade: 'Velocidade',
+    balanceado: 'Balanceado',
+    vida_util:  'Vida Útil',
+  };
 
   const [showSavedBadge, setShowSavedBadge] = useState(false);
 
@@ -167,7 +175,22 @@ export function ConfigPanel() {
                 ))}
               </div>
             </FieldGroup>
-            {/* Objetivo Usinagem — será adicionado na Fase 5 */}
+            <FieldGroup label="Objetivo de Usinagem">
+              <div className="grid grid-cols-3 gap-2">
+                {(Object.keys(OBJETIVO_LABELS) as ObjetivoUsinagem[]).map((obj) => (
+                  <button
+                    key={obj}
+                    onClick={() => setObjetivoUsinagem(obj)}
+                    aria-label={OBJETIVO_LABELS[obj]}
+                    className={`py-2 rounded border text-base transition-colors ${objetivoUsinagem === obj
+                      ? 'bg-primary text-black font-bold border-primary shadow-neon-cyan'
+                      : 'bg-black/40 text-gray-400 hover:text-white hover:bg-white/5 border-white/10'}`}
+                  >
+                    {OBJETIVO_LABELS[obj]}
+                  </button>
+                ))}
+              </div>
+            </FieldGroup>
           </div>
         </CollapsibleSection>
 
