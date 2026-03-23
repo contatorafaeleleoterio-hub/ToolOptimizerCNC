@@ -53,19 +53,6 @@ describe('ConfigPanel', () => {
     expect(diaSelect.classList.contains('select-chevron')).toBe(true);
   });
 
-  it('renders cutting parameter inputs', () => {
-    renderPanel();
-    expect(screen.getByText('ap (mm)')).toBeInTheDocument();
-    expect(screen.getByText('ae (mm)')).toBeInTheDocument();
-    expect(screen.getByText('fz (mm)')).toBeInTheDocument();
-    expect(screen.getByText('Vc (m/min)')).toBeInTheDocument();
-  });
-
-  it('renders safety factor badge (read-only, moved to Settings)', () => {
-    renderPanel();
-    expect(screen.getByText('SF: 0.80')).toBeInTheDocument();
-  });
-
   it('shows raio da ponta for toroidal with 2 options (R0.5, R1)', () => {
     renderPanel();
     expect(screen.getByText('Raio da Ponta')).toBeInTheDocument();
@@ -163,37 +150,53 @@ describe('ConfigPanel', () => {
     expect(useMachiningStore.getState().ferramenta.balanco).toBe(initial - 5);
   });
 
-  it('renders stepper buttons for cutting parameters', () => {
-    renderPanel();
-    expect(screen.getByLabelText('Increase ap (mm)')).toBeInTheDocument();
-    expect(screen.getByLabelText('Decrease ap (mm)')).toBeInTheDocument();
-    expect(screen.getByLabelText('Increase ae (mm)')).toBeInTheDocument();
-    expect(screen.getByLabelText('Decrease ae (mm)')).toBeInTheDocument();
-    expect(screen.getByLabelText('Increase fz (mm)')).toBeInTheDocument();
-    expect(screen.getByLabelText('Decrease fz (mm)')).toBeInTheDocument();
-    expect(screen.getByLabelText('Increase Vc (m/min)')).toBeInTheDocument();
-    expect(screen.getByLabelText('Decrease Vc (m/min)')).toBeInTheDocument();
-  });
-
-  it('increments ap on stepper click', () => {
-    renderPanel();
-    const initial = useMachiningStore.getState().parametros.ap;
-    fireEvent.click(screen.getByLabelText('Increase ap (mm)'));
-    expect(useMachiningStore.getState().parametros.ap).toBeCloseTo(initial + 0.1, 1);
-  });
-
   it('follows correct tool field order: Tipo → Diâmetro → Raio → Arestas → Altura', () => {
     renderPanel();
-    const toolLabels = [
-      'Tipo', 'Diâmetro (mm)', 'Raio da Ponta', 'Arestas (Z)', 'Altura de Fixação (mm)',
-    ];
+    // Abrir seção Ferramenta para garantir que labels aparecem
+    fireEvent.click(screen.getByText('Ferramenta'));
+    const toolLabels = ['Tipo', 'Diâmetro (mm)', 'Raio da Ponta', 'Arestas (Z)', 'Altura de Fixação (mm)'];
     for (const label of toolLabels) {
       expect(screen.getByText(label)).toBeInTheDocument();
     }
-    // Verify ordering: use exact text matching to exclude "Tipo de Usinagem"
-    const allLabels = screen.getAllByText(
-      (content) => toolLabels.includes(content),
-    ).map((el) => el.textContent);
-    expect(allLabels).toEqual(toolLabels);
+  });
+
+  // ─── Fase 2: CollapsibleSection ───────────────────────────────────────────
+
+  it('renders 3 collapsible sections', () => {
+    renderPanel();
+    expect(screen.getByText('Configuração Base')).toBeInTheDocument();
+    expect(screen.getByText('Ferramenta')).toBeInTheDocument();
+    expect(screen.getByText('Ajuste Fino')).toBeInTheDocument();
+  });
+
+  it('collapsible sections are closed by default', () => {
+    renderPanel();
+    const accordionHeaders = screen.getAllByRole('button').filter(
+      (b) => b.getAttribute('aria-expanded') !== null
+    );
+    accordionHeaders.forEach((b) => {
+      expect(b).toHaveAttribute('aria-expanded', 'false');
+    });
+  });
+
+  it('material section opens when Configuração Base is clicked', () => {
+    renderPanel();
+    fireEvent.click(screen.getByText('Configuração Base'));
+    expect(screen.getAllByRole('combobox').length).toBeGreaterThanOrEqual(1);
+  });
+
+  it('does NOT render cutting parameter NumInputs (section removed)', () => {
+    renderPanel();
+    // These were in "Parâmetros de Corte" which was removed
+    expect(screen.queryByText('ap (mm)')).not.toBeInTheDocument();
+    expect(screen.queryByText('Vc (m/min)')).not.toBeInTheDocument();
+  });
+
+  it('renders FineTunePanel sliders inside Ajuste Fino section', () => {
+    renderPanel();
+    fireEvent.click(screen.getByText('Ajuste Fino'));
+    // FineTunePanel conteúdo: labels dos sliders
+    expect(screen.getByText('VEL. DE CORTE')).toBeInTheDocument();
+    expect(screen.getByText('AVANÇO/DENTE')).toBeInTheDocument();
   });
 });

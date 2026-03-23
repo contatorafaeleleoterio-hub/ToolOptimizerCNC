@@ -1,7 +1,6 @@
 import logoImg from './assets/logo-tooloptimizer.png';
 import { ConfigPanel } from './components/config-panel';
 import { ResultsPanel } from './components/results-panel';
-import { FineTunePanel } from './components/fine-tune-panel';
 import { ExportButtons } from './components/export-buttons';
 import { Disclaimer } from './components/disclaimer';
 import { SeoHead } from './components/seo-head';
@@ -31,16 +30,13 @@ export default function App() {
         <ExportButtons />
       </header>
 
-      {/* 3-column grid */}
+      {/* 2-column grid */}
       <main className="flex-1 grid grid-cols-12 gap-3 min-h-0">
         <section className="col-span-3 overflow-y-auto pr-1">
           <ConfigPanel />
         </section>
-        <section className="col-span-6 overflow-y-auto pr-2">
+        <section className="col-span-9 overflow-y-auto pr-2">
           <ResultsPanel />
-        </section>
-        <section className="col-span-3 h-full">
-          <FineTunePanel />
         </section>
       </main>
 

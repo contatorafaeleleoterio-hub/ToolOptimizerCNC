@@ -1,9 +1,11 @@
 import { useMachiningStore } from '@/store';
 import { MATERIAIS, FERRAMENTAS_PADRAO, DIAMETROS_COMPLETOS, RAIOS_PADRAO } from '@/data';
 import { TipoUsinagem } from '@/types';
-import { SectionTitle, FieldGroup, NumInput } from './ui-helpers';
+import { FieldGroup } from './ui-helpers';
 import { useSimulationAnimation } from '@/hooks/use-simulation-animation';
 import { usePlausible } from '@/hooks/use-plausible';
+import { CollapsibleSection } from './collapsible-section';
+import { FineTunePanel } from './fine-tune-panel';
 
 const OPERACAO_LABELS: Record<TipoUsinagem, string> = {
   [TipoUsinagem.DESBASTE]: 'Desbaste',
@@ -15,8 +17,8 @@ const ARESTAS_OPTIONS = [2, 4] as const;
 
 export function ConfigPanel() {
   const {
-    materialId, ferramenta, tipoOperacao, parametros, safetyFactor,
-    setMaterial, setFerramenta, setTipoOperacao, setParametros,
+    materialId, ferramenta, tipoOperacao, parametros,
+    setMaterial, setFerramenta, setTipoOperacao,
     simular, reset,
   } = useMachiningStore();
 
@@ -25,6 +27,14 @@ export function ConfigPanel() {
 
   const material = MATERIAIS.find((m) => m.id === materialId);
   const vcRange = material?.vcRanges[tipoOperacao];
+
+  // Dados para os summaries dos accordeons
+  const materialNome = material?.nome ?? '—';
+  const operacaoLabel = OPERACAO_LABELS[tipoOperacao];
+  const ferramentaTipoLabel = ferramenta.tipo === 'toroidal' ? 'Toroidal' : ferramenta.tipo === 'esferica' ? 'Esférica' : 'Topo';
+  const summaryBase = `${materialNome} | ${operacaoLabel}`;
+  const summaryFerramenta = `${ferramentaTipoLabel} Ø${ferramenta.diametro} | A${ferramenta.numeroArestas}`;
+  const summaryAjuste = `Vc ${parametros.vc} | fz ${parametros.fz}`;
 
   const handleSimulate = () => {
     track('Simulacao_Executada', {
@@ -60,12 +70,14 @@ export function ConfigPanel() {
         </div>
       </div>
 
-      <div className="bg-surface-dark backdrop-blur-xl border border-white/5 rounded-2xl p-4 shadow-glass flex flex-col gap-3">
+      <div className="bg-surface-dark backdrop-blur-xl border border-white/5 rounded-2xl p-2 shadow-glass flex flex-col gap-2">
 
-        {/* Material + operation */}
-        <div className="bg-card-dark rounded-xl p-3 border border-white/5 shadow-inner-glow">
-          <SectionTitle color="bg-primary" label="Configuração Base" />
-          <div className="space-y-3">
+        {/* Seção 1: Configuração Base */}
+        <CollapsibleSection
+          title="Configuração Base"
+          summary={summaryBase}
+        >
+          <div className="space-y-3 pt-1">
             <FieldGroup label="Material da Peça">
               <select value={materialId} onChange={(e) => {
                 const id = Number(e.target.value);
@@ -100,13 +112,18 @@ export function ConfigPanel() {
                 ))}
               </div>
             </FieldGroup>
+            {/* Objetivo Usinagem — será adicionado na Fase 5 */}
           </div>
-        </div>
+        </CollapsibleSection>
 
-        {/* Tool section — Flow: Tipo → Diâmetro → Raio (toroidal) → Arestas → Altura */}
-        <div className="bg-card-dark rounded-xl p-3 border border-white/5 shadow-inner-glow">
-          <SectionTitle color="bg-secondary" label="Ferramenta" />
-          <div className="space-y-3">
+        {/* Seção 2: Ferramenta */}
+        <CollapsibleSection
+          title="Ferramenta"
+          summary={summaryFerramenta}
+        >
+          <div className="space-y-3 pt-1">
+            {/* Dropdown Ferramentas Salvas — será adicionado na Fase 4 */}
+
             {/* 1. Tool type */}
             <FieldGroup label="Tipo">
               <div className="grid grid-cols-3 gap-2">
@@ -121,7 +138,7 @@ export function ConfigPanel() {
               </div>
             </FieldGroup>
 
-            {/* 2. Diameter (dropdown with chevron) */}
+            {/* 2. Diameter */}
             <FieldGroup label="Diâmetro (mm)">
               <select value={ferramenta.diametro} onChange={(e) => setFerramenta({ diametro: Number(e.target.value) })}
                 className="w-full bg-black/40 border border-white/10 rounded-lg py-2 pl-3 pr-10 text-base text-white font-mono focus:ring-1 focus:ring-primary outline-none appearance-none hover:border-white/20 select-chevron">
@@ -131,7 +148,7 @@ export function ConfigPanel() {
               </select>
             </FieldGroup>
 
-            {/* 3. Corner radius — only for toroidal, 2 options: R0.5 and R1 */}
+            {/* 3. Corner radius — toroidal only (mantido como radio buttons até Fase 3) */}
             {ferramenta.tipo === 'toroidal' && (
               <FieldGroup label="Raio da Ponta">
                 <div className="grid grid-cols-2 gap-2">
@@ -147,7 +164,7 @@ export function ConfigPanel() {
               </FieldGroup>
             )}
 
-            {/* 4. Flute count — 2 button options */}
+            {/* 4. Arestas — mantido como radio buttons até Fase 3 */}
             <FieldGroup label="Arestas (Z)">
               <div className="grid grid-cols-2 gap-2">
                 {ARESTAS_OPTIONS.map((z) => (
@@ -161,7 +178,7 @@ export function ConfigPanel() {
               </div>
             </FieldGroup>
 
-            {/* 5. Tool stickout height — min 15, max 150, step 5 */}
+            {/* 5. Altura de Fixação — mantido como NumInput até Fase 3 */}
             <FieldGroup label="Altura de Fixação (mm)">
               <div className="flex gap-2">
                 <input type="number" value={ferramenta.balanco}
@@ -174,24 +191,16 @@ export function ConfigPanel() {
               </div>
             </FieldGroup>
           </div>
-        </div>
+        </CollapsibleSection>
 
-        {/* Cutting parameters */}
-        <div className="bg-card-dark rounded-xl p-3 border border-white/5 shadow-inner-glow">
-          <div className="flex items-center justify-between mb-2">
-            <SectionTitle color="bg-accent-orange" label="Parâmetros de Corte" />
-            <span className="text-xs text-gray-500 font-mono flex items-center gap-1" title="Fator de Segurança — ajuste em Configurações">
-              <span className="material-symbols-outlined" style={{ fontSize: '11px' }}>shield</span>
-              SF: {safetyFactor.toFixed(2)}
-            </span>
-          </div>
-          <div className="grid grid-cols-2 gap-3">
-            <NumInput label="ap (mm)" value={parametros.ap} onChange={(v) => setParametros({ ap: v })} min={0.1} max={50} step={0.1} />
-            <NumInput label="ae (mm)" value={parametros.ae} onChange={(v) => setParametros({ ae: v })} min={0.1} max={50} step={0.1} />
-            <NumInput label="fz (mm)" value={parametros.fz} onChange={(v) => setParametros({ fz: v })} min={0.01} max={1} step={0.01} />
-            <NumInput label="Vc (m/min)" value={parametros.vc} onChange={(v) => setParametros({ vc: v })} min={1} max={1200} step={1} />
-          </div>
-        </div>
+        {/* Seção 3: Ajuste Fino (movido do FineTunePanel) */}
+        <CollapsibleSection
+          title="Ajuste Fino"
+          summary={summaryAjuste}
+        >
+          <FineTunePanel embedded />
+        </CollapsibleSection>
+
       </div>
     </div>
   );

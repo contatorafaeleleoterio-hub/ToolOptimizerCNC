@@ -34,7 +34,7 @@ const SLIDER_VISUAL = [
     equilibrio: 'Combine ap alto com ae baixo para operações de desbaste eficiente.' },
 ];
 
-export function FineTunePanel() {
+export function FineTunePanel({ embedded = false }: { embedded?: boolean }) {
   const parametros = useMachiningStore((s) => s.parametros);
   const ajustarParametros = useMachiningStore((s) => s.ajustarParametros);
   const materialId = useMachiningStore((s) => s.materialId);
@@ -72,10 +72,12 @@ export function FineTunePanel() {
   };
 
   return (
-    <div className="bg-surface-dark backdrop-blur-xl border border-white/5 rounded-2xl p-4 shadow-glass h-full flex flex-col overflow-y-auto">
-      <h2 className="text-sm font-bold uppercase tracking-widest mb-4 flex items-center gap-2 text-gray-300">
-        <span className="material-symbols-outlined text-base">tune</span> Ajuste Fino
-      </h2>
+    <div className={embedded ? 'flex flex-col overflow-hidden' : 'bg-surface-dark backdrop-blur-xl border border-white/5 rounded-2xl p-4 shadow-glass h-full flex flex-col overflow-y-auto'}>
+      {!embedded && (
+        <h2 className="text-sm font-bold uppercase tracking-widest mb-4 flex items-center gap-2 text-gray-300">
+          <span className="material-symbols-outlined text-base">tune</span> Ajuste Fino
+        </h2>
+      )}
 
       <div className="flex-1 flex flex-col justify-between gap-3 px-1">
         {SLIDER_VISUAL.map(({ key, label, fullLabel, unit, color, rgb, desc, aumentar, diminuir, equilibrio }) => {
