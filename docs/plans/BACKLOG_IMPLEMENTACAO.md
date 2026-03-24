@@ -1,8 +1,8 @@
 # Backlog de Implementação — ToolOptimizer CNC
 
-> **Última atualização:** 17/03/2026
-> **Versão atual:** v0.6.0
-> **Total de planos pendentes:** 2
+> **Última atualização:** 24/03/2026
+> **Versão atual:** v0.8.0
+> **Total de planos pendentes:** 3 (Segurança v0.5.5 + Redesign Dashboard v0.8.0 fases 7-8 + Implementações v0.9)
 
 Esta lista define a ordem de implementação dos planos criados e ainda não executados.
 A ordem garante estabilidade progressiva: bugs corrigidos antes de features, features antes de polish.
@@ -22,6 +22,8 @@ A ordem garante estabilidade progressiva: bugs corrigidos antes de features, fea
 | 5 | [Segurança Cibernética](#5-segurança-cibernética) | 🔒 Security | v0.5.5 | 6 arquivos + config manual | ⬜ Pendente |
 | 6 | [Reestruturação Documental](#6-reestruturação-documental) | 🏗️ Infra | v0.6.0 | ~150 arquivos docs | ✅ Concluído (4 fases) |
 | 7 | [Admin Dashboard](#7-admin-dashboard) | ✨ Feature | v0.7.0 | 9 páginas, 3 stores, ~30 arquivos | ✅ Concluído (`ab5eb8f`) |
+| 8 | [Redesign Dashboard Principal](#8-redesign-dashboard-principal) | 🎨 Redesign | v0.8.0 | ~10 arquivos + testes, 8 fases | ⬜ Pendente |
+| 9 | [Implementações Dashboard v0.9](#9-implementações-dashboard-v09) | 🎨 Feature+Redesign | v0.9.x | 8 itens — inputs livres, favoritar, redesign visor, rodapé, config | ⬜ Pendente — planejar |
 
 ---
 
@@ -132,6 +134,30 @@ v0.5.5 — Segurança Cibernética ⬜
 | 8 | Polish + Integração | v0.7.0 | Dashboard real, feed atividade, testes finais | ✅ (`ab5eb8f`) |
 
 **Testes:** Store CRUD, layout render, integração bug report, error capture, usage tracking
+
+---
+
+### 8. Redesign Dashboard Principal
+
+**Arquivo do plano:** `PLAN_Redesign_Dashboard_v0.8.0.md`
+**Prioridade:** ALTA — redesign completo do dashboard principal da calculadora CNC
+
+**Problema:** Layout 3 colunas com redundâncias (Parâmetros de Corte = Ajuste Fino), inputs que não escalam (radio buttons fixos), fontes pequenas para desktop, sem persistência de ferramentas, sem conceito de "objetivo de usinagem".
+
+**8 fases de implementação:**
+
+| Fase | Ação | Escopo |
+|------|------|--------|
+| 1 | Fundação — Tipos, Store, Dados | Tipos novos, store expandido, arrays dropdowns |
+| 2 | Layout 2 Colunas + Accordion | Grid 3→2 colunas, CollapsibleSection, mover Ajuste Fino |
+| 3 | Ferramenta → Dropdowns | Raio/Arestas/Altura em dropdowns, visual row+label |
+| 4 | Ferramentas Salvas + Auto-Save | Dropdown ferramentas, auto-save ao simular, deduplicação |
+| 5 | Objetivo Usinagem | 3 botões (Velocidade/Balanceado/Vida Útil), altera indicadores |
+| 6 | Validar Parâmetros + Acesso Rápido | Salvar simulação validada, modal acesso rápido |
+| 7 | ResultsPanel Visual + Fix RPM↔Avanço | Layout expandido, fix re-render Zustand |
+| 8 | Fontes + Polish + Quality Gates | Font sizes maiores, espaçamentos, bump v0.8.0 |
+
+**Testes:** Store CRUD, accordions, dropdowns, auto-save, objetivo→zones, validar/carregar, re-render
 
 ---
 

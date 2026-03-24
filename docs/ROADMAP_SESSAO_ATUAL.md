@@ -46,6 +46,7 @@ npx tsc --noEmit
 | 7 | Admin Dashboard (8 fases) | ✨ Feature | v0.7.0 | ✅ Concluído (`ab5eb8f`) |
 | 8 | Reestruturação Docs Marketing & Monetização (12 docs) | 📄 Docs | — | ✅ Concluído |
 | 9 | [Redesign Dashboard Principal (8 fases)](#-redesign-dashboard-principal-v080) | 🎨 Redesign | v0.8.0 | ✅ Concluído (Fases 1-6) |
+| 10 | [Implementações Dashboard v0.9 (8 itens)](#-implementações-dashboard-v09) | 🎨 Feature+Redesign | v0.9.x | ⬜ Pendente — planejar na próxima sessão |
 
 ### ✅ Reestruturação Documental (v0.6.0) — CONCLUÍDA
 
@@ -148,7 +149,27 @@ npx tsc --noEmit
 | 8A | Favoritar Simulação | `FASE-8A-favoritar-simulacao.md` | ⬜ Pendente (desbloqueado) |
 | 8B | Tornar Input Padrão | `FASE-8B-tornar-input-padrao.md` | ⬜ Pendente (desbloqueado) |
 
-**v0.8.0 lançado.** Próxima sessão: F7 → F8A → F8B → release v0.8.3 (~80% contexto).
+**v0.8.0 lançado.** Fases 7, 8A, 8B substituídas pelo plano maior de v0.9 (8 itens) definido em 24/03/2026.
+
+---
+
+### ⬜ Implementações Dashboard v0.9
+
+**Especificação completa:** `docs/plans/IMPLEMENTACOES_DASHBOARD_v0.9.md`
+
+**8 itens — planejar em fases na próxima sessão:**
+
+| # | Item | Complexidade |
+|---|------|-------------|
+| 1 | Input livre (Diâmetro, Raio, Altura) | Média |
+| 2 | Arestas (Z) → 4 botões | Baixa |
+| 3 | Botão ⭐ favoritar simulação — dashboard + histórico | Média |
+| 5 | Redesign visor central — hierarquia industrial HMI | Alta |
+| 7 | Slider Fator de Segurança no dashboard desktop | Baixa |
+| 8 | Rodapé coluna esquerda — favoritos, histórico, config, versão | Média |
+| 9 | Config: simplificar ferramentas + remover Kc | Média |
+
+**Próxima sessão:** Ler `docs/plans/IMPLEMENTACOES_DASHBOARD_v0.9.md` → criar planos técnicos por fase → implementar.
 
 ---
 

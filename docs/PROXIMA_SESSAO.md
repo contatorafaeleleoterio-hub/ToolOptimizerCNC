@@ -32,6 +32,32 @@ npx tsc --noEmit
 
 ## Ultimas 3 Sessoes
 
+### Sessão 24/03 — Especificação Implementações Dashboard v0.9
+
+**Commit:** (apenas docs — sem código) | **Versão:** v0.8.0 (inalterada) | **Testes:** 864 (inalterados)
+
+**O que foi feito:**
+- ✅ Levantamento e refinamento de 9 novos pedidos de melhoria do dashboard
+- ✅ Consolidação em 8 itens efetivos com descrições detalhadas
+- ✅ Documento de especificação criado: `docs/plans/IMPLEMENTACOES_DASHBOARD_v0.9.md`
+- ✅ ROADMAP e BACKLOG atualizados com item #10 / #9
+
+**Itens especificados (v0.9):**
+1. Input livre para Diâmetro, Raio, Altura (dropdown → digitação, campos vazios no início)
+2. Arestas (Z) → 4 botões [2|3|4|6]
+3. Botão ⭐ favoritar simulação — no painel de resultados E no histórico
+5. Redesign visor central — hierarquia industrial HMI (Zona 1: RPM+Avanço, Zona 2: métricas, Zona 3: gauges, Zona 4: alertas, Zona 5: fórmulas)
+7. Slider Fator de Segurança no dashboard desktop (só existia no mobile/settings)
+8. Rodapé fixo coluna esquerda — favoritos, histórico, config, versão (estilo Claude app)
+9. Simplificação configurações — remover listas de diâmetros/raios/Kc, adicionar gestão de ferramentas favoritas
+
+**Próxima sessão:**
+- Ler `docs/plans/IMPLEMENTACOES_DASHBOARD_v0.9.md`
+- Criar planos técnicos detalhados por fase
+- Iniciar implementação
+
+---
+
 ### Sessão 23/03 (noite-2) — Redesign v0.8.0 Fases 4, 5 e 6
 
 **Commit:** `78d6a0e` feat: redesign fase 6 — fontes polish quality gates v0.8.0 | **Versão:** v0.8.0 | **Testes:** 864 (50 arquivos)
