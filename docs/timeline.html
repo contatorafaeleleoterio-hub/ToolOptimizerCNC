@@ -322,9 +322,9 @@
     </div>
   </div>
   <div class="header-right">
-    <span class="badge badge-version">v0.7.0</span>
+    <span class="badge badge-version">v0.8.0</span>
     <span class="badge badge-live">● LIVE</span>
-    <span class="badge badge-date">21/03/2026</span>
+    <span class="badge badge-date">24/03/2026</span>
   </div>
 </header>
 
@@ -333,15 +333,13 @@
 
   <!-- TODAY CARD -->
   <div class="today-card">
-    <h2>⚡ Última Sessão — 21/03/2026</h2>
+    <h2>⚡ Última Sessão — 24/03/2026</h2>
     <div class="today-items">
-      <div class="today-item"><span class="dot dot-green"></span>Doc 12 — Índice Master v1.0: resumo executivo, grafo de dependências, cross-reference (12/12 docs ✅)</div>
-      <div class="today-item"><span class="dot dot-green"></span>Reestruturação Docs Marketing &amp; Monetização concluída — 12 documentos em 4 fases</div>
-      <div class="today-item"><span class="dot dot-green"></span>Modelo freemium documentado: Free → Login → PRO R$29-49/mês · break-even ~250 assinantes</div>
-      <div class="today-item"><span class="dot dot-green"></span>Plano de lançamento: 4 fases (Prep 6 sem → Soft Launch 12 sem → Crescimento 24 sem → Monetização mês 13+)</div>
-      <div class="today-item"><span class="dot dot-cyan"></span>824 testes passando (49 arquivos) — 0 falhas | TypeScript zero erros | v0.7.0 LIVE</div>
-      <div class="today-item"><span class="dot dot-cyan"></span>Admin Dashboard v0.7.0: 8 fases, KPIs reais, activity feed, analytics CF, feature flags</div>
-      <div class="today-item"><span class="dot dot-yellow"></span>Próxima: Segurança Cibernética v0.5.5 (fases 2-5 automáticas) → depois Fase 0 Pré-lançamento</div>
+      <div class="today-item"><span class="dot dot-green"></span>Redesign Dashboard v0.8.0 concluído — 6 fases: layout 2 colunas, dropdowns, fix store, biblioteca ferramentas, fontes + polish</div>
+      <div class="today-item"><span class="dot dot-green"></span>864 testes passando (50 arquivos) — 0 falhas | TypeScript zero erros | v0.8.0 LIVE</div>
+      <div class="today-item"><span class="dot dot-green"></span>Especificação v0.9 confirmada — 8 implementações: inputs livres, favoritar, redesign HMI, rodapé, config simplificada</div>
+      <div class="today-item"><span class="dot dot-cyan"></span>Documento de spec: docs/plans/IMPLEMENTACOES_DASHBOARD_v0.9.md</div>
+      <div class="today-item"><span class="dot dot-yellow"></span>Próxima sessão: criar planos técnicos por fase e iniciar implementação dos 8 itens v0.9</div>
     </div>
   </div>
 
@@ -1109,6 +1107,49 @@
       </div>
     </div>
 
+    <!-- 18 - Redesign Dashboard v0.8.0 -->
+    <div class="phase" data-status="done">
+      <div class="phase-dot">✓</div>
+      <div class="phase-card" onclick="toggle(this)">
+        <div class="phase-header">
+          <span class="phase-icon">🎨</span>
+          <div class="phase-meta">
+            <div class="phase-title">Redesign Dashboard Principal — 6 Fases</div>
+            <div class="phase-sub">Layout 2 colunas · Accordion · Dropdowns ferramenta · Biblioteca · Polish</div>
+          </div>
+          <div class="phase-right">
+            <span class="phase-version">v0.8.0</span>
+            <span class="phase-tag">Concluído</span>
+          </div>
+          <span class="phase-chevron">›</span>
+        </div>
+        <div class="phase-details">
+          <div class="phase-body">
+            <div class="detail-group">
+              <h4>6 Fases Implementadas</h4>
+              <ul>
+                <li>F1: Fundação — tipos, store, dados (<span class="commit-tag">5f98c9d</span>)</li>
+                <li>F2: Layout 2 colunas + Accordion colapsável (<span class="commit-tag">7afbe82</span>)</li>
+                <li>F3: Ferramenta → DropdownRow para D, R, Z, H (<span class="commit-tag">70cf508</span>)</li>
+                <li>F4: Fix atômico store — set() único em calcular() (<span class="commit-tag">274cf28</span>)</li>
+                <li>F5: Biblioteca ferramentas — dropdown + salvar manual (<span class="commit-tag">293547a</span>)</li>
+                <li>F6: Fontes +1 nível · gap gap-3 · release v0.8.0 (<span class="commit-tag">78d6a0e</span>)</li>
+              </ul>
+            </div>
+            <div class="detail-group">
+              <h4>Métricas v0.8.0</h4>
+              <ul>
+                <li>864 testes passando (50 arquivos) — 0 falhas</li>
+                <li>TypeScript zero erros</li>
+                <li>JS: 100.11KB gzip · CSS: 14.35KB gzip</li>
+                <li>Collapsible sections com summary text dinâmico</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
     <!-- ═══════════════════════════════════════════════════ -->
     <!-- BLOCO 2 — PREPARAÇÃO PARA LANÇAMENTO               -->
     <!-- ═══════════════════════════════════════════════════ -->
@@ -1116,7 +1157,7 @@
       <span>🚀 Roadmap de Lançamento &amp; Monetização</span>
     </div>
 
-    <!-- 18 - Segurança Cibernética -->
+    <!-- 19 - Segurança Cibernética -->
     <div class="phase" data-status="current">
       <div class="phase-dot">●</div>
       <div class="phase-card" onclick="toggle(this)">
@@ -1150,6 +1191,250 @@
                 <li>F6: Cloudflare Bot Fight Mode + Rate Limiting</li>
                 <li>F7: GitHub Branch protection + Dependabot alerts</li>
                 <li>⚠️ Bug conhecido: connect-src 'self' bloqueia api.cloudflare.com</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- v0.8.1 - Input Livre + Arestas Botões -->
+    <div class="phase" data-status="pending">
+      <div class="phase-dot">○</div>
+      <div class="phase-card" onclick="toggle(this)">
+        <div class="phase-header">
+          <span class="phase-icon">⌨️</span>
+          <div class="phase-meta">
+            <div class="phase-title">v0.9 Item 1+2 — Input Livre + Arestas como Botões</div>
+            <div class="phase-sub">Diâmetro · Raio · Altura → digitação livre · campos vazios no início</div>
+          </div>
+          <div class="phase-right">
+            <span class="phase-version">v0.8.1</span>
+            <span class="phase-tag">Pendente</span>
+          </div>
+          <span class="phase-chevron">›</span>
+        </div>
+        <div class="phase-details">
+          <div class="phase-body">
+            <div class="detail-group">
+              <h4>Item 1 — Input Livre</h4>
+              <ul>
+                <li>Diâmetro, Raio da Ponta, Altura de Fixação: dropdown → campo numérico</li>
+                <li>Campos abrem vazios — sem valor pré-carregado</li>
+                <li>Botão Simular desabilitado até Diâmetro e Altura preenchidos</li>
+                <li>Carrega valores ao selecionar ferramenta salva</li>
+              </ul>
+            </div>
+            <div class="detail-group">
+              <h4>Item 2 — Arestas como Botões</h4>
+              <ul>
+                <li>Dropdown [2, 3, 4, 6] → 4 botões selecionáveis</li>
+                <li>Mesmo estilo visual dos botões de Tipo e Operação</li>
+                <li>Fundo cyan + texto preto quando selecionado</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- v0.8.2 - Favoritar Simulação -->
+    <div class="phase" data-status="pending">
+      <div class="phase-dot">○</div>
+      <div class="phase-card" onclick="toggle(this)">
+        <div class="phase-header">
+          <span class="phase-icon">⭐</span>
+          <div class="phase-meta">
+            <div class="phase-title">v0.9 Item 3 — Favoritar Simulação</div>
+            <div class="phase-sub">Botão ⭐ no dashboard + no histórico · diferente de "salvar ferramenta"</div>
+          </div>
+          <div class="phase-right">
+            <span class="phase-version">v0.8.2</span>
+            <span class="phase-tag">Pendente</span>
+          </div>
+          <span class="phase-chevron">›</span>
+        </div>
+        <div class="phase-details">
+          <div class="phase-body">
+            <div class="detail-group">
+              <h4>No Painel de Resultados</h4>
+              <ul>
+                <li>Botão ⭐ visível após simulação bem-sucedida</li>
+                <li>Operador simula → testa na máquina → volta e favorita</li>
+                <li>Salva simulação completa (ferramenta + material + params + resultado)</li>
+                <li>Clique duplo desfavorita · ícone amarelo quando ativo</li>
+              </ul>
+            </div>
+            <div class="detail-group">
+              <h4>No Histórico</h4>
+              <ul>
+                <li>Botão ⭐ em cada card do histórico</li>
+                <li>Filtro "Apenas Favoritos" na página de histórico</li>
+                <li>Contador de favoritos no header da página</li>
+                <li>persist migration v1→v2 no history-store</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- v0.8.3 - Slider Fator de Segurança Desktop -->
+    <div class="phase" data-status="pending">
+      <div class="phase-dot">○</div>
+      <div class="phase-card" onclick="toggle(this)">
+        <div class="phase-header">
+          <span class="phase-icon">🛡️</span>
+          <div class="phase-meta">
+            <div class="phase-title">v0.9 Item 7 — Slider Fator de Segurança no Dashboard</div>
+            <div class="phase-sub">Só existia no mobile e nas Config · agora na coluna esquerda do desktop</div>
+          </div>
+          <div class="phase-right">
+            <span class="phase-version">v0.8.3</span>
+            <span class="phase-tag">Pendente</span>
+          </div>
+          <span class="phase-chevron">›</span>
+        </div>
+        <div class="phase-details">
+          <div class="phase-body">
+            <div class="detail-group">
+              <h4>Comportamento</h4>
+              <ul>
+                <li>Seção colapsável no ConfigPanel: "Fator de Segurança"</li>
+                <li>Slider horizontal + botões − / + (padrão Ajuste Fino)</li>
+                <li>Escala: 0.50 (Conservador) → 1.00 (Agressivo)</li>
+                <li>Multiplicador geral sobre resultado (RPM, Avanço, Potência)</li>
+              </ul>
+            </div>
+            <div class="detail-group">
+              <h4>Técnico</h4>
+              <ul>
+                <li>Reutiliza setSafetyFactor() do store (já implementado)</li>
+                <li>Mesmo componente StyledSlider dos outros sliders</li>
+                <li>Valor exibido em fonte mono em destaque</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- v0.8.4 - Rodapé Coluna Esquerda -->
+    <div class="phase" data-status="pending">
+      <div class="phase-dot">○</div>
+      <div class="phase-card" onclick="toggle(this)">
+        <div class="phase-header">
+          <span class="phase-icon">🧭</span>
+          <div class="phase-meta">
+            <div class="phase-title">v0.9 Item 8 — Rodapé Fixo da Coluna Esquerda</div>
+            <div class="phase-sub">Estilo Claude app · Favoritos · Histórico · Config · Versão · Operador (provisório)</div>
+          </div>
+          <div class="phase-right">
+            <span class="phase-version">v0.8.4</span>
+            <span class="phase-tag">Pendente</span>
+          </div>
+          <span class="phase-chevron">›</span>
+        </div>
+        <div class="phase-details">
+          <div class="phase-body">
+            <div class="detail-group">
+              <h4>Conteúdo do Rodapé</h4>
+              <ul>
+                <li>⭐ Favoritos (N salvas) — abre lista de validatedSimulations</li>
+                <li>🕐 Histórico — navega para /history</li>
+                <li>⚙ Configurações — atalho para /settings</li>
+                <li>👤 Operador (provisório) — placeholder até login ser implementado</li>
+                <li>Versão atual do app (v0.x.x)</li>
+              </ul>
+            </div>
+            <div class="detail-group">
+              <h4>Lista de Favoritos</h4>
+              <ul>
+                <li>Painel/modal com simulações favoritadas</li>
+                <li>Cada item: ferramenta · material · RPM · Avanço</li>
+                <li>Ações: carregar simulação · excluir</li>
+                <li>Sem "Mapa do Sistema" (apenas admin via /admin)</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- v0.9.0 - Redesign Visor Central HMI -->
+    <div class="phase" data-status="pending">
+      <div class="phase-dot">○</div>
+      <div class="phase-card" onclick="toggle(this)">
+        <div class="phase-header">
+          <span class="phase-icon">🏭</span>
+          <div class="phase-meta">
+            <div class="phase-title">v0.9 Item 5 — Redesign Visor Central (Padrão HMI Industrial)</div>
+            <div class="phase-sub">Hierarquia clara · Zonas definidas · Padrão Siemens Sinumerik / Heidenhain</div>
+          </div>
+          <div class="phase-right">
+            <span class="phase-version">v0.9.0</span>
+            <span class="phase-tag">Pendente</span>
+          </div>
+          <span class="phase-chevron">›</span>
+        </div>
+        <div class="phase-details">
+          <div class="phase-body">
+            <div class="detail-group">
+              <h4>5 Zonas Visuais</h4>
+              <ul>
+                <li><strong>Zona 1:</strong> Safety Badge + RPM e Avanço em fonte grande (valores principais)</li>
+                <li><strong>Zona 2:</strong> Métricas secundárias compactas — Potência · Vc · Torque · MRR</li>
+                <li><strong>Zona 3:</strong> Gauges de saúde (Feed Efficiency · Prod. MRR · Tool Health)</li>
+                <li><strong>Zona 4:</strong> Alertas e avisos em zona dedicada (nunca entre métricas)</li>
+                <li><strong>Zona 5:</strong> Fórmulas educacionais recolhidas por padrão</li>
+              </ul>
+            </div>
+            <div class="detail-group">
+              <h4>Princípios</h4>
+              <ul>
+                <li>Operador lê RPM e Avanço em menos de 1 segundo</li>
+                <li>Banner "Parâmetros Alterados" na Zona 4 (não no topo)</li>
+                <li>Safety Badge no topo da Zona 1 (destaque imediato)</li>
+                <li>Padrão consagrado: Siemens Sinumerik · Heidenhain · Sandvik CoroGuide</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- v0.9.1 - Revisão Configurações -->
+    <div class="phase" data-status="pending">
+      <div class="phase-dot">○</div>
+      <div class="phase-card" onclick="toggle(this)">
+        <div class="phase-header">
+          <span class="phase-icon">⚙️</span>
+          <div class="phase-meta">
+            <div class="phase-title">v0.9 Item 9 — Revisão do Painel de Configurações</div>
+            <div class="phase-sub">Remover listas + Kc · Adicionar gestão de ferramentas favoritas</div>
+          </div>
+          <div class="phase-right">
+            <span class="phase-version">v0.9.1</span>
+            <span class="phase-tag">Pendente</span>
+          </div>
+          <span class="phase-chevron">›</span>
+        </div>
+        <div class="phase-details">
+          <div class="phase-body">
+            <div class="detail-group">
+              <h4>O que sai</h4>
+              <ul>
+                <li>Lista de Diâmetros Padrão customizáveis (sem uso com input livre)</li>
+                <li>Lista de Raios de Ponta customizáveis (idem)</li>
+                <li>Fatores de Correção Kc por tipo/diâmetro (complexidade desnecessária)</li>
+              </ul>
+            </div>
+            <div class="detail-group">
+              <h4>O que entra</h4>
+              <ul>
+                <li>Gestão de Ferramentas Favoritas: lista salva com nome + data + excluir</li>
+                <li>Único fator de ajuste: Fator de Segurança (já na coluna esquerda)</li>
+                <li>Seção Ferramentas simplificada e coesa com o restante do sistema</li>
               </ul>
             </div>
           </div>
@@ -1421,7 +1706,7 @@
     <h3>📊 Métricas de Saúde do Projeto</h3>
     <div class="metrics-grid">
       <div class="metric-item">
-        <div class="metric-value m-green">824</div>
+        <div class="metric-value m-green">864</div>
         <div class="metric-label">Testes Passando</div>
       </div>
       <div class="metric-item">
@@ -1429,7 +1714,7 @@
         <div class="metric-label">Erros TypeScript</div>
       </div>
       <div class="metric-item">
-        <div class="metric-value m-text">99<span style="font-size:.7rem">KB</span></div>
+        <div class="metric-value m-text">100<span style="font-size:.7rem">KB</span></div>
         <div class="metric-label">Bundle JS (gzip)</div>
       </div>
       <div class="metric-item">
@@ -1442,7 +1727,7 @@
   <!-- FOOTER -->
   <div class="footer">
     <p>
-      Atualizado em <strong>21/03/2026</strong> · Versão <strong>v0.7.0</strong> ·
+      Atualizado em <strong>24/03/2026</strong> · Versão <strong>v0.8.0</strong> ·
       <a href="https://tooloptimizercnc.com.br" target="_blank">tooloptimizercnc.com.br</a> ·
       <a href="https://github.com/contatorafaeleleoterio-hub/ToolOptimizerCNC" target="_blank">GitHub</a>
     </p>
