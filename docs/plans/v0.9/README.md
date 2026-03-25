@@ -1,6 +1,6 @@
 # Planos de Implementação — Dashboard v0.9
 
-> **Status geral:** ⬜ Aguardando detalhamento técnico
+> **Status geral:** 📋 Todos os planos detalhados — prontos para implementar
 > **Especificação fonte:** `docs/plans/IMPLEMENTACOES_DASHBOARD_v0.9.md`
 
 ---
@@ -10,27 +10,27 @@
 A ordem considera dependências entre itens e agrupa mudanças que tocam os mesmos arquivos.
 
 ### Fase A — Inputs (sem dependências)
-| # | Plano | Complexidade |
-|---|-------|-------------|
-| 01 | [Input Livre (D, R, H)](PLAN-v0.9-01-input-livre.md) | Média |
-| 02 | [Arestas Z → 4 Botões](PLAN-v0.9-02-arestas-botoes.md) | Baixa |
+| # | Plano | Complexidade | Status |
+|---|-------|-------------|--------|
+| 01 | [Input Livre (D, R, H)](PLAN-v0.9-01-input-livre.md) | Média | 📋 Pronto |
+| 02 | [Arestas Z → 4 Botões](PLAN-v0.9-02-arestas-botoes.md) | Baixa | 📋 Pronto |
 
 ### Fase B — Favoritos + Safety Factor
-| # | Plano | Complexidade |
-|---|-------|-------------|
-| 03 | [Favoritar Simulação](PLAN-v0.9-03-favoritar-simulacao.md) | Média |
-| 07 | [Slider Safety Factor](PLAN-v0.9-07-slider-safety-factor.md) | Baixa |
+| # | Plano | Complexidade | Status |
+|---|-------|-------------|--------|
+| 03 | [Favoritar Simulação](PLAN-v0.9-03-favoritar-simulacao.md) | Média | 📋 Pronto |
+| 07 | [Slider Safety Factor](PLAN-v0.9-07-slider-safety-factor.md) | Baixa | 📋 Pronto |
 
 ### Fase C — Redesign Visual (maior risco)
-| # | Plano | Complexidade |
-|---|-------|-------------|
-| 05 | [Redesign Visor HMI](PLAN-v0.9-05-redesign-visor-hmi.md) | Alta |
-| 08 | [Rodapé Coluna Esquerda](PLAN-v0.9-08-rodape-coluna-esquerda.md) | Média |
+| # | Plano | Complexidade | Status |
+|---|-------|-------------|--------|
+| 05 | [Redesign Visor HMI](PLAN-v0.9-05-redesign-visor-hmi.md) | Alta | 📋 Pronto |
+| 08 | [Rodapé Coluna Esquerda](PLAN-v0.9-08-rodape-coluna-esquerda.md) | Média | 📋 Pronto |
 
 ### Fase D — Limpeza (depende de Fase A)
-| # | Plano | Complexidade |
-|---|-------|-------------|
-| 09 | [Config: Remover Kc + Gestão Ferramentas](PLAN-v0.9-09-config-ferramentas.md) | Média |
+| # | Plano | Complexidade | Status |
+|---|-------|-------------|--------|
+| 09 | [Config: Remover Kc + Gestão Ferramentas](PLAN-v0.9-09-config-ferramentas.md) | Média | 📋 Pronto |
 
 ---
 
