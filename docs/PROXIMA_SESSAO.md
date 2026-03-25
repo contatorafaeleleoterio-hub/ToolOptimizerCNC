@@ -11,7 +11,7 @@
 |------|-------|
 | **Branch** | `main` |
 | **Versão** | `0.8.0` |
-| **Último commit** | `78d6a0e` feat: redesign fase 6 — fontes polish quality gates v0.8.0 |
+| **Último commit** | `b69b9c2` docs: detalhar todos os 7 planos de implementação v0.9 |
 | **Testes** | **864 passando** (50 arquivos) — 0 falhas |
 | **TypeScript** | **zero erros** |
 | **Build** | **limpo** — JS 100.11KB gzip, CSS 14.35KB |
@@ -31,6 +31,28 @@ npx tsc --noEmit
 ---
 
 ## Ultimas 3 Sessoes
+
+### Sessão 25/03 — Detalhamento Planos v0.9 (todos os 7 itens)
+
+**Commit:** `b69b9c2` docs: detalhar todos os 7 planos v0.9 | **Versão:** v0.8.0 (inalterada) | **Testes:** 864 (inalterados)
+
+**O que foi feito:**
+- ✅ Detalhamento técnico completo de todos os 7 planos em `docs/plans/v0.9/`
+- ✅ Cada plano agora contém: mudanças linha a linha, componentes a criar/modificar, testes necessários, critérios de conclusão
+- ✅ README da v0.9 atualizado: todos os planos com status "📋 Pronto para implementar"
+
+**Decisões arquiteturais notáveis:**
+- **#03 (Favoritar):** Usar `HistoricoCalculo` no `history-store` em vez de `validatedSimulations` — `simular()` já salva no histórico automaticamente, evita sistema paralelo
+- **#05 (Visor HMI):** Novo componente `HmiDisplayPanel` com layout industrial — Zona 1: RPM+Feed (destaque), Zona 2: 4 métricas secundárias, Zona 3: gauges
+- **#07 (Safety Factor):** `StyledSlider` reutilizado, 3 ticks visuais (0.7/0.75/0.8)
+- **#08 (Rodapé):** `__APP_VERSION__` via Vite define, navegação `/history?filter=favoritos`
+- **#09 (Config):** Remove `CustomToolConfig` + `ToolCorrectionFactor` + Kc de `calcular()`, migração persist v2→v3
+
+**Próxima sessão:**
+- Implementar **Fase A** (itens #01 Input Livre + #02 Arestas Botões)
+- Depois Fase B → C → D em sequência
+
+---
 
 ### Sessão 24/03 — Especificação Implementações Dashboard v0.9
 

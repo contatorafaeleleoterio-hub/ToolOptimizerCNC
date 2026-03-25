@@ -46,7 +46,7 @@ npx tsc --noEmit
 | 7 | Admin Dashboard (8 fases) | ✨ Feature | v0.7.0 | ✅ Concluído (`ab5eb8f`) |
 | 8 | Reestruturação Docs Marketing & Monetização (12 docs) | 📄 Docs | — | ✅ Concluído |
 | 9 | [Redesign Dashboard Principal (8 fases)](#-redesign-dashboard-principal-v080) | 🎨 Redesign | v0.8.0 | ✅ Concluído (Fases 1-6) |
-| 10 | [Implementações Dashboard v0.9 (8 itens)](#-implementações-dashboard-v09) | 🎨 Feature+Redesign | v0.9.x | ⬜ Pendente — planejar na próxima sessão |
+| 10 | [Implementações Dashboard v0.9 (7 itens)](#-implementações-dashboard-v09) | 🎨 Feature+Redesign | v0.9.x | 📋 Planos detalhados — pronto para implementar |
 
 ### ✅ Reestruturação Documental (v0.6.0) — CONCLUÍDA
 
@@ -157,19 +157,19 @@ npx tsc --noEmit
 
 **Especificação completa:** `docs/plans/IMPLEMENTACOES_DASHBOARD_v0.9.md`
 
-**8 itens — planejar em fases na próxima sessão:**
+**7 itens — planos detalhados em `docs/plans/v0.9/`:**
 
-| # | Item | Complexidade |
-|---|------|-------------|
-| 1 | Input livre (Diâmetro, Raio, Altura) | Média |
-| 2 | Arestas (Z) → 4 botões | Baixa |
-| 3 | Botão ⭐ favoritar simulação — dashboard + histórico | Média |
-| 5 | Redesign visor central — hierarquia industrial HMI | Alta |
-| 7 | Slider Fator de Segurança no dashboard desktop | Baixa |
-| 8 | Rodapé coluna esquerda — favoritos, histórico, config, versão | Média |
-| 9 | Config: simplificar ferramentas + remover Kc | Média |
+| # | Item | Complexidade | Fase | Status |
+|---|------|-------------|------|--------|
+| 01 | Input livre (Diâmetro, Raio, Altura) | Média | A | 📋 Pronto |
+| 02 | Arestas (Z) → 4 botões | Baixa | A | 📋 Pronto |
+| 03 | Botão ⭐ favoritar simulação — dashboard + histórico | Média | B | 📋 Pronto |
+| 07 | Slider Fator de Segurança no dashboard desktop | Baixa | B | 📋 Pronto |
+| 05 | Redesign visor central — hierarquia industrial HMI | Alta | C | 📋 Pronto |
+| 08 | Rodapé coluna esquerda — favoritos, histórico, config, versão | Média | C | 📋 Pronto |
+| 09 | Config: simplificar ferramentas + remover Kc | Média | D | 📋 Pronto |
 
-**Próxima sessão:** Ler `docs/plans/IMPLEMENTACOES_DASHBOARD_v0.9.md` → criar planos técnicos por fase → implementar.
+**Próxima sessão:** Implementar Fase A (itens #01 + #02) → Fase B → Fase C → Fase D.
 
 ---
 
