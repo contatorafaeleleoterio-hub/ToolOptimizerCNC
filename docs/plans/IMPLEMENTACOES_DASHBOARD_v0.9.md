@@ -2,7 +2,8 @@
 
 > **Versão:** v0.9.x (a definir por fase)
 > **Data:** 2026-03-24
-> **Status:** Especificação confirmada — aguardando planejamento técnico por fases
+> **Status:** Especificação revisada (25/03/2026) — correções aplicadas pós-revisão formal
+> **Revisão:** `docs/plans/REVISAO_PLANOS_v0.9.md`
 
 ---
 
@@ -22,12 +23,23 @@ Conjunto de 8 implementações para evolução do dashboard, cobrindo: experiên
 
 **Comportamento esperado:**
 - Ao abrir o app: campos aparecem **vazios** — o usuário digita o valor que deseja
-- Qualquer valor positivo é aceito (ex: 10.5 mm)
-- Botão **Simular** fica desabilitado enquanto Diâmetro ou Altura estiverem vazios
+- Valores aceitos com **ranges de validação**:
+  - Diâmetro: 0.1 – 200 mm
+  - Raio da Ponta: 0.05 – 50 mm (visível apenas para ferramenta toroidal)
+  - Altura de Fixação: 5 – 300 mm
+- Botão **Simular** fica desabilitado enquanto Diâmetro ou Altura estiverem vazios ou fora do range
 - Ao carregar uma ferramenta salva: campos preenchem com os valores da ferramenta
 - Ao resetar: campos voltam a ficar vazios
+- `autoPopulateParams()` continua funcionando — para diâmetros fora dos pré-definidos, usa o range mais próximo
 
-**Arquivos afetados:** `src/components/config-panel.tsx`, `src/store/machining-store.ts`
+**Decisão pendente:** Destino dos arrays `DIAMETROS_COMPLETOS`, `RAIOS_PONTA`, `ALTURAS_FIXACAO` em `src/data/tools.ts` — opções: (a) deletar, (b) manter como sugestões via `<datalist>` HTML
+
+**Testes necessários:**
+- Campo vazio → Simular desabilitado
+- D=0, D negativo, D > 200 → validação bloqueia
+- Load de savedTool → campos preenchem corretamente
+
+**Arquivos afetados:** `src/components/config-panel.tsx`, `src/store/machining-store.ts`, `src/data/tools.ts` (possível remoção de arrays)
 
 ---
 
@@ -40,28 +52,42 @@ Conjunto de 8 implementações para evolução do dashboard, cobrindo: experiên
 - Botão selecionado: fundo cyan + texto preto (padrão do design system)
 - Um botão sempre estará selecionado (padrão: 4)
 
+**Sugestão (revisão):** Extrair toggle button group como componente reutilizável — padrão já usado por Tipo de Ferramenta e Tipo de Usinagem.
+
 **Arquivos afetados:** `src/components/config-panel.tsx`
 
 ---
 
 ### 3. Botão Favoritar Simulação — Dashboard e Histórico
 
-**O que muda:** Adicionar botão ⭐ para favoritar a simulação atual em dois lugares distintos.
+**O que muda:** Adicionar botão ⭐ para favoritar a simulação atual em dois lugares distintos, com **mecanismos diferentes**.
 
 **3a. No painel de resultados (dashboard):**
 - Botão ⭐ visível após uma simulação bem-sucedida
 - O operador simula → vai testar na máquina → volta ao dashboard e clica ⭐ para marcar o que funcionou na prática
 - Se já favoritada: botão fica amarelo/ativo; clicar novamente desfavorita
-- Salva usando o mecanismo de `validatedSimulations` já existente no store
+- **Mecanismo:** Chama `addValidatedSimulation()` já existente no store (snapshot completo)
+- Posicionamento: definir junto com o redesign do visor (item 5)
 
 **3b. No histórico (history-page):**
 - Botão ⭐ em cada card de entrada do histórico
 - Filtro "Apenas Favoritos" nos filtros da página
 - Contador de favoritos no header da página
+- **Mecanismo:** Novo campo `isFavorited: boolean` em `HistoricoCalculo` + `toggleFavorite(id)` no history-store
+- **Migração necessária:** Zustand version bump para adicionar `isFavorited: false` a entries existentes no localStorage
 
-**Diferença do "Salvar Ferramenta":**
-- **Favoritar simulação**: salva a simulação completa (ferramenta + material + parâmetros + resultado)
+**Diferença semântica (clarificada na revisão):**
+- **Dashboard ⭐ = validatedSimulation**: snapshot completo salvo separadamente para reuso rápido
+- **Histórico ⭐ = flag na entry**: marca destaque na timeline, sem duplicar dados
 - **Salvar ferramenta**: salva apenas a configuração física da ferramenta (tipo, diâmetro, etc.)
+
+**Referência:** Worktree `amazing-lichterman` tem implementação parcial do history-store com `isFavorited` + `toggleFavorite()` — investigar para reutilizar
+
+**Testes necessários:**
+- Toggle favoritar/desfavoritar no histórico
+- Filtro "Apenas Favoritos" funciona
+- Persistência após reload
+- Dashboard ⭐ cria validatedSimulation corretamente
 
 **Arquivos afetados:** `src/components/results-panel.tsx`, `src/pages/history-page.tsx`, `src/store/machining-store.ts`, `src/store/history-store.ts`, `src/types/index.ts`
 
@@ -130,6 +156,18 @@ Incorporado ao Item 8 (Rodapé da Coluna Esquerda). O acesso às simulações fa
 
 **Inclui (item 6):** Banner "Parâmetros Alterados" e todos os avisos de segurança ficam na Zona 4 — nunca entre gauges ou cards de métricas.
 
+**Decisões técnicas (identificadas na revisão):**
+- **BidirectionalSliders:** MANTER nos BigNumbers da Zona 1 — são feature crítica de ajuste interativo RPM/Avanço (usam `manualOverrides.rpmPercent` / `feedPercent` no store)
+- **MRR:** Aparece APENAS na Zona 2 como métrica numérica. Gauge "Prod. MRR" na Zona 3 mostra eficiência relativa (percentual), não o valor absoluto — sem duplicação
+- **ToolSummaryViewer:** Manter como header acima da Zona 1 (resumo da configuração atual)
+- **Zona 2 formato:** Reutilizar `MetricCell` existente de `shared-result-parts.tsx` — não criar componente novo
+- **Botão Favoritar (item 3):** Posicionar na Zona 1, ao lado do Safety Badge
+
+**Testes necessários:**
+- Render test para cada zona
+- BidirectionalSliders funcionam após reorganização
+- Animações (gaugeRoll, subtlePulse) funcionam na nova posição
+
 **Arquivos afetados:** `src/components/results-panel.tsx`, `src/components/shared-result-parts.tsx`
 
 ---
@@ -150,12 +188,15 @@ Incorporado ao Item 5. Todos os alertas e banners ficam exclusivamente na Zona 4
 **O que muda:** O slider de Fator de Segurança está atualmente apenas na página de Configurações e no mobile. Passa a ter presença direta na coluna esquerda do dashboard desktop.
 
 **Comportamento esperado:**
-- Nova seção colapsável no ConfigPanel: "Fator de Segurança"
-- Slider horizontal com botões − / + (mesmo padrão visual dos sliders de Ajuste Fino)
+- Nova seção colapsável no ConfigPanel: "Fator de Segurança" (4ª `CollapsibleSection`)
+- Slider horizontal **unidirecional** com botões − / + (NÃO BidirectionalSlider que vai de -150% a +150%)
 - Escala da esquerda para a direita: `0.50 (Conservador) ←→ 1.00 (Agressivo)`
+- Labels descritivos sugeridos: `0.50 Conservador | 0.70 Recomendado | 1.00 Agressivo`
 - Valor atual exibido em fonte mono em destaque
 - Aplica-se ao resultado de forma geral — multiplicador global sobre RPM, Avanço e Potência
-- Reutiliza `setSafetyFactor()` do store (já implementado)
+- Reutiliza `setSafetyFactor()` do store (já implementado — `machining-store.ts:206-209`)
+
+**Nota (revisão):** O slider na página de Configurações (`settings-page.tsx:131-157`) continua existindo. Ambos usam `setSafetyFactor()` do mesmo store — sincronia automática. Após item 9, avaliar se o do settings pode ser simplificado.
 
 **Arquivos afetados:** `src/components/config-panel.tsx`
 
@@ -183,14 +224,19 @@ Incorporado ao Item 5. Todos os alertas e banners ficam exclusivamente na Zona 4
 
 **Detalhes de cada elemento:**
 
-- **Favoritos**: abre painel/modal com a lista de `validatedSimulations`; cada item exibe ferramenta, material, RPM e Avanço; ações de carregar e excluir
-- **Histórico**: navega para `/history` (já existe)
-- **Operador (provisório)**: placeholder — quando o login for implementado, aqui ficará nome do usuário e plano
+- **Favoritos**: abre **modal overlay** com a lista de `validatedSimulations`; cada item exibe ferramenta, material, RPM e Avanço; ações de carregar e excluir
+- **Histórico**: navega para `/history`
 - **Configurações (⚙)**: navega para `/settings` — atalho rápido sem sair da tela
-- **Versão**: exibe a versão atual do app discretamente
+- **Versão**: exibe a versão atual do app discretamente (via `__APP_VERSION__` define plugin do Vite)
 - **Sem "Mapa do Sistema"**: não aparece para operador; exclusivo para o admin (acessível apenas via `/admin`)
 
-**Arquivos afetados:** `src/components/config-panel.tsx`, possivelmente `src/App.tsx`
+**Removido (revisão):** "Operador (provisório)" — placeholder sem funcionalidade não agrega valor. Será adicionado quando o sistema de login for implementado.
+
+**Pré-requisito (revisão):** Verificar e documentar mecanismo de navegação entre páginas (dashboard/history/settings) antes de implementar. `App.tsx` atual é single-page sem React Router — navegação pode requerer ajuste.
+
+**Layout CSS:** `flex flex-col h-full` no config-panel + `mt-auto` no rodapé para fixar na base.
+
+**Arquivos afetados:** `src/components/config-panel.tsx`, `src/App.tsx`
 
 ---
 
@@ -198,20 +244,34 @@ Incorporado ao Item 5. Todos os alertas e banners ficam exclusivamente na Zona 4
 
 **O que muda:** Com os inputs passando a ser livres (item 1) e os fatores de correção sendo simplificados, a seção Ferramentas das Configurações é reformulada.
 
-**9a. O que sai:**
-- Lista de "Diâmetros Padrão" — sem uso com inputs livres
-- Lista de "Raios de Ponta" customizáveis — sem uso com inputs livres
-- Fatores de Correção Kc por tipo/diâmetro de ferramenta (`toolCorrectionFactors`) — complexidade de cálculo removida
+**9a. O que sai da UI do settings:**
+- Lista de "Diâmetros Padrão" (`settings-page.tsx:641-673`) — sem uso com inputs livres
+- Lista de "Raios de Ponta" customizáveis (`settings-page.tsx:676-709`) — sem uso com inputs livres
+- Tabela de Fatores de Correção Kc por tipo/diâmetro (`settings-page.tsx:711-786`) — UI removida
+- `customToolConfig` do store (diâmetros e raios customizados) — também removido
+
+**9a-bis. O que sai do store/cálculo (decisão necessária):**
+- **`toolCorrectionFactors`** está **aplicado no `calcular()`** (`machining-store.ts:366-372`): multiplica Vc e fz pelo fator
+- **Opções:**
+  - (a) Remover apenas da UI — fator default 1.0 continua no cálculo (seguro, sem breaking change)
+  - (b) Remover da UI + do cálculo — breaking change para quem customizou fatores (requer migração)
+  - (c) Opção (b) + migração que avisa o usuário que fatores foram resetados
+- **Recomendação (revisão):** Opção (a) primeiro, opção (c) depois em versão futura
 
 **9b. O que entra:**
-- Gestão de **Ferramentas Favoritas**: lista das ferramentas salvas (as mesmas do dropdown no ConfigPanel)
+- Gestão de **Ferramentas Favoritas**: lista das ferramentas salvas (`savedTools` do store, as mesmas do dropdown no ConfigPanel)
 - Cada item exibe: nome gerado automaticamente (ex: "Topo Ø10 - H25 - A4"), data de criação
-- Ação disponível: excluir
+- Ação disponível: excluir (via `removeSavedTool(id)` já implementado)
 
 **9c. O que permanece como único fator de ajuste:**
 - O **Fator de Segurança** (slider do item 7) é o único ajuste de cálculo — atua como multiplicador global sobre o resultado final
 
-**Arquivos afetados:** `src/pages/settings-page.tsx`, `src/store/machining-store.ts`, `src/types/index.ts`
+**Testes necessários:**
+- Cálculo sem fatores de correção produz resultados corretos
+- Remoção de `customToolConfig` não quebra store
+- Gestão de ferramentas favoritas: listar, excluir, persistência
+
+**Arquivos afetados:** `src/pages/settings-page.tsx`, `src/store/machining-store.ts`, `src/types/index.ts` (remover `ToolCorrectionFactor` e `CustomToolConfig`)
 
 ---
 
@@ -231,6 +291,16 @@ Incorporado ao Item 5. Todos os alertas e banners ficam exclusivamente na Zona 4
 
 ---
 
+## Decisões Pendentes (Requer Input do Rafael)
+
+| # | Decisão | Opções |
+|---|---------|--------|
+| D1 | Destino dos arrays de dropdown (DIAMETROS_COMPLETOS, etc.) | (a) Deletar, (b) Manter como datalist/autocomplete |
+| D2 | Remover toolCorrectionFactors do cálculo | (a) Só da UI, (b) UI + cálculo com migração |
+| D3 | Navegação entre páginas | Verificar mecanismo atual antes de implementar rodapé |
+
+---
+
 ## Próximo Passo
 
-Criar o plano técnico detalhado, dividindo os 8 itens em **fases de implementação** sequenciais, com arquivos, testes e critérios de conclusão para cada fase.
+Criar o plano técnico detalhado, dividindo os 7 itens efetivos em **fases de implementação** sequenciais (A→D), com arquivos, testes e critérios de conclusão para cada fase. Revisão formal aplicada — ver `docs/plans/REVISAO_PLANOS_v0.9.md`.

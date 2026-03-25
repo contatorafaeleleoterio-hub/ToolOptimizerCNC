@@ -1,6 +1,6 @@
 # Comandos de Sessao — FENIX
 
-> 12 comandos semanticos para controlar o fluxo de trabalho do assistente.
+> 14 comandos semanticos para controlar o fluxo de trabalho do assistente.
 > Cada comando define: objetivo, quando usar, arquivos consultados, acoes e resultado.
 
 ---
@@ -287,4 +287,29 @@
 
 ---
 
-*FENIX AI System — ToolOptimizer CNC | Criado: 09/03/2026 | Atualizado: 12/03/2026*
+## 14. `revisao de sessao`
+
+**Objetivo:** Revisar planos de implementacao e/ou codigo de forma estruturada, identificando inconsistencias, riscos e otimizacoes.
+
+**Quando usar:** Antes de executar plano complexo, ao revisar multiplos planos encadeados, ou quando usuario disser "revisao" ou "revisao de sessao".
+
+**Arquivos consultados:**
+- `docs/ai/protocols/REVIEW_PROTOCOL.md` (protocolo completo)
+- `docs/plans/BACKLOG_IMPLEMENTACAO.md` (conflitos com backlog)
+- `docs/ROADMAP_SESSAO_ATUAL.md` (prioridades atuais)
+- `docs/admin-requests.json` (tarefas do admin)
+- `CLAUDE.md` (regras do projeto)
+- Codebase real via Glob/Grep/Read (validacao cruzada)
+
+**Acoes do assistente:**
+1. Seguir `docs/ai/protocols/REVIEW_PROTOCOL.md` — 8 passos obrigatorios
+2. Se multiplos planos: revisar um por vez, aguardar aprovacao
+3. Marcar itens incertos com `[INCERTO]` e nao verificados com `[NAO VERIFICADO]`
+4. Produzir revisao no formato padrao do protocolo
+5. **Propor correcoes e aguardar aprovacao antes de aplicar**
+
+**Resultado:** Revisao estruturada com status (aprovado/ressalvas/requer correcoes) + plano refinado se necessario.
+
+---
+
+*FENIX AI System — ToolOptimizer CNC | Criado: 09/03/2026 | Atualizado: 25/03/2026*

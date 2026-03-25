@@ -138,6 +138,7 @@ scripts/          # Scripts auxiliares
 - FENIX AI System: `docs/ai/AI_SYSTEM.md`
 - Comandos de sessao: `docs/ai/commands/SESSION_COMMANDS.md`
 - Protocolos: `docs/ai/protocols/`
+- Protocolo de revisao: `docs/ai/protocols/REVIEW_PROTOCOL.md`
 - Memoria de engenharia: `docs/ai/memory/`
 
 ## Build Desktop (.exe Portátil — Electron)
