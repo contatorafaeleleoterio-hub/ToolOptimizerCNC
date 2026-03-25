@@ -10,11 +10,11 @@
 | Item | Valor |
 |------|-------|
 | **Branch** | `main` |
-| **Versão** | `0.8.0` |
-| **Último commit** | `b69b9c2` docs: detalhar todos os 7 planos de implementação v0.9 |
-| **Testes** | **864 passando** (50 arquivos) — 0 falhas |
+| **Versão** | `0.9.4` |
+| **Último commit** | `9b61427` feat: Fase C+D v0.9 — HMI redesign + sidebar footer + remover Kc |
+| **Testes** | **878 passando** (51 arquivos) — 0 falhas |
 | **TypeScript** | **zero erros** |
-| **Build** | **limpo** — JS 100.11KB gzip, CSS 14.35KB |
+| **Build** | **limpo** — JS ~102KB gzip, CSS ~14KB |
 | **Remote** | `origin/main` sincronizado ✅ |
 | **Worker** | ✅ LIVE — `https://tooloptimizercnc.contatorafaeleleoterio.workers.dev` |
 | **Custom Domains** | ✅ `tooloptimizercnc.com.br` + `app.tooloptimizercnc.com.br` |
@@ -31,6 +31,35 @@ npx tsc --noEmit
 ---
 
 ## Ultimas 3 Sessoes
+
+### Sessão 25/03 (4ª) — Fase C+D v0.9: HMI Redesign + Sidebar Footer + Remover Kc
+
+**Commit:** `9b61427` feat: Fase C+D v0.9 — HMI redesign + sidebar footer + remover Kc | **Versão:** v0.9.4 | **Testes:** 878 passando (+14 novos, 51 arquivos)
+
+**O que foi feito:**
+- ✅ `results-panel.tsx`: Redesign 5 zonas HMI (Zona 1: SafetyBadge+BigNumbers, Zona 2: 4 ProgressCards grid-cols-4, Zona 3: 3 Gauges, Zona 4: Alerts, Zona 5: FormulaCards)
+- ✅ `shared-result-parts.tsx`: prop `compact?: boolean` no ProgressCard (text-2xl vs text-4xl)
+- ✅ `sidebar-footer.tsx`: NOVO — Favoritos (contador) · Histórico (contador) · ⚙ Settings · versão app
+- ✅ `App.tsx`: layout esquerda `flex flex-col min-h-0` + scroll interno + `<SidebarFooter />` fixo
+- ✅ `vite.config.ts` + `vitest.config.ts`: `define: { __APP_VERSION__ }` (ambos precisam — configs separadas!)
+- ✅ `vite-env.d.ts`: NOVO — `declare const __APP_VERSION__: string`
+- ✅ `history-page.tsx`: `useSearchParams` → `filter=favoritos` ativa filtro automaticamente
+- ✅ `types/index.ts`: removido `CustomToolConfig`, `ToolCorrectionFactor`, `CUSTOM_TOOL_CONFIG_PADRAO`
+- ✅ `machining-store.ts`: removido Kc, migrate v2→v3, `calcular()` usa `vc/fz` direto
+- ✅ `settings-page.tsx`: nova `FerramentasSection` com lista `savedTools` + delete + empty state
+- ✅ `package.json`: version `0.8.0` → `0.9.4`
+- ✅ +14 novos testes: sidebar-footer (10), migration v3 (1), calcular sem Kc (1), settings ferramentas (2)
+
+**Decisões técnicas:**
+- `vitest.config.ts` e `vite.config.ts` são configs **independentes** — Vitest não herda `define` do Vite
+- `getAllByText('Torque')` necessário (aparece em ProgressCard Zona 2 E FormulaCard Zona 5)
+- Migration v2→v3 usa destructuring: `const { customToolConfig, toolCorrectionFactors, ...rest } = state; return rest;`
+- `grid-cols-4` nos ProgressCards funciona em min-width 1360px (target do projeto)
+
+**Próxima sessão:**
+- Implementar itens restantes do v0.9 (#04 Gauge Feed, #06 Tooltip Técnico, #10 Tutorial/Onboarding)
+
+---
 
 ### Sessão 25/03 (3ª) — Fase B v0.9: Favoritar Simulação + Slider Safety Factor
 

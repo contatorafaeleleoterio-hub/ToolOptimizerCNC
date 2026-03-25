@@ -11,11 +11,11 @@
 | Item | Valor |
 |------|-------|
 | **Branch** | `main` |
-| **Versão** | `0.8.0` |
-| **Testes** | **864 passando** (15 falhas pré-existentes — não relacionadas) |
+| **Versão** | `0.9.4` |
+| **Testes** | **878 passando** (15 falhas pré-existentes — não relacionadas) |
 | **TypeScript** | **zero erros** |
-| **Build** | **limpo** — JS 101.07KB gzip (343KB bundle) |
-| **Remote** | `origin/main` sincronizado ✅ — commit `05f2ecf` |
+| **Build** | **limpo** — JS 99.84KB gzip (336KB bundle) |
+| **Remote** | `origin/main` sincronizado ✅ — commit `9b61427` |
 | **Worker** | ✅ LIVE — `https://tooloptimizercnc.contatorafaeleleoterio.workers.dev` |
 | **Custom Domains** | ✅ `tooloptimizercnc.com.br` + `app.tooloptimizercnc.com.br` |
 | **GitHub Actions** | ✅ deploy automático ao push para main |
@@ -46,7 +46,7 @@ npx tsc --noEmit
 | 7 | Admin Dashboard (8 fases) | ✨ Feature | v0.7.0 | ✅ Concluído (`ab5eb8f`) |
 | 8 | Reestruturação Docs Marketing & Monetização (12 docs) | 📄 Docs | — | ✅ Concluído |
 | 9 | [Redesign Dashboard Principal (8 fases)](#-redesign-dashboard-principal-v080) | 🎨 Redesign | v0.8.0 | ✅ Concluído (Fases 1-6) |
-| 10 | [Implementações Dashboard v0.9 (7 itens)](#-implementações-dashboard-v09) | 🎨 Feature+Redesign | v0.9.x | 📋 Planos detalhados — pronto para implementar |
+| 10 | [Implementações Dashboard v0.9 (7 itens)](#-implementações-dashboard-v09) | 🎨 Feature+Redesign | v0.9.4 | ✅ Concluído (`9b61427`) |
 
 ### ✅ Reestruturação Documental (v0.6.0) — CONCLUÍDA
 
@@ -165,11 +165,11 @@ npx tsc --noEmit
 | 02 | Arestas (Z) → 4 botões | Baixa | A | ✅ Concluído (`625b4f0`) |
 | 03 | Botão ⭐ favoritar simulação — dashboard + histórico | Média | B | ✅ Concluído (`05f2ecf`) |
 | 07 | Slider Fator de Segurança no dashboard desktop | Baixa | B | ✅ Concluído (`05f2ecf`) |
-| 05 | Redesign visor central — hierarquia industrial HMI | Alta | C | 📋 Pronto |
-| 08 | Rodapé coluna esquerda — favoritos, histórico, config, versão | Média | C | 📋 Pronto |
-| 09 | Config: simplificar ferramentas + remover Kc | Média | D | 📋 Pronto |
+| 05 | Redesign visor central — hierarquia industrial HMI | Alta | C | ✅ Concluído (`9b61427`) |
+| 08 | Rodapé coluna esquerda — favoritos, histórico, config, versão | Média | C | ✅ Concluído (`9b61427`) |
+| 09 | Config: simplificar ferramentas + remover Kc | Média | D | ✅ Concluído (`9b61427`) |
 
-**Fase A concluída** (`625b4f0`). **Fase B concluída** (`05f2ecf`). **Próxima sessão:** Implementar Fase C (itens #05 + #08) → Fase D.
+**Fase A concluída** (`625b4f0`). **Fase B concluída** (`05f2ecf`). **Fase C concluída** (`9b61427`). **Fase D concluída** (`9b61427`). **Dashboard v0.9 completo!**
 
 ---
 

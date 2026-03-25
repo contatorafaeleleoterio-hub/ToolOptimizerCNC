@@ -322,9 +322,9 @@
     </div>
   </div>
   <div class="header-right">
-    <span class="badge badge-version">v0.8.0</span>
+    <span class="badge badge-version">v0.9.4</span>
     <span class="badge badge-live">● LIVE</span>
-    <span class="badge badge-date">25/03/2026 (3ª sessão)</span>
+    <span class="badge badge-date">25/03/2026</span>
   </div>
 </header>
 
@@ -333,13 +333,14 @@
 
   <!-- TODAY CARD -->
   <div class="today-card">
-    <h2>⚡ Última Sessão — 25/03/2026 (3ª)</h2>
+    <h2>⚡ Última Sessão — 25/03/2026 (4ª)</h2>
     <div class="today-items">
-      <div class="today-item"><span class="dot dot-green"></span>Fase B v0.9 concluída — Plano #03 (Favoritar Simulação) + Plano #07 (Slider Safety Factor) | commit 05f2ecf</div>
-      <div class="today-item"><span class="dot dot-green"></span>⭐ Botão Favoritar no results-panel (pós-simulação) + histórico (card + filtro "Favoritos (N)")</div>
-      <div class="today-item"><span class="dot dot-green"></span>Seção "Segurança" colapsável no config-panel com StyledSlider SF (0.50–1.00) — summary "SF 0.80"</div>
-      <div class="today-item"><span class="dot dot-green"></span>+15 testes novos (6 history-store favorites + 9 config-panel SF) · 864 passing · TypeScript zero erros</div>
-      <div class="today-item"><span class="dot dot-yellow"></span>Próxima sessão: Fase C (#05 Redesign Visor HMI + #08 Rodapé Coluna Esquerda)</div>
+      <div class="today-item"><span class="dot dot-green"></span>Fase C+D v0.9 concluída — Items #05 (HMI Redesign) + #08 (Sidebar Footer) + #09 (Remover Kc) | commit 9b61427</div>
+      <div class="today-item"><span class="dot dot-green"></span>results-panel.tsx: 5 zonas HMI — SafetyBadge → BigNumbers → 4 ProgressCards → Gauges → Alerts → Fórmulas</div>
+      <div class="today-item"><span class="dot dot-green"></span>sidebar-footer.tsx NOVO: Favoritos (N) · Histórico (N) · ⚙ Settings · versão app · history?filter=favoritos</div>
+      <div class="today-item"><span class="dot dot-green"></span>Kc removido: CustomToolConfig/ToolCorrectionFactor deletados + migration v2→v3 + settings simplificado</div>
+      <div class="today-item"><span class="dot dot-green"></span>878 testes passando (+14) | TypeScript zero erros | build limpo | v0.9.4</div>
+      <div class="today-item"><span class="dot dot-yellow"></span>Próxima sessão: itens restantes v0.9 (#04 Gauge Feed, #06 Tooltip Técnico, #10 Onboarding)</div>
     </div>
   </div>
 
@@ -1239,18 +1240,18 @@
     </div>
 
     <!-- v0.8.2 - Favoritar Simulação -->
-    <div class="phase" data-status="done">
-      <div class="phase-dot">✓</div>
+    <div class="phase" data-status="pending">
+      <div class="phase-dot">○</div>
       <div class="phase-card" onclick="toggle(this)">
         <div class="phase-header">
           <span class="phase-icon">⭐</span>
           <div class="phase-meta">
             <div class="phase-title">v0.9 Item 3 — Favoritar Simulação</div>
-            <div class="phase-sub">Botão ⭐ no dashboard + no histórico · filtro Favoritos (N) · commit 05f2ecf</div>
+            <div class="phase-sub">Botão ⭐ no dashboard + no histórico · diferente de "salvar ferramenta"</div>
           </div>
           <div class="phase-right">
             <span class="phase-version">v0.8.2</span>
-            <span class="phase-tag">Concluído</span>
+            <span class="phase-tag">Pendente</span>
           </div>
           <span class="phase-chevron">›</span>
         </div>
@@ -1280,18 +1281,18 @@
     </div>
 
     <!-- v0.8.3 - Slider Fator de Segurança Desktop -->
-    <div class="phase" data-status="done">
-      <div class="phase-dot">✓</div>
+    <div class="phase" data-status="pending">
+      <div class="phase-dot">○</div>
       <div class="phase-card" onclick="toggle(this)">
         <div class="phase-header">
           <span class="phase-icon">🛡️</span>
           <div class="phase-meta">
             <div class="phase-title">v0.9 Item 7 — Slider Fator de Segurança no Dashboard</div>
-            <div class="phase-sub">Seção "Segurança" colapsável · StyledSlider 0.50–1.00 · summary "SF 0.80" · commit 05f2ecf</div>
+            <div class="phase-sub">Só existia no mobile e nas Config · agora na coluna esquerda do desktop</div>
           </div>
           <div class="phase-right">
             <span class="phase-version">v0.8.3</span>
-            <span class="phase-tag">Concluído</span>
+            <span class="phase-tag">Pendente</span>
           </div>
           <span class="phase-chevron">›</span>
         </div>
@@ -1320,18 +1321,18 @@
     </div>
 
     <!-- v0.8.4 - Rodapé Coluna Esquerda -->
-    <div class="phase" data-status="pending">
-      <div class="phase-dot">○</div>
+    <div class="phase" data-status="done">
+      <div class="phase-dot">✓</div>
       <div class="phase-card" onclick="toggle(this)">
         <div class="phase-header">
           <span class="phase-icon">🧭</span>
           <div class="phase-meta">
             <div class="phase-title">v0.9 Item 8 — Rodapé Fixo da Coluna Esquerda</div>
-            <div class="phase-sub">Estilo Claude app · Favoritos · Histórico · Config · Versão · Operador (provisório)</div>
+            <div class="phase-sub">sidebar-footer.tsx · Favoritos (N) · Histórico (N) · ⚙ Settings · versão · commit 9b61427</div>
           </div>
           <div class="phase-right">
-            <span class="phase-version">v0.8.4</span>
-            <span class="phase-tag">Pendente</span>
+            <span class="phase-version">v0.9.4</span>
+            <span class="phase-tag phase-tag-done">Concluído</span>
           </div>
           <span class="phase-chevron">›</span>
         </div>
@@ -1362,18 +1363,18 @@
     </div>
 
     <!-- v0.9.0 - Redesign Visor Central HMI -->
-    <div class="phase" data-status="pending">
-      <div class="phase-dot">○</div>
+    <div class="phase" data-status="done">
+      <div class="phase-dot">✓</div>
       <div class="phase-card" onclick="toggle(this)">
         <div class="phase-header">
           <span class="phase-icon">🏭</span>
           <div class="phase-meta">
             <div class="phase-title">v0.9 Item 5 — Redesign Visor Central (Padrão HMI Industrial)</div>
-            <div class="phase-sub">Hierarquia clara · Zonas definidas · Padrão Siemens Sinumerik / Heidenhain</div>
+            <div class="phase-sub">5 zonas HMI · SafetyBadge topo · grid-cols-4 ProgressCards · Gauges Zona 3 · commit 9b61427</div>
           </div>
           <div class="phase-right">
-            <span class="phase-version">v0.9.0</span>
-            <span class="phase-tag">Pendente</span>
+            <span class="phase-version">v0.9.4</span>
+            <span class="phase-tag phase-tag-done">Concluído</span>
           </div>
           <span class="phase-chevron">›</span>
         </div>
@@ -1404,18 +1405,18 @@
     </div>
 
     <!-- v0.9.1 - Revisão Configurações -->
-    <div class="phase" data-status="pending">
-      <div class="phase-dot">○</div>
+    <div class="phase" data-status="done">
+      <div class="phase-dot">✓</div>
       <div class="phase-card" onclick="toggle(this)">
         <div class="phase-header">
           <span class="phase-icon">⚙️</span>
           <div class="phase-meta">
             <div class="phase-title">v0.9 Item 9 — Revisão do Painel de Configurações</div>
-            <div class="phase-sub">Remover listas + Kc · Adicionar gestão de ferramentas favoritas</div>
+            <div class="phase-sub">Kc removido · CustomToolConfig/ToolCorrectionFactor deletados · savedTools UI · migration v3</div>
           </div>
           <div class="phase-right">
-            <span class="phase-version">v0.9.1</span>
-            <span class="phase-tag">Pendente</span>
+            <span class="phase-version">v0.9.4</span>
+            <span class="phase-tag phase-tag-done">Concluído</span>
           </div>
           <span class="phase-chevron">›</span>
         </div>

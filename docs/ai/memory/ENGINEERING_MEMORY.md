@@ -33,6 +33,17 @@
 - `setLimitesMaquina` → chama calcular() automaticamente (unica excecao)
 - Nos testes: SEMPRE chamar `getState().calcular()` explicitamente apos set*
 
+### Persist migration (Zustand)
+- version bump: `version: 2` → `version: 3` quando campos sao removidos do state
+- Migration pattern para remover campos:
+  ```typescript
+  if (fromVersion < 3) {
+    const { fieldToRemove1, fieldToRemove2, ...rest } = state as Record<string, unknown>;
+    return rest;
+  }
+  ```
+- Sem migration → campos removidos persistem no localStorage causando erros de tipo
+
 ---
 
 ## UI (src/components/)
@@ -73,6 +84,9 @@
 - BrowserRouter obrigatorio em testes mobile (MobilePage usa hooks de routing)
 - `exclude: ['Sistema_Desktop_Pen_driver/**']` no vitest.config (clone desktop)
 - Async: waitFor 2000ms para animacoes em mobile-page e config-panel
+- **vitest.config.ts e vite.config.ts sao configs INDEPENDENTES** — define/__APP_VERSION__ precisa estar em ambos
+- `getByText('Torque')` falha se texto aparece em 2 lugares (ProgressCard + FormulaCard) — usar `getAllByText`
+- `getAllByText('1')` necessario quando favoriteCount e historyCount mostram '1' simultaneamente
 
 ---
 
