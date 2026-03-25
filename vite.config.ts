@@ -2,6 +2,7 @@ import { defineConfig } from 'vite';
 import react from '@vitejs/plugin-react';
 import tailwindcss from '@tailwindcss/vite';
 import path from 'path';
+import pkg from './package.json' with { type: 'json' };
 
 import { cloudflare } from "@cloudflare/vite-plugin";
 import { adminSyncPlugin } from './src/admin/vite-plugin-admin-sync';
@@ -9,6 +10,9 @@ import { adminSyncPlugin } from './src/admin/vite-plugin-admin-sync';
 export default defineConfig({
   base: process.env.VITE_BASE_URL || '/',
   plugins: [tailwindcss(), react(), cloudflare(), adminSyncPlugin()],
+  define: {
+    __APP_VERSION__: JSON.stringify(pkg.version),
+  },
   build: {
     cssMinify: false,
   },

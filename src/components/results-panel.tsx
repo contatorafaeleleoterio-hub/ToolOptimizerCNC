@@ -65,65 +65,23 @@ export function ResultsPanel() {
     ? 'animate-[subtlePulse_0.45s_ease-in-out_2]' // 0.3s → 0.45s (+50%)
     : '';
 
+  const torquePct = Math.min((resultado.torque / limites.maxTorque) * 100, 100);
   const showResetMessage = storeResultado === null;
 
   return (
     <div className="flex flex-col gap-3">
       <ToolSummaryViewer />
 
-      {/* Three Gauges: Feed Efficiency, Power Headroom, Tool Health (TOP) */}
-      <div className="grid grid-cols-3 gap-3">
-        {/* Gauge 1: Feed Efficiency */}
-        <Gauge
-          value={avanco}
-          maxValue={limites.maxAvanco}
-          label="Eficiência de Avanço"
-          palette="avanco"
-        />
-
-        {/* Gauge 2: MRR Productivity */}
-        <Gauge
-          value={mrrPct}
-          maxValue={100}
-          label="Produtividade MRR"
-          palette="mrr"
-          badge={storeResultado ? `${mrr.toFixed(1)} cm³/min` : undefined}
-        />
-
-        {/* Gauge 3: Tool Health */}
-        <Gauge
-          value={resultado.healthScore}
-          maxValue={100}
-          label="Saúde da Ferramenta"
-          palette="health"
-          badge={storeResultado ? (resultado.healthScore === 0 ? 'BLOQUEADO' : undefined) : undefined}
-        />
-      </div>
-
-      {/* Reset feedback message */}
-      {showResetMessage && (
-        <div className="bg-yellow-500/10 border border-yellow-500/30 rounded-xl p-4 animate-[fadeInUp_0.4s_ease-out]">
-          <div className="flex items-center gap-3">
-            <span className="material-symbols-outlined text-yellow-400 animate-pulse">refresh</span>
-            <div>
-              <p className="text-base font-semibold text-yellow-300">Parâmetros Alterados</p>
-              <p className="text-sm text-yellow-400/80 mt-0.5">Clique em "SIMULAR" para recalcular os resultados</p>
-            </div>
-          </div>
+      {/* ═══ ZONA 1 — Valores Principais (SafetyBadge + RPM + Avanço) ═══ */}
+      <div className="flex items-center justify-between gap-3">
+        <div className={`flex-1 ${pulseClass}`}>
+          <SafetyBadge nivel={seguranca.nivel} avisosCount={seguranca.avisos.length} />
         </div>
-      )}
-
-      <div className={pulseClass}>
-        <SafetyBadge nivel={seguranca.nivel} avisosCount={seguranca.avisos.length} />
-      </div>
-
-      {/* Favorite button — visible only when a simulation result exists */}
-      {storeResultado !== null && latestEntry && (
-        <div className="flex justify-end">
+        {storeResultado !== null && latestEntry && (
           <button
             aria-label={isFavorited ? 'Remover dos favoritos' : 'Favoritar simulação'}
             onClick={() => toggleFavorite(latestEntry.id)}
-            className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-black/30 border border-white/10 hover:bg-white/5 transition-all active:scale-95"
+            className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-black/30 border border-white/10 hover:bg-white/5 transition-all active:scale-95 shrink-0"
           >
             <span
               className="material-symbols-outlined text-lg transition-all"
@@ -137,10 +95,9 @@ export function ResultsPanel() {
               {isFavorited ? 'Favoritado' : 'Favoritar'}
             </span>
           </button>
-        </div>
-      )}
+        )}
+      </div>
 
-      {/* Big numbers: RPM + Feed (bidirectional sliders) */}
       <div className="grid grid-cols-2 gap-3">
         <BigNumber label="Rotação (RPM)" value={fmt(rpm)} unit="RPM" pct={rpmPct}
           color="primary" glow="rgba(0,217,255,0.4)" barGlow="rgba(0,217,255,1)" icon="speed"
@@ -158,15 +115,58 @@ export function ResultsPanel() {
           rgb="57,255,20" />
       </div>
 
-      {/* Progress bars */}
-      <div className="grid grid-cols-2 gap-3">
+      {/* ═══ ZONA 2 — Métricas Secundárias (4 colunas) ═══ */}
+      <div className="grid grid-cols-4 gap-2">
         <ProgressCard label="Potência Est." value={potenciaMotor.toFixed(2)} unit="kW" pct={powerPct}
-          barColor="bg-accent-orange" barShadow="rgba(249,115,22,0.5)" />
-        <ProgressCard label="Vel. Superficial" value={vcReal.toFixed(0)} unit="m/min" pct={Math.min(vcReal / 500 * 100, 100)}
-          barColor="bg-blue-500" barShadow="rgba(59,130,246,0.5)" />
+          barColor="bg-accent-orange" barShadow="rgba(249,115,22,0.5)" compact />
+        <ProgressCard label="Vc Real" value={vcReal.toFixed(0)} unit="m/min" pct={Math.min(vcReal / 500 * 100, 100)}
+          barColor="bg-blue-500" barShadow="rgba(59,130,246,0.5)" compact />
+        <ProgressCard label="Torque" value={resultado.torque.toFixed(2)} unit="Nm" pct={torquePct}
+          barColor="bg-purple-500" barShadow="rgba(168,85,247,0.5)" compact />
+        <ProgressCard label="MRR" value={mrr.toFixed(1)} unit="cm³/min" pct={Math.min(mrrPct, 100)}
+          barColor="bg-emerald-500" barShadow="rgba(16,185,129,0.5)" compact />
       </div>
 
-      {/* Educational Formula Cards */}
+      {/* ═══ ZONA 3 — Indicadores de Saúde (Gauges) ═══ */}
+      <div className="grid grid-cols-3 gap-3">
+        <Gauge
+          value={avanco}
+          maxValue={limites.maxAvanco}
+          label="Eficiência de Avanço"
+          palette="avanco"
+        />
+        <Gauge
+          value={mrrPct}
+          maxValue={100}
+          label="Produtividade MRR"
+          palette="mrr"
+          badge={storeResultado ? `${mrr.toFixed(1)} cm³/min` : undefined}
+        />
+        <Gauge
+          value={resultado.healthScore}
+          maxValue={100}
+          label="Saúde da Ferramenta"
+          palette="health"
+          badge={storeResultado ? (resultado.healthScore === 0 ? 'BLOQUEADO' : undefined) : undefined}
+        />
+      </div>
+
+      {/* ═══ ZONA 4 — Alertas e Avisos (zona dedicada) ═══ */}
+      {showResetMessage && (
+        <div className="bg-yellow-500/10 border border-yellow-500/30 rounded-xl p-4 animate-[fadeInUp_0.4s_ease-out]">
+          <div className="flex items-center gap-3">
+            <span className="material-symbols-outlined text-yellow-400 animate-pulse">refresh</span>
+            <div>
+              <p className="text-base font-semibold text-yellow-300">Parâmetros Alterados</p>
+              <p className="text-sm text-yellow-400/80 mt-0.5">Clique em "SIMULAR" para recalcular os resultados</p>
+            </div>
+          </div>
+        </div>
+      )}
+
+      <WarningsSection avisos={seguranca.avisos} />
+
+      {/* ═══ ZONA 5 — Fórmulas Educacionais (recolhidas) ═══ */}
       <div className="bg-surface-dark backdrop-blur-xl border border-white/5 rounded-2xl p-5 shadow-glass">
         <div className="flex items-center gap-3 mb-4">
           <div className="w-10 h-10 rounded-lg bg-primary/10 flex items-center justify-center border border-primary/20">
@@ -263,8 +263,6 @@ export function ResultsPanel() {
           />
         </div>
       </div>
-
-      <WarningsSection avisos={seguranca.avisos} />
     </div>
   );
 }

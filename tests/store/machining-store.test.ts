@@ -422,23 +422,6 @@ describe('machining-store', () => {
     });
   });
 
-  describe('customToolConfig', () => {
-    it('starts with empty custom tool config', () => {
-      expect(getState().customToolConfig.extraDiameters).toEqual([]);
-      expect(getState().customToolConfig.extraRadii).toEqual([]);
-    });
-
-    it('setCustomToolConfig adds extra diameters', () => {
-      getState().setCustomToolConfig({ extraDiameters: [5, 7, 9] });
-      expect(getState().customToolConfig.extraDiameters).toEqual([5, 7, 9]);
-    });
-
-    it('setCustomToolConfig adds extra radii', () => {
-      getState().setCustomToolConfig({ extraRadii: [0.3, 0.8] });
-      expect(getState().customToolConfig.extraRadii).toEqual([0.3, 0.8]);
-    });
-  });
-
   describe('exportSettings / importSettings', () => {
     it('exports current settings as JSON string', () => {
       getState().setLimitesMaquina({ maxRPM: 9000 });
@@ -755,3 +738,48 @@ describe('ValidatedSimulations CRUD', () => {
 // ─── simular() auto-save removed (Fase 5) ────────────────────────────────────
 // Auto-save silencioso removido em v0.8.0-alpha.5. Testes de regressão agora
 // vivem em tests/components/config-panel.test.tsx ("simular() does NOT auto-save").
+
+// ─── persist migration v2 → v3 (Fase D v0.9.4) ───────────────────────────────
+describe('persist migration v2 → v3', () => {
+  it('removes customToolConfig and toolCorrectionFactors from persisted state', () => {
+    // Simulate persisted state from v2 (with the old Kc fields)
+    const legacyState = {
+      limitesMaquina: { maxRPM: 10000 },
+      safetyFactor: 0.8,
+      customToolConfig: { extraDiameters: [5], extraRadii: [0.3] },
+      toolCorrectionFactors: [{ tipo: 'topo', diametro: 6, fator: 1.2 }],
+      objetivoUsinagem: 'balanceado',
+      savedTools: [],
+      validatedSimulations: [],
+    };
+    // After migration, deprecated fields should be absent
+    const migrated = legacyState as Record<string, unknown>;
+    const { customToolConfig, toolCorrectionFactors, ...rest } = migrated;
+    expect(customToolConfig).toBeDefined(); // was present before
+    expect(toolCorrectionFactors).toBeDefined(); // was present before
+    // After destructuring (as done in migration), rest does not have them
+    expect(rest.customToolConfig).toBeUndefined();
+    expect(rest.toolCorrectionFactors).toBeUndefined();
+    expect(rest.savedTools).toBeDefined();
+  });
+});
+
+// ─── calcular() sem Kc (Fase D v0.9.4) ───────────────────────────────────────
+describe('calcular() does not apply Kc correction', () => {
+  beforeEach(() => {
+    useMachiningStore.getState().reset();
+  });
+
+  it('calcular uses parametros.vc directly without correction factor', () => {
+    // Set up a known calculation: Aço 1045 (id=2), D=6, topo, vc=200
+    useMachiningStore.getState().setMaterial(2);
+    useMachiningStore.getState().setFerramenta({ diametro: 6, tipo: 'topo', numeroArestas: 4 });
+    useMachiningStore.getState().setParametros({ vc: 200, fz: 0.05, ap: 1, ae: 3, comprimento: 18 });
+    useMachiningStore.getState().calcular();
+    const resultado = useMachiningStore.getState().resultado;
+    // RPM = (200 × 1000) / (π × 6) ≈ 10610
+    expect(resultado).not.toBeNull();
+    expect(resultado!.rpm).toBeGreaterThan(10000);
+    expect(resultado!.rpm).toBeLessThan(11500);
+  });
+});

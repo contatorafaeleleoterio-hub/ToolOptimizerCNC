@@ -93,13 +93,13 @@ export function BigNumber({ label, value, unit, pct, color, glow, barGlow, icon,
   );
 }
 
-export function ProgressCard({ label, value, unit, pct, barColor, barShadow }: {
-  label: string; value: string; unit: string; pct: number; barColor: string; barShadow: string;
+export function ProgressCard({ label, value, unit, pct, barColor, barShadow, compact }: {
+  label: string; value: string; unit: string; pct: number; barColor: string; barShadow: string; compact?: boolean;
 }) {
   return (
     <div className="bg-surface-dark backdrop-blur-md border border-white/5 rounded-xl p-5 flex flex-col justify-between hover:bg-white/5 transition-colors group relative overflow-hidden">
       <div className="text-xs font-bold tracking-wider text-gray-400 uppercase">{label}</div>
-      <div className="text-4xl font-mono text-white tracking-tight">
+      <div className={`${compact ? 'text-2xl' : 'text-4xl'} font-mono text-white tracking-tight`}>
         {value} <span className="text-base text-gray-500 font-sans font-normal">{unit}</span>
       </div>
       <div className="h-1 w-full bg-white/10 rounded-full overflow-hidden mt-2">

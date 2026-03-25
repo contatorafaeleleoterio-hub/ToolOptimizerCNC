@@ -21,7 +21,7 @@ const START_Y = 56;
 
 const PIPELINE_STEPS: PipelineStep[] = [
   { id: 'user-input', label: 'User Input', formula: 'material + ferramenta + parametros' },
-  { id: 'tool-corrections', label: 'Tool Corrections', formula: 'vc * corrFactor, fz * corrFactor' },
+  { id: 'tool-corrections', label: 'Safety Factor', formula: 'SF aplicado em potência e avanço' },
   { id: 'validate-inputs', label: 'validateInputs()', formula: 'D > 0, ap > 0, ae <= D' },
   { id: 'calc-rpm', label: 'calculateRPM()', formula: 'RPM = (Vc * 1000) / (pi * D)' },
   { id: 'calc-effective-fz', label: 'calculateEffectiveFz()', formula: 'CTF = 1 / sqrt(1 - ...)' },

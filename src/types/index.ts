@@ -171,24 +171,6 @@ export interface CustomMaterial extends Material {
   isCustom: true;
 }
 
-/** Custom tool config */
-export interface CustomToolConfig {
-  extraDiameters: number[];
-  extraRadii: number[];
-}
-
-/** Tool correction factor: global multiplier applied to Vc and fz for a specific tool (type + diameter) */
-export interface ToolCorrectionFactor {
-  /** Tool type matching Ferramenta.tipo */
-  tipo: 'toroidal' | 'esferica' | 'topo';
-  /** Tool diameter in mm */
-  diametro: number;
-  /** Global multiplier applied to Vc and fz (e.g. 1.2 = +20%, default 1.0) */
-  fator: number;
-  /** Optional label/description (e.g. "TiAlN", "DLC", "não revestida") */
-  descricao?: string;
-}
-
 /** Default preferences */
 export const PREFERENCES_PADRAO: Preferences = {
   decimals: 2,
@@ -203,12 +185,6 @@ export const SAFETY_RULES_PADRAO: SafetyRules = {
     [TipoUsinagem.SEMI_ACABAMENTO]: 0.5,
     [TipoUsinagem.ACABAMENTO]: 0.3,
   },
-};
-
-/** Default custom tool config */
-export const CUSTOM_TOOL_CONFIG_PADRAO: CustomToolConfig = {
-  extraDiameters: [],
-  extraRadii: [],
 };
 
 /** Operator feedback on a calculation result */

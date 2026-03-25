@@ -7,7 +7,7 @@ interface PipelineStep {
 
 const PIPELINE_STEPS: PipelineStep[] = [
   { id: 'user-input', label: 'User Input', formula: 'material + ferramenta + parametros', phase: 'entrada' },
-  { id: 'tool-corrections', label: 'Tool Corrections', formula: 'vc * corrFactor, fz * corrFactor', phase: 'entrada' },
+  { id: 'tool-corrections', label: 'Safety Factor', formula: 'SF aplicado em potência e avanço', phase: 'entrada' },
   { id: 'validate-inputs', label: 'validateInputs()', formula: 'D > 0, ap > 0, ae <= D', phase: 'entrada' },
   { id: 'calc-rpm', label: 'calculateRPM()', formula: 'RPM = (Vc * 1000) / (pi * D)', phase: 'processamento' },
   { id: 'calc-effective-fz', label: 'calculateEffectiveFz()', formula: 'CTF = 1 / sqrt(1 - ...)', phase: 'processamento' },

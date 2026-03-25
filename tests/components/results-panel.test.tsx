@@ -53,9 +53,13 @@ describe('ResultsPanel', () => {
   it('shows progress cards', () => {
     setupSafeCalc();
     renderPanel();
+    // Zona 2: 4 ProgressCards (HMI redesign v0.9.3)
     expect(screen.getByText('Potência Est.')).toBeInTheDocument();
-    expect(screen.getByText('Vel. Superficial')).toBeInTheDocument();
-    // MRR ProgressCard removed — MRR now shown as "Produtividade MRR" gauge at top
+    expect(screen.getByText('Vc Real')).toBeInTheDocument();
+    // 'Torque' appears in both ProgressCard (Zona 2) and FormulaCard (Zona 5)
+    expect(screen.getAllByText('Torque').length).toBeGreaterThanOrEqual(1);
+    expect(screen.getByText('MRR')).toBeInTheDocument();
+    // Zona 3: Gauges still present
     expect(screen.getByText('Produtividade MRR')).toBeInTheDocument();
   });
 

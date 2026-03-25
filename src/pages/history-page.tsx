@@ -3,7 +3,7 @@
  */
 
 import { useState, useRef, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useSearchParams } from 'react-router-dom';
 import { useHistoryStore } from '@/store';
 import { useMachiningStore } from '@/store';
 import { TipoUsinagem } from '@/types';
@@ -52,6 +52,7 @@ function fmt(n: number): string {
 export function HistoryPage() {
   usePageTitle('Histórico — ToolOptimizer CNC');
   const navigate = useNavigate();
+  const [searchParams] = useSearchParams();
   const { track } = usePlausible();
 
   // Track page visit once on mount
@@ -74,6 +75,13 @@ export function HistoryPage() {
   const setFerramenta = useMachiningStore((s) => s.setFerramenta);
   const setTipoOperacao = useMachiningStore((s) => s.setTipoOperacao);
   const setParametros = useMachiningStore((s) => s.setParametros);
+
+  // Activate favorites filter when navigating from /history?filter=favoritos
+  useEffect(() => {
+    if (searchParams.get('filter') === 'favoritos') {
+      setFilters({ favorited: true });
+    }
+  }, [searchParams]);
 
   const [confirmClear, setConfirmClear] = useState(false);
   const [expandedId, setExpandedId] = useState<string | null>(null);

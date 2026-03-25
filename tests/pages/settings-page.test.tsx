@@ -62,8 +62,10 @@ describe('SettingsPage', () => {
     const navButtons = screen.getAllByRole('button');
     const ferrBtn = navButtons.find((b) => b.textContent?.includes('Ferramentas'));
     fireEvent.click(ferrBtn!);
-    expect(screen.getByText('Diâmetros Padrão (mm)')).toBeInTheDocument();
-    expect(screen.getByText('Raios de Ponta (mm)')).toBeInTheDocument();
+    // v0.9.4: Diâmetros/Raios/Kc removed — shows Ferramentas Salvas instead
+    expect(screen.getByText('Ferramentas Salvas')).toBeInTheDocument();
+    expect(screen.queryByText('Diâmetros Padrão (mm)')).not.toBeInTheDocument();
+    expect(screen.queryByText('Raios de Ponta (mm)')).not.toBeInTheDocument();
   });
 
   it('navigates to Exibição section', () => {

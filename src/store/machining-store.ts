@@ -6,12 +6,12 @@ import { create } from 'zustand';
 import { subscribeWithSelector, persist } from 'zustand/middleware';
 import type {
   Ferramenta, LimitesMaquina, ParametrosUsinagem, ResultadoUsinagem,
-  StatusSeguranca, SafetyRules, Preferences, CustomMaterial, CustomToolConfig,
-  ToolCorrectionFactor, ObjetivoUsinagem, SavedTool, ValidatedSimulation,
+  StatusSeguranca, SafetyRules, Preferences, CustomMaterial,
+  ObjetivoUsinagem, SavedTool, ValidatedSimulation,
 } from '@/types/index';
 import {
   TipoUsinagem, LIMITES_PADRAO_MAQUINA, PREFERENCES_PADRAO,
-  SAFETY_RULES_PADRAO, CUSTOM_TOOL_CONFIG_PADRAO,
+  SAFETY_RULES_PADRAO,
 } from '@/types/index';
 import {
   calculateRPM, calculateEffectiveFz, calculateFeedRate, calculateMRR,
@@ -62,8 +62,6 @@ interface MachiningState {
   preferences: Preferences;
   safetyRules: SafetyRules;
   customMaterials: CustomMaterial[];
-  customToolConfig: CustomToolConfig;
-  toolCorrectionFactors: ToolCorrectionFactor[];
   objetivoUsinagem: ObjetivoUsinagem;
   savedTools: SavedTool[];
   validatedSimulations: ValidatedSimulation[];
@@ -88,9 +86,6 @@ interface MachiningActions {
   addCustomMaterial: (m: CustomMaterial) => void;
   updateCustomMaterial: (id: number, m: Partial<CustomMaterial>) => void;
   removeCustomMaterial: (id: number) => void;
-  setCustomToolConfig: (c: Partial<CustomToolConfig>) => void;
-  setToolCorrectionFactor: (tcf: ToolCorrectionFactor) => void;
-  removeToolCorrectionFactor: (tipo: ToolCorrectionFactor['tipo'], diametro: number) => void;
   exportSettings: () => string;
   importSettings: (json: string) => boolean;
   resetToDefaults: () => void;
@@ -121,8 +116,6 @@ const INITIAL_STATE: MachiningState = {
   preferences: PREFERENCES_PADRAO,
   safetyRules: SAFETY_RULES_PADRAO,
   customMaterials: [],
-  customToolConfig: CUSTOM_TOOL_CONFIG_PADRAO,
-  toolCorrectionFactors: [],
   objetivoUsinagem: 'balanceado' as ObjetivoUsinagem,
   savedTools: [],
   validatedSimulations: [],
@@ -290,32 +283,8 @@ export const useMachiningStore = create<MachiningState & MachiningActions>()(
           }));
         },
 
-        setCustomToolConfig: (c) => {
-          set((state) => ({ customToolConfig: { ...state.customToolConfig, ...c } }));
-        },
-
-        setToolCorrectionFactor: (tcf) => {
-          set((state) => {
-            const existing = state.toolCorrectionFactors.findIndex(
-              (t) => t.tipo === tcf.tipo && t.diametro === tcf.diametro
-            );
-            const updated = [...state.toolCorrectionFactors];
-            if (existing >= 0) updated[existing] = tcf;
-            else updated.push(tcf);
-            return { toolCorrectionFactors: updated };
-          });
-        },
-
-        removeToolCorrectionFactor: (tipo, diametro) => {
-          set((state) => ({
-            toolCorrectionFactors: state.toolCorrectionFactors.filter(
-              (t) => !(t.tipo === tipo && t.diametro === diametro)
-            ),
-          }));
-        },
-
         exportSettings: () => {
-          const { limitesMaquina, safetyFactor, preferences, safetyRules, customMaterials, customToolConfig, toolCorrectionFactors } = get();
+          const { limitesMaquina, safetyFactor, preferences, safetyRules, customMaterials } = get();
           return JSON.stringify({
             version: 1,
             limitesMaquina,
@@ -323,8 +292,6 @@ export const useMachiningStore = create<MachiningState & MachiningActions>()(
             preferences,
             safetyRules,
             customMaterials,
-            customToolConfig,
-            toolCorrectionFactors,
           }, null, 2);
         },
 
@@ -344,8 +311,6 @@ export const useMachiningStore = create<MachiningState & MachiningActions>()(
               }));
             }
             if (Array.isArray(data.customMaterials)) set({ customMaterials: data.customMaterials });
-            if (data.customToolConfig) set((s) => ({ customToolConfig: { ...s.customToolConfig, ...data.customToolConfig } }));
-            if (Array.isArray(data.toolCorrectionFactors)) set({ toolCorrectionFactors: data.toolCorrectionFactors });
             get().calcular();
             return true;
           } catch {
@@ -359,17 +324,12 @@ export const useMachiningStore = create<MachiningState & MachiningActions>()(
         },
 
         calcular: () => {
-          const { materialId, ferramenta, parametros, limitesMaquina, safetyFactor, manualOverrides, safetyRules, customMaterials, toolCorrectionFactors, tipoOperacao } = get();
+          const { materialId, ferramenta, parametros, limitesMaquina, safetyFactor, manualOverrides, safetyRules, customMaterials, tipoOperacao } = get();
           const { ap, ae } = parametros;
           const { diametro: D, numeroArestas: Z, balanco } = ferramenta;
 
-          // Apply tool correction factor (global multiplier on Vc and fz)
-          const tcf = toolCorrectionFactors.find(
-            (t) => t.tipo === ferramenta.tipo && t.diametro === D
-          );
-          const corrFactor = tcf?.fator ?? 1.0;
-          const vc = parametros.vc * corrFactor;
-          const fz = parametros.fz * corrFactor;
+          const vc = parametros.vc;
+          const fz = parametros.fz;
 
           const material = findMaterial(materialId, customMaterials);
           if (!material) { set({ resultado: null }); return; }
@@ -545,15 +505,22 @@ export const useMachiningStore = create<MachiningState & MachiningActions>()(
       }),
       {
         name: 'tooloptimizer-cnc-settings',
-        version: 2,
+        version: 3,
         migrate: (persistedState, fromVersion) => {
+          const state = persistedState as Record<string, unknown>;
           if (fromVersion < 2) {
             return {
-              ...(persistedState as object),
+              ...state,
               objetivoUsinagem: 'balanceado' as ObjetivoUsinagem,
               savedTools: [] as SavedTool[],
               validatedSimulations: [] as ValidatedSimulation[],
             };
+          }
+          if (fromVersion < 3) {
+            // v3: Remove deprecated Kc fields — they are ignored by partialize
+            // eslint-disable-next-line @typescript-eslint/no-unused-vars
+            const { customToolConfig, toolCorrectionFactors, ...rest } = state;
+            return rest;
           }
           return persistedState;
         },
@@ -563,8 +530,6 @@ export const useMachiningStore = create<MachiningState & MachiningActions>()(
           preferences: state.preferences,
           safetyRules: state.safetyRules,
           customMaterials: state.customMaterials,
-          customToolConfig: state.customToolConfig,
-          toolCorrectionFactors: state.toolCorrectionFactors,
           objetivoUsinagem: state.objetivoUsinagem,
           savedTools: state.savedTools,
           validatedSimulations: state.validatedSimulations,
