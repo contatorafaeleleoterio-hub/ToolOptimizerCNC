@@ -32,6 +32,30 @@ npx tsc --noEmit
 
 ## Ultimas 3 Sessoes
 
+### Sessão 25/03 (3ª) — Fase B v0.9: Favoritar Simulação + Slider Safety Factor
+
+**Commit:** `05f2ecf` feat: #03 favoritar simulação + #07 slider safety factor (Fase B v0.9) | **Versão:** v0.8.0 (inalterada) | **Testes:** 864 passando (+15 novos)
+
+**O que foi feito:**
+- ✅ `types/index.ts`: campo `favorited?: boolean` em `HistoricoCalculo` (backward-compat)
+- ✅ `history-store.ts`: `toggleFavorite(id)`, `getFavoriteCount()`, filtro `favorited: boolean | 'todos'`, version bump 1→2
+- ✅ `results-panel.tsx`: botão ⭐ Favoritar/Favoritado aparece pós-simulação (entries[0], amarelo com glow)
+- ✅ `history-page.tsx`: botão ⭐ em cada card do histórico + filtro "Favoritos (N)" no topo dos filtros
+- ✅ `config-panel.tsx`: nova seção colapsável "Segurança" com `StyledSlider` SF (0.50–1.00, step 0.05, defaultOpen=false)
+- ✅ Summary do accordion mostra "SF 0.80" quando colapsado
+- ✅ +6 testes history-store (favorites) + +9 testes config-panel (SF slider)
+- ✅ TypeScript zero erros, build limpo (101KB gzip), preview verificado
+
+**Decisões confirmadas:**
+- `favorited` flag em `HistoricoCalculo` (não criar sistema paralelo de `validatedSimulations`)
+- Star button no results-panel referencia `entries[0]` (entry mais recente = criada pelo `simular()`)
+- Seção "Segurança" começa colapsada — não polui o dashboard por padrão
+
+**Próxima sessão:**
+- Implementar **Fase C** (item #05 Redesign Visor HMI + item #08 Rodapé Coluna Esquerda)
+
+---
+
 ### Sessão 25/03 (2ª) — Fase A v0.9: Input Livre + Arestas Botões
 
 **Commit:** `625b4f0` feat: #01 input livre D/R/H + #02 arestas botões (Fase A v0.9) | **Versão:** v0.8.0 (inalterada) | **Testes:** 849 passando
