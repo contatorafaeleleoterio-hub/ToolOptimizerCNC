@@ -87,19 +87,16 @@ describe('MobileFineTuneSection', () => {
     expect(screen.getByText(/Velocidade tangencial/)).toBeInTheDocument();
   });
 
-  it('renders Material Removal section', () => {
-    renderSection();
-    expect(screen.getByText('Material Removal')).toBeInTheDocument();
-  });
-
-  it('shows MRR as — when resultado is null', () => {
-    renderSection();
-    // The MRR display should show '—' when no resultado
-    expect(screen.getByText(/^—/)).toBeInTheDocument();
-  });
-
   it('renders ParameterHealthBar for Vc (data-testid=health-bar-vc)', () => {
     renderSection();
     expect(screen.getByTestId('health-bar-vc')).toBeInTheDocument();
+  });
+
+  it('renders editable value input for each parameter', () => {
+    renderSection();
+    expect(screen.getByLabelText('Vc value')).toBeInTheDocument();
+    expect(screen.getByLabelText('fz value')).toBeInTheDocument();
+    expect(screen.getByLabelText('ae value')).toBeInTheDocument();
+    expect(screen.getByLabelText('ap value')).toBeInTheDocument();
   });
 });

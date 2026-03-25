@@ -53,11 +53,12 @@ describe('MobilePage', () => {
     expect(materialSelect.querySelectorAll('option').length).toBe(9);
   });
 
-  it('renders tool type buttons', () => {
+  it('renders tool type buttons (inside Ferramenta accordion)', () => {
     renderMobile();
+    fireEvent.click(screen.getByText('Ferramenta'));
     expect(screen.getAllByText('Toroidal').length).toBeGreaterThanOrEqual(1);
-    expect(screen.getAllByText('Esférica').length).toBeGreaterThanOrEqual(1);
-    expect(screen.getAllByText('Topo').length).toBeGreaterThanOrEqual(1);
+    expect(screen.getAllByText(/Esférica/).length).toBeGreaterThanOrEqual(1);
+    expect(screen.getAllByText(/^Topo/).length).toBeGreaterThanOrEqual(1);
   });
 
   it('renders fine tune sliders', () => {

@@ -1,3 +1,4 @@
+import { useState } from 'react';
 import type { ReactNode } from 'react';
 
 export function SectionTitle({ color, label }: { color: string; label: string }) {
@@ -22,13 +23,24 @@ export function NumInput({ label, value, onChange, min, max, step }: {
   label: string; value: number; onChange: (v: number) => void;
   min: number; max: number; step: number;
 }) {
+  const [raw, setRaw] = useState(String(value));
+  const [focused, setFocused] = useState(false);
+
+  const parsed = Number(raw);
+  const invalid = raw.trim() === '' || isNaN(parsed) || parsed < min || parsed > max;
+  const displayValue = focused ? raw : String(value);
+
   const increment = () => {
     const next = Math.round((value + step) * 1000) / 1000;
-    onChange(Math.min(max, next));
+    const clamped = Math.min(max, next);
+    onChange(clamped);
+    setRaw(String(clamped));
   };
   const decrement = () => {
     const next = Math.round((value - step) * 1000) / 1000;
-    onChange(Math.max(min, next));
+    const clamped = Math.max(min, next);
+    onChange(clamped);
+    setRaw(String(clamped));
   };
   return (
     <div>
@@ -36,11 +48,20 @@ export function NumInput({ label, value, onChange, min, max, step }: {
       <div className="flex gap-1">
         <input
           type="number"
-          value={value}
-          onChange={(e) => onChange(Number(e.target.value))}
+          inputMode="decimal"
+          value={displayValue}
+          onChange={(e) => {
+            setRaw(e.target.value);
+            const n = Number(e.target.value);
+            if (!isNaN(n) && n >= min && n <= max) onChange(n);
+          }}
+          onFocus={() => { setFocused(true); setRaw(String(value)); }}
+          onBlur={() => { setFocused(false); if (invalid) setRaw(String(value)); }}
           min={min} max={max} step={step}
           aria-label={label}
-          className="flex-1 min-w-0 min-h-[44px] bg-black/40 border border-white/10 rounded-lg py-2 px-3 text-base text-white font-mono focus:ring-1 focus:ring-primary outline-none"
+          className={`flex-1 min-w-0 min-h-[44px] bg-black/40 border rounded-lg py-2 px-3 text-base text-white font-mono focus:ring-1 focus:ring-primary outline-none ${
+            invalid && focused ? 'border-red-500 text-red-400' : 'border-white/10'
+          }`}
         />
         <div className="flex flex-col gap-0.5">
           <button onClick={increment} aria-label={`Increase ${label}`}
@@ -49,6 +70,9 @@ export function NumInput({ label, value, onChange, min, max, step }: {
             className="w-9 flex-1 rounded bg-black/40 border border-white/10 text-gray-400 active:bg-white/10 hover:text-white hover:bg-white/10 transition-all text-[10px] font-bold flex items-center justify-center">&#9660;</button>
         </div>
       </div>
+      {invalid && focused && (
+        <span className="text-xs text-red-400 mt-1 block px-1">Válido: {min}–{max}</span>
+      )}
     </div>
   );
 }

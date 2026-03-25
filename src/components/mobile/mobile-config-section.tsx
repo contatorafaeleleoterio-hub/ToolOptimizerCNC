@@ -1,8 +1,49 @@
 import { useState } from 'react';
 import { useMachiningStore } from '@/store';
-import { MATERIAIS, FERRAMENTAS_PADRAO, RAIOS_PADRAO } from '@/data';
+import { MATERIAIS, FERRAMENTAS_PADRAO } from '@/data';
 import { TipoUsinagem } from '@/types';
 import { SectionTitle, FieldGroup, NumInput } from '../ui-helpers';
+
+/**
+ * Mobile-friendly number input with raw/blur pattern.
+ * Allows user to freely erase and retype values; validates on blur.
+ */
+function MobileNumberInput({ label, value, min, max, step, unit, onChange }: {
+  label: string; value: number; min: number; max: number; step: number; unit: string;
+  onChange: (v: number) => void;
+}) {
+  const [raw, setRaw] = useState(String(value));
+  const [focused, setFocused] = useState(false);
+
+  const parsed = Number(raw);
+  const invalid = raw.trim() === '' || isNaN(parsed) || parsed < min || parsed > max;
+  const displayValue = focused ? raw : String(value);
+
+  return (
+    <FieldGroup label={label}>
+      <input
+        type="number"
+        inputMode="decimal"
+        min={min} max={max} step={step}
+        value={displayValue}
+        onChange={(e) => {
+          setRaw(e.target.value);
+          const n = Number(e.target.value);
+          if (!isNaN(n) && n >= min && n <= max) onChange(n);
+        }}
+        onFocus={() => { setFocused(true); setRaw(String(value)); }}
+        onBlur={() => { setFocused(false); if (invalid) setRaw(String(value)); }}
+        aria-label={label}
+        className={`w-full min-h-[48px] bg-black/40 border rounded-lg py-2 px-3 text-sm text-white font-mono focus:ring-1 focus:ring-primary outline-none ${
+          invalid && focused ? 'border-red-500 text-red-400' : 'border-white/10'
+        }`}
+      />
+      {invalid && focused && (
+        <span className="text-xs text-red-400 mt-1 block px-1">Válido: {min}–{max} {unit}</span>
+      )}
+    </FieldGroup>
+  );
+}
 
 const OPERACAO_LABELS: Record<TipoUsinagem, string> = {
   [TipoUsinagem.DESBASTE]: 'Desbaste',
@@ -10,7 +51,7 @@ const OPERACAO_LABELS: Record<TipoUsinagem, string> = {
   [TipoUsinagem.ACABAMENTO]: 'Acabamento',
 };
 
-const ARESTAS_OPTIONS = [2, 3, 4, 5, 6] as const;
+const ARESTAS_OPTIONS = [2, 3, 4, 6] as const;
 
 const MOBILE_BTN_ACTIVE = 'bg-primary text-black font-bold border-primary shadow-neon-cyan';
 const MOBILE_BTN_IDLE = 'bg-black/40 text-gray-400 active:bg-white/10 border-white/10';
@@ -67,7 +108,24 @@ export function MobileConfigSection() {
     materialId, ferramenta, tipoOperacao, parametros, safetyFactor,
     setMaterial, setFerramenta, setTipoOperacao, setParametros,
     setSafetyFactor,
+    savedTools, loadSavedTool, addSavedTool,
   } = useMachiningStore();
+
+  const [showSavedBadge, setShowSavedBadge] = useState(false);
+
+  const handleSaveTool = () => {
+    const { tipo, diametro, raioQuina, numeroArestas, balanco } = ferramenta;
+    const jaExiste = savedTools.some(
+      (t) =>
+        t.tipo === tipo && t.diametro === diametro &&
+        t.numeroArestas === numeroArestas && t.balanco === balanco &&
+        (tipo !== 'toroidal' || t.raioQuina === raioQuina)
+    );
+    if (jaExiste) return;
+    addSavedTool({ tipo, diametro, raioQuina, numeroArestas, balanco });
+    setShowSavedBadge(true);
+    setTimeout(() => setShowSavedBadge(false), 2000);
+  };
 
   const material = MATERIAIS.find((m) => m.id === materialId);
   const vcRange = material?.vcRanges[tipoOperacao];
@@ -118,6 +176,44 @@ export function MobileConfigSection() {
       {/* Tool section */}
       <AccordionSection color="bg-secondary" label="Ferramenta" summary={summaryTool}>
         <div className="space-y-4 mt-1">
+          {/* Saved Tools — same as desktop */}
+          <div className="mb-1">
+            <div className="flex items-center gap-2">
+              <select
+                aria-label="Ferramenta Salva"
+                value=""
+                onChange={(e) => { if (e.target.value) loadSavedTool(e.target.value); }}
+                disabled={savedTools.length === 0}
+                className="flex-1 min-h-[44px] bg-black/50 border border-white/15 rounded-lg px-3 py-2 text-sm text-white focus:outline-none focus:border-primary cursor-pointer appearance-none select-chevron disabled:opacity-50 disabled:cursor-not-allowed"
+              >
+                {savedTools.length === 0 ? (
+                  <option value="">Nenhuma ferramenta salva</option>
+                ) : (
+                  <>
+                    <option value="">Selecionar ferramenta salva...</option>
+                    {savedTools.map((tool) => (
+                      <option key={tool.id} value={tool.id}>{tool.nome}</option>
+                    ))}
+                  </>
+                )}
+              </select>
+              <button
+                aria-label="Salvar ferramenta"
+                onClick={handleSaveTool}
+                className="p-2.5 min-h-[44px] min-w-[44px] rounded-lg bg-white/5 border border-white/10 active:bg-white/10 transition-colors flex items-center justify-center"
+                title="Salvar configuração atual"
+              >
+                <span className="material-symbols-outlined text-sm text-white/70">save</span>
+              </button>
+            </div>
+            {showSavedBadge && (
+              <span className="text-xs font-semibold mt-1 block animate-[fadeInUp_0.3s_ease]" style={{ color: '#2ecc71' }}>
+                ✓ Ferramenta salva
+              </span>
+            )}
+            <div className="border-b border-white/5 mt-3" />
+          </div>
+
           <FieldGroup label="Tipo">
             <div className="grid grid-cols-3 gap-2">
               {FERRAMENTAS_PADRAO.map((f) => (
@@ -129,37 +225,24 @@ export function MobileConfigSection() {
             </div>
           </FieldGroup>
 
-          <FieldGroup label="Diâmetro (mm)">
-            <input
-              type="number"
-              min={0.1}
-              max={200}
-              step={0.1}
-              inputMode="decimal"
-              value={ferramenta.diametro}
-              onChange={(e) => {
-                const n = Number(e.target.value);
-                if (!isNaN(n) && n >= 0.1 && n <= 200) setFerramenta({ diametro: n });
-              }}
-              className="w-full min-h-[48px] bg-black/40 border border-white/10 rounded-lg py-2 px-3 text-sm text-white font-mono focus:ring-1 focus:ring-primary outline-none"
-            />
-          </FieldGroup>
+          <MobileNumberInput
+            label="Diâmetro (mm)"
+            value={ferramenta.diametro}
+            min={0.1} max={200} step={0.1} unit="mm"
+            onChange={(v) => setFerramenta({ diametro: v })}
+          />
 
           {ferramenta.tipo === 'toroidal' && (
-            <FieldGroup label="Raio da Ponta">
-              <div className="grid grid-cols-2 gap-2">
-                {RAIOS_PADRAO.map((raio) => (
-                  <button key={raio} onClick={() => setFerramenta({ raioQuina: raio })}
-                    className={`min-h-[44px] py-2.5 rounded-lg border text-xs font-mono transition-colors ${(ferramenta.raioQuina ?? 1.0) === raio ? MOBILE_BTN_ACTIVE : MOBILE_BTN_IDLE}`}>
-                    R{raio}
-                  </button>
-                ))}
-              </div>
-            </FieldGroup>
+            <MobileNumberInput
+              label="Raio da Ponta (mm)"
+              value={ferramenta.raioQuina ?? 1.0}
+              min={0.05} max={50} step={0.05} unit="mm"
+              onChange={(v) => setFerramenta({ raioQuina: v })}
+            />
           )}
 
           <FieldGroup label="Arestas (Z)">
-            <div className="grid grid-cols-5 gap-1.5">
+            <div className="grid grid-cols-4 gap-2">
               {ARESTAS_OPTIONS.map((z) => (
                 <button key={z} onClick={() => setFerramenta({ numeroArestas: z })}
                   className={`min-h-[44px] py-2 rounded-lg border text-xs font-mono transition-colors ${ferramenta.numeroArestas === z ? MOBILE_BTN_ACTIVE : MOBILE_BTN_IDLE}`}>
@@ -169,20 +252,12 @@ export function MobileConfigSection() {
             </div>
           </FieldGroup>
 
-          <FieldGroup label="Altura de Fixação (mm)">
-            <div className="flex gap-2">
-              <input type="number" inputMode="decimal" value={ferramenta.balanco}
-                onChange={(e) => {
-                  const n = Number(e.target.value);
-                  if (!isNaN(n) && n >= 5 && n <= 300) setFerramenta({ balanco: n });
-                }} min={5} max={300}
-                className="flex-1 min-h-[48px] bg-black/40 border border-white/10 rounded-lg py-2 px-3 text-sm text-white font-mono focus:ring-1 focus:ring-primary outline-none" />
-              <button onClick={() => setFerramenta({ balanco: Math.min(300, ferramenta.balanco + 5) })}
-                className="w-12 min-h-[48px] rounded-lg bg-black/40 border border-white/10 text-gray-400 active:bg-white/10 transition-all text-lg font-bold" aria-label="Aumentar fixação">&#9650;</button>
-              <button onClick={() => setFerramenta({ balanco: Math.max(5, ferramenta.balanco - 5) })}
-                className="w-12 min-h-[48px] rounded-lg bg-black/40 border border-white/10 text-gray-400 active:bg-white/10 transition-all text-lg font-bold" aria-label="Diminuir fixação">&#9660;</button>
-            </div>
-          </FieldGroup>
+          <MobileNumberInput
+            label="Altura de Fixação (mm)"
+            value={ferramenta.balanco}
+            min={5} max={300} step={1} unit="mm"
+            onChange={(v) => setFerramenta({ balanco: v })}
+          />
         </div>
       </AccordionSection>
 

@@ -6,6 +6,38 @@ import type { ParametrosUsinagem } from '@/types';
 import { SectionTitle } from '../ui-helpers';
 import { ParameterHealthBar } from '../parameter-health-bar';
 
+/** Fine-tune value input with raw/blur pattern — allows free typing */
+function FineTuneValueInput({ display, step, min, max, color, rgb, label, unit, onChange }: {
+  display: string; step: number; min: number; max: number;
+  color: string; rgb: string; label: string; unit: string;
+  onChange: (v: number) => void;
+}) {
+  const [raw, setRaw] = useState(display);
+  const [focused, setFocused] = useState(false);
+
+  const parsed = Number(raw);
+  const invalid = raw.trim() === '' || isNaN(parsed) || parsed < min || parsed > max;
+  const displayValue = focused ? raw : display;
+
+  return (
+    <div className="flex items-baseline gap-1">
+      <input type="number" value={displayValue} step={step} min={min} max={max}
+        inputMode="decimal"
+        onChange={(e) => {
+          setRaw(e.target.value);
+          const n = Number(e.target.value);
+          if (!isNaN(n) && n >= min && n <= max) onChange(n);
+        }}
+        onFocus={() => { setFocused(true); setRaw(display); }}
+        onBlur={() => { setFocused(false); if (invalid) setRaw(display); }}
+        className={`w-16 bg-transparent border-none text-right font-mono text-lg font-bold text-${color} outline-none [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none`}
+        style={{ filter: `drop-shadow(0 0 6px rgba(${rgb},0.4))` }}
+        aria-label={`${label} value`} />
+      <span className="text-[9px] text-gray-500 font-mono">{unit}</span>
+    </div>
+  );
+}
+
 /** Configuração visual (labels, cores, textos educacionais) — constante */
 const SLIDER_VISUAL = [
   { key: 'vc' as const, label: 'Vc', fullLabel: 'Velocidade Corte', unit: 'm/min', color: 'primary',
@@ -267,17 +299,11 @@ export function MobileFineTuneSection() {
                       expand_more
                     </span>
                   </button>
-                  <div className="flex items-baseline gap-1">
-                    <input type="number" value={display} step={step} min={min} max={max}
-                      onChange={(e) => {
-                        const n = Number(e.target.value);
-                        if (!isNaN(n) && n >= min && n <= max) ajustarParametros({ [key]: n });
-                      }}
-                      className={`w-16 bg-transparent border-none text-right font-mono text-lg font-bold text-${color} outline-none [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none`}
-                      style={{ filter: `drop-shadow(0 0 6px rgba(${rgb},0.4))` }}
-                      aria-label={`${label} value`} />
-                    <span className="text-[9px] text-gray-500 font-mono">{unit}</span>
-                  </div>
+                  <FineTuneValueInput
+                    display={display} step={step} min={min} max={max}
+                    color={color} rgb={rgb} label={label} unit={unit}
+                    onChange={(n) => ajustarParametros({ [key]: n })}
+                  />
                 </div>
 
                 <div className="flex items-center gap-2">

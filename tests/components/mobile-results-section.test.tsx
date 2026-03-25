@@ -53,16 +53,16 @@ describe('MobileResultsSection', () => {
 
     it('shows metric labels: Rotação, Avanço, Potência, Vc Real', () => {
       renderSection();
-      expect(screen.getByText('Rotação')).toBeInTheDocument();
-      expect(screen.getByText('Avanço')).toBeInTheDocument();
-      expect(screen.getByText('Potência')).toBeInTheDocument();
-      expect(screen.getByText('Vc Real')).toBeInTheDocument();
+      expect(screen.getAllByText('Rotação').length).toBeGreaterThanOrEqual(1);
+      expect(screen.getAllByText('Avanço').length).toBeGreaterThanOrEqual(1);
+      expect(screen.getAllByText('Potência').length).toBeGreaterThanOrEqual(1);
+      expect(screen.getAllByText('Vc Real').length).toBeGreaterThanOrEqual(1);
     });
 
     it('shows BigNumber labels for RPM and Feed', () => {
       renderSection();
-      expect(screen.getByText('Rotação (RPM)')).toBeInTheDocument();
-      expect(screen.getByText('Avanço (mm/min)')).toBeInTheDocument();
+      expect(screen.getAllByText('Rotação (RPM)').length).toBeGreaterThanOrEqual(1);
+      expect(screen.getAllByText('Avanço (mm/min)').length).toBeGreaterThanOrEqual(1);
     });
 
     it('renders ProgressCard labels', () => {
@@ -71,9 +71,31 @@ describe('MobileResultsSection', () => {
       expect(screen.getByText('MRR')).toBeInTheDocument();
     });
 
-    it('renders Vel. Superficial progress card', () => {
+    it('renders Torque progress card (parity with desktop)', () => {
       renderSection();
-      expect(screen.getByText('Vel. Superficial')).toBeInTheDocument();
+      expect(screen.getAllByText('Torque').length).toBeGreaterThanOrEqual(1);
+    });
+
+    it('renders 3 gauges (parity with desktop)', () => {
+      renderSection();
+      expect(screen.getByText('Eficiência de Avanço')).toBeInTheDocument();
+      expect(screen.getByText('Produtividade MRR')).toBeInTheDocument();
+      expect(screen.getByText('Saúde da Ferramenta')).toBeInTheDocument();
+    });
+
+    it('renders Favoritar button after simular()', () => {
+      // Favoritar requires a history entry — simular() creates one
+      const state = useMachiningStore.getState();
+      state.setFerramenta({ tipo: 'topo', diametro: 10, balanco: 30 });
+      state.setParametros({ ap: 2, ae: 5, fz: 0.1, vc: 100 });
+      state.simular();
+      renderSection();
+      expect(screen.getByLabelText(/Favoritar simulação/)).toBeInTheDocument();
+    });
+
+    it('renders educational formula cards section', () => {
+      renderSection();
+      expect(screen.getByText('Entenda os Cálculos')).toBeInTheDocument();
     });
   });
 });

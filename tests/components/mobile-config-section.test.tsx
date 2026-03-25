@@ -31,34 +31,37 @@ describe('MobileConfigSection', () => {
     expect(screen.getByText('Acabamento')).toBeInTheDocument();
   });
 
-  it('renders tool type buttons', () => {
+  it('renders tool type buttons (inside Ferramenta accordion)', () => {
     renderSection();
+    // Open Ferramenta accordion
+    fireEvent.click(screen.getByText('Ferramenta'));
     expect(screen.getAllByText('Toroidal').length).toBeGreaterThanOrEqual(1);
     expect(screen.getAllByText(/^Topo/).length).toBeGreaterThanOrEqual(1);
   });
 
-  it('renders diameter select', () => {
+  it('renders diameter free input (not dropdown)', () => {
     renderSection();
-    const selects = screen.getAllByRole('combobox');
-    // Diameter is the second select (after material)
-    expect(selects.length).toBeGreaterThanOrEqual(2);
-    expect(selects[1].querySelectorAll('option').length).toBeGreaterThan(0);
+    fireEvent.click(screen.getByText('Ferramenta'));
+    expect(screen.getByLabelText('Diâmetro (mm)')).toBeInTheDocument();
   });
 
-  it('renders flute count buttons (2 Arestas, 4 Arestas)', () => {
+  it('renders flute count buttons (2Z, 4Z)', () => {
     renderSection();
-    expect(screen.getByText('2 Arestas')).toBeInTheDocument();
-    expect(screen.getByText('4 Arestas')).toBeInTheDocument();
+    fireEvent.click(screen.getByText('Ferramenta'));
+    expect(screen.getByText('2Z')).toBeInTheDocument();
+    expect(screen.getByText('4Z')).toBeInTheDocument();
   });
 
-  it('renders height increase/decrease buttons', () => {
+  it('renders altura de fixação free input', () => {
     renderSection();
-    expect(screen.getByLabelText('Increase height')).toBeInTheDocument();
-    expect(screen.getByLabelText('Decrease height')).toBeInTheDocument();
+    fireEvent.click(screen.getByText('Ferramenta'));
+    expect(screen.getByLabelText('Altura de Fixação (mm)')).toBeInTheDocument();
   });
 
   it('renders cutting parameter inputs (ap, ae, fz, Vc)', () => {
     renderSection();
+    // Open Parâmetros de Corte accordion
+    fireEvent.click(screen.getByText('Parâmetros de Corte'));
     expect(screen.getByText('ap (mm)')).toBeInTheDocument();
     expect(screen.getByText('ae (mm)')).toBeInTheDocument();
     expect(screen.getByText('fz (mm)')).toBeInTheDocument();
@@ -67,15 +70,16 @@ describe('MobileConfigSection', () => {
 
   it('shows Raio da Ponta section for toroidal (default)', () => {
     renderSection();
-    expect(screen.getByText('Raio da Ponta')).toBeInTheDocument();
+    fireEvent.click(screen.getByText('Ferramenta'));
+    expect(screen.getByLabelText('Raio da Ponta (mm)')).toBeInTheDocument();
   });
 
   it('hides Raio da Ponta when switching to topo', () => {
     renderSection();
-    // Click on Topo button (text might be partial — use regex or exact)
+    fireEvent.click(screen.getByText('Ferramenta'));
     const topoBtn = screen.getAllByText(/^Topo/)[0];
     fireEvent.click(topoBtn);
-    expect(screen.queryByText('Raio da Ponta')).not.toBeInTheDocument();
+    expect(screen.queryByLabelText('Raio da Ponta (mm)')).not.toBeInTheDocument();
   });
 
   it('changes material when select value changes', () => {
@@ -85,17 +89,16 @@ describe('MobileConfigSection', () => {
     expect(useMachiningStore.getState().materialId).toBe(3);
   });
 
-  it('changes flute count when clicking 2 Arestas', () => {
+  it('changes flute count when clicking 2Z button', () => {
     renderSection();
-    fireEvent.click(screen.getByText('2 Arestas'));
+    fireEvent.click(screen.getByText('Ferramenta'));
+    fireEvent.click(screen.getByText('2Z'));
     expect(useMachiningStore.getState().ferramenta.numeroArestas).toBe(2);
   });
 
   it('shows estimated badge for estimated material', () => {
     renderSection();
     const selects = screen.getAllByRole('combobox');
-    // Material id 4 is typically 'estimado' — find one that is estimated
-    // Default store has MATERIAIS — select material 4 (Aço 8620)
     fireEvent.change(selects[0], { target: { value: '4' } });
     expect(screen.getByText('Dados estimados')).toBeInTheDocument();
   });
@@ -103,5 +106,27 @@ describe('MobileConfigSection', () => {
   it('renders safety factor section', () => {
     renderSection();
     expect(screen.getByText('Fator de Segurança')).toBeInTheDocument();
+  });
+
+  it('renders saved tools dropdown', () => {
+    renderSection();
+    fireEvent.click(screen.getByText('Ferramenta'));
+    expect(screen.getByRole('combobox', { name: 'Ferramenta Salva' })).toBeInTheDocument();
+  });
+
+  it('renders save tool button', () => {
+    renderSection();
+    fireEvent.click(screen.getByText('Ferramenta'));
+    expect(screen.getByRole('button', { name: 'Salvar ferramenta' })).toBeInTheDocument();
+  });
+
+  it('arestas has 4 options [2, 3, 4, 6] — no 5Z', () => {
+    renderSection();
+    fireEvent.click(screen.getByText('Ferramenta'));
+    expect(screen.getByText('2Z')).toBeInTheDocument();
+    expect(screen.getByText('3Z')).toBeInTheDocument();
+    expect(screen.getByText('4Z')).toBeInTheDocument();
+    expect(screen.getByText('6Z')).toBeInTheDocument();
+    expect(screen.queryByText('5Z')).not.toBeInTheDocument();
   });
 });
