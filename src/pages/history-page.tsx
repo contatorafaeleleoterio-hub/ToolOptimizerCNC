@@ -65,6 +65,8 @@ export function HistoryPage() {
   const clearHistory = useHistoryStore((s) => s.clearHistory);
   const setFeedback = useHistoryStore((s) => s.setFeedback);
   const setNotas = useHistoryStore((s) => s.setNotas);
+  const toggleFavorite = useHistoryStore((s) => s.toggleFavorite);
+  const getFavoriteCount = useHistoryStore((s) => s.getFavoriteCount);
   const exportHistory = useHistoryStore((s) => s.exportHistory);
   const importHistory = useHistoryStore((s) => s.importHistory);
 
@@ -79,7 +81,8 @@ export function HistoryPage() {
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   const filtered = getFilteredEntries();
-  const hasFilters = filters.materialNome !== '' || filters.tipoOperacao !== 'todos' || filters.feedback !== 'todos';
+  const favoriteCount = getFavoriteCount();
+  const hasFilters = filters.materialNome !== '' || filters.tipoOperacao !== 'todos' || filters.feedback !== 'todos' || filters.favorited !== 'todos';
 
   const handleRestore = (entry: HistoricoCalculo) => {
     setMaterial(entry.materialId);
@@ -156,6 +159,25 @@ export function HistoryPage() {
               </button>
             )}
           </div>
+          {/* Favorites quick-filter */}
+          {favoriteCount > 0 && (
+            <div className="mb-4">
+              <button
+                onClick={() => setFilters({ favorited: filters.favorited === true ? 'todos' : true })}
+                className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg border text-xs transition-all ${
+                  filters.favorited === true
+                    ? 'bg-yellow-400/10 border-yellow-400/40 text-yellow-400 font-bold'
+                    : 'bg-black/30 border-white/10 text-gray-400 hover:bg-white/5 hover:text-white'
+                }`}
+              >
+                <span
+                  className="material-symbols-outlined text-sm"
+                  style={{ fontVariationSettings: filters.favorited === true ? "'FILL' 1" : "'FILL' 0" }}
+                >star</span>
+                Favoritos ({favoriteCount})
+              </button>
+            </div>
+          )}
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
             <div>
               <label className={LABEL}>Material</label>
@@ -246,6 +268,7 @@ export function HistoryPage() {
               onRemove={() => removeEntry(entry.id)}
               onFeedback={(fb) => setFeedback(entry.id, fb)}
               onNotas={(n) => setNotas(entry.id, n)}
+              onToggleFavorite={() => toggleFavorite(entry.id)}
             />
           ))}
         </div>
@@ -263,9 +286,10 @@ interface EntryCardProps {
   onRemove: () => void;
   onFeedback: (fb: FeedbackOperador) => void;
   onNotas: (n: string) => void;
+  onToggleFavorite: () => void;
 }
 
-function HistoryEntryCard({ entry, isExpanded, onToggle, onRestore, onRemove, onFeedback, onNotas }: EntryCardProps) {
+function HistoryEntryCard({ entry, isExpanded, onToggle, onRestore, onRemove, onFeedback, onNotas, onToggleFavorite }: EntryCardProps) {
   const { resultado, ferramenta, parametros } = entry;
   const nivel = resultado.seguranca.nivel;
 
@@ -315,6 +339,22 @@ function HistoryEntryCard({ entry, isExpanded, onToggle, onRestore, onRemove, on
             {entry.feedback === 'sucesso' ? 'check_circle' : entry.feedback === 'quebra' ? 'dangerous' : 'warning'}
           </span>
         )}
+
+        {/* Favorite button */}
+        <button
+          aria-label={entry.favorited ? 'Remover dos favoritos' : 'Favoritar'}
+          onClick={(e) => { e.stopPropagation(); onToggleFavorite(); }}
+          className="p-1 rounded transition-all hover:bg-white/5 active:scale-90"
+        >
+          <span
+            className="material-symbols-outlined text-lg transition-all"
+            style={{
+              fontVariationSettings: entry.favorited ? "'FILL' 1" : "'FILL' 0",
+              color: entry.favorited ? '#facc15' : undefined,
+              filter: entry.favorited ? 'drop-shadow(0 0 5px rgba(250,204,21,0.5))' : undefined,
+            }}
+          >star</span>
+        </button>
 
         {/* Expand icon */}
         <span className={`material-symbols-outlined text-gray-500 transition-transform ${isExpanded ? 'rotate-180' : ''}`}>

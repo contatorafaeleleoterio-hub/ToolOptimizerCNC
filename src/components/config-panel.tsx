@@ -7,6 +7,7 @@ import { useSimulationAnimation } from '@/hooks/use-simulation-animation';
 import { usePlausible } from '@/hooks/use-plausible';
 import { CollapsibleSection } from './collapsible-section';
 import { FineTunePanel } from './fine-tune-panel';
+import { StyledSlider, BTN_CLS } from './styled-slider';
 
 const OPERACAO_LABELS: Record<TipoUsinagem, string> = {
   [TipoUsinagem.DESBASTE]: 'Desbaste',
@@ -85,6 +86,7 @@ export function ConfigPanel() {
     setMaterial, setFerramenta, setTipoOperacao,
     simular, reset,
     savedTools, loadSavedTool, addSavedTool,
+    safetyFactor, setSafetyFactor,
   } = useMachiningStore();
 
   const [showSavedBadge, setShowSavedBadge] = useState(false);
@@ -116,6 +118,7 @@ export function ConfigPanel() {
   const summaryBase = `${materialNome} | ${operacaoLabel}`;
   const summaryFerramenta = `${ferramentaTipoLabel} Ø${ferramenta.diametro} | A${ferramenta.numeroArestas}`;
   const summaryAjuste = `Vc ${parametros.vc} | fz ${parametros.fz}`;
+  const summarySeguranca = `SF ${safetyFactor.toFixed(2)}`;
 
   const handleSimulate = () => {
     track('Simulacao_Executada', {
@@ -318,6 +321,50 @@ export function ConfigPanel() {
           summary={summaryAjuste}
         >
           <FineTunePanel embedded />
+        </CollapsibleSection>
+
+        {/* Seção 4: Segurança — Safety Factor slider */}
+        <CollapsibleSection
+          title="Segurança"
+          summary={summarySeguranca}
+          defaultOpen={false}
+        >
+          <div className="space-y-3 pt-1">
+            <div className="flex items-center gap-2">
+              <button
+                aria-label="Reduzir fator de segurança"
+                className={BTN_CLS}
+                onClick={() => setSafetyFactor(Math.max(0.50, +(safetyFactor - 0.05).toFixed(2)))}
+              >−</button>
+              <div className="flex-1">
+                <StyledSlider
+                  value={safetyFactor}
+                  min={0.50}
+                  max={1.00}
+                  step={0.05}
+                  color="primary"
+                  rgb="0,217,255"
+                  label="Fator de Segurança"
+                  onChange={(v) => setSafetyFactor(v)}
+                />
+              </div>
+              <button
+                aria-label="Aumentar fator de segurança"
+                className={BTN_CLS}
+                onClick={() => setSafetyFactor(Math.min(1.00, +(safetyFactor + 0.05).toFixed(2)))}
+              >+</button>
+              <span className="text-base font-mono text-primary w-10 text-right">
+                {safetyFactor.toFixed(2)}
+              </span>
+            </div>
+            <div className="flex justify-between text-xs text-gray-600 px-8">
+              <span>← Conservador</span>
+              <span>Agressivo →</span>
+            </div>
+            <p className="text-xs text-gray-500 px-1">
+              Aplicado à Potência e Torque. 0.80 recomendado para operação segura.
+            </p>
+          </div>
         </CollapsibleSection>
 
       </div>

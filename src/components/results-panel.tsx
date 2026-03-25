@@ -1,4 +1,5 @@
 import { useMachiningStore } from '@/store';
+import { useHistoryStore } from '@/store';
 import { TipoUsinagem } from '@/types/index';
 import type { ResultadoUsinagem } from '@/types/index';
 import { Gauge } from './gauge';
@@ -41,8 +42,15 @@ export function ResultsPanel() {
   const setManualRPMPercent = useMachiningStore((s) => s.setManualRPMPercent);
   const setManualFeedPercent = useMachiningStore((s) => s.setManualFeedPercent);
 
+  const historyEntries = useHistoryStore((s) => s.entries);
+  const toggleFavorite = useHistoryStore((s) => s.toggleFavorite);
+
   const { triggerPulse, safetyLevel } = useSimulationAnimation();
   const resultado = storeResultado ?? EMPTY_RESULTADO;
+
+  // The most recent history entry — created by simular() just before resultado was set
+  const latestEntry = historyEntries[0];
+  const isFavorited = latestEntry?.favorited ?? false;
 
   const { rpm, avanco, potenciaMotor, mrr, vcReal, seguranca } = resultado;
   const rpmPct = Math.min((rpm / limites.maxRPM) * 100, 100);
@@ -108,6 +116,29 @@ export function ResultsPanel() {
       <div className={pulseClass}>
         <SafetyBadge nivel={seguranca.nivel} avisosCount={seguranca.avisos.length} />
       </div>
+
+      {/* Favorite button — visible only when a simulation result exists */}
+      {storeResultado !== null && latestEntry && (
+        <div className="flex justify-end">
+          <button
+            aria-label={isFavorited ? 'Remover dos favoritos' : 'Favoritar simulação'}
+            onClick={() => toggleFavorite(latestEntry.id)}
+            className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-black/30 border border-white/10 hover:bg-white/5 transition-all active:scale-95"
+          >
+            <span
+              className="material-symbols-outlined text-lg transition-all"
+              style={{
+                fontVariationSettings: isFavorited ? "'FILL' 1" : "'FILL' 0",
+                color: isFavorited ? '#facc15' : undefined,
+                filter: isFavorited ? 'drop-shadow(0 0 6px rgba(250,204,21,0.5))' : undefined,
+              }}
+            >star</span>
+            <span className={`text-xs font-semibold ${isFavorited ? 'text-yellow-400' : 'text-gray-500'}`}>
+              {isFavorited ? 'Favoritado' : 'Favoritar'}
+            </span>
+          </button>
+        </div>
+      )}
 
       {/* Big numbers: RPM + Feed (bidirectional sliders) */}
       <div className="grid grid-cols-2 gap-3">

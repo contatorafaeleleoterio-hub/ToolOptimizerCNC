@@ -12,6 +12,7 @@ interface HistoryFilters {
   materialNome: string;
   tipoOperacao: TipoUsinagem | 'todos';
   feedback: FeedbackOperador | 'todos';
+  favorited: boolean | 'todos';
 }
 
 interface HistoryState {
@@ -20,11 +21,13 @@ interface HistoryState {
 }
 
 interface HistoryActions {
-  addEntry: (entry: Omit<HistoricoCalculo, 'id' | 'timestamp' | 'feedback' | 'notas'>) => void;
+  addEntry: (entry: Omit<HistoricoCalculo, 'id' | 'timestamp' | 'feedback' | 'notas' | 'favorited'>) => void;
   removeEntry: (id: string) => void;
   clearHistory: () => void;
   setFeedback: (id: string, feedback: FeedbackOperador) => void;
   setNotas: (id: string, notas: string) => void;
+  toggleFavorite: (id: string) => void;
+  getFavoriteCount: () => number;
   setFilters: (f: Partial<HistoryFilters>) => void;
   resetFilters: () => void;
   getFilteredEntries: () => HistoricoCalculo[];
@@ -36,6 +39,7 @@ const DEFAULT_FILTERS: HistoryFilters = {
   materialNome: '',
   tipoOperacao: 'todos',
   feedback: 'todos',
+  favorited: 'todos',
 };
 
 /** Generate a unique ID using crypto.randomUUID() when available, with timestamp fallback */
@@ -60,6 +64,7 @@ export const useHistoryStore = create<HistoryState & HistoryActions>()(
           timestamp: Date.now(),
           feedback: null,
           notas: '',
+          favorited: false,
         };
         set((state) => {
           const updated = [newEntry, ...state.entries];
@@ -91,6 +96,14 @@ export const useHistoryStore = create<HistoryState & HistoryActions>()(
         }));
       },
 
+      toggleFavorite: (id) => {
+        set((state) => ({
+          entries: state.entries.map((e) => e.id === id ? { ...e, favorited: !e.favorited } : e),
+        }));
+      },
+
+      getFavoriteCount: () => get().entries.filter((e) => e.favorited).length,
+
       setFilters: (f) => {
         set((state) => ({ filters: { ...state.filters, ...f } }));
       },
@@ -109,6 +122,9 @@ export const useHistoryStore = create<HistoryState & HistoryActions>()(
             return false;
           }
           if (filters.feedback !== 'todos' && e.feedback !== filters.feedback) {
+            return false;
+          }
+          if (filters.favorited !== 'todos' && Boolean(e.favorited) !== filters.favorited) {
             return false;
           }
           return true;
@@ -132,7 +148,7 @@ export const useHistoryStore = create<HistoryState & HistoryActions>()(
     }),
     {
       name: 'tooloptimizer-cnc-history',
-      version: 1,
+      version: 2,
     },
   ),
 );

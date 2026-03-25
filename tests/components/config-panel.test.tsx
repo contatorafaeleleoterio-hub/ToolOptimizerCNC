@@ -314,4 +314,68 @@ describe('ConfigPanel', () => {
     fireEvent.click(screen.getByText('Ferramenta'));
     expect(screen.getByText('Toroidal Ø12 - R1.5 - H25 - A4')).toBeInTheDocument();
   });
+
+  // ─── Item #07: Slider Safety Factor ────────────────────────────────────────
+
+  it('renders Segurança section in the panel', () => {
+    renderPanel();
+    expect(screen.getByText('Segurança')).toBeInTheDocument();
+  });
+
+  it('Segurança section is collapsed by default', () => {
+    renderPanel();
+    const segBtn = screen.getByText('Segurança').closest('button');
+    expect(segBtn).toHaveAttribute('aria-expanded', 'false');
+  });
+
+  it('Segurança summary shows SF value when collapsed', () => {
+    renderPanel();
+    // Default safetyFactor is 0.8
+    expect(screen.getByText('SF 0.80')).toBeInTheDocument();
+  });
+
+  it('opening Segurança section shows slider with correct aria-label', () => {
+    renderPanel();
+    fireEvent.click(screen.getByText('Segurança'));
+    expect(screen.getByRole('slider', { name: 'Fator de Segurança slider' })).toBeInTheDocument();
+  });
+
+  it('+ button increases safetyFactor by 0.05', () => {
+    renderPanel();
+    fireEvent.click(screen.getByText('Segurança'));
+    const initialSF = useMachiningStore.getState().safetyFactor;
+    fireEvent.click(screen.getByRole('button', { name: 'Aumentar fator de segurança' }));
+    expect(useMachiningStore.getState().safetyFactor).toBeCloseTo(initialSF + 0.05, 5);
+  });
+
+  it('− button decreases safetyFactor by 0.05', () => {
+    renderPanel();
+    fireEvent.click(screen.getByText('Segurança'));
+    const initialSF = useMachiningStore.getState().safetyFactor;
+    fireEvent.click(screen.getByRole('button', { name: 'Reduzir fator de segurança' }));
+    expect(useMachiningStore.getState().safetyFactor).toBeCloseTo(initialSF - 0.05, 5);
+  });
+
+  it('− button clamps at 0.50 minimum', () => {
+    useMachiningStore.getState().setSafetyFactor(0.50);
+    renderPanel();
+    fireEvent.click(screen.getByText('Segurança'));
+    fireEvent.click(screen.getByRole('button', { name: 'Reduzir fator de segurança' }));
+    expect(useMachiningStore.getState().safetyFactor).toBe(0.50);
+  });
+
+  it('+ button clamps at 1.00 maximum', () => {
+    useMachiningStore.getState().setSafetyFactor(1.00);
+    renderPanel();
+    fireEvent.click(screen.getByText('Segurança'));
+    fireEvent.click(screen.getByRole('button', { name: 'Aumentar fator de segurança' }));
+    expect(useMachiningStore.getState().safetyFactor).toBe(1.00);
+  });
+
+  it('setSafetyFactor zeros resultado (user must re-simulate)', () => {
+    useMachiningStore.getState().calcular();
+    expect(useMachiningStore.getState().resultado).not.toBeNull();
+    useMachiningStore.getState().setSafetyFactor(0.70);
+    expect(useMachiningStore.getState().resultado).toBeNull();
+  });
 });

@@ -226,6 +226,7 @@ export interface HistoricoCalculo {
   resultado: ResultadoUsinagem;
   feedback: FeedbackOperador;
   notas: string;
+  favorited?: boolean; // optional — backward-compat with existing localStorage entries
 }
 
 /** Maximum history entries stored */

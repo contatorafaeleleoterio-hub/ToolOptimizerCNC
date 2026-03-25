@@ -155,6 +155,60 @@ describe('HistoryStore', () => {
     });
   });
 
+  describe('favorites', () => {
+    it('addEntry creates entry with favorited: false', () => {
+      useHistoryStore.getState().addEntry(makeEntry());
+      const entry = useHistoryStore.getState().entries[0];
+      expect(entry.favorited).toBe(false);
+    });
+
+    it('toggleFavorite marks an entry as favorited', () => {
+      useHistoryStore.getState().addEntry(makeEntry());
+      const id = useHistoryStore.getState().entries[0].id;
+      useHistoryStore.getState().toggleFavorite(id);
+      expect(useHistoryStore.getState().entries[0].favorited).toBe(true);
+    });
+
+    it('toggleFavorite unmarks a favorited entry', () => {
+      useHistoryStore.getState().addEntry(makeEntry());
+      const id = useHistoryStore.getState().entries[0].id;
+      useHistoryStore.getState().toggleFavorite(id);
+      useHistoryStore.getState().toggleFavorite(id);
+      expect(useHistoryStore.getState().entries[0].favorited).toBe(false);
+    });
+
+    it('getFavoriteCount returns correct count', () => {
+      useHistoryStore.getState().addEntry(makeEntry({ materialNome: 'A' }));
+      useHistoryStore.getState().addEntry(makeEntry({ materialNome: 'B' }));
+      useHistoryStore.getState().addEntry(makeEntry({ materialNome: 'C' }));
+      expect(useHistoryStore.getState().getFavoriteCount()).toBe(0);
+      const ids = useHistoryStore.getState().entries.map((e) => e.id);
+      useHistoryStore.getState().toggleFavorite(ids[0]);
+      useHistoryStore.getState().toggleFavorite(ids[2]);
+      expect(useHistoryStore.getState().getFavoriteCount()).toBe(2);
+    });
+
+    it('getFilteredEntries filters by favorited: true', () => {
+      useHistoryStore.getState().addEntry(makeEntry({ materialNome: 'A' }));
+      useHistoryStore.getState().addEntry(makeEntry({ materialNome: 'B' }));
+      const idA = useHistoryStore.getState().entries.find((e) => e.materialNome === 'A')!.id;
+      useHistoryStore.getState().toggleFavorite(idA);
+      useHistoryStore.getState().setFilters({ favorited: true });
+      const filtered = useHistoryStore.getState().getFilteredEntries();
+      expect(filtered).toHaveLength(1);
+      expect(filtered[0].materialNome).toBe('A');
+    });
+
+    it('getFilteredEntries with favorited: todos returns all', () => {
+      useHistoryStore.getState().addEntry(makeEntry({ materialNome: 'A' }));
+      useHistoryStore.getState().addEntry(makeEntry({ materialNome: 'B' }));
+      const idA = useHistoryStore.getState().entries.find((e) => e.materialNome === 'A')!.id;
+      useHistoryStore.getState().toggleFavorite(idA);
+      useHistoryStore.getState().setFilters({ favorited: 'todos' });
+      expect(useHistoryStore.getState().getFilteredEntries()).toHaveLength(2);
+    });
+  });
+
   describe('export/import', () => {
     it('exports history as JSON', () => {
       useHistoryStore.getState().addEntry(makeEntry());
