@@ -48,12 +48,19 @@ export function MobilePage() {
 
   return (
     <div className="flex flex-col min-h-screen bg-background-dark">
+      {/* Ambient gradient orbs — glassmorphism requires a colored background */}
+      <div className="pointer-events-none fixed inset-0 overflow-hidden -z-10" aria-hidden>
+        <div className="absolute top-0 left-1/4 w-72 h-72 rounded-full bg-cyan-500/5 blur-3xl" />
+        <div className="absolute top-1/2 right-0 w-56 h-56 rounded-full bg-purple-500/5 blur-3xl" />
+        <div className="absolute bottom-1/4 left-0 w-48 h-48 rounded-full bg-cyan-400/3 blur-3xl" />
+      </div>
+
       <SeoHead title="ToolOptimizer CNC Mobile" />
       <MobileHeader />
       <MobileStickyActions />
       <main className="flex-1 flex flex-col gap-6 py-4 pb-8">
-        <MobileResultsSection />
         <MobileConfigSection />
+        <MobileResultsSection />
         <MobileFineTuneSection />
       </main>
       <Disclaimer />

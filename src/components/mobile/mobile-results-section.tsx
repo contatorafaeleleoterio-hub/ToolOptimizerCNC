@@ -14,24 +14,42 @@ export function MobileResultsSection() {
       <ToolSummaryViewer />
 
       {!resultado && (
-        <div className="bg-surface-dark border border-white/5 rounded-2xl p-8 text-center">
-          <span className="material-symbols-outlined text-5xl text-gray-600 mb-3 block">precision_manufacturing</span>
-          <p className="text-gray-500 text-sm">Configure os parâmetros e clique <span className="text-primary font-bold">Simular</span></p>
+        <div className="bg-surface-dark/70 backdrop-blur-sm border border-white/5 rounded-2xl p-6">
+          <div className="flex items-center gap-3 mb-5">
+            <span className="material-symbols-outlined text-3xl text-gray-600">precision_manufacturing</span>
+            <p className="text-gray-400 text-sm font-medium">Siga os passos para simular</p>
+          </div>
+          <div className="flex flex-col gap-3">
+            {[
+              { n: '1', icon: 'settings', label: 'Configure material e ferramenta', color: 'text-primary' },
+              { n: '2', icon: 'tune', label: 'Defina os parâmetros de corte', color: 'text-accent-orange' },
+              { n: '3', icon: 'play_arrow', label: 'Clique em Simular', color: 'text-secondary' },
+            ].map(({ n, icon, label, color }) => (
+              <div key={n} className="flex items-center gap-3">
+                <div className={`w-7 h-7 rounded-full border flex items-center justify-center shrink-0 ${color} border-current/30 bg-current/5`}>
+                  <span className="text-xs font-bold font-mono">{n}</span>
+                </div>
+                <span className="material-symbols-outlined text-base text-gray-500">{icon}</span>
+                <span className="text-xs text-gray-400">{label}</span>
+              </div>
+            ))}
+          </div>
         </div>
       )}
 
       {resultado && (() => {
+        // Entrance animation applied via wrapper
         const { rpm, avanco, potenciaMotor, mrr, vcReal, seguranca } = resultado;
         const rpmPct = Math.min((rpm / limites.maxRPM) * 100, 100);
         const feedPct = Math.min((avanco / limites.maxAvanco) * 100, 100);
         const powerPct = Math.min((potenciaMotor / limites.maxPotencia) * 100, 100);
 
         return (
-          <>
+          <div className="flex flex-col gap-4 animate-[fadeInUp_0.35s_ease-out]">
             <SafetyBadge nivel={seguranca.nivel} avisosCount={seguranca.avisos.length} />
 
             {/* Overview metrics 2x2 */}
-            <div className="bg-surface-dark border border-white/5 rounded-2xl p-4 shadow-glass">
+            <div className="bg-surface-dark/70 backdrop-blur-sm border border-white/5 rounded-2xl p-4 shadow-glass">
               <div className="grid grid-cols-2 divide-x divide-y divide-white/5">
                 <MetricCell label="Rotação" value={fmt(rpm)} unit="RPM" unitColor="text-primary" />
                 <MetricCell label="Avanço" value={fmt(avanco)} unit="mm/min" unitColor="text-secondary" />
@@ -66,7 +84,7 @@ export function MobileResultsSection() {
             </div>
 
             <WarningsSection avisos={seguranca.avisos} />
-          </>
+          </div>
         );
       })()}
     </section>

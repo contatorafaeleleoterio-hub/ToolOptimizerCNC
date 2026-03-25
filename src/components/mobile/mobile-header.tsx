@@ -12,8 +12,14 @@ export function MobileHeader() {
       </div>
       <div className="flex items-center gap-1">
         <BugReportButton variant="mobile" />
+        <button onClick={() => navigate('/history')}
+          className="w-10 h-10 rounded-lg bg-white/5 border border-white/10 text-gray-400 hover:text-white transition-all flex items-center justify-center"
+          aria-label="Histórico de simulações">
+          <span className="material-symbols-outlined text-lg">history</span>
+        </button>
         <button onClick={() => navigate('/settings')}
-          className="w-10 h-10 rounded-lg bg-white/5 border border-white/10 text-gray-400 hover:text-white transition-all flex items-center justify-center">
+          className="w-10 h-10 rounded-lg bg-white/5 border border-white/10 text-gray-400 hover:text-white transition-all flex items-center justify-center"
+          aria-label="Configurações">
           <span className="material-symbols-outlined text-lg">settings</span>
         </button>
       </div>

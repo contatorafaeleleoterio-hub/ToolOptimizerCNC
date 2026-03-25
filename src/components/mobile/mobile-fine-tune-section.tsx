@@ -91,6 +91,29 @@ function TouchSlider({ value, min, max, step, rgb, onChange, label, recomendado 
     setDragging(false);
   }, []);
 
+  const handleKeyDown = useCallback((e: React.KeyboardEvent) => {
+    switch (e.key) {
+      case 'ArrowRight':
+      case 'ArrowUp':
+        e.preventDefault();
+        onChange(clampToStep(value + step));
+        break;
+      case 'ArrowLeft':
+      case 'ArrowDown':
+        e.preventDefault();
+        onChange(clampToStep(value - step));
+        break;
+      case 'Home':
+        e.preventDefault();
+        onChange(min);
+        break;
+      case 'End':
+        e.preventDefault();
+        onChange(max);
+        break;
+    }
+  }, [value, step, min, max, onChange, clampToStep]);
+
   const pct = ((value - min) / (max - min)) * 100;
 
   return (
@@ -103,6 +126,7 @@ function TouchSlider({ value, min, max, step, rgb, onChange, label, recomendado 
       aria-valuemin={min}
       aria-valuemax={max}
       tabIndex={0}
+      onKeyDown={handleKeyDown}
     >
       {/* Track background */}
       <div className="absolute left-0 right-0 h-2 bg-black/40 rounded-full" />
@@ -177,7 +201,6 @@ export function MobileFineTuneSection() {
   const parametros = useMachiningStore((s) => s.parametros);
   const ajustarParametros = useMachiningStore((s) => s.ajustarParametros);
   const materialId = useMachiningStore((s) => s.materialId);
-  const resultado = useMachiningStore((s) => s.resultado);
   const ferramenta = useMachiningStore((s) => s.ferramenta);
   const tipoOperacao = useMachiningStore((s) => s.tipoOperacao);
   const material = MATERIAIS.find((m) => m.id === materialId);
@@ -304,23 +327,6 @@ export function MobileFineTuneSection() {
         </div>
       </div>
 
-      {/* MRR summary */}
-      <div className="bg-card-dark rounded-xl p-4 border border-white/5">
-        <div className="flex justify-between items-center mb-2">
-          <span className="text-2xs uppercase tracking-wider text-gray-500">Material Removal</span>
-          {resultado && <span className="material-symbols-outlined text-xs text-secondary animate-pulse">trending_up</span>}
-        </div>
-        <div className="bg-black/30 p-4 rounded-xl flex items-center justify-between border border-white/5">
-          <div className="flex items-center gap-2">
-            <span className="material-symbols-outlined text-gray-600 text-lg">delete_sweep</span>
-            <span className="text-xs text-gray-400">MRR</span>
-          </div>
-          <span className="font-mono text-lg font-bold text-white">
-            {resultado ? resultado.mrr.toFixed(1) : '—'} <span className="text-xs text-gray-600">cm³/min</span>
-          </span>
-        </div>
-        {material && <p className="text-2xs text-gray-600 mt-2">{material.nome} — {material.dureza}</p>}
-      </div>
     </section>
   );
 }
