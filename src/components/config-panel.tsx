@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { useMachiningStore } from '@/store';
-import { MATERIAIS, FERRAMENTAS_PADRAO, DIAMETROS_COMPLETOS, RAIOS_PONTA, ARESTAS_OPTIONS, ALTURAS_FIXACAO } from '@/data';
+import { MATERIAIS, FERRAMENTAS_PADRAO } from '@/data';
 import { TipoUsinagem } from '@/types';
 import { FieldGroup } from './ui-helpers';
 import { useSimulationAnimation } from '@/hooks/use-simulation-animation';
@@ -14,41 +14,67 @@ const OPERACAO_LABELS: Record<TipoUsinagem, string> = {
   [TipoUsinagem.ACABAMENTO]: 'Acabamento',
 };
 
+const ROW_STYLE = { background: 'linear-gradient(135deg, rgba(255,255,255,0.05), rgba(255,255,255,0.02))' };
+
 /**
- * Compact inline dropdown row: label on the left, select on the right.
- * Used for Ferramenta fields (Diâmetro, Raio, Arestas, Altura).
+ * Free numeric input row: label on the left, number input on the right.
+ * Shows inline validation error when value is outside [min, max].
+ * On blur, resets display to the last valid store value if input is invalid.
  */
-function DropdownRow({
+function NumberInputRow({
   label,
   value,
-  options,
+  min,
+  max,
+  step,
+  unit,
   onChange,
-  format,
 }: {
   label: string;
   value: number;
-  options: readonly number[];
+  min: number;
+  max: number;
+  step: number;
+  unit: string;
   onChange: (v: number) => void;
-  format?: (v: number) => string;
 }) {
+  const [raw, setRaw] = useState(String(value));
+
+  const parsed = Number(raw);
+  const invalid = raw.trim() === '' || isNaN(parsed) || parsed < min || parsed > max;
+
   return (
-    <div
-      className="flex items-center justify-between gap-3 rounded-md px-3 py-2"
-      style={{ background: 'linear-gradient(135deg, rgba(255,255,255,0.05), rgba(255,255,255,0.02))' }}
-    >
-      <span className="text-base font-semibold text-white/85 leading-none">{label}</span>
-      <select
-        value={String(value)}
-        onChange={(e) => onChange(Number(e.target.value))}
-        aria-label={label}
-        className="bg-black/50 border border-white/15 rounded px-2 py-1 text-base text-white font-mono focus:outline-none focus:border-primary cursor-pointer min-w-[90px] appearance-none select-chevron"
-      >
-        {options.map((opt) => (
-          <option key={opt} value={String(opt)}>
-            {format ? format(opt) : String(opt)}
-          </option>
-        ))}
-      </select>
+    <div className="flex flex-col gap-1 rounded-md px-3 py-2" style={ROW_STYLE}>
+      <div className="flex items-center justify-between gap-3">
+        <span className="text-base font-semibold text-white/85 leading-none">{label}</span>
+        <input
+          type="number"
+          min={min}
+          max={max}
+          step={step}
+          value={raw}
+          onChange={(e) => {
+            setRaw(e.target.value);
+            const n = Number(e.target.value);
+            if (!isNaN(n) && n >= min && n <= max) onChange(n);
+          }}
+          onBlur={() => {
+            // Reset display to last valid store value if current raw is invalid
+            if (invalid) setRaw(String(value));
+          }}
+          aria-label={label}
+          className={`bg-black/50 border rounded px-2 py-1 text-base text-white font-mono focus:outline-none w-[100px] ${
+            invalid
+              ? 'border-red-500 text-red-400 focus:border-red-400'
+              : 'border-white/15 focus:border-primary'
+          }`}
+        />
+      </div>
+      {invalid && (
+        <span className="text-xs text-red-400 px-1">
+          Válido: {min}–{max} {unit}
+        </span>
+      )}
     </div>
   );
 }
@@ -229,42 +255,59 @@ export function ConfigPanel() {
               </div>
             </FieldGroup>
 
-            {/* 2. Diameter — DropdownRow */}
-            <DropdownRow
+            {/* 2. Diameter — free input (0.1–200 mm) */}
+            <NumberInputRow
               label="Diâmetro (mm)"
               value={ferramenta.diametro}
-              options={DIAMETROS_COMPLETOS}
+              min={0.1}
+              max={200}
+              step={0.1}
+              unit="mm"
               onChange={(v) => setFerramenta({ diametro: v })}
-              format={(v) => `${v} mm`}
             />
 
-            {/* 3. Corner radius — DropdownRow (toroidal only) */}
+            {/* 3. Corner radius — free input (toroidal only, 0.05–50 mm) */}
             {ferramenta.tipo === 'toroidal' && (
-              <DropdownRow
-                label="Raio da Ponta"
+              <NumberInputRow
+                label="Raio da Ponta (mm)"
                 value={ferramenta.raioQuina ?? 1.0}
-                options={RAIOS_PONTA}
+                min={0.05}
+                max={50}
+                step={0.05}
+                unit="mm"
                 onChange={(v) => setFerramenta({ raioQuina: v })}
-                format={(v) => `${v} mm`}
               />
             )}
 
-            {/* 4. Arestas — DropdownRow [2, 3, 4, 6] */}
-            <DropdownRow
-              label="Arestas (Z)"
-              value={ferramenta.numeroArestas}
-              options={ARESTAS_OPTIONS}
-              onChange={(v) => setFerramenta({ numeroArestas: v })}
-              format={(v) => `${v} arestas`}
-            />
+            {/* 4. Arestas — 4 fixed buttons [2, 3, 4, 6] */}
+            <div className="flex items-center justify-between gap-3 rounded-md px-3 py-2" style={ROW_STYLE}>
+              <span className="text-base font-semibold text-white/85 leading-none">Arestas (Z)</span>
+              <div className="flex gap-1">
+                {[2, 3, 4, 6].map((z) => (
+                  <button
+                    key={z}
+                    onClick={() => setFerramenta({ numeroArestas: z })}
+                    className={`w-10 py-1 rounded border text-sm font-mono transition-colors ${
+                      ferramenta.numeroArestas === z
+                        ? 'bg-primary text-black font-bold border-primary shadow-neon-cyan'
+                        : 'bg-black/40 text-gray-400 hover:text-white hover:bg-white/5 border-white/10'
+                    }`}
+                  >
+                    {z}
+                  </button>
+                ))}
+              </div>
+            </div>
 
-            {/* 5. Altura de Fixação — DropdownRow [15..150] */}
-            <DropdownRow
+            {/* 5. Altura de Fixação — free input (5–300 mm) */}
+            <NumberInputRow
               label="Altura Fixação (mm)"
               value={ferramenta.balanco}
-              options={ALTURAS_FIXACAO}
+              min={5}
+              max={300}
+              step={1}
+              unit="mm"
               onChange={(v) => setFerramenta({ balanco: v })}
-              format={(v) => `${v} mm`}
             />
           </div>
         </CollapsibleSection>

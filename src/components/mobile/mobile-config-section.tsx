@@ -1,5 +1,5 @@
 import { useMachiningStore } from '@/store';
-import { MATERIAIS, FERRAMENTAS_PADRAO, DIAMETROS_COMPLETOS, RAIOS_PADRAO } from '@/data';
+import { MATERIAIS, FERRAMENTAS_PADRAO, RAIOS_PADRAO } from '@/data';
 import { TipoUsinagem } from '@/types';
 import { SectionTitle, FieldGroup, NumInput } from '../ui-helpers';
 
@@ -78,14 +78,20 @@ export function MobileConfigSection() {
             </div>
           </FieldGroup>
 
-          {/* Diameter */}
+          {/* Diameter — free input (0.1–200 mm) */}
           <FieldGroup label="Diâmetro (mm)">
-            <select value={ferramenta.diametro} onChange={(e) => setFerramenta({ diametro: Number(e.target.value) })}
-              className="w-full min-h-[48px] bg-black/40 border border-white/10 rounded-lg py-2 pl-3 pr-10 text-sm text-white font-mono focus:ring-1 focus:ring-primary outline-none appearance-none select-chevron">
-              {DIAMETROS_COMPLETOS.map((d) => (
-                <option key={d} value={d}>{d}mm</option>
-              ))}
-            </select>
+            <input
+              type="number"
+              min={0.1}
+              max={200}
+              step={0.1}
+              value={ferramenta.diametro}
+              onChange={(e) => {
+                const n = Number(e.target.value);
+                if (!isNaN(n) && n >= 0.1 && n <= 200) setFerramenta({ diametro: n });
+              }}
+              className="w-full min-h-[48px] bg-black/40 border border-white/10 rounded-lg py-2 px-3 text-sm text-white font-mono focus:ring-1 focus:ring-primary outline-none"
+            />
           </FieldGroup>
 
           {/* Corner radius (toroidal only) */}
@@ -114,15 +120,18 @@ export function MobileConfigSection() {
             </div>
           </FieldGroup>
 
-          {/* Height */}
+          {/* Height — free input (5–300 mm) */}
           <FieldGroup label="Altura de Fixação (mm)">
             <div className="flex gap-2">
               <input type="number" value={ferramenta.balanco}
-                onChange={(e) => setFerramenta({ balanco: Number(e.target.value) })} min={15} max={150}
+                onChange={(e) => {
+                  const n = Number(e.target.value);
+                  if (!isNaN(n) && n >= 5 && n <= 300) setFerramenta({ balanco: n });
+                }} min={5} max={300}
                 className="flex-1 min-h-[48px] bg-black/40 border border-white/10 rounded-lg py-2 px-3 text-sm text-white font-mono focus:ring-1 focus:ring-primary outline-none" />
-              <button onClick={() => setFerramenta({ balanco: Math.min(150, ferramenta.balanco + 5) })}
+              <button onClick={() => setFerramenta({ balanco: Math.min(300, ferramenta.balanco + 5) })}
                 className="w-12 min-h-[48px] rounded-lg bg-black/40 border border-white/10 text-gray-400 active:bg-white/10 transition-all text-lg font-bold" aria-label="Increase height">&#9650;</button>
-              <button onClick={() => setFerramenta({ balanco: Math.max(15, ferramenta.balanco - 5) })}
+              <button onClick={() => setFerramenta({ balanco: Math.max(5, ferramenta.balanco - 5) })}
                 className="w-12 min-h-[48px] rounded-lg bg-black/40 border border-white/10 text-gray-400 active:bg-white/10 transition-all text-lg font-bold" aria-label="Decrease height">&#9660;</button>
             </div>
           </FieldGroup>
