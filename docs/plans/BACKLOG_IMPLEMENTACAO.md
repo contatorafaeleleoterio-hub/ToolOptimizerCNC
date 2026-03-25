@@ -23,7 +23,7 @@ A ordem garante estabilidade progressiva: bugs corrigidos antes de features, fea
 | 6 | [Reestruturação Documental](#6-reestruturação-documental) | 🏗️ Infra | v0.6.0 | ~150 arquivos docs | ✅ Concluído (4 fases) |
 | 7 | [Admin Dashboard](#7-admin-dashboard) | ✨ Feature | v0.7.0 | 9 páginas, 3 stores, ~30 arquivos | ✅ Concluído (`ab5eb8f`) |
 | 8 | [Redesign Dashboard Principal](#8-redesign-dashboard-principal) | 🎨 Redesign | v0.8.0 | ~10 arquivos + testes, 8 fases | ⬜ Pendente |
-| 9 | [Implementações Dashboard v0.9](#9-implementações-dashboard-v09) | 🎨 Feature+Redesign | v0.9.x | 8 itens — inputs livres, favoritar, redesign visor, rodapé, config | ⬜ Pendente — planejar |
+| 9 | [Implementações Dashboard v0.9](#9-implementações-dashboard-v09) | 🎨 Feature+Redesign | v0.9.x | 7 itens — 2/7 concluídos (Fase A) | 🔄 Em progresso — Fase A ✅ |
 
 ---
 

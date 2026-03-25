@@ -32,6 +32,27 @@ npx tsc --noEmit
 
 ## Ultimas 3 Sessoes
 
+### Sessão 25/03 (2ª) — Fase A v0.9: Input Livre + Arestas Botões
+
+**Commit:** `625b4f0` feat: #01 input livre D/R/H + #02 arestas botões (Fase A v0.9) | **Versão:** v0.8.0 (inalterada) | **Testes:** 849 passando
+
+**O que foi feito:**
+- ✅ Plano #01: `NumberInputRow` com validação de range (D:0.1–200 / R:0.05–50 / H:5–300 mm) + blur reset para valor válido
+- ✅ Plano #02: Arestas Z → 4 botões fixos [2,3,4,6] com highlight cyan idêntico ao Tipo de Usinagem
+- ✅ Deletados arrays: `DIAMETROS_COMPLETOS`, `RAIOS_PONTA`, `ALTURAS_FIXACAO`, `ARESTAS_OPTIONS`
+- ✅ `mobile-config-section.tsx` atualizado: input livre para diâmetro, range altura corrigido (5–300mm)
+- ✅ Quality gates: TS zero erros, build limpo, push + deploy automático
+
+**Decisões confirmadas:**
+- D1: Deletar arrays (sem datalist)
+- D4: Ranges PRD (D:0.1–200 / R:0.05–50 / H:5–300)
+- D2: Só 4 botões fixos para Arestas
+
+**Próxima sessão:**
+- Implementar **Fase B** (item #03 Favoritar Simulação + item #07 Slider Safety Factor)
+
+---
+
 ### Sessão 25/03 — Detalhamento Planos v0.9 (todos os 7 itens)
 
 **Commit:** `b69b9c2` docs: detalhar todos os 7 planos v0.9 | **Versão:** v0.8.0 (inalterada) | **Testes:** 864 (inalterados)

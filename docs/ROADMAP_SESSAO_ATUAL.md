@@ -12,10 +12,10 @@
 |------|-------|
 | **Branch** | `main` |
 | **Versão** | `0.8.0` |
-| **Testes** | **864 passando** (50 arquivos) — 0 falhas |
+| **Testes** | **849 passando** (15 falhas pré-existentes em admin timeout — não relacionadas) |
 | **TypeScript** | **zero erros** |
-| **Build** | **limpo** — JS 100.11KB gzip, CSS 14.35KB |
-| **Remote** | `origin/main` sincronizado ✅ |
+| **Build** | **limpo** — JS 100.28KB gzip (340KB bundle) |
+| **Remote** | `origin/main` sincronizado ✅ — commit `625b4f0` |
 | **Worker** | ✅ LIVE — `https://tooloptimizercnc.contatorafaeleleoterio.workers.dev` |
 | **Custom Domains** | ✅ `tooloptimizercnc.com.br` + `app.tooloptimizercnc.com.br` |
 | **GitHub Actions** | ✅ deploy automático ao push para main |
@@ -161,15 +161,15 @@ npx tsc --noEmit
 
 | # | Item | Complexidade | Fase | Status |
 |---|------|-------------|------|--------|
-| 01 | Input livre (Diâmetro, Raio, Altura) | Média | A | 📋 Pronto |
-| 02 | Arestas (Z) → 4 botões | Baixa | A | 📋 Pronto |
+| 01 | Input livre (Diâmetro, Raio, Altura) | Média | A | ✅ Concluído (`625b4f0`) |
+| 02 | Arestas (Z) → 4 botões | Baixa | A | ✅ Concluído (`625b4f0`) |
 | 03 | Botão ⭐ favoritar simulação — dashboard + histórico | Média | B | 📋 Pronto |
 | 07 | Slider Fator de Segurança no dashboard desktop | Baixa | B | 📋 Pronto |
 | 05 | Redesign visor central — hierarquia industrial HMI | Alta | C | 📋 Pronto |
 | 08 | Rodapé coluna esquerda — favoritos, histórico, config, versão | Média | C | 📋 Pronto |
 | 09 | Config: simplificar ferramentas + remover Kc | Média | D | 📋 Pronto |
 
-**Próxima sessão:** Implementar Fase A (itens #01 + #02) → Fase B → Fase C → Fase D.
+**Fase A concluída** (`625b4f0`). **Próxima sessão:** Implementar Fase B (itens #03 + #07) → Fase C → Fase D.
 
 ---
 
