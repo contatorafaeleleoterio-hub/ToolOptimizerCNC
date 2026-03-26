@@ -1,8 +1,8 @@
 # Backlog de Implementação — ToolOptimizer CNC
 
-> **Última atualização:** 24/03/2026
-> **Versão atual:** v0.8.0
-> **Total de planos pendentes:** 3 (Segurança v0.5.5 + Redesign Dashboard v0.8.0 fases 7-8 + Implementações v0.9)
+> **Última atualização:** 26/03/2026
+> **Versão atual:** v0.9.4
+> **Total de planos pendentes:** 2 (Segurança v0.5.5 + Redesign Visual Dashboard v0.10.0)
 
 Esta lista define a ordem de implementação dos planos criados e ainda não executados.
 A ordem garante estabilidade progressiva: bugs corrigidos antes de features, features antes de polish.
@@ -23,7 +23,8 @@ A ordem garante estabilidade progressiva: bugs corrigidos antes de features, fea
 | 6 | [Reestruturação Documental](#6-reestruturação-documental) | 🏗️ Infra | v0.6.0 | ~150 arquivos docs | ✅ Concluído (4 fases) |
 | 7 | [Admin Dashboard](#7-admin-dashboard) | ✨ Feature | v0.7.0 | 9 páginas, 3 stores, ~30 arquivos | ✅ Concluído (`ab5eb8f`) |
 | 8 | [Redesign Dashboard Principal](#8-redesign-dashboard-principal) | 🎨 Redesign | v0.8.0 | ~10 arquivos + testes, 8 fases | ⬜ Pendente |
-| 9 | [Implementações Dashboard v0.9](#9-implementações-dashboard-v09) | 🎨 Feature+Redesign | v0.9.x | 7 itens — 4/7 concluídos (Fases A+B) | 🔄 Em progresso — Fase B ✅ |
+| 9 | [Implementações Dashboard v0.9](#9-implementações-dashboard-v09) | 🎨 Feature+Redesign | v0.9.4 | 7 itens — 7/7 concluídos | ✅ Concluído (`9b61427`) |
+| 10 | [Redesign Visual Dashboard](#10-redesign-visual-dashboard) | 🎨 Design Audit | v0.10.0 | 3 sessões, 2 entregáveis | ⬜ Pendente |
 
 ---
 
@@ -158,6 +159,33 @@ v0.5.5 — Segurança Cibernética ⬜
 | 8 | Fontes + Polish + Quality Gates | Font sizes maiores, espaçamentos, bump v0.8.0 |
 
 **Testes:** Store CRUD, accordions, dropdowns, auto-save, objetivo→zones, validar/carregar, re-render
+
+---
+
+### 9. Implementações Dashboard v0.9 ✅
+
+**Commit final:** `9b61427` | **Versão:** v0.9.4
+**Resolvido:** 7/7 itens — inputs livres, arestas, favoritar, safety factor slider, redesign HMI, sidebar footer, remover Kc.
+
+---
+
+### 10. Redesign Visual Dashboard
+
+**Arquivo do plano:** `PLAN_Redesign_Visual_Dashboard.md`
+**Prioridade:** ALTA — próxima atividade principal
+**Tipo:** Design audit + protótipo visual (ZERO alterações em `src/`)
+
+**Problema:** Dashboard v0.9.4 funcional mas com 26+ violações contra `.interface-design/system.md`: cores hardcoded inline, spacing non-4px, classes Tailwind dinâmicas, profundidade excessiva de glassmorphism, padding misto entre cards.
+
+**3 sessões de execução:**
+
+| Sessão | Foco | Entregável |
+|--------|------|------------|
+| 1 | Análise + Audit + Critique | Catálogo de violações |
+| 2 | Relatório + Propostas | `docs/plans/VISUAL-AUDIT-REPORT.md` |
+| 3 | Protótipo HTML | `docs/design/DASHBOARD_V2_PROPOSAL.html` |
+
+**Prompts de execução incluídos no plano** — copiar e colar para iniciar cada sessão.
 
 ---
 

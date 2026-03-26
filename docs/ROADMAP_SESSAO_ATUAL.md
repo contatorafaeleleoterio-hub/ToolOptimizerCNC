@@ -47,6 +47,7 @@ npx tsc --noEmit
 | 8 | Reestruturação Docs Marketing & Monetização (12 docs) | 📄 Docs | — | ✅ Concluído |
 | 9 | [Redesign Dashboard Principal (8 fases)](#-redesign-dashboard-principal-v080) | 🎨 Redesign | v0.8.0 | ✅ Concluído (Fases 1-6) |
 | 10 | [Implementações Dashboard v0.9 (7 itens)](#-implementações-dashboard-v09) | 🎨 Feature+Redesign | v0.9.4 | ✅ Concluído (`9b61427`) |
+| 11 | [Redesign Visual Dashboard (3 sessões)](#-redesign-visual-dashboard) | 🎨 Design Audit | v0.10.0 | ⬜ Pendente |
 
 ### ✅ Reestruturação Documental (v0.6.0) — CONCLUÍDA
 
@@ -170,6 +171,26 @@ npx tsc --noEmit
 | 09 | Config: simplificar ferramentas + remover Kc | Média | D | ✅ Concluído (`9b61427`) |
 
 **Fase A concluída** (`625b4f0`). **Fase B concluída** (`05f2ecf`). **Fase C concluída** (`9b61427`). **Fase D concluída** (`9b61427`). **Dashboard v0.9 completo!**
+
+---
+
+### ⬜ Redesign Visual Dashboard
+
+**Plano completo:** `docs/plans/PLAN_Redesign_Visual_Dashboard.md`
+
+**Objetivo:** Audit visual completo do dashboard v0.9.4 contra `.interface-design/system.md` + protótipo HTML com correções. **ZERO alterações em `src/`.**
+
+**3 sessões — 65 pontos totais:**
+
+| Sessão | Foco | Entregável | Status |
+|--------|------|------------|--------|
+| 1 | Análise + Audit + Critique (READ-ONLY) | Catálogo de violações | ⬜ Pendente |
+| 2 | Relatório + Propostas por componente | `docs/plans/VISUAL-AUDIT-REPORT.md` | ⬜ Pendente |
+| 3 | Protótipo HTML auto-contido | `docs/design/DASHBOARD_V2_PROPOSAL.html` | ⬜ Pendente |
+
+**26+ violações mapeadas:** rgba hardcoded, spacing non-4px, classes dinâmicas, depth excessivo, padding misto, animation timings espalhados.
+
+**Prompts de execução:** Incluídos no plano — copiar e colar para iniciar cada sessão.
 
 ---
 
