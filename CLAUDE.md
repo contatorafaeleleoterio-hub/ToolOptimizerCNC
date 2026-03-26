@@ -176,3 +176,41 @@ Decisões arquiteturais documentadas em `docs/architecture/ADR-NNN-*.md`
 - Repositório: `C:\Users\USUARIO\Desktop\Synkra_AIOS\aios-core\`
 - Integração: `docs/AIOS_INTEGRATION.md`
 - ADR de adoção: `docs/architecture/ADR-004-adocao-synkra-aios.md`
+
+## Skill: Interface Design (Consistência Visual)
+
+**Fonte:** [Dammyjay93/interface-design](https://github.com/Dammyjay93/interface-design)
+**Design Direction:** Boldness & Clarity
+**System file:** `.interface-design/system.md`
+
+### Comandos Disponíveis
+| Comando | Função |
+|---------|--------|
+| `/interface-design-init` | Inicializar design system, aplicar padrões ao desenvolvimento |
+| `/interface-design-status` | Ver configuração atual do sistema (tokens, patterns, rules) |
+| `/interface-design-audit <path>` | Validar código contra padrões (spacing, depth, cores, patterns) |
+| `/interface-design-extract` | Extrair padrões do código existente para system.md |
+| `/interface-design-critique` | Review de craft visual (composição, hierarquia, detalhes) |
+
+### Trigger de Ativação
+Quando o usuário disser **"executar skill Design"**:
+1. Ler `.interface-design/system.md` (design tokens e regras do projeto)
+2. Ler `.claude/skills/interface-design/SKILL.md` (princípios de craft)
+3. Aplicar tokens e padrões ao desenvolvimento atual
+4. Validar componentes criados/modificados contra o system.md
+5. Ao final, sugerir `/interface-design-audit` para validação formal
+
+## Skill: Session Planner (Divisão de Planos em Sessões)
+
+**Objetivo:** Dividir planos de implementação em sessões otimizadas para contexto 200K tokens (Pro)
+**Skill file:** `.claude/skills/session-planner/SKILL.md`
+
+### Quando Ativar
+- Ao final de qualquer plano aprovado com >5 ações
+- Quando o usuário disser "dividir em sessões" ou "protocolo de sessões"
+
+### Limites por Sessão
+- **~96K tokens úteis** (60% de 200K, após overhead do sistema)
+- **8-12 ações significativas** (leituras + edições + builds)
+- **Peso máximo:** 24 pontos por sessão (cada ação tem peso 1-6)
+- **Checkpoint:** commit parcial a cada 3 sessões
