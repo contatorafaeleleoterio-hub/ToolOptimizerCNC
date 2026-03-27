@@ -11,7 +11,7 @@
 |------|-------|
 | **Branch** | `main` |
 | **Versão** | `0.9.4` |
-| **Último commit** | `9b61427` feat: Fase C+D v0.9 — HMI redesign + sidebar footer + remover Kc |
+| **Último commit** | `6aedb49` docs: audit completo v0.10.0 — violation catalog + report + protocolo 6 sessões |
 | **Testes** | **878 passando** (51 arquivos) — 0 falhas |
 | **TypeScript** | **zero erros** |
 | **Build** | **limpo** — JS ~102KB gzip, CSS ~14KB |
@@ -31,6 +31,37 @@ npx tsc --noEmit
 ---
 
 ## Ultimas 3 Sessoes
+
+### Sessão 26/03 — Redesign Visual v0.10.0: Audit + Relatório + Protocolo 6 Sessões (READ-ONLY)
+
+**Commit:** `6aedb49` docs: audit completo v0.10.0 | **Versão:** v0.9.4 (sem bump — sessão READ-ONLY)
+
+**O que foi feito:**
+- ✅ Sessão 1: Audit READ-ONLY dos 8 componentes principais → `SESSAO1-VIOLATION-CATALOG.md`
+  - 4 componentes 🔴 críticos (bidirectional-slider, styled-slider, shared-result-parts, fine-tune-panel)
+  - 26+ instâncias rgba inline, 12+ dynamic Tailwind classes, 18+ spacing non-4px
+- ✅ Sessão 2: Relatório formal por linha → `VISUAL-AUDIT-REPORT.md`
+  - Before/after por linha com referência aos tokens do system.md
+  - Proposta arquitetural: `slider-tokens.ts` (8 mapas estáticos)
+- ✅ Protocolo de 6 sessões criado → `PROTOCOLO-SESSOES-v0.10.0.md`
+  - S3: HTML protótipo visual (READ-ONLY) ← **PRÓXIMA**
+  - S4: slider-tokens.ts + sliders desktop
+  - S5: desktop components
+  - S6: mobile fusion + equalizer + v0.10.0
+
+**Mudanças adicionadas ao plano (além dos tokens):**
+- B: fusão mobile "Config Corte" + "Ajuste Fino" em accordion único
+- C: ParameterHealthBar → acima do slider + redesign equalizer barras crescentes
+- D: legenda de siglas (Vc · Velocidade de Corte, etc.)
+- E: botão ℹ explícito por parâmetro com drawer educacional
+
+**Próxima sessão:** S3 — Criar `docs/design/DASHBOARD_V2_PROPOSAL.html`
+```
+/compact Sessão 3: HTML protótipo visual DASHBOARD_V2_PROPOSAL.html
+Plano: docs/plans/redesign-v0.8.0/SESSAO3-prototipo-html.md
+```
+
+---
 
 ### Sessão 25/03 (4ª) — Fase C+D v0.9: HMI Redesign + Sidebar Footer + Remover Kc
 

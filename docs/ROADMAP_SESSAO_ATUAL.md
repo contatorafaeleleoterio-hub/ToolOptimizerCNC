@@ -174,23 +174,35 @@ npx tsc --noEmit
 
 ---
 
-### ⬜ Redesign Visual Dashboard
+### ⬜ Redesign Visual Dashboard + Implementação v0.10.0
 
 **Plano completo:** `docs/plans/PLAN_Redesign_Visual_Dashboard.md`
+**Protocolo de sessões:** `docs/plans/redesign-v0.8.0/PROTOCOLO-SESSOES-v0.10.0.md`
 
-**Objetivo:** Audit visual completo do dashboard v0.9.4 contra `.interface-design/system.md` + protótipo HTML com correções. **ZERO alterações em `src/`.**
+**Objetivo:** Audit visual + protótipo HTML + implementação completa → v0.10.0
 
-**3 sessões — 65 pontos totais:**
+**6 sessões — ~62 pontos de implementação:**
 
 | Sessão | Foco | Entregável | Status |
 |--------|------|------------|--------|
-| 1 | Análise + Audit + Critique (READ-ONLY) | Catálogo de violações | ⬜ Pendente |
-| 2 | Relatório + Propostas por componente | `docs/plans/VISUAL-AUDIT-REPORT.md` | ⬜ Pendente |
-| 3 | Protótipo HTML auto-contido | `docs/design/DASHBOARD_V2_PROPOSAL.html` | ⬜ Pendente |
+| 1 | Audit READ-ONLY (8 componentes) | `SESSAO1-VIOLATION-CATALOG.md` | ✅ Concluído (`6aedb49`) |
+| 2 | Relatório + Propostas por componente | `VISUAL-AUDIT-REPORT.md` | ✅ Concluído (`6aedb49`) |
+| **3** | **Protótipo HTML visual** | **`docs/design/DASHBOARD_V2_PROPOSAL.html`** | **⬜ PRIORIDADE PRÓXIMA SESSÃO** |
+| 4 | `slider-tokens.ts` + sliders desktop | Tokens refatorados | ⬜ Após aprovação do HTML |
+| 5 | Desktop: shared-result-parts + fine-tune + config + results | Desktop clean | ⬜ Após S4 |
+| 6 | Mobile: HealthBar equalizer + fusão + botão ℹ → v0.10.0 | Release v0.10.0 | ⬜ Após S5 |
 
-**26+ violações mapeadas:** rgba hardcoded, spacing non-4px, classes dinâmicas, depth excessivo, padding misto, animation timings espalhados.
+**Mudanças planejadas além dos tokens:**
+- B: fusão mobile "Config Corte" + "Ajuste Fino" em accordion único
+- C: ParameterHealthBar → acima do slider + redesign equalizer barras crescentes
+- D: legenda de siglas (Vc/fz/ae/ap) com texto explicativo
+- E: botão ℹ explícito por parâmetro com drawer educacional
 
-**Prompts de execução:** Incluídos no plano — copiar e colar para iniciar cada sessão.
+**Comando de início da Sessão 3:**
+```
+/compact Sessão 3: Criar DASHBOARD_V2_PROPOSAL.html — protótipo visual.
+Plano: docs/plans/redesign-v0.8.0/SESSAO3-prototipo-html.md
+```
 
 ---
 
@@ -288,4 +300,4 @@ Quando uma nova implementação for planejada durante a sessão:
 
 ---
 
-*Última atualização: 23/03/2026 — Auditoria completa dos planos v0.8.0: fases renumeradas (4=fix store, 5=biblioteca ferramentas, 6=fontes+release), fases 7-8 bloqueadas. Planos legados em `_legado/`. Próxima sessão: implementar Fases 4→5→6 em sequência | ⚠️ `public/_headers` tem CSP não commitado: `connect-src 'self'` bloqueia `api.cloudflare.com` — corrigir na Fase 2 da Segurança*
+*Última atualização: 26/03/2026 — Sessões 1+2 do Redesign Visual v0.10.0 concluídas: audit 8 componentes + relatório por linha + proposta slider-tokens.ts. Protocolo 6 sessões criado. **PRÓXIMA SESSÃO: S3 — HTML protótipo visual** (ler `SESSAO3-prototipo-html.md`). ⚠️ `public/_headers` tem CSP não commitado: `connect-src 'self'` bloqueia `api.cloudflare.com` — corrigir na Fase 2 da Segurança.*
