@@ -15,6 +15,7 @@ interface FerramentaPadrao {
 
 export const DIAMETROS_PADRAO = [6, 8, 10, 12, 16, 20] as const;
 export const RAIOS_PADRAO = [0.5, 1.0] as const;
+export const RAIOS_PONTA = RAIOS_PADRAO;
 
 export const FERRAMENTAS_PADRAO: readonly FerramentaPadrao[] = [
   {

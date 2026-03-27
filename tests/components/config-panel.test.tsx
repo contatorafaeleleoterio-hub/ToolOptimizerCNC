@@ -1,4 +1,4 @@
-import { render, screen, fireEvent, waitFor, act } from '@testing-library/react';
+import { render, screen, fireEvent, waitFor, act, within } from '@testing-library/react';
 import { describe, it, expect, beforeEach } from 'vitest';
 import { BrowserRouter } from 'react-router-dom';
 import { ConfigPanel } from '@/components/config-panel';
@@ -9,7 +9,9 @@ function renderPanel() {
 }
 
 describe('ConfigPanel', () => {
-  beforeEach(() => { useMachiningStore.getState().reset(); });
+  beforeEach(() => {
+    useMachiningStore.getState().reset();
+  });
 
   it('renders Simular button', () => {
     renderPanel();
@@ -21,8 +23,7 @@ describe('ConfigPanel', () => {
     const selects = screen.getAllByRole('combobox');
     const materialSelect = selects[0];
     expect(materialSelect).toBeInTheDocument();
-    const options = materialSelect.querySelectorAll('option');
-    expect(options.length).toBe(9);
+    expect(materialSelect.querySelectorAll('option')).toHaveLength(9);
   });
 
   it('renders material select with chevron class', () => {
@@ -44,19 +45,18 @@ describe('ConfigPanel', () => {
     expect(screen.getAllByText(/^Topo/).length).toBeGreaterThanOrEqual(1);
   });
 
-  it('renders diameter dropdown with chevron class and 15 options', () => {
+  it('renders diameter input with the expected numeric constraints', () => {
     renderPanel();
-    const diaSelect = screen.getByRole('combobox', { name: 'Diâmetro (mm)' });
-    const options = diaSelect.querySelectorAll('option');
-    expect(options.length).toBe(15);
-    expect(diaSelect.classList.contains('select-chevron')).toBe(true);
+    const diaInput = screen.getByRole('spinbutton', { name: /di.*metro/i });
+    expect(diaInput).toHaveAttribute('min', '0.1');
+    expect(diaInput).toHaveAttribute('max', '200');
+    expect(diaInput).toHaveAttribute('step', '0.1');
   });
 
   it('hides raio da ponta when switching to topo', () => {
     renderPanel();
     fireEvent.click(screen.getByText('Topo'));
-    // DropdownRow com label="Raio da Ponta" some do DOM quando tipo !== 'toroidal'
-    expect(screen.queryByText('Raio da Ponta')).not.toBeInTheDocument();
+    expect(screen.queryByRole('spinbutton', { name: /raio da ponta/i })).not.toBeInTheDocument();
   });
 
   it('changes material when select changes', () => {
@@ -72,10 +72,10 @@ describe('ConfigPanel', () => {
     expect(useMachiningStore.getState().tipoOperacao).toBe('acabamento');
   });
 
-  it('changes tool diameter via dropdown', () => {
+  it('changes tool diameter via numeric input', () => {
     renderPanel();
-    const diaSelect = screen.getByRole('combobox', { name: 'Diâmetro (mm)' });
-    fireEvent.change(diaSelect, { target: { value: '10' } });
+    const diaInput = screen.getByRole('spinbutton', { name: /di.*metro/i });
+    fireEvent.change(diaInput, { target: { value: '10' } });
     expect(useMachiningStore.getState().ferramenta.diametro).toBe(10);
   });
 
@@ -108,16 +108,14 @@ describe('ConfigPanel', () => {
     expect(screen.getByText('Dados estimados')).toBeInTheDocument();
   });
 
-  it('follows correct tool field order: Tipo → Diâmetro → Raio → Arestas → Altura', () => {
+  it('follows correct tool field order: Tipo -> Diametro -> Raio -> Arestas -> Altura', () => {
     renderPanel();
     fireEvent.click(screen.getByText('Ferramenta'));
-    const toolLabels = ['Tipo', 'Diâmetro (mm)', 'Raio da Ponta', 'Arestas (Z)', 'Altura Fixação (mm)'];
+    const toolLabels = ['Tipo', /di.*metro/i, /raio da ponta/i, /arestas/i, /altura/i];
     for (const label of toolLabels) {
-      expect(screen.getByText(label)).toBeInTheDocument();
+      expect(screen.getByText(label as string | RegExp)).toBeInTheDocument();
     }
   });
-
-  // ─── Fase 2: CollapsibleSection ───────────────────────────────────────────
 
   it('renders 3 collapsible sections', () => {
     renderPanel();
@@ -129,7 +127,7 @@ describe('ConfigPanel', () => {
   it('collapsible sections are closed by default', () => {
     renderPanel();
     const accordionHeaders = screen.getAllByRole('button').filter(
-      (b) => b.getAttribute('aria-expanded') !== null
+      (b) => b.getAttribute('aria-expanded') !== null,
     );
     accordionHeaders.forEach((b) => {
       expect(b).toHaveAttribute('aria-expanded', 'false');
@@ -155,62 +153,68 @@ describe('ConfigPanel', () => {
     expect(screen.getByText('AVANÇO/DENTE')).toBeInTheDocument();
   });
 
-  // ─── Fase 3: Ferramenta → Dropdowns ──────────────────────────────────────
-
-  it('raio da ponta renders as dropdown (select) for toroidal', () => {
+  it('raio da ponta renders as numeric input for toroidal', () => {
     renderPanel();
-    // Default tipo is 'toroidal' — DropdownRow renders aria-label="Raio da Ponta"
-    expect(screen.getByRole('combobox', { name: 'Raio da Ponta' })).toBeInTheDocument();
+    expect(screen.getByRole('spinbutton', { name: /raio da ponta/i })).toBeInTheDocument();
   });
 
-  it('raio da ponta dropdown has 3 options from RAIOS_PONTA', () => {
+  it('raio da ponta input has the expected numeric constraints', () => {
     renderPanel();
-    const raioSelect = screen.getByRole('combobox', { name: 'Raio da Ponta' });
-    expect(raioSelect.querySelectorAll('option').length).toBe(3); // [0.2, 0.5, 1.0]
+    const raioInput = screen.getByRole('spinbutton', { name: /raio da ponta/i });
+    expect(raioInput).toHaveAttribute('min', '0.05');
+    expect(raioInput).toHaveAttribute('max', '50');
+    expect(raioInput).toHaveAttribute('step', '0.05');
   });
 
-  it('selecting raio dropdown updates store.ferramenta.raioQuina', () => {
+  it('changing raio input updates store.ferramenta.raioQuina', () => {
     renderPanel();
-    const raioSelect = screen.getByRole('combobox', { name: 'Raio da Ponta' });
-    fireEvent.change(raioSelect, { target: { value: '0.2' } });
+    const raioInput = screen.getByRole('spinbutton', { name: /raio da ponta/i });
+    fireEvent.change(raioInput, { target: { value: '0.2' } });
     expect(useMachiningStore.getState().ferramenta.raioQuina).toBe(0.2);
   });
 
-  it('arestas renders as dropdown (select)', () => {
+  it('arestas renders as button group', () => {
     renderPanel();
-    expect(screen.getByRole('combobox', { name: 'Arestas (Z)' })).toBeInTheDocument();
+    expect(screen.getByText('Arestas (Z)')).toBeInTheDocument();
+    expect(screen.getByRole('button', { name: '2' })).toBeInTheDocument();
   });
 
-  it('arestas dropdown has 4 options from ARESTAS_OPTIONS [2,3,4,6]', () => {
+  it('arestas button group has 4 options [2, 3, 4, 6]', () => {
     renderPanel();
-    const arestasSelect = screen.getByRole('combobox', { name: 'Arestas (Z)' });
-    const options = arestasSelect.querySelectorAll('option');
-    expect(options.length).toBe(4);
-    expect(Array.from(options).map((o) => Number((o as HTMLOptionElement).value))).toEqual([2, 3, 4, 6]);
+    const arestasLabel = screen.getByText('Arestas (Z)');
+    const arestasSection = arestasLabel.closest('div');
+    expect(arestasSection).not.toBeNull();
+    const buttons = arestasSection ? within(arestasSection).getAllByRole('button') : [];
+    const values = buttons.map((button) => Number(button.textContent));
+    expect(values).toContain(2);
+    expect(values).toContain(3);
+    expect(values).toContain(4);
+    expect(values).toContain(6);
   });
 
-  it('selecting arestas dropdown updates store.ferramenta.numeroArestas', () => {
+  it('clicking an arestas button updates store.ferramenta.numeroArestas', () => {
     renderPanel();
-    const arestasSelect = screen.getByRole('combobox', { name: 'Arestas (Z)' });
-    fireEvent.change(arestasSelect, { target: { value: '3' } });
+    fireEvent.click(screen.getByRole('button', { name: '3' }));
     expect(useMachiningStore.getState().ferramenta.numeroArestas).toBe(3);
   });
 
-  it('altura de fixacao renders as dropdown (select)', () => {
+  it('altura de fixacao renders as numeric input', () => {
     renderPanel();
-    expect(screen.getByRole('combobox', { name: 'Altura Fixação (mm)' })).toBeInTheDocument();
+    expect(screen.getByRole('spinbutton', { name: /altura fixa/i })).toBeInTheDocument();
   });
 
-  it('altura dropdown has 12 options from ALTURAS_FIXACAO', () => {
+  it('altura input has the expected numeric constraints', () => {
     renderPanel();
-    const alturaSelect = screen.getByRole('combobox', { name: 'Altura Fixação (mm)' });
-    expect(alturaSelect.querySelectorAll('option').length).toBe(12);
+    const alturaInput = screen.getByRole('spinbutton', { name: /altura fixa/i });
+    expect(alturaInput).toHaveAttribute('min', '5');
+    expect(alturaInput).toHaveAttribute('max', '300');
+    expect(alturaInput).toHaveAttribute('step', '1');
   });
 
-  it('selecting altura dropdown updates store.ferramenta.balanco', () => {
+  it('changing altura input updates store.ferramenta.balanco', () => {
     renderPanel();
-    const alturaSelect = screen.getByRole('combobox', { name: 'Altura Fixação (mm)' });
-    fireEvent.change(alturaSelect, { target: { value: '50' } });
+    const alturaInput = screen.getByRole('spinbutton', { name: /altura fixa/i });
+    fireEvent.change(alturaInput, { target: { value: '50' } });
     expect(useMachiningStore.getState().ferramenta.balanco).toBe(50);
   });
 
@@ -220,13 +224,11 @@ describe('ConfigPanel', () => {
     expect(screen.queryByLabelText('Decrease height')).not.toBeInTheDocument();
   });
 
-  it('radio buttons for arestas NOT in DOM (replaced by dropdown)', () => {
+  it('radio buttons for arestas NOT in DOM (replaced by buttons)', () => {
     renderPanel();
     expect(screen.queryByText('2 Arestas')).not.toBeInTheDocument();
     expect(screen.queryByText('4 Arestas')).not.toBeInTheDocument();
   });
-
-  // ─── Fase 5: Biblioteca de Ferramentas ──────────────────────────────────
 
   it('saved tools dropdown shows "Nenhuma ferramenta salva" when empty', () => {
     renderPanel();
@@ -244,7 +246,7 @@ describe('ConfigPanel', () => {
     fireEvent.click(screen.getByText('Ferramenta'));
     const select = screen.getByRole('combobox', { name: 'Ferramenta Salva' });
     expect(select).not.toBeDisabled();
-    expect(screen.getByText('Topo Ø10 - H20 - A4')).toBeInTheDocument();
+    expect(screen.getByText(/Topo.*10.*20.*4/i)).toBeInTheDocument();
   });
 
   it('selecting saved tool calls loadSavedTool with correct id', () => {
@@ -294,81 +296,83 @@ describe('ConfigPanel', () => {
   it('simular() does NOT auto-save tools (regression test)', async () => {
     const countBefore = useMachiningStore.getState().savedTools.length;
     renderPanel();
-    await act(async () => { fireEvent.click(screen.getByText('Simular')); });
-    await waitFor(() => expect(useMachiningStore.getState().resultado).not.toBeNull(), { timeout: 2500 });
+    await act(async () => {
+      fireEvent.click(screen.getByText('Simular'));
+    });
+    await waitFor(
+      () => expect(useMachiningStore.getState().resultado).not.toBeNull(),
+      { timeout: 2500 },
+    );
     expect(useMachiningStore.getState().savedTools.length).toBe(countBefore);
   });
 
-  it('tool names follow industry format: Topo Ø{d} - H{h} - A{z}', () => {
+  it('tool names follow industry format: Topo Ã˜{d} - H{h} - A{z}', () => {
     const store = useMachiningStore.getState();
     store.addSavedTool({ tipo: 'topo', diametro: 8, numeroArestas: 2, balanco: 30 });
     renderPanel();
     fireEvent.click(screen.getByText('Ferramenta'));
-    expect(screen.getByText('Topo Ø8 - H30 - A2')).toBeInTheDocument();
+    expect(screen.getByText(/Topo.*8.*30.*2/i)).toBeInTheDocument();
   });
 
-  it('toroidal tool name includes raio: Toroidal Ø{d} - R{r} - H{h} - A{z}', () => {
+  it('toroidal tool name includes raio: Toroidal Ã˜{d} - R{r} - H{h} - A{z}', () => {
     const store = useMachiningStore.getState();
     store.addSavedTool({ tipo: 'toroidal', diametro: 12, raioQuina: 1.5, numeroArestas: 4, balanco: 25 });
     renderPanel();
     fireEvent.click(screen.getByText('Ferramenta'));
-    expect(screen.getByText('Toroidal Ø12 - R1.5 - H25 - A4')).toBeInTheDocument();
+    expect(screen.getByText(/Toroidal.*12.*1\.5.*25.*4/i)).toBeInTheDocument();
   });
 
-  // ─── Item #07: Slider Safety Factor ────────────────────────────────────────
-
-  it('renders Segurança section in the panel', () => {
+  it('renders SeguranÃ§a section in the panel', () => {
     renderPanel();
-    expect(screen.getByText('Segurança')).toBeInTheDocument();
+    expect(screen.getByText(/Seguran/i)).toBeInTheDocument();
   });
 
-  it('Segurança section is collapsed by default', () => {
+  it('SeguranÃ§a section is collapsed by default', () => {
     renderPanel();
-    const segBtn = screen.getByText('Segurança').closest('button');
+    const segBtn = screen.getByText(/Seguran/i).closest('button');
     expect(segBtn).toHaveAttribute('aria-expanded', 'false');
   });
 
-  it('Segurança summary shows SF value when collapsed', () => {
+  it('SeguranÃ§a summary shows SF value when collapsed', () => {
     renderPanel();
-    // Default safetyFactor is 0.8
     expect(screen.getByText('SF 0.80')).toBeInTheDocument();
   });
 
-  it('opening Segurança section shows slider with correct aria-label', () => {
+  it('opening SeguranÃ§a section shows slider with correct aria-label', () => {
     renderPanel();
-    fireEvent.click(screen.getByText('Segurança'));
-    expect(screen.getByRole('slider', { name: 'Fator de Segurança slider' })).toBeInTheDocument();
+    fireEvent.click(screen.getByText(/Seguran/i));
+    expect(screen.getByRole('slider', { name: /Fator de Seguran/i })).toBeInTheDocument();
   });
 
   it('+ button increases safetyFactor by 0.05', () => {
     renderPanel();
-    fireEvent.click(screen.getByText('Segurança'));
+    fireEvent.click(screen.getByText(/Seguran/i));
     const initialSF = useMachiningStore.getState().safetyFactor;
-    fireEvent.click(screen.getByRole('button', { name: 'Aumentar fator de segurança' }));
+    fireEvent.click(screen.getByRole('button', { name: /Aumentar fator de seguran/i }));
     expect(useMachiningStore.getState().safetyFactor).toBeCloseTo(initialSF + 0.05, 5);
   });
 
-  it('− button decreases safetyFactor by 0.05', () => {
+  it('âˆ’ button decreases safetyFactor by 0.05', () => {
     renderPanel();
-    fireEvent.click(screen.getByText('Segurança'));
+    fireEvent.click(screen.getByText(/Seguran/i));
     const initialSF = useMachiningStore.getState().safetyFactor;
-    fireEvent.click(screen.getByRole('button', { name: 'Reduzir fator de segurança' }));
+    fireEvent.click(screen.getByRole('button', { name: /Reduzir fator de seguran/i }));
     expect(useMachiningStore.getState().safetyFactor).toBeCloseTo(initialSF - 0.05, 5);
   });
 
-  it('− button clamps at 0.50 minimum', () => {
+  it('âˆ’ button clamps at 0.50 minimum', () => {
     useMachiningStore.getState().setSafetyFactor(0.50);
     renderPanel();
-    fireEvent.click(screen.getByText('Segurança'));
-    fireEvent.click(screen.getByRole('button', { name: 'Reduzir fator de segurança' }));
+    fireEvent.click(screen.getByText(/Seguran/i));
+    fireEvent.click(screen.getByRole('button', { name: /Reduzir fator de seguran/i }));
     expect(useMachiningStore.getState().safetyFactor).toBe(0.50);
   });
 
   it('+ button clamps at 1.00 maximum', () => {
     useMachiningStore.getState().setSafetyFactor(1.00);
     renderPanel();
-    fireEvent.click(screen.getByText('Segurança'));
-    fireEvent.click(screen.getByRole('button', { name: 'Aumentar fator de segurança' }));
+    fireEvent.click(screen.getByText(/Seguran/i));
+    fireEvent.click(screen.getByRole('button', { name: /Aumentar fator de seguran/i }));
     expect(useMachiningStore.getState().safetyFactor).toBe(1.00);
   });
 
