@@ -6,6 +6,20 @@
 
 ---
 
+## ESCOPO POR AMBIENTE (REGRA OBRIGATORIA)
+
+- Codex (OpenAI), neste workspace, trabalha somente no Admin Dashboard (`/admin`): painel de administracao, coleta de dados, fluxo de pessoas, bugs e proximas acoes.
+- Codex NAO pode editar nada do dashboard de calculos e parametros do produto final, nem configuracoes desse dashboard, nem pagina de vendas relacionada ao produto.
+- Cloud Code e o ambiente autorizado para evolucoes do dashboard de calculos/parametros e demais partes do produto final.
+- Esta separacao e obrigatoria e deve ser conferida no inicio de cada sessao.
+
+## PROXIMAS 2 SESSOES (SEPARADAS)
+
+1. Sessao Cloud Code: trabalhar no sistema de parametros/calculos do produto final.
+2. Sessao Codex: trabalhar somente no Admin Dashboard (`/admin`).
+
+---
+
 ## 📍 ESTADO DO PROJETO
 
 | Item | Valor |
