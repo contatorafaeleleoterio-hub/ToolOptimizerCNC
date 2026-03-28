@@ -21,20 +21,20 @@ describe('FineTunePanel', () => {
 
   it('renders decrease buttons', () => {
     render(<FineTunePanel />);
-    expect(screen.getByLabelText('Diminuir Vc')).toBeInTheDocument();
-    expect(screen.getByLabelText('Diminuir fz')).toBeInTheDocument();
+    expect(screen.getByLabelText('Decrease Vc')).toBeInTheDocument();
+    expect(screen.getByLabelText('Decrease fz')).toBeInTheDocument();
   });
 
   it('renders increase buttons', () => {
     render(<FineTunePanel />);
-    expect(screen.getByLabelText('Aumentar Vc')).toBeInTheDocument();
-    expect(screen.getByLabelText('Aumentar fz')).toBeInTheDocument();
+    expect(screen.getByLabelText('Increase Vc')).toBeInTheDocument();
+    expect(screen.getByLabelText('Increase fz')).toBeInTheDocument();
   });
 
   it('decrease button decreases percentage by 10%', () => {
     render(<FineTunePanel />);
     const initialVc = useMachiningStore.getState().parametros.vc;
-    fireEvent.click(screen.getByLabelText('Diminuir Vc'));
+    fireEvent.click(screen.getByLabelText('Decrease Vc'));
     // After -10%, value should be baseVc * 0.9
     const newVc = useMachiningStore.getState().parametros.vc;
     expect(newVc).toBeLessThan(initialVc);
@@ -43,7 +43,7 @@ describe('FineTunePanel', () => {
   it('increase button increases percentage by 10%', () => {
     render(<FineTunePanel />);
     const initialVc = useMachiningStore.getState().parametros.vc;
-    fireEvent.click(screen.getByLabelText('Aumentar Vc'));
+    fireEvent.click(screen.getByLabelText('Increase Vc'));
     // After +10%, value should be baseVc * 1.1
     const newVc = useMachiningStore.getState().parametros.vc;
     expect(newVc).toBeGreaterThan(initialVc);

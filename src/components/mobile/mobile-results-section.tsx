@@ -141,15 +141,13 @@ export function MobileResultsSection() {
               useBidirectionalSlider
               baseValue={baseRPM}
               currentPercent={manualOverrides.rpmPercent ?? 0}
-              onPercentChange={setManualRPMPercent}
-              rgb="0,217,255" />
+              onPercentChange={setManualRPMPercent} />
             <BigNumber label="Avanço (mm/min)" value={fmt(avanco)} unit="mm/min" pct={feedPct}
               color="secondary" glow="rgba(57,255,20,0.4)" barGlow="rgba(57,255,20,1)" icon="moving"
               useBidirectionalSlider
               baseValue={baseFeed}
               currentPercent={manualOverrides.feedPercent ?? 0}
-              onPercentChange={setManualFeedPercent}
-              rgb="57,255,20" />
+              onPercentChange={setManualFeedPercent} />
 
             {/* 3 Gauges — horizontal scroll with snap (same 3 as desktop) */}
             <div className="flex gap-3 overflow-x-auto snap-x snap-mandatory pb-2 -mx-1 px-1 scrollbar-thin">

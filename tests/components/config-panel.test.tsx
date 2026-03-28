@@ -348,23 +348,23 @@ describe('ConfigPanel', () => {
     renderPanel();
     fireEvent.click(screen.getByText(/Seguran/i));
     const initialSF = useMachiningStore.getState().safetyFactor;
-    fireEvent.click(screen.getByRole('button', { name: /Aumentar fator de seguran/i }));
+    fireEvent.click(screen.getByRole('button', { name: /Increase Fator de Seguran/i }));
     expect(useMachiningStore.getState().safetyFactor).toBeCloseTo(initialSF + 0.05, 5);
   });
 
-  it('âˆ’ button decreases safetyFactor by 0.05', () => {
+  it('minus button decreases safetyFactor by 0.05', () => {
     renderPanel();
     fireEvent.click(screen.getByText(/Seguran/i));
     const initialSF = useMachiningStore.getState().safetyFactor;
-    fireEvent.click(screen.getByRole('button', { name: /Reduzir fator de seguran/i }));
+    fireEvent.click(screen.getByRole('button', { name: /Decrease Fator de Seguran/i }));
     expect(useMachiningStore.getState().safetyFactor).toBeCloseTo(initialSF - 0.05, 5);
   });
 
-  it('âˆ’ button clamps at 0.50 minimum', () => {
+  it('minus button clamps at 0.50 minimum', () => {
     useMachiningStore.getState().setSafetyFactor(0.50);
     renderPanel();
     fireEvent.click(screen.getByText(/Seguran/i));
-    fireEvent.click(screen.getByRole('button', { name: /Reduzir fator de seguran/i }));
+    fireEvent.click(screen.getByRole('button', { name: /Decrease Fator de Seguran/i }));
     expect(useMachiningStore.getState().safetyFactor).toBe(0.50);
   });
 
@@ -372,7 +372,7 @@ describe('ConfigPanel', () => {
     useMachiningStore.getState().setSafetyFactor(1.00);
     renderPanel();
     fireEvent.click(screen.getByText(/Seguran/i));
-    fireEvent.click(screen.getByRole('button', { name: /Aumentar fator de seguran/i }));
+    fireEvent.click(screen.getByRole('button', { name: /Increase Fator de Seguran/i }));
     expect(useMachiningStore.getState().safetyFactor).toBe(1.00);
   });
 

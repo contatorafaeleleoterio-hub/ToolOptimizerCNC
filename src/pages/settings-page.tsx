@@ -8,7 +8,7 @@ import type { Material, CustomMaterial, ClasseISO, ToolParamRanges, ParamRangeOv
 import { NumInput } from '@/components/ui-helpers';
 import { usePageTitle } from '@/hooks/use-page-title';
 import { SeoHead } from '@/components/seo-head';
-import { StyledSlider, BTN_CLS } from '@/components/styled-slider';
+import { StyledSlider } from '@/components/styled-slider';
 import { usePlausible } from '@/hooks/use-plausible';
 
 type Section = 'maquina' | 'seguranca' | 'materiais' | 'ferramentas' | 'exibicao' | 'dados';
@@ -129,11 +129,6 @@ function SegurancaSection() {
           Fator de Segurança
         </h3>
         <div className="flex items-center gap-2">
-          <button
-            className={BTN_CLS}
-            onClick={() => setSafetyFactor(Math.max(0.5, +(safetyFactor - 0.05).toFixed(2)))}
-            aria-label="Diminuir fator de segurança"
-          >−</button>
           <div className="flex-1">
             <StyledSlider
               value={safetyFactor}
@@ -141,16 +136,10 @@ function SegurancaSection() {
               max={1.0}
               step={0.05}
               color="primary"
-              rgb="0,217,255"
               label="Fator de Segurança"
               onChange={(v) => setSafetyFactor(+(v.toFixed(2)))}
             />
           </div>
-          <button
-            className={BTN_CLS}
-            onClick={() => setSafetyFactor(Math.min(1.0, +(safetyFactor + 0.05).toFixed(2)))}
-            aria-label="Aumentar fator de segurança"
-          >+</button>
           <span className="text-lg font-mono font-bold text-primary w-14 text-right">{safetyFactor.toFixed(2)}</span>
         </div>
         <p className="text-2xs text-gray-500 mt-2">Aplicado a Potência, Torque. Valores mais baixos = mais conservador.</p>

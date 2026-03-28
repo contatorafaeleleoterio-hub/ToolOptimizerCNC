@@ -46,11 +46,10 @@ export interface BigNumberProps {
   baseValue?: number; // Calculated value (center = 0%)
   currentPercent?: number; // Current adjustment percentage (-150 to +150)
   onPercentChange?: (percent: number) => void;
-  rgb?: string; // RGB values for slider color
 }
 
 export function BigNumber({ label, value, unit, pct, color, glow, barGlow, icon,
-  useBidirectionalSlider, baseValue, currentPercent = 0, onPercentChange, rgb }: BigNumberProps) {
+  useBidirectionalSlider, baseValue, currentPercent = 0, onPercentChange }: BigNumberProps) {
   return (
     <div className="relative bg-surface-dark backdrop-blur-xl border border-white/5 rounded-2xl p-6 shadow-glass flex flex-col justify-center group overflow-hidden">
       <div className={`absolute inset-0 bg-gradient-to-br from-${color}/5 to-transparent opacity-50 group-hover:opacity-100 transition-opacity duration-700`} />
@@ -69,14 +68,13 @@ export function BigNumber({ label, value, unit, pct, color, glow, barGlow, icon,
       <span className="text-xl text-gray-400 font-medium font-mono uppercase tracking-widest z-10">{unit}</span>
 
       {/* Bidirectional slider OR simple progress bar */}
-      {useBidirectionalSlider && onPercentChange && baseValue !== undefined && rgb ? (
+      {useBidirectionalSlider && onPercentChange && baseValue !== undefined ? (
         <div className="mt-4 w-full z-10">
           <BidirectionalSlider
             baseValue={baseValue}
             currentPercent={currentPercent}
             onChange={onPercentChange}
             color={color}
-            rgb={rgb}
             label={label}
             unit={unit}
           />

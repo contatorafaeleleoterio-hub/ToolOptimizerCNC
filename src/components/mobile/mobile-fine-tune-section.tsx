@@ -5,15 +5,17 @@ import { calcularSliderBounds } from '@/engine';
 import type { ParametrosUsinagem } from '@/types';
 import { SectionTitle } from '../ui-helpers';
 import { ParameterHealthBar } from '../parameter-health-bar';
+import { getSliderRgb } from '../slider-tokens';
 
 /** Fine-tune value input with raw/blur pattern — allows free typing */
-function FineTuneValueInput({ display, step, min, max, color, rgb, label, unit, onChange }: {
+function FineTuneValueInput({ display, step, min, max, color, label, unit, onChange }: {
   display: string; step: number; min: number; max: number;
-  color: string; rgb: string; label: string; unit: string;
+  color: string; label: string; unit: string;
   onChange: (v: number) => void;
 }) {
   const [raw, setRaw] = useState(display);
   const [focused, setFocused] = useState(false);
+  const rgb = getSliderRgb(color);
 
   const parsed = Number(raw);
   const invalid = raw.trim() === '' || isNaN(parsed) || parsed < min || parsed > max;
@@ -41,25 +43,21 @@ function FineTuneValueInput({ display, step, min, max, color, rgb, label, unit, 
 /** Configuração visual (labels, cores, textos educacionais) — constante */
 const SLIDER_VISUAL = [
   { key: 'vc' as const, label: 'Vc', fullLabel: 'Velocidade Corte', unit: 'm/min', color: 'primary',
-    rgb: '0,217,255',
     desc: 'Velocidade tangencial na aresta da ferramenta durante o corte.',
     aumentar: 'Usinagem mais rápida, mas desgaste prematuro e mais calor gerado.',
     diminuir: 'Ferramenta mais protegida, porém pode manchar o acabamento superficial.',
     equilibrio: 'Ajuste junto com fz — material mais duro exige Vc menor.' },
   { key: 'fz' as const, label: 'fz', fullLabel: 'Avanço/Dente', unit: 'mm', color: 'secondary',
-    rgb: '57,255,20',
     desc: 'Espessura do cavaco por aresta de corte em cada passagem.',
     aumentar: 'Maior taxa de remoção (MRR), mas risco de vibração e quebra da ferramenta.',
     diminuir: 'Acabamento mais fino e menor esforço, porém reduz a produtividade.',
     equilibrio: 'Mantenha fz dentro da recomendação do fabricante da ferramenta.' },
   { key: 'ae' as const, label: 'ae', fullLabel: 'Eng. Radial', unit: 'mm', color: 'accent-purple',
-    rgb: '168,85,247',
     desc: 'Largura radial de corte — quantos % do diâmetro da fresa está em contato.',
     aumentar: 'Remove mais material por passada, mas aumenta pressão lateral e deflexão.',
     diminuir: 'Menor força lateral — ideal para paredes finas ou ferramentas longas.',
     equilibrio: 'ae < 50% do diâmetro ativa o CTF — compensação automática de avanço.' },
   { key: 'ap' as const, label: 'ap', fullLabel: 'Prof. Axial', unit: 'mm', color: 'accent-orange',
-    rgb: '249,115,22',
     desc: 'Profundidade axial de corte — principal fator da taxa de remoção de material.',
     aumentar: 'MRR sobe proporcionalmente, mas eleva potência e torque exigidos da máquina.',
     diminuir: 'Operação mais leve — essencial quando a potência da máquina é o fator limitante.',
@@ -78,12 +76,13 @@ type ParamKey = typeof SLIDER_VISUAL[number]['key'];
  * Snaps to discrete step values with visible tick marks.
  * Uses touch-none CSS to prevent scroll conflicts.
  */
-function TouchSlider({ value, min, max, step, rgb, onChange, label, recomendado }: {
+function TouchSlider({ value, min, max, step, color, onChange, label, recomendado }: {
   value: number; min: number; max: number; step: number;
-  rgb: string; label: string;
+  color: string; label: string;
   recomendado?: number;
   onChange: (val: number) => void;
 }) {
+  const rgb = getSliderRgb(color);
   const trackRef = useRef<HTMLDivElement>(null);
   const [dragging, setDragging] = useState(false);
 
@@ -275,9 +274,10 @@ export function MobileFineTuneSection() {
         <SectionTitle color="bg-primary" label="Fine Tune" />
         <p className="text-[9px] text-gray-500 mb-3">Arraste os controles para ajustar os parâmetros</p>
         <div className="flex flex-col gap-5">
-          {SLIDER_VISUAL.map(({ key, label, fullLabel, unit, color, rgb, desc, aumentar, diminuir, equilibrio }) => {
+          {SLIDER_VISUAL.map(({ key, label, fullLabel, unit, color, desc, aumentar, diminuir, equilibrio }) => {
             const { min, max, step, recomendado } = bounds[key];
             const val = parametros[key];
+            const rgb = getSliderRgb(color);
             const display = key === 'fz' || key === 'ap' ? val.toFixed(2) : key === 'ae' ? val.toFixed(1) : val.toFixed(0);
             const isOpen = openKey === key;
 
@@ -301,7 +301,7 @@ export function MobileFineTuneSection() {
                   </button>
                   <FineTuneValueInput
                     display={display} step={step} min={min} max={max}
-                    color={color} rgb={rgb} label={label} unit={unit}
+                    color={color} label={label} unit={unit}
                     onChange={(n) => ajustarParametros({ [key]: n })}
                   />
                 </div>
@@ -312,7 +312,7 @@ export function MobileFineTuneSection() {
                   <div className="flex-1">
                     <TouchSlider
                       value={val} min={min} max={max} step={step}
-                      rgb={rgb} label={label}
+                      color={color} label={label}
                       recomendado={recomendado}
                       onChange={(v) => handleChange(key, v)}
                     />

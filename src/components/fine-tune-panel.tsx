@@ -4,30 +4,27 @@ import { MATERIAIS } from '@/data';
 import { calcularSliderBounds } from '@/engine';
 import type { ParametrosUsinagem } from '@/types';
 import { ParameterHealthBar } from './parameter-health-bar';
-import { StyledSlider, BTN_CLS } from './styled-slider';
+import { StyledSlider } from './styled-slider';
+import { getSliderRgb } from './slider-tokens';
 
 /** Configuração visual (labels, cores, textos educacionais) — constante */
 const SLIDER_VISUAL = [
   { key: 'vc' as const, label: 'Vc', fullLabel: 'VEL. DE CORTE', unit: 'M/MIN', color: 'primary',
-    rgb: '0,217,255',
     desc: 'Velocidade tangencial na aresta da ferramenta durante o corte.',
     aumentar: 'Usinagem mais rápida, mas desgaste prematuro e mais calor gerado.',
     diminuir: 'Ferramenta mais protegida, porém pode manchar o acabamento superficial.',
     equilibrio: 'Ajuste junto com fz — material mais duro exige Vc menor.' },
   { key: 'fz' as const, label: 'fz', fullLabel: 'AVANÇO/DENTE', unit: 'MM/DENTE', color: 'secondary',
-    rgb: '57,255,20',
     desc: 'Espessura do cavaco por aresta de corte em cada passagem.',
     aumentar: 'Maior taxa de remoção (MRR), mas risco de vibração e quebra da ferramenta.',
     diminuir: 'Acabamento mais fino e menor esforço, porém reduz a produtividade.',
     equilibrio: 'Mantenha fz dentro da recomendação do fabricante da ferramenta.' },
   { key: 'ae' as const, label: 'ae', fullLabel: 'ENGAJ. RADIAL', unit: 'MM', color: 'accent-purple',
-    rgb: '168,85,247',
     desc: 'Largura radial de corte — quantos % do diâmetro da fresa está em contato.',
     aumentar: 'Remove mais material por passada, mas aumenta pressão lateral e deflexão.',
     diminuir: 'Menor força lateral — ideal para paredes finas ou ferramentas longas.',
     equilibrio: 'ae < 50% do diâmetro ativa o CTF — compensação automática de avanço.' },
   { key: 'ap' as const, label: 'ap', fullLabel: 'PROF. AXIAL', unit: 'MM', color: 'accent-orange',
-    rgb: '249,115,22',
     desc: 'Profundidade axial de corte — principal fator da taxa de remoção de material.',
     aumentar: 'MRR sobe proporcionalmente, mas eleva potência e torque exigidos da máquina.',
     diminuir: 'Operação mais leve — essencial quando a potência da máquina é o fator limitante.',
@@ -80,7 +77,8 @@ export function FineTunePanel({ embedded = false }: { embedded?: boolean }) {
       )}
 
       <div className="flex-1 flex flex-col justify-between gap-3 px-1">
-        {SLIDER_VISUAL.map(({ key, label, fullLabel, unit, color, rgb, desc, aumentar, diminuir, equilibrio }) => {
+        {SLIDER_VISUAL.map(({ key, label, fullLabel, unit, color, desc, aumentar, diminuir, equilibrio }) => {
+          const rgb = getSliderRgb(color);
           const { min, max, step, recomendado } = bounds[key];
           const val = parametros[key];
           const display = key === 'fz' || key === 'ap' ? val.toFixed(2) : key === 'ae' ? val.toFixed(1) : val.toFixed(0);
@@ -120,20 +118,12 @@ export function FineTunePanel({ embedded = false }: { embedded?: boolean }) {
                 </div>
               </div>
 
-              <div className="flex items-center gap-1.5">
-                <button className={BTN_CLS} aria-label={`Diminuir ${label}`}
-                  onClick={() => ajustarParametros({ [key]: Math.max(min, +(val - step).toFixed(4)) })}>−</button>
-                <div className="flex-1">
-                  <StyledSlider
-                    value={val} min={min} max={max} step={step}
-                    color={color} rgb={rgb} label={label}
-                    recomendado={recomendado}
-                    onChange={(v) => ajustarParametros({ [key]: v })}
-                  />
-                </div>
-                <button className={BTN_CLS} aria-label={`Aumentar ${label}`}
-                  onClick={() => ajustarParametros({ [key]: Math.min(max, +(val + step).toFixed(4)) })}>+</button>
-              </div>
+              <StyledSlider
+                value={val} min={min} max={max} step={step}
+                color={color} label={label}
+                recomendado={recomendado}
+                onChange={(v) => ajustarParametros({ [key]: v })}
+              />
 
               {/* Parameter health bar — always visible below slider */}
               <ParameterHealthBar paramKey={key} />

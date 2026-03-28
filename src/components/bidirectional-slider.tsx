@@ -10,13 +10,13 @@
  */
 
 import { useState, useRef, useCallback } from 'react';
+import { getSliderRgb } from './slider-tokens';
 
 interface BidirectionalSliderProps {
   baseValue: number;
   currentPercent: number;
   onChange: (percent: number) => void;
   color: string;
-  rgb: string;
   label: string;
   unit: string;
 }
@@ -28,10 +28,10 @@ export function BidirectionalSlider({
   currentPercent,
   onChange,
   color,
-  rgb,
   label,
   unit,
 }: BidirectionalSliderProps) {
+  const rgb = getSliderRgb(color);
   const [pressed, setPressed] = useState(false);
   const trackRef = useRef<HTMLDivElement>(null);
 

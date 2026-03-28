@@ -7,7 +7,7 @@ import { useSimulationAnimation } from '@/hooks/use-simulation-animation';
 import { usePlausible } from '@/hooks/use-plausible';
 import { CollapsibleSection } from './collapsible-section';
 import { FineTunePanel } from './fine-tune-panel';
-import { StyledSlider, BTN_CLS } from './styled-slider';
+import { StyledSlider } from './styled-slider';
 
 const OPERACAO_LABELS: Record<TipoUsinagem, string> = {
   [TipoUsinagem.DESBASTE]: 'Desbaste',
@@ -331,11 +331,6 @@ export function ConfigPanel() {
         >
           <div className="space-y-3 pt-1">
             <div className="flex items-center gap-2">
-              <button
-                aria-label="Reduzir fator de segurança"
-                className={BTN_CLS}
-                onClick={() => setSafetyFactor(Math.max(0.50, +(safetyFactor - 0.05).toFixed(2)))}
-              >−</button>
               <div className="flex-1">
                 <StyledSlider
                   value={safetyFactor}
@@ -343,16 +338,10 @@ export function ConfigPanel() {
                   max={1.00}
                   step={0.05}
                   color="primary"
-                  rgb="0,217,255"
                   label="Fator de Segurança"
                   onChange={(v) => setSafetyFactor(v)}
                 />
               </div>
-              <button
-                aria-label="Aumentar fator de segurança"
-                className={BTN_CLS}
-                onClick={() => setSafetyFactor(Math.min(1.00, +(safetyFactor + 0.05).toFixed(2)))}
-              >+</button>
               <span className="text-base font-mono text-primary w-10 text-right">
                 {safetyFactor.toFixed(2)}
               </span>

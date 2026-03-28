@@ -106,7 +106,7 @@ describe('SettingsPage', () => {
     const segBtn = navButtons.find((b) => b.textContent?.includes('Segurança'));
     fireEvent.click(segBtn!);
     // Default safetyFactor is 0.80 — click − twice to reach 0.70
-    const minusBtn = screen.getByRole('button', { name: /Diminuir fator de segurança/i });
+    const minusBtn = screen.getByRole('button', { name: /Decrease Fator de Seguran/i });
     fireEvent.click(minusBtn);
     fireEvent.click(minusBtn);
     expect(useMachiningStore.getState().safetyFactor).toBeCloseTo(0.70, 2);
