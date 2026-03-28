@@ -333,4 +333,41 @@ describe('AdminErrorsPage', () => {
     expect(useAdminStore.getState().errors.find((e) => e.message === 'Remove me')).toBeUndefined();
     expect(useAdminStore.getState().errors.find((e) => e.message === 'Keep me')).toBeDefined();
   });
+
+  it('filters errors by search text', async () => {
+    useAdminStore.getState().addError({ message: 'Timeout on Cloudflare API', severity: 'error' });
+    useAdminStore.getState().addError({ message: 'RangeError in slider', severity: 'warning' });
+    await renderPage();
+
+    fireEvent.change(screen.getByPlaceholderText(/Buscar por/i), { target: { value: 'cloudflare' } });
+    expect(screen.getByText('Timeout on Cloudflare API')).toBeInTheDocument();
+    expect(screen.queryByText('RangeError in slider')).not.toBeInTheDocument();
+  });
+
+  it('removes only filtered errors in bulk action', async () => {
+    clearErrors();
+    useAdminStore.getState().addError({ message: 'Target error', severity: 'error' });
+    useAdminStore.getState().addError({ message: 'Keep error', severity: 'warning' });
+    await renderPage();
+
+    fireEvent.change(screen.getByPlaceholderText(/Buscar por/i), { target: { value: 'target' } });
+    fireEvent.click(screen.getByText('Remover filtrados'));
+
+    const state = useAdminStore.getState().errors;
+    expect(state.find((e) => e.message === 'Target error')).toBeUndefined();
+    expect(state.find((e) => e.message === 'Keep error')).toBeDefined();
+  });
+
+  it('sorts by repeated count when "Mais repetidos" is selected', async () => {
+    clearErrors();
+    useAdminStore.getState().addError({ message: 'Repeated', severity: 'error' });
+    useAdminStore.getState().addError({ message: 'Repeated', severity: 'error' });
+    useAdminStore.getState().addError({ message: 'Single', severity: 'warning' });
+
+    const view = await renderPage();
+    fireEvent.change(screen.getByLabelText('Ordenar erros'), { target: { value: 'count_desc' } });
+
+    const messages = Array.from(view.container.querySelectorAll('p.text-sm.text-gray-200.leading-relaxed.font-mono.break-all'));
+    expect(messages[0]?.textContent).toBe('Repeated');
+  });
 });

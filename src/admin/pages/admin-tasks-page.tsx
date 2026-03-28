@@ -11,6 +11,15 @@ import { AdminModal } from '../components/admin-modal';
 import { StatusBadge } from '../components/status-badge';
 import { parseTags, formatTagsInput } from '../utils/format-admin';
 
+type SortOption = 'updated_desc' | 'created_desc' | 'priority_desc';
+
+const PRIORITY_RANK: Record<TaskPriority, number> = {
+  critica: 4,
+  alta: 3,
+  media: 2,
+  baixa: 1,
+};
+
 // ── Auto-sync ────────────────────────────────────────────────────────────────
 
 async function syncTasksToFile(tasks: AdminTask[]): Promise<void> {
@@ -82,6 +91,7 @@ export default function AdminTasksPage() {
   const [statusFilter, setStatusFilter] = useState<TaskStatus | 'todas'>('todas');
   const [priorityFilter, setPriorityFilter] = useState<TaskPriority | 'todas'>('todas');
   const [search, setSearch] = useState('');
+  const [sortBy, setSortBy] = useState<SortOption>('updated_desc');
 
   // Modal
   const [modalOpen, setModalOpen] = useState(false);
@@ -104,7 +114,16 @@ export default function AdminTasksPage() {
       const q = search.toLowerCase();
       return t.title.toLowerCase().includes(q) || t.description.toLowerCase().includes(q);
     })
-    .sort((a, b) => b.updatedAt.localeCompare(a.updatedAt));
+    .sort((a, b) => {
+      if (sortBy === 'priority_desc') {
+        const byPriority = PRIORITY_RANK[b.priority] - PRIORITY_RANK[a.priority];
+        if (byPriority !== 0) return byPriority;
+      }
+      if (sortBy === 'created_desc') {
+        return b.createdAt.localeCompare(a.createdAt);
+      }
+      return b.updatedAt.localeCompare(a.updatedAt);
+    });
 
   // Open modal for new task
   const openNew = useCallback(() => {
@@ -159,6 +178,30 @@ export default function AdminTasksPage() {
   // Counts per status for tabs
   const countByStatus = (s: TaskStatus | 'todas') =>
     s === 'todas' ? tasks.length : tasks.filter((t) => t.status === s).length;
+
+  const hasActiveFilters = statusFilter !== 'todas' || priorityFilter !== 'todas' || Boolean(search.trim());
+
+  const concludeFiltered = useCallback(() => {
+    const nowIso = new Date().toISOString();
+    filtered.forEach((task) => {
+      if (task.status === 'concluida' || task.status === 'cancelada') return;
+      updateTask(task.id, { status: 'concluida', completedAt: nowIso });
+    });
+  }, [filtered, updateTask]);
+
+  const cancelFiltered = useCallback(() => {
+    filtered.forEach((task) => {
+      if (task.status === 'concluida' || task.status === 'cancelada') return;
+      updateTask(task.id, { status: 'cancelada' });
+    });
+  }, [filtered, updateTask]);
+
+  const reopenFiltered = useCallback(() => {
+    filtered.forEach((task) => {
+      if (task.status !== 'concluida' && task.status !== 'cancelada') return;
+      updateTask(task.id, { status: 'aberta', completedAt: undefined });
+    });
+  }, [filtered, updateTask]);
 
   return (
     <div className="flex flex-col gap-6">
@@ -231,7 +274,18 @@ export default function AdminTasksPage() {
           />
         </div>
 
-        {(statusFilter !== 'todas' || priorityFilter !== 'todas' || search) && (
+        <select
+          aria-label="Ordenar tarefas"
+          value={sortBy}
+          onChange={(e) => setSortBy(e.target.value as SortOption)}
+          className="bg-white/5 border border-white/10 rounded-lg px-3 py-1.5 text-xs text-gray-300 focus:outline-none focus:border-cyan-500/40"
+        >
+          <option value="updated_desc" className="bg-[#0F1419]">Mais recentes (atualização)</option>
+          <option value="created_desc" className="bg-[#0F1419]">Mais recentes (criação)</option>
+          <option value="priority_desc" className="bg-[#0F1419]">Maior prioridade primeiro</option>
+        </select>
+
+        {hasActiveFilters && (
           <button
             onClick={() => { setStatusFilter('todas'); setPriorityFilter('todas'); setSearch(''); }}
             className="text-xs text-gray-500 hover:text-gray-300 transition-colors"
@@ -240,6 +294,34 @@ export default function AdminTasksPage() {
           </button>
         )}
       </div>
+
+      {filtered.length > 0 && (
+        <div className="flex items-center justify-between gap-3 flex-wrap rounded-lg border border-white/8 bg-white/[0.03] px-3 py-2">
+          <p className="text-xs text-gray-400">
+            Exibindo {filtered.length} de {tasks.length} tarefas.
+          </p>
+          <div className="flex items-center gap-2 flex-wrap">
+            <button
+              onClick={concludeFiltered}
+              className="text-xs px-2.5 py-1 rounded-md border border-emerald-500/30 bg-emerald-500/15 text-emerald-300 hover:bg-emerald-500/25 transition-colors"
+            >
+              Concluir filtradas
+            </button>
+            <button
+              onClick={cancelFiltered}
+              className="text-xs px-2.5 py-1 rounded-md border border-rose-500/30 bg-rose-500/15 text-rose-300 hover:bg-rose-500/25 transition-colors"
+            >
+              Cancelar filtradas
+            </button>
+            <button
+              onClick={reopenFiltered}
+              className="text-xs px-2.5 py-1 rounded-md border border-white/15 bg-white/5 text-gray-300 hover:bg-white/10 transition-colors"
+            >
+              Reabrir filtradas
+            </button>
+          </div>
+        </div>
+      )}
 
       {/* Task list */}
       {filtered.length === 0 ? (

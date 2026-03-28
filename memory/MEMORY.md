@@ -66,3 +66,15 @@
 | Tailwind v4: classe purgada | Usar classes completas estáticas OU `style={}` |
 | `vitest run` exit code 1 | Verificar se aparece `X passed` — se sim, warnings ANSI no stderr, OK |
 | CollapsibleSection defaultOpen | `false` por padrão em novas seções (exceto Configuração Base) |
+
+## Sessao 28/03/2026 - Encerramento (Admin)
+
+Resumo rapido:
+- Concluido: melhorias de produtividade no `/admin/tasks`, `/admin/inbox`, `/admin/errors`.
+- Concluido: fix global de scroll no layout do admin (todas rotas laterais).
+- Parcial: analytics admin (periodo, auto-refresh, CSV) iniciado e pendente de estabilizacao final.
+
+Checks executados nesta sessao:
+- Passaram: suites admin de tasks/inbox/errors/layout.
+- Passaram: `tsc --noEmit` e `vite build` apos blocos concluidos.
+- Pendente: fechar `tests/admin/admin-analytics.test.tsx` sem timeout em sessao nova.

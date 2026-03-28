@@ -11,11 +11,11 @@ const CF_GRAPHQL_ENDPOINT = 'https://api.cloudflare.com/client/v4/graphql';
 // ── GraphQL queries ───────────────────────────────────────────────────────────
 
 const TRAFFIC_QUERY = `
-  query ZoneTraffic($zoneTag: String!, $since: Date!, $until: Date!) {
+  query ZoneTraffic($zoneTag: String!, $since: Date!, $until: Date!, $limit: Int!) {
     viewer {
       zones(filter: { zoneTag: $zoneTag }) {
         httpRequests1dGroups(
-          limit: 7
+          limit: $limit
           filter: { date_geq: $since, date_leq: $until }
           orderBy: [date_ASC]
         ) {
@@ -29,11 +29,11 @@ const TRAFFIC_QUERY = `
 `;
 
 const VITALS_QUERY = `
-  query ZoneVitals($zoneTag: String!, $since: Date!) {
+  query ZoneVitals($zoneTag: String!, $since: Date!, $limit: Int!) {
     viewer {
       zones(filter: { zoneTag: $zoneTag }) {
         rumPerformanceEventsAdaptiveGroups(
-          limit: 1
+          limit: $limit
           filter: { date_geq: $since }
         ) {
           count
@@ -58,7 +58,7 @@ interface GqlResponse {
 async function gqlFetch(
   token: string,
   query: string,
-  variables: Record<string, string>,
+  variables: Record<string, string | number>,
 ): Promise<unknown> {
   const res = await fetch(CF_GRAPHQL_ENDPOINT, {
     method: 'POST',
@@ -84,10 +84,11 @@ async function gqlFetch(
 
 // ── Date helpers ──────────────────────────────────────────────────────────────
 
-function getLast7Days(): { since: string; until: string } {
+function getLastNDays(days: number): { since: string; until: string } {
+  const safeDays = Math.min(Math.max(days, 1), 90);
   const until = new Date();
   const since = new Date(until);
-  since.setDate(since.getDate() - 7);
+  since.setDate(since.getDate() - safeDays);
   return {
     since: since.toISOString().slice(0, 10),
     until: until.toISOString().slice(0, 10),
@@ -109,12 +110,15 @@ interface TrafficRawData {
 export async function fetchDailyTraffic(
   token: string,
   zoneId: string,
+  days = 7,
 ): Promise<DailyTraffic[]> {
-  const { since, until } = getLast7Days();
+  const safeDays = Math.min(Math.max(days, 1), 90);
+  const { since, until } = getLastNDays(safeDays);
   const data = (await gqlFetch(token, TRAFFIC_QUERY, {
     zoneTag: zoneId,
     since,
     until,
+    limit: safeDays,
   })) as TrafficRawData;
 
   const groups = data?.viewer?.zones?.[0]?.httpRequests1dGroups ?? [];
@@ -146,12 +150,15 @@ interface VitalsRawData {
 export async function fetchWebVitals(
   token: string,
   zoneId: string,
+  days = 7,
 ): Promise<WebVitalsResult | null> {
-  const { since } = getLast7Days();
+  const safeDays = Math.min(Math.max(days, 1), 90);
+  const { since } = getLastNDays(safeDays);
   try {
     const data = (await gqlFetch(token, VITALS_QUERY, {
       zoneTag: zoneId,
       since,
+      limit: 1,
     })) as VitalsRawData;
 
     const groups = data?.viewer?.zones?.[0]?.rumPerformanceEventsAdaptiveGroups ?? [];

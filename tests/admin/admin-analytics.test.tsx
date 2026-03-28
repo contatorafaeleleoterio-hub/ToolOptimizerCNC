@@ -9,6 +9,7 @@ function resetStore() {
   useAnalyticsStore.setState({
     token: '',
     zoneId: '',
+    daysWindow: 7,
     dailyTraffic: [],
     webVitals: null,
     vitalsUnavailable: false,
@@ -291,7 +292,7 @@ describe('AdminAnalyticsPage — connected state', () => {
       fetchedAt: new Date().toISOString(),
     });
     await renderPage();
-    expect(screen.getByText(/Web Vitals não disponíveis/i)).toBeInTheDocument();
+    expect(screen.getByText(/Web Vitals nao disponiveis/i)).toBeInTheDocument();
   });
 
   it('renders Web Vitals cards when vitals data is present', async () => {
@@ -345,6 +346,87 @@ describe('AdminAnalyticsPage — connected state', () => {
     });
     await renderPage();
     expect(screen.getByRole('button', { name: /Atualizar/i })).toBeInTheDocument();
+  });
+
+  it('renders period and auto-refresh controls when connected', async () => {
+    useAnalyticsStore.setState({
+      token: 'tok',
+      zoneId: 'zone',
+      dailyTraffic: [{ date: '2026-03-18', pageViews: 10, uniques: 5 }],
+      status: 'success',
+      fetchedAt: new Date().toISOString(),
+    });
+    await renderPage();
+    expect(screen.getByLabelText('Período analytics')).toBeInTheDocument();
+    expect(screen.getByLabelText('Auto refresh analytics')).toBeInTheDocument();
+  });
+
+  it('changes period and triggers a fresh fetch', async () => {
+    vi.spyOn(globalThis, 'fetch').mockResolvedValue(
+      new Response(
+        JSON.stringify({
+          data: {
+            viewer: {
+              zones: [
+                {
+                  httpRequests1dGroups: [],
+                  rumPerformanceEventsAdaptiveGroups: [],
+                },
+              ],
+            },
+          },
+        }),
+        { headers: { 'Content-Type': 'application/json' } },
+      ),
+    );
+
+    useAnalyticsStore.setState({
+      token: 'tok',
+      zoneId: 'zone',
+      dailyTraffic: [{ date: '2026-03-18', pageViews: 10, uniques: 5 }],
+      status: 'success',
+      fetchedAt: new Date().toISOString(),
+    });
+
+    await renderPage();
+    fireEvent.change(screen.getByLabelText('Período analytics'), { target: { value: '30' } });
+
+    await waitFor(() => {
+      expect(useAnalyticsStore.getState().daysWindow).toBe(30);
+    });
+  });
+
+  it('exports CSV when Exportar CSV is clicked', async () => {
+    if (!('createObjectURL' in URL)) {
+      Object.defineProperty(URL, 'createObjectURL', {
+        writable: true,
+        value: vi.fn(() => 'blob:mock'),
+      });
+    }
+    if (!('revokeObjectURL' in URL)) {
+      Object.defineProperty(URL, 'revokeObjectURL', {
+        writable: true,
+        value: vi.fn(() => {}),
+      });
+    }
+    const createObjectURLSpy = vi.spyOn(URL, 'createObjectURL').mockReturnValue('blob:mock');
+    const revokeObjectURLSpy = vi.spyOn(URL, 'revokeObjectURL').mockImplementation(() => {});
+    const clickSpy = vi.spyOn(HTMLAnchorElement.prototype, 'click').mockImplementation(() => {});
+
+    useAnalyticsStore.setState({
+      token: 'tok',
+      zoneId: 'zone',
+      dailyTraffic: [{ date: '2026-03-18', pageViews: 10, uniques: 5 }],
+      status: 'success',
+      fetchedAt: new Date().toISOString(),
+    });
+
+    await renderPage();
+    fireEvent.click(screen.getByRole('button', { name: /Exportar CSV/i }));
+
+    expect(createObjectURLSpy).toHaveBeenCalledTimes(1);
+    expect(clickSpy).toHaveBeenCalledTimes(1);
+    expect(revokeObjectURLSpy).toHaveBeenCalledTimes(1);
   });
 });
 

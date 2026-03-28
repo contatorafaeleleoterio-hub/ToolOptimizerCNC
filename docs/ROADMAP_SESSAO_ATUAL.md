@@ -315,3 +315,26 @@ Quando uma nova implementação for planejada durante a sessão:
 ---
 
 *Última atualização: 28/03/2026 — Sessão de encerramento concluída com limpeza de workspace, estabilização da suíte de testes e push do commit `cf11ecd` (fix de compatibilidade de testes/UI). **PRÓXIMA SESSÃO: S4 — slider-tokens.ts + unificar sliders** (ler `SESSAO4-tokens-sliders-desktop.md`). ⚠️ `public/_headers` tem CSP não commitado: `connect-src 'self'` bloqueia `api.cloudflare.com` — corrigir na Fase 2 da Segurança.*
+
+### Atualizacao de Encerramento - 28/03/2026 (sessao longa)
+
+**Admin Dashboard (/admin) - progresso nesta sessao:**
+- Concluido: melhorias operacionais em Tasks, Inbox, Errors e fix global de rolagem no layout admin.
+- Em andamento: melhoria de Analytics (periodo 7/30/90 + auto-refresh + export CSV).
+
+**Status para proxima sessao (Codex /admin):**
+1. Finalizar analytics page/store/client/tests.
+2. Executar `npx vitest run tests/admin/admin-analytics.test.tsx`.
+3. Executar `npx tsc --noEmit` e `npx vite build`.
+
+**Observacao tecnica:**
+- Nesta sessao longa houve timeout/hang no runner de testes de analytics; retomar em sessao nova para estabilizacao final.
+
+### CONTINUACAO EXPLICITA (ADMIN ANALYTICS)
+
+**Parou aqui:** Analytics admin com periodo 7/30/90 + auto-refresh + export CSV foi implementado, mas os testes ficaram pendentes por timeout.
+
+**Retomar exatamente assim:**
+1. Rodar `npx vitest run tests/admin/admin-analytics.test.tsx`.
+2. Se travar: matar processos `node` e rodar de novo.
+3. Quando passar, rodar `npx tsc --noEmit` e `npx vite build`.

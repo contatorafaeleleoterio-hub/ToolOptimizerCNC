@@ -267,6 +267,32 @@ describe('AdminInboxPage', () => {
     const resolvidosBtn = screen.getByRole('button', { name: /Resolvidos/ });
     expect(resolvidosBtn).toHaveTextContent('1');
   });
+
+  it('filters bugs by search text', async () => {
+    useAdminStore.getState().addBugReport(makeBug({ description: 'Erro no gráfico' }));
+    useAdminStore.getState().addBugReport(makeBug({ description: 'Bug no modal' }));
+    await renderPage();
+
+    fireEvent.change(screen.getByPlaceholderText(/Buscar por/i), { target: { value: 'gráfico' } });
+    expect(screen.getByText('Erro no gráfico')).toBeInTheDocument();
+    expect(screen.queryByText('Bug no modal')).not.toBeInTheDocument();
+  });
+
+  it('applies bulk resolve action to filtered bugs', async () => {
+    clearBugs();
+    useAdminStore.getState().addBugReport(makeBug({ description: 'Resolve este' }));
+    useAdminStore.getState().addBugReport(makeBug({ description: 'Não resolver' }));
+    await renderPage();
+
+    fireEvent.change(screen.getByPlaceholderText(/Buscar por/i), { target: { value: 'Resolve este' } });
+    fireEvent.click(screen.getByText('Resolver filtrados'));
+
+    const state = useAdminStore.getState().bugs;
+    const resolved = state.find((b) => b.description === 'Resolve este');
+    const untouched = state.find((b) => b.description === 'Não resolver');
+    expect(resolved?.status).toBe('resolvido');
+    expect(untouched?.status).toBe('novo');
+  });
 });
 
 // ── BugReportButton → saves to adminStore ─────────────────────────────────

@@ -24,7 +24,7 @@ const NAV_ITEMS: NavItem[] = [
 
 export function AdminSidebar() {
   return (
-    <aside className="w-56 shrink-0 flex flex-col bg-white/3 border-r border-white/8 min-h-screen">
+    <aside className="w-56 shrink-0 flex h-screen flex-col overflow-y-auto bg-white/3 border-r border-white/8">
       {/* Logo area */}
       <div className="px-4 py-5 border-b border-white/8">
         <p className="text-[10px] font-bold text-gray-500 uppercase tracking-widest">

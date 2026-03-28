@@ -294,4 +294,32 @@ describe('AdminTasksPage', () => {
     expect(screen.getByText('Fix slider bug')).toBeInTheDocument();
     expect(screen.queryByText('Add dark mode')).not.toBeInTheDocument();
   });
+
+  it('applies bulk conclude action to filtered tasks', async () => {
+    clearTasks();
+    useAdminStore.getState().addTask({ title: 'Task A', description: '', status: 'aberta', priority: 'alta', tags: [] });
+    useAdminStore.getState().addTask({ title: 'Task B', description: '', status: 'aberta', priority: 'media', tags: [] });
+
+    await renderPage();
+    fireEvent.change(screen.getByPlaceholderText(/Buscar por/i), { target: { value: 'Task A' } });
+    fireEvent.click(screen.getByText('Concluir filtradas'));
+
+    const state = useAdminStore.getState().tasks;
+    const taskA = state.find((t) => t.title === 'Task A');
+    const taskB = state.find((t) => t.title === 'Task B');
+    expect(taskA?.status).toBe('concluida');
+    expect(taskB?.status).toBe('aberta');
+  });
+
+  it('sorts tasks by priority when selected', async () => {
+    clearTasks();
+    useAdminStore.getState().addTask({ title: 'Baixa', description: '', status: 'aberta', priority: 'baixa', tags: [] });
+    useAdminStore.getState().addTask({ title: 'Crítica', description: '', status: 'aberta', priority: 'critica', tags: [] });
+
+    const view = await renderPage();
+    fireEvent.change(screen.getByLabelText('Ordenar tarefas'), { target: { value: 'priority_desc' } });
+
+    const titles = Array.from(view.container.querySelectorAll('p.text-sm.font-semibold.text-white.leading-snug'));
+    expect(titles[0]?.textContent).toContain('Crítica');
+  });
 });

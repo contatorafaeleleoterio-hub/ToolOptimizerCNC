@@ -35,6 +35,17 @@ describe('AdminLayout', () => {
     renderLayout();
     expect(screen.getByText('Voltar ao App')).toBeInTheDocument();
   });
+
+  it('uses scrollable main area for long admin pages', () => {
+    const { container } = renderLayout();
+    const layoutRoot = container.firstElementChild as HTMLElement | null;
+    const main = container.querySelector('main');
+
+    expect(layoutRoot?.className).toContain('h-screen');
+    expect(layoutRoot?.className).toContain('overflow-hidden');
+    expect(main?.className).toContain('overflow-y-auto');
+    expect(main?.className).toContain('min-h-0');
+  });
 });
 
 describe('AdminDashboardPage — renders via KpiCards', () => {

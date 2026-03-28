@@ -98,6 +98,7 @@ export type AnalyticsStatus = 'idle' | 'loading' | 'success' | 'error';
 export interface AnalyticsState {
   token: string;
   zoneId: string;
+  daysWindow: number;
   dailyTraffic: DailyTraffic[];
   webVitals: WebVitalsResult | null;
   vitalsUnavailable: boolean; // true when RUM dataset returned no data or errored

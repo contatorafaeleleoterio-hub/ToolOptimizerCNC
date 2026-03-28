@@ -12,7 +12,7 @@ import type { AnalyticsState, DailyTraffic, WebVitalsResult } from '../types/adm
 interface AnalyticsActions {
   setCredentials: (token: string, zoneId: string) => void;
   clearCredentials: () => void;
-  fetchData: () => Promise<void>;
+  fetchData: (days?: number) => Promise<void>;
   clearData: () => void;
   hasCredentials: () => boolean;
 }
@@ -20,6 +20,7 @@ interface AnalyticsActions {
 const INITIAL_STATE: AnalyticsState = {
   token: '',
   zoneId: '',
+  daysWindow: 7,
   dailyTraffic: [],
   webVitals: null,
   vitalsUnavailable: false,
@@ -43,6 +44,7 @@ export const useAnalyticsStore = create<AnalyticsState & AnalyticsActions>()(
 
       clearData: () => {
         set({
+          daysWindow: 7,
           dailyTraffic: [],
           webVitals: null,
           vitalsUnavailable: false,
@@ -57,7 +59,7 @@ export const useAnalyticsStore = create<AnalyticsState & AnalyticsActions>()(
         return token.trim().length > 0 && zoneId.trim().length > 0;
       },
 
-      fetchData: async () => {
+      fetchData: async (days = 7) => {
         const { token, zoneId } = get();
         if (!token || !zoneId) {
           set({ error: 'Token e Zone ID são obrigatórios.', status: 'error' });
@@ -68,8 +70,8 @@ export const useAnalyticsStore = create<AnalyticsState & AnalyticsActions>()(
 
         try {
           const [traffic, vitals] = await Promise.allSettled([
-            fetchDailyTraffic(token, zoneId),
-            fetchWebVitals(token, zoneId),
+            fetchDailyTraffic(token, zoneId, days),
+            fetchWebVitals(token, zoneId, days),
           ]);
 
           if (traffic.status === 'rejected') {
@@ -82,6 +84,7 @@ export const useAnalyticsStore = create<AnalyticsState & AnalyticsActions>()(
             vitals.status === 'fulfilled' ? vitals.value : null;
 
           set({
+            daysWindow: days,
             dailyTraffic,
             webVitals,
             vitalsUnavailable: webVitals === null,
