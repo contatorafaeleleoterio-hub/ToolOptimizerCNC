@@ -2,7 +2,7 @@ import { useMachiningStore } from '@/store';
 import { useHistoryStore } from '@/store';
 import { TipoUsinagem } from '@/types/index';
 import type { ResultadoUsinagem } from '@/types/index';
-import { Gauge } from './gauge';
+import { HalfMoonGauge } from './half-moon-gauge';
 import { FormulaCard, Fraction } from './formula-card';
 import { ToolSummaryViewer } from './tool-summary-viewer';
 import { fmt, SafetyBadge, BigNumber, ProgressCard, WarningsSection } from './shared-result-parts';
@@ -127,20 +127,20 @@ export function ResultsPanel() {
 
       {/* ═══ ZONA 3 — Indicadores de Saúde (Gauges) ═══ */}
       <div className="grid grid-cols-3 gap-3">
-        <Gauge
+        <HalfMoonGauge
           value={avanco}
           maxValue={limites.maxAvanco}
           label="Eficiência de Avanço"
           palette="avanco"
         />
-        <Gauge
+        <HalfMoonGauge
           value={mrrPct}
           maxValue={100}
           label="Produtividade MRR"
           palette="mrr"
           badge={storeResultado ? `${mrr.toFixed(1)} cm³/min` : undefined}
         />
-        <Gauge
+        <HalfMoonGauge
           value={resultado.healthScore}
           maxValue={100}
           label="Saúde da Ferramenta"

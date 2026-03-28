@@ -3,7 +3,7 @@ import { useMachiningStore } from '@/store';
 import { MATERIAIS } from '@/data';
 import { calcularSliderBounds } from '@/engine';
 import type { ParametrosUsinagem } from '@/types';
-import { ParameterHealthBar } from './parameter-health-bar';
+import { SegmentedGradientBar } from './segmented-gradient-bar';
 import { StyledSlider } from './styled-slider';
 import { getSliderRgb } from './slider-tokens';
 
@@ -126,7 +126,7 @@ export function FineTunePanel({ embedded = false }: { embedded?: boolean }) {
               />
 
               {/* Parameter health bar — always visible below slider */}
-              <ParameterHealthBar paramKey={key} />
+              <SegmentedGradientBar paramKey={key} />
 
               {/* Educational drawer */}
               {isOpen && (
