@@ -12,10 +12,10 @@
 |------|-------|
 | **Branch** | `main` |
 | **Versão** | `0.9.4` |
-| **Testes** | **878 passando** (15 falhas pré-existentes — não relacionadas) |
+| **Testes** | **893 passando** (51 arquivos) — 0 falhas |
 | **TypeScript** | **zero erros** |
-| **Build** | **limpo** — JS 99.84KB gzip (336KB bundle) |
-| **Remote** | `origin/main` sincronizado ✅ — commit `9b61427` |
+| **Build** | **limpo** — JS 102.98KB gzip, CSS 16.08KB gzip |
+| **Remote** | `origin/main` sincronizado ✅ — commit `cf11ecd` |
 | **Worker** | ✅ LIVE — `https://tooloptimizercnc.contatorafaeleleoterio.workers.dev` |
 | **Custom Domains** | ✅ `tooloptimizercnc.com.br` + `app.tooloptimizercnc.com.br` |
 | **GitHub Actions** | ✅ deploy automático ao push para main |
@@ -187,21 +187,21 @@ npx tsc --noEmit
 |--------|------|------------|--------|
 | 1 | Audit READ-ONLY (8 componentes) | `SESSAO1-VIOLATION-CATALOG.md` | ✅ Concluído (`6aedb49`) |
 | 2 | Relatório + Propostas por componente | `VISUAL-AUDIT-REPORT.md` | ✅ Concluído (`6aedb49`) |
-| **3** | **Protótipo HTML visual** | **`docs/design/DASHBOARD_V2_PROPOSAL.html`** | **⬜ PRIORIDADE PRÓXIMA SESSÃO** |
-| 4 | `slider-tokens.ts` + sliders desktop | Tokens refatorados | ⬜ Após aprovação do HTML |
-| 5 | Desktop: shared-result-parts + fine-tune + config + results | Desktop clean | ⬜ Após S4 |
-| 6 | Mobile: HealthBar equalizer + fusão + botão ℹ → v0.10.0 | Release v0.10.0 | ⬜ Após S5 |
+| 3 | Protótipo HTML visual | `DASHBOARD_V2_PROPOSAL.html` + `PROTOTIPO_V010_MUDANCAS.html` | ✅ Concluído (28/03/2026) |
+| **4** | **slider-tokens.ts + unificar sliders** | **Tokens + StyledSlider → BidirectionalSlider** | **⬜ PRIORIDADE PRÓXIMA SESSÃO** |
+| 5 | SegmentedGradientBar + Gauge meia-lua | Componentes React desktop | ⬜ Após S4 |
+| 6 | Contraste mobile + SGB/Gauge responsivo | Release v0.10.0 | ⬜ Após S5 |
 
-**Mudanças planejadas além dos tokens:**
-- B: fusão mobile "Config Corte" + "Ajuste Fino" em accordion único
-- C: ParameterHealthBar → acima do slider + redesign equalizer barras crescentes
-- D: legenda de siglas (Vc/fz/ae/ap) com texto explicativo
-- E: botão ℹ explícito por parâmetro com drawer educacional
+**4 mudanças aprovadas (revisadas na S3):**
+1. **SegmentedGradientBar** — 50 segmentos retangulares RED/ORANGE/GREEN substituindo ParameterHealthBar
+2. **Sliders padronizados** — StyledSlider → BidirectionalSlider (tick marks, ±, %)
+3. **Contraste mobile** — cards opacos, borders visíveis, text legível
+4. **Gauge meia-lua** — 41 barras semicirculares com needle branca
 
-**Comando de início da Sessão 3:**
+**Comando de início da Sessão 4:**
 ```
-/compact Sessão 3: Criar DASHBOARD_V2_PROPOSAL.html — protótipo visual.
-Plano: docs/plans/redesign-v0.8.0/SESSAO3-prototipo-html.md
+/compact Sessão 4: slider-tokens.ts + unificar StyledSlider → BidirectionalSlider.
+Plano: docs/plans/redesign-v0.8.0/SESSAO4-tokens-sliders-desktop.md
 ```
 
 ---
@@ -300,4 +300,4 @@ Quando uma nova implementação for planejada durante a sessão:
 
 ---
 
-*Última atualização: 26/03/2026 — Sessões 1+2 do Redesign Visual v0.10.0 concluídas: audit 8 componentes + relatório por linha + proposta slider-tokens.ts. Protocolo 6 sessões criado. **PRÓXIMA SESSÃO: S3 — HTML protótipo visual** (ler `SESSAO3-prototipo-html.md`). ⚠️ `public/_headers` tem CSP não commitado: `connect-src 'self'` bloqueia `api.cloudflare.com` — corrigir na Fase 2 da Segurança.*
+*Última atualização: 28/03/2026 — Sessão de encerramento concluída com limpeza de workspace, estabilização da suíte de testes e push do commit `cf11ecd` (fix de compatibilidade de testes/UI). **PRÓXIMA SESSÃO: S4 — slider-tokens.ts + unificar sliders** (ler `SESSAO4-tokens-sliders-desktop.md`). ⚠️ `public/_headers` tem CSP não commitado: `connect-src 'self'` bloqueia `api.cloudflare.com` — corrigir na Fase 2 da Segurança.*

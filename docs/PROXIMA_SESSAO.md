@@ -11,11 +11,11 @@
 |------|-------|
 | **Branch** | `main` |
 | **Versão** | `0.9.4` |
-| **Último commit** | `6aedb49` docs: audit completo v0.10.0 — violation catalog + report + protocolo 6 sessões |
-| **Testes** | **878 passando** (51 arquivos) — 0 falhas |
+| **Último commit** | `cf11ecd` fix: align config panel tests with current UI |
+| **Testes** | **893 passando** (51 arquivos) — 0 falhas |
 | **TypeScript** | **zero erros** |
-| **Build** | **limpo** — JS ~102KB gzip, CSS ~14KB |
-| **Remote** | `origin/main` sincronizado ✅ |
+| **Build** | **limpo** — JS 102.98KB gzip, CSS 16.08KB gzip |
+| **Remote** | `origin/main` sincronizado ✅ (push 28/03) |
 | **Worker** | ✅ LIVE — `https://tooloptimizercnc.contatorafaeleleoterio.workers.dev` |
 | **Custom Domains** | ✅ `tooloptimizercnc.com.br` + `app.tooloptimizercnc.com.br` |
 | **GitHub Actions** | ✅ deploy automático ao push para main |
@@ -31,6 +31,27 @@ npx tsc --noEmit
 ---
 
 ## Ultimas 3 Sessoes
+
+### Sessão 28/03 — Encerramento Técnico: limpeza do workspace + estabilização da suíte
+
+**Commit:** `cf11ecd` fix: align config panel tests with current UI | **Versão:** v0.9.4 | **Testes:** 893 passando (51 arquivos)
+
+**O que foi feito:**
+- ✅ Limpeza operacional de sessão: `stash` aplicado para preservar alterações locais e retornar o workspace para estado limpo
+- ✅ Ajuste de compatibilidade em dados: `RAIOS_PONTA` reexportado como alias de `RAIOS_PADRAO`
+- ✅ Atualização dos testes do `ConfigPanel` para o comportamento real da UI (inputs numéricos + botões de arestas, em vez de dropdowns legados)
+- ✅ Robustez dos testes: matchers de acessibilidade/texto tornados menos sensíveis a encoding/acento
+- ✅ Quality gates executados com sucesso: `npm run typecheck`, `npm run test`, `npm run build`
+- ✅ Push concluído para `origin/main`
+
+**Próxima sessão:**
+- Retomar Redesign Visual v0.10.0 na **Sessão 4** (tokens + unificação de sliders)
+```bash
+/compact Sessão 4: slider-tokens.ts + unificar StyledSlider → BidirectionalSlider.
+Plano: docs/plans/redesign-v0.8.0/SESSAO4-tokens-sliders-desktop.md
+```
+
+---
 
 ### Sessão 26/03 — Redesign Visual v0.10.0: Audit + Relatório + Protocolo 6 Sessões (READ-ONLY)
 
@@ -829,3 +850,5 @@ Plano: docs/plans/redesign-v0.8.0/SESSAO3-prototipo-html.md
 ```
 
 **Próxima sessão:** Refinamento Doc Marketing #01 (Visão do Produto) — ver `DOCUMENTACAO_MARKETING_MONETIZACAO/PLANO_REESTRUTURACAO_DOCS.md` | Alternativa: Segurança Cibernética Fases 2-5
+
+
