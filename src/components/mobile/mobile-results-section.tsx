@@ -1,7 +1,7 @@
 import { useMachiningStore } from '@/store';
 import { useHistoryStore } from '@/store';
 import { TipoUsinagem } from '@/types/index';
-import { Gauge } from '../gauge';
+import { HalfMoonGauge } from '../half-moon-gauge';
 import { FormulaCard, Fraction } from '../formula-card';
 import { ToolSummaryViewer } from '../tool-summary-viewer';
 import { fmt, SafetyBadge, MetricCell, BigNumber, ProgressCard, WarningsSection } from '../shared-result-parts';
@@ -43,9 +43,9 @@ export function MobileResultsSection() {
         <>
           {/* Empty state — first time, no history yet */}
           {!latestEntry && (
-            <div className="bg-surface-dark/70 backdrop-blur-sm border border-white/5 rounded-2xl p-6">
+            <div className="bg-[rgba(30,38,50,0.95)] backdrop-blur-sm border border-white/12 rounded-2xl p-6">
               <div className="flex items-center gap-3 mb-5">
-                <span className="material-symbols-outlined text-3xl text-gray-600">precision_manufacturing</span>
+                <span className="material-symbols-outlined text-3xl text-gray-400">precision_manufacturing</span>
                 <p className="text-gray-400 text-sm font-medium">Configure os parâmetros e clique em Simular</p>
               </div>
               <div className="flex flex-col gap-3">
@@ -126,7 +126,7 @@ export function MobileResultsSection() {
             </div>
 
             {/* Overview metrics 2x2 */}
-            <div className="bg-surface-dark/70 backdrop-blur-sm border border-white/5 rounded-2xl p-4 shadow-glass">
+            <div className="bg-[rgba(30,38,50,0.95)] backdrop-blur-sm border border-white/12 rounded-2xl p-4 shadow-glass">
               <div className="grid grid-cols-2 divide-x divide-y divide-white/5">
                 <MetricCell label="Rotação" value={fmt(rpm)} unit="RPM" unitColor="text-primary" />
                 <MetricCell label="Avanço" value={fmt(avanco)} unit="mm/min" unitColor="text-secondary" />
@@ -152,14 +152,14 @@ export function MobileResultsSection() {
             {/* 3 Gauges — horizontal scroll with snap (same 3 as desktop) */}
             <div className="flex gap-3 overflow-x-auto snap-x snap-mandatory pb-2 -mx-1 px-1 scrollbar-thin">
               <div className="snap-center shrink-0 w-[calc(100%-2rem)]">
-                <Gauge value={avanco} maxValue={limites.maxAvanco} label="Eficiência de Avanço" palette="avanco" />
+                <HalfMoonGauge value={avanco} maxValue={limites.maxAvanco} label="Eficiência de Avanço" size="sm" />
               </div>
               <div className="snap-center shrink-0 w-[calc(100%-2rem)]">
-                <Gauge value={mrrPct} maxValue={100} label="Produtividade MRR" palette="mrr"
+                <HalfMoonGauge value={mrrPct} maxValue={100} label="Produtividade MRR" size="sm"
                   badge={`${mrr.toFixed(1)} cm³/min`} />
               </div>
               <div className="snap-center shrink-0 w-[calc(100%-2rem)]">
-                <Gauge value={resultado.healthScore} maxValue={100} label="Saúde da Ferramenta" palette="health"
+                <HalfMoonGauge value={resultado.healthScore} maxValue={100} label="Saúde da Ferramenta" size="sm"
                   badge={resultado.healthScore === 0 ? 'BLOQUEADO' : undefined} />
               </div>
             </div>
@@ -179,7 +179,7 @@ export function MobileResultsSection() {
             <WarningsSection avisos={seguranca.avisos} />
 
             {/* Educational Formula Cards (same 5 as desktop) */}
-            <div className="bg-surface-dark backdrop-blur-xl border border-white/5 rounded-2xl p-4 shadow-glass">
+            <div className="bg-[rgba(30,38,50,0.95)] backdrop-blur-xl border border-white/12 rounded-2xl p-4 shadow-glass">
               <div className="flex items-center gap-3 mb-4">
                 <div className="w-9 h-9 rounded-lg bg-primary/10 flex items-center justify-center border border-primary/20">
                   <span className="material-symbols-outlined text-primary text-sm">school</span>

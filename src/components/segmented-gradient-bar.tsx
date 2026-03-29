@@ -14,17 +14,19 @@ const SEG_RED    = '#FF4D4D';
 const SEG_ORANGE = '#FFA500';
 const SEG_GREEN  = '#00E676';
 
-// Static color map for 50 segments: 7 RED · 13 ORANGE · 10 GREEN · 13 ORANGE · 7 RED
-function segmentColor(idx: number): string {
-  if (idx <= 6)  return SEG_RED;
-  if (idx <= 19) return SEG_ORANGE;
-  if (idx <= 29) return SEG_GREEN;
-  if (idx <= 42) return SEG_ORANGE;
+// Proportional color map: 14% RED · 26% ORANGE · 20% GREEN · 26% ORANGE · 14% RED
+// Works for any segment count (50 desktop, 30 mobile, etc.)
+function segmentColor(idx: number, total: number): string {
+  const pct = idx / total;
+  if (pct < 0.14) return SEG_RED;
+  if (pct < 0.40) return SEG_ORANGE;
+  if (pct < 0.60) return SEG_GREEN;
+  if (pct < 0.86) return SEG_ORANGE;
   return SEG_RED;
 }
 
-function segmentGlow(idx: number): string {
-  const color = segmentColor(idx);
+function segmentGlow(idx: number, total: number): string {
+  const color = segmentColor(idx, total);
   return `0 0 8px ${color}44`;
 }
 
@@ -35,7 +37,7 @@ const ZONE_RGB: Record<string, string> = {
   vermelho: '231,76,60',
 };
 
-const TOTAL = 50;
+const DEFAULT_SEGMENTS = 50;
 
 // ─── Sub-component: active segmented bar ──────────────────────────────────────
 
@@ -48,13 +50,14 @@ interface SegBarProps {
   rightLabel: string;
   badge?: string | null;
   readout?: ReactNode;
+  segments?: number;
 }
 
-function SegBar({ paramKey, position, zone, zoneLabel, leftLabel, rightLabel, badge, readout }: SegBarProps) {
+function SegBar({ paramKey, position, zone, zoneLabel, leftLabel, rightLabel, badge, readout, segments = DEFAULT_SEGMENTS }: SegBarProps) {
   const rgb = ZONE_RGB[zone] ?? '46,204,113';
   const cursorPct = Math.min(100, Math.max(0, position * 100));
   // How many segments are "active" (to the left of cursor)
-  const activeCount = Math.round((cursorPct / 100) * TOTAL);
+  const activeCount = Math.round((cursorPct / 100) * segments);
 
   return (
     <div data-testid={`health-bar-${paramKey}`} className="flex flex-col gap-0.5">
@@ -86,7 +89,7 @@ function SegBar({ paramKey, position, zone, zoneLabel, leftLabel, rightLabel, ba
             zIndex: 1,
           }}
         >
-          {Array.from({ length: TOTAL }, (_, i) => {
+          {Array.from({ length: segments }, (_, i) => {
             const active = i < activeCount;
             return (
               <div
@@ -94,9 +97,9 @@ function SegBar({ paramKey, position, zone, zoneLabel, leftLabel, rightLabel, ba
                 style={{
                   flex: 1,
                   borderRadius: '2px',
-                  background: active ? segmentColor(i) : 'rgba(255,255,255,0.1)',
+                  background: active ? segmentColor(i, segments) : 'rgba(255,255,255,0.1)',
                   opacity: active ? 1 : 0.3,
-                  boxShadow: active ? segmentGlow(i) : 'none',
+                  boxShadow: active ? segmentGlow(i, segments) : 'none',
                 }}
               />
             );
@@ -144,7 +147,7 @@ function SegBar({ paramKey, position, zone, zoneLabel, leftLabel, rightLabel, ba
 }
 
 /** Grayed-out inactive bar (fz before Simular). */
-function InactiveSeg({ paramKey }: { paramKey: string }) {
+function InactiveSeg({ paramKey, segments = DEFAULT_SEGMENTS }: { paramKey: string; segments?: number }) {
   return (
     <div data-testid={`health-bar-${paramKey}`} className="flex flex-col gap-0.5">
       <div data-testid={`health-bar-${paramKey}-inactive`} style={{ height: '28px', position: 'relative' }}>
@@ -159,7 +162,7 @@ function InactiveSeg({ paramKey }: { paramKey: string }) {
             gap: '2px',
           }}
         >
-          {Array.from({ length: TOTAL }, (_, i) => (
+          {Array.from({ length: segments }, (_, i) => (
             <div
               key={i}
               style={{
@@ -180,10 +183,12 @@ function InactiveSeg({ paramKey }: { paramKey: string }) {
 
 interface SegmentedGradientBarProps {
   paramKey: 'vc' | 'fz' | 'ae' | 'ap';
+  /** Number of segments to render. Default 50 (desktop). Use 30 for mobile. */
+  segments?: number;
 }
 
 /** Segmented gradient health indicator. Replaces ParameterHealthBar visually. */
-export function SegmentedGradientBar({ paramKey }: SegmentedGradientBarProps) {
+export function SegmentedGradientBar({ paramKey, segments = DEFAULT_SEGMENTS }: SegmentedGradientBarProps) {
   const resultado    = useMachiningStore((s) => s.resultado);
   const parametros   = useMachiningStore((s) => s.parametros);
   const ferramenta   = useMachiningStore((s) => s.ferramenta);
@@ -197,16 +202,16 @@ export function SegmentedGradientBar({ paramKey }: SegmentedGradientBarProps) {
     const r      = computeVcByValue(parametros.vc, bounds.vc.recomendado, bounds.vc.max);
     return (
       <SegBar paramKey="vc" position={r.position} zone={r.zone} zoneLabel={r.zoneLabel}
-        leftLabel="Baixo" rightLabel="Desgaste" />
+        leftLabel="Baixo" rightLabel="Desgaste" segments={segments} />
     );
   }
 
   if (paramKey === 'fz') {
-    if (!resultado) return <InactiveSeg paramKey="fz" />;
+    if (!resultado) return <InactiveSeg paramKey="fz" segments={segments} />;
     const r = computeFzByValue(resultado.fzEfetivo, bounds.fz.recomendado, bounds.fz.max, resultado.seguranca.ctf);
     return (
       <SegBar paramKey="fz" position={r.position} zone={r.zone} zoneLabel={r.zoneLabel}
-        leftLabel="Atrito" rightLabel="Vibração" badge={r.ctfBadge} />
+        leftLabel="Atrito" rightLabel="Vibração" badge={r.ctfBadge} segments={segments} />
     );
   }
 
@@ -214,7 +219,7 @@ export function SegmentedGradientBar({ paramKey }: SegmentedGradientBarProps) {
     const r = computeAeByValue(parametros.ae, bounds.ae.recomendado, bounds.ae.max, ferramenta.diametro);
     return (
       <SegBar paramKey="ae" position={r.position} zone={r.zone} zoneLabel={r.zoneLabel}
-        leftLabel="CTF Alto" rightLabel="Excessivo"
+        leftLabel="CTF Alto" rightLabel="Excessivo" segments={segments}
         readout={
           <span data-testid="ae-ratio-display" className="text-[8px] text-gray-500 font-mono">
             {r.aeDRatioDisplay}
@@ -228,7 +233,7 @@ export function SegmentedGradientBar({ paramKey }: SegmentedGradientBarProps) {
   const r = computeApByValue(parametros.ap, bounds.ap.recomendado, bounds.ap.max, ferramenta.diametro, ferramenta.balanco);
   return (
     <SegBar paramKey="ap" position={r.position} zone={r.zone} zoneLabel={r.zoneLabel}
-      leftLabel="Leve" rightLabel="Deflexão"
+      leftLabel="Leve" rightLabel="Deflexão" segments={segments}
       readout={
         <span data-testid="ap-ld-display" className={`text-[8px] font-mono font-semibold ${r.ldColorClass}`}>
           {r.ldDisplay}

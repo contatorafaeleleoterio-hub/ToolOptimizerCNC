@@ -48,6 +48,20 @@ describe('SegmentedGradientBar', () => {
     expect(segments?.length).toBe(50);
   });
 
+  it('renders exactly 30 segments when segments={30} (mobile)', () => {
+    const { container } = render(<SegmentedGradientBar paramKey="vc" segments={30} />);
+    const wrapper = container.querySelector('[data-testid="health-bar-vc"]');
+    const segs = wrapper?.querySelectorAll('[style*="flex: 1"]');
+    expect(segs?.length).toBe(30);
+  });
+
+  it('inactive fz with segments={30} renders 30 segments', () => {
+    const { container } = render(<SegmentedGradientBar paramKey="fz" segments={30} />);
+    const wrapper = container.querySelector('[data-testid="health-bar-fz-inactive"]');
+    const segs = wrapper?.querySelectorAll('[style*="flex: 1"]');
+    expect(segs?.length).toBe(30);
+  });
+
   // ── Inactive state (fz before simular) ────────────────────────────────────
 
   it('fz shows inactive bar when resultado is null', () => {

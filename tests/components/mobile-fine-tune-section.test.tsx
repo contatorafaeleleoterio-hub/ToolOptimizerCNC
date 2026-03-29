@@ -87,7 +87,7 @@ describe('MobileFineTuneSection', () => {
     expect(screen.getByText(/Velocidade tangencial/)).toBeInTheDocument();
   });
 
-  it('renders ParameterHealthBar for Vc (data-testid=health-bar-vc)', () => {
+  it('renders SegmentedGradientBar for Vc (data-testid=health-bar-vc)', () => {
     renderSection();
     expect(screen.getByTestId('health-bar-vc')).toBeInTheDocument();
   });

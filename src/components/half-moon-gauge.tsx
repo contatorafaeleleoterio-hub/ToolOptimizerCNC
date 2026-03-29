@@ -11,6 +11,8 @@ interface HalfMoonGaugeProps {
   label?: string;
   palette?: ColorPalette;
   badge?: string;
+  /** 'md' = desktop (240×120), 'sm' = mobile (160×80). Default: 'md'. */
+  size?: 'sm' | 'md';
 }
 
 // ─── Constants ────────────────────────────────────────────────────────────────
@@ -42,6 +44,13 @@ function barGlow(idx: number): string {
   return `0 0 8px ${color}66`;
 }
 
+// ─── Size lookup ─────────────────────────────────────────────────────────────
+
+const SIZES = {
+  md: { width: 240, height: 120, needleH: 90, barGreen: 26, barNormal: 20 },
+  sm: { width: 160, height: 80,  needleH: 60, barGreen: 17, barNormal: 14 },
+} as const;
+
 // ─── Component ────────────────────────────────────────────────────────────────
 
 export function HalfMoonGauge({
@@ -49,8 +58,10 @@ export function HalfMoonGauge({
   maxValue,
   label = 'Indicador',
   badge,
+  size = 'md',
 }: HalfMoonGaugeProps) {
   const { gaugeAnimating } = useSimulationAnimation();
+  const sz          = SIZES[size];
   const pct         = Math.min((value / maxValue) * 100, MAX_PCT);
   const activeCount = Math.round((pct / MAX_PCT) * TOTAL_BARS);
 
@@ -78,8 +89,8 @@ export function HalfMoonGauge({
       <div
         style={{
           position: 'relative',
-          width: '240px',
-          height: '120px',
+          width: `${sz.width}px`,
+          height: `${sz.height}px`,
           overflow: 'visible',
         }}
         data-testid="gauge-svg"
@@ -95,7 +106,7 @@ export function HalfMoonGauge({
                 position: 'absolute',
                 bottom: 0,
                 left: '50%',
-                height: '120px',
+                height: `${sz.height}px`,
                 transformOrigin: 'center bottom',
                 transform: `translateX(-50%) rotate(${angle}deg)`,
               }}
@@ -107,7 +118,7 @@ export function HalfMoonGauge({
                   left: '50%',
                   transform: 'translateX(-50%)',
                   width:  isGreen ? '6px' : '5px',
-                  height: isGreen ? '26px' : '20px',
+                  height: isGreen ? `${sz.barGreen}px` : `${sz.barNormal}px`,
                   borderRadius: '2px',
                   background: active ? barColor(i) : SEG_EMPTY,
                   opacity:    active ? 1 : 0.3,
@@ -126,7 +137,7 @@ export function HalfMoonGauge({
             bottom:          '-5px',
             left:            '50%',
             width:           '3px',
-            height:          '90px',
+            height:          `${sz.needleH}px`,
             background:      '#fff',
             borderRadius:    '10px',
             boxShadow:       '0 0 12px rgba(255,255,255,0.7), 0 0 2px black',

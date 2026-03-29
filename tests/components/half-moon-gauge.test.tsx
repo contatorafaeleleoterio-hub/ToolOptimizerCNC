@@ -80,4 +80,25 @@ describe('HalfMoonGauge', () => {
     const matches = screen.getAllByText('150');
     expect(matches.length).toBeGreaterThanOrEqual(1);
   });
+
+  // ── size="sm" (mobile) ──────────────────────────────────────────────────────
+
+  it('size="sm" still renders 41 bars', () => {
+    const { container } = render(<HalfMoonGauge value={0} maxValue={5000} size="sm" />);
+    const gaugeSvg = container.querySelector('[data-testid="gauge-svg"]');
+    const barRects = gaugeSvg?.querySelectorAll('[style*="border-radius: 2px"]');
+    expect(barRects?.length).toBe(41);
+  });
+
+  it('size="sm" arc container has width 160px', () => {
+    const { container } = render(<HalfMoonGauge value={0} maxValue={5000} size="sm" />);
+    const gaugeSvg = container.querySelector('[data-testid="gauge-svg"]') as HTMLElement;
+    expect(gaugeSvg?.style.width).toBe('160px');
+  });
+
+  it('size="md" (default) arc container has width 240px', () => {
+    const { container } = render(<HalfMoonGauge value={0} maxValue={5000} />);
+    const gaugeSvg = container.querySelector('[data-testid="gauge-svg"]') as HTMLElement;
+    expect(gaugeSvg?.style.width).toBe('240px');
+  });
 });

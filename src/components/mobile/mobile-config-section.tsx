@@ -35,7 +35,7 @@ function MobileNumberInput({ label, value, min, max, step, unit, onChange }: {
         onBlur={() => { setFocused(false); if (invalid) setRaw(String(value)); }}
         aria-label={label}
         className={`w-full min-h-[48px] bg-black/40 border rounded-lg py-2 px-3 text-sm text-white font-mono focus:ring-1 focus:ring-primary outline-none ${
-          invalid && focused ? 'border-red-500 text-red-400' : 'border-white/10'
+          invalid && focused ? 'border-red-500 text-red-400' : 'border-white/12'
         }`}
       />
       {invalid && focused && (
@@ -54,7 +54,7 @@ const OPERACAO_LABELS: Record<TipoUsinagem, string> = {
 const ARESTAS_OPTIONS = [2, 3, 4, 6] as const;
 
 const MOBILE_BTN_ACTIVE = 'bg-primary text-black font-bold border-primary shadow-neon-cyan';
-const MOBILE_BTN_IDLE = 'bg-black/40 text-gray-400 active:bg-white/10 border-white/10';
+const MOBILE_BTN_IDLE = 'bg-black/40 text-gray-400 active:bg-white/10 border-white/12';
 
 /** Collapsible accordion section with a summary line when closed */
 function AccordionSection({
@@ -73,7 +73,7 @@ function AccordionSection({
   const [open, setOpen] = useState(defaultOpen);
 
   return (
-    <div className="bg-card-dark/70 backdrop-blur-sm rounded-xl border border-white/5">
+    <div className="bg-[rgba(30,38,50,0.95)] backdrop-blur-sm rounded-xl border border-white/12">
       <button
         type="button"
         onClick={() => setOpen((o) => !o)}
@@ -143,14 +143,14 @@ export function MobileConfigSection() {
         <div className="space-y-4 mt-1">
           <FieldGroup label="Material da Peça">
             <select value={materialId} onChange={(e) => setMaterial(Number(e.target.value))}
-              className="w-full min-h-[48px] bg-black/40 border border-white/10 rounded-lg py-3 pl-3 pr-10 text-sm text-gray-200 focus:ring-1 focus:ring-primary outline-none appearance-none select-chevron">
+              className="w-full min-h-[48px] bg-black/40 border border-white/12 rounded-lg py-3 pl-3 pr-10 text-sm text-gray-200 focus:ring-1 focus:ring-primary outline-none appearance-none select-chevron">
               {MATERIAIS.map((m) => (
                 <option key={m.id} value={m.id}>{m.nome}{m.status === 'estimado' ? ' ⚠' : ''}</option>
               ))}
             </select>
             {material && (
               <div className="flex justify-between mt-1 px-1">
-                <span className="text-[10px] text-gray-600">{material.dureza}</span>
+                <span className="text-[10px] text-gray-500">{material.dureza}</span>
                 {vcRange && <span className="text-[10px] text-primary/70">Vc: {vcRange[0]}-{vcRange[1]} m/min</span>}
               </div>
             )}
@@ -200,7 +200,7 @@ export function MobileConfigSection() {
               <button
                 aria-label="Salvar ferramenta"
                 onClick={handleSaveTool}
-                className="p-2.5 min-h-[44px] min-w-[44px] rounded-lg bg-white/5 border border-white/10 active:bg-white/10 transition-colors flex items-center justify-center"
+                className="p-2.5 min-h-[44px] min-w-[44px] rounded-lg bg-white/5 border border-white/12 active:bg-white/10 transition-colors flex items-center justify-center"
                 title="Salvar configuração atual"
               >
                 <span className="material-symbols-outlined text-sm text-white/70">save</span>
@@ -279,7 +279,7 @@ export function MobileConfigSection() {
             className="flex-1 h-2 bg-black/40 rounded-full appearance-none cursor-pointer [&::-webkit-slider-thumb]:w-6 [&::-webkit-slider-thumb]:h-6 [&::-webkit-slider-thumb]:rounded-full [&::-webkit-slider-thumb]:bg-seg-verde [&::-webkit-slider-thumb]:appearance-none [&::-webkit-slider-thumb]:shadow-[0_0_10px_rgba(46,204,113,0.6)]" />
           <span className="text-sm font-mono text-white w-10 text-right">{safetyFactor.toFixed(2)}</span>
         </div>
-        <p className="text-[10px] text-gray-600 mt-2">0.70 = conservador · 0.85 = agressivo</p>
+        <p className="text-[10px] text-gray-500 mt-2">0.70 = conservador · 0.85 = agressivo</p>
       </AccordionSection>
     </section>
   );

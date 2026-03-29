@@ -4,7 +4,7 @@ import { MATERIAIS } from '@/data';
 import { calcularSliderBounds } from '@/engine';
 import type { ParametrosUsinagem } from '@/types';
 import { SectionTitle } from '../ui-helpers';
-import { ParameterHealthBar } from '../parameter-health-bar';
+import { SegmentedGradientBar } from '../segmented-gradient-bar';
 import { getSliderRgb } from '../slider-tokens';
 
 /** Fine-tune value input with raw/blur pattern — allows free typing */
@@ -64,7 +64,7 @@ const SLIDER_VISUAL = [
     equilibrio: 'Combine ap alto com ae baixo para operações de desbaste eficiente.' },
 ];
 
-const BTN_CLS = 'w-10 h-10 rounded-lg bg-black/40 border border-white/10 text-gray-400 active:bg-white/10 transition-all text-sm font-bold flex items-center justify-center';
+const BTN_CLS = 'w-10 h-10 rounded-lg bg-black/30 border border-white/12 text-gray-400 active:bg-white/10 transition-all text-sm font-bold flex items-center justify-center';
 
 /** Maximum number of visible tick marks on the slider track */
 const MAX_TICKS = 20;
@@ -270,7 +270,7 @@ export function MobileFineTuneSection() {
 
   return (
     <section className="flex flex-col gap-4 px-4">
-      <div className="bg-card-dark rounded-xl p-4 border border-white/5">
+      <div className="bg-[rgba(30,38,50,0.95)] rounded-xl p-4 border border-white/12">
         <SectionTitle color="bg-primary" label="Fine Tune" />
         <p className="text-[9px] text-gray-500 mb-3">Arraste os controles para ajustar os parâmetros</p>
         <div className="flex flex-col gap-5">
@@ -293,7 +293,7 @@ export function MobileFineTuneSection() {
                     <span className={`text-sm font-bold font-mono text-${color}`}>{label}</span>
                     <span className="text-2xs text-gray-500 uppercase">{fullLabel}</span>
                     <span
-                      className="material-symbols-outlined text-gray-600 transition-transform duration-300"
+                      className="material-symbols-outlined text-gray-500 transition-transform duration-300"
                       style={{ fontSize: '14px', transform: isOpen ? 'rotate(180deg)' : 'rotate(0deg)' }}
                     >
                       expand_more
@@ -322,7 +322,7 @@ export function MobileFineTuneSection() {
                 </div>
 
                 {/* Parameter health bar — always visible below slider */}
-                <ParameterHealthBar paramKey={key} />
+                <SegmentedGradientBar paramKey={key} segments={30} />
 
                 {/* Educational drawer */}
                 {isOpen && (

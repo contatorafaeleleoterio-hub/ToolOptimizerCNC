@@ -102,7 +102,7 @@ describe('MobilePage', () => {
     renderMobile();
     // vc is now always active (value-based, no simulation needed)
     expect(screen.queryByTestId('health-bar-vc-inactive')).not.toBeInTheDocument();
-    expect(screen.getByTestId('health-bar-vc-fill')).toBeInTheDocument();
+    expect(screen.getByTestId('health-bar-vc')).toBeInTheDocument();
     // fz still requires simulation
     expect(screen.getByTestId('health-bar-fz-inactive')).toBeInTheDocument();
   });
