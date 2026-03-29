@@ -930,3 +930,12 @@ Plano: docs/plans/redesign-v0.8.0/SESSAO3-prototipo-html.md
 5. Se tudo verde, registrar no changelog admin e consolidar a melhoria de Analytics.
 
 **Observacao tecnica:** houve timeout do vitest na sessao longa. A recomendacao e reiniciar processo e rodar apenas o arquivo `tests/admin/admin-analytics.test.tsx`.
+### STATUS ATUAL (2026-03-28)
+
+- `npx vitest run tests/admin/admin-analytics.test.tsx` passou (31 testes).
+- `npx tsc --noEmit` ok.
+- `npx vite build` ok (build limpo).
+- Ajustes feitos para estabilizar testes:
+  - mocks de `fetch` agora retornam nova `Response` por chamada (evita reuse de body).
+  - `AdminAnalyticsPage` nao auto-rebusca quando status esta `loading` ou `error` (mantem banner de erro visivel ate acao do usuario).
+

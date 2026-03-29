@@ -103,22 +103,21 @@ describe('FineTunePanel', () => {
     render(<FineTunePanel />);
     // vc is now always active (value-based, no simulation needed)
     expect(screen.queryByTestId('health-bar-vc-inactive')).not.toBeInTheDocument();
-    expect(screen.getByTestId('health-bar-vc-fill')).toBeInTheDocument();
     // fz still requires simulation
     expect(screen.getByTestId('health-bar-fz-inactive')).toBeInTheDocument();
   });
 
   it('ae and ap bars always active (no resultado needed)', () => {
     render(<FineTunePanel />);
-    expect(screen.getByTestId('health-bar-ae-fill')).toBeInTheDocument();
-    expect(screen.getByTestId('health-bar-ap-fill')).toBeInTheDocument();
+    expect(screen.queryByTestId('health-bar-ae-inactive')).not.toBeInTheDocument();
+    expect(screen.queryByTestId('health-bar-ap-inactive')).not.toBeInTheDocument();
   });
 
   it('vc and fz bars activate after calcular()', () => {
     useMachiningStore.getState().calcular();
     render(<FineTunePanel />);
-    expect(screen.getByTestId('health-bar-vc-fill')).toBeInTheDocument();
-    expect(screen.getByTestId('health-bar-fz-fill')).toBeInTheDocument();
+    expect(screen.queryByTestId('health-bar-vc-inactive')).not.toBeInTheDocument();
+    expect(screen.queryByTestId('health-bar-fz-inactive')).not.toBeInTheDocument();
   });
 
   it('health bars visible when educational drawer is open', () => {

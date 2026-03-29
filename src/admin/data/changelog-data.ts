@@ -13,7 +13,19 @@ export interface ChangelogEntry {
   items: string[];
 }
 
-export const CHANGELOG: ChangelogEntry[] = [
+export const CHANGELOG: ChangelogEntry[] = [  {
+    version: '0.7.1',
+    date: '2026-03-29',
+    tag: 'feat',
+    title: 'Admin Analytics - Periodo, Auto-refresh e CSV',
+    items: [
+      'Periodo 7/30/90 dias com janela daysWindow no store',
+      'Auto-refresh configuravel (off/5/15 min) na pagina',
+      'Exportacao CSV do trafego diario',
+      'Testes estabilizados com mocks de fetch por chamada',
+      'Banner de erro permanece visivel ate nova acao',
+    ],
+  },
   {
     version: '0.7.0',
     date: '2026-03-18',
@@ -236,3 +248,4 @@ export const CHANGELOG: ChangelogEntry[] = [
     ],
   },
 ];
+

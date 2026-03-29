@@ -1,151 +1,72 @@
-# Sessão 5 de 4 — Componentes Desktop
-## Redesign Visual v0.10.0 — Mudança A (conclusão) + D + E (desktop)
+# Sessão 5 de 6 — SegmentedGradientBar + Gauge Meia-Lua
+## Redesign Visual v0.10.0 — Componentes Visuais Desktop
 
-**Foco:** Concluir tokens no desktop + legenda de siglas + botão ℹ no desktop
-**Estimativa:** ~20 pontos | ~80K tokens
-**Pré-requisitos:** Sessão 4 concluída (`slider-tokens.ts` criado, sliders refatorados)
-
----
-
-## Contexto para Início de Sessão
-
-```
-/compact Sessão 5: shared-result-parts + fine-tune + config + results desktop.
-Contexto: slider-tokens.ts existe (src/components/slider-tokens.ts).
-Sliders já refatorados (sem rgb prop, sem rgba inline).
-Relatório: docs/plans/redesign-v0.8.0/VISUAL-AUDIT-REPORT.md (seções 3-6).
-Mudanças desta sessão: tokens desktop + legenda siglas (D) + botão ℹ (E) desktop.
-```
+**Foco:** Implementar `SegmentedGradientBar` e `HalfMoonGauge` como componentes React
+**Pré-requisitos:** S4 concluída (`slider-tokens.ts` criado, sliders unificados)
 
 ---
 
-## Ações
+## Contexto de Início de Sessão
 
-- [ ] **Ação 1** (peso 1) — Ler `src/components/shared-result-parts.tsx`
-- [ ] **Ação 2** (peso 1) — Ler `src/components/fine-tune-panel.tsx`
-- [ ] **Ação 3** (peso 3) — Refatorar `shared-result-parts.tsx` — tokens + blur + interface simplificada
-- [ ] **Ação 4** (peso 3) — Refatorar `fine-tune-panel.tsx` — tokens + spacing + legenda siglas (D) + botão ℹ (E)
-- [ ] **Ação 5** (peso 2) — Editar `config-panel.tsx` — spacing fixes
-- [ ] **Ação 6** (peso 2) — Editar `results-panel.tsx` — spacing fixes
-- [ ] **Ação 7** (peso 3) — `npm run test`
-- [ ] **Ação 8** (peso 3) — `npm run build`
-- [ ] **Ação 9** (peso 2) — Commit parcial: `feat: tokens desktop + siglas + botão info`
-
-**Total:** 20 pontos ✅
-
----
-
-## Detalhe das Mudanças
-
-### `shared-result-parts.tsx`
-
-**BigNumber:**
-| Linha | Violação | Correção |
-|-------|---------|---------|
-| 56 | `from-${color}/5` dynamic | `style={{ background: \`linear-gradient(to bottom right, ${COLOR_HEX[color]}0D, transparent)\` }}` |
-| 58, 60 | `text-${color}` | `COLOR_TEXT[color]` |
-| 61 | `drop-shadow(0 0 8px ${glow})` | `GLOW_FILTER[color]` |
-| 85 | `h-1.5` | `h-1` |
-| 86 | `bg-${color}` | `COLOR_BG[color]` |
-| 87 | `boxShadow: 0 0 15px ${barGlow}` | `BAR_SHADOW[color]` |
-
-**Interface simplificada:** remover props `glow` e `barGlow` de `BigNumberProps` — usar apenas `color`.
-> Verificar onde BigNumber é instanciado (`results-panel.tsx`) e remover as props obsoletas.
-
-**ProgressCard:**
-| Linha | Violação | Correção |
-|-------|---------|---------|
-| 100 | `backdrop-blur-xl` em inner card | Remover blur |
-| 105 | `h-1.5` | `h-1` |
-| 106 | `boxShadow: 0 0 10px ${barShadow}` | Aceitar `barShadow` como string literal estática (vindo de results-panel) |
-| 108 | `${barColor}/50` dynamic | `${barColor} opacity-50` |
-
-**WarningsSection:**
-| Linha | Violação | Correção |
-|-------|---------|---------|
-| 135 | `mt-0.5` | `mt-1` |
-
----
-
-### `fine-tune-panel.tsx` — Tokens + Mudanças D + E
-
-**Tokens e spacing:**
-| Linha | Violação | Correção |
-|-------|---------|---------|
-| 96 | `gap-1.5` (button label) | `gap-2` |
-| 100 | `text-${color}` | `COLOR_TEXT[color]` |
-| 116 | `text-${color}` | `COLOR_TEXT[color]` |
-| 117 | `rgba(${rgb},0.4)` | `GLOW_FILTER[color]` |
-| 123 | `gap-1.5` | `gap-2` |
-| 147 | `space-y-1.5` | `space-y-2` |
-| 156 | `pt-1.5` | `pt-2` |
-| 164 | `bg-${color}/30` | `${COLOR_BG[color]} opacity-30` |
-
-**Mudança D — Legenda de siglas (desktop):**
-Na linha do label de cada parâmetro (L100-101), adicionar o nome completo:
-```tsx
-// SLIDER_VISUAL já tem `fullLabel` — usá-lo como legenda
-<span className={`text-base font-bold font-mono ${COLOR_TEXT[color]}`}>{label}</span>
-<span className="text-xs text-gray-500 font-sans ml-1">· {FULL_NAMES[key]}</span>
 ```
-```ts
-const FULL_NAMES = { vc: 'Velocidade de Corte', fz: 'Avanço por Dente', ae: 'Engajamento Radial', ap: 'Profundidade Axial' }
-```
-
-**Mudança E — Botão ℹ (desktop):**
-Substituir o toggle atual (label clicável com expand_more sutil) por botão dedicado:
-```tsx
-// ANTES: label com expand_more na linha L93-108
-// DEPOIS: botão ℹ explícito ao início da linha
-<button
-  onClick={() => toggleDrawer(key)}
-  className="w-5 h-5 rounded-full border border-primary/30 flex items-center justify-center
-             hover:border-primary hover:shadow-[0_0_6px_rgba(0,217,255,0.4)] transition-all shrink-0"
-  aria-label={`Informações sobre ${label}`}
->
-  <span className="material-symbols-outlined text-primary" style={{ fontSize: '12px' }}>info</span>
-</button>
+/compact Sessão 5: SegmentedGradientBar + Gauge meia-lua (componentes React desktop).
+Contexto: slider-tokens.ts existe, sliders unificados (commit sessão 4).
+Protótipo visual: docs/design/PROTOTIPO_V010_MUDANCAS.html
+Design system: .interface-design/system.md
+Plano: docs/plans/redesign-v0.8.0/SESSAO5-componentes-desktop.md
 ```
 
 ---
 
-### `config-panel.tsx` — Spacing
+## Mudanças Incluídas
 
-| Linha | Violação | Correção |
-|-------|---------|---------|
-| 66 | `w-[100px]` | `w-24` |
-| 171 | `pr-10` | `pr-8` |
-| 292 | `w-10` (edges) | Aceitar — impacto visual mínimo |
-| 355 | `w-10` (safety display) | `w-8` |
+1. Criar `src/components/segmented-gradient-bar.tsx` — substitui `ParameterHealthBar`
+   - 50 segmentos retangulares (`border-radius: 2px`, height 22px)
+   - Cores: RED `#FF4D4D` | ORANGE `#FFA500` | GREEN `#00E676`
+   - Lógica simétrica: RED → ORANGE → GREEN ← ORANGE ← RED com 15% warning margin
+   - `idealHighlight` zone + cursor branco Apple-style (3px × 28px, glow)
+2. Criar `src/components/half-moon-gauge.tsx` — substitui gauge circular existente
+   - 41 barras em arco semicircular (−90° a +90°)
+   - Barras: 5px × 20px (6px × 26px na zona ideal)
+   - Needle: 3px × 110px, branca, `border-radius: 10px`, glow `rgba(255,255,255,0.7)`
+   - Mesma lógica RED/ORANGE/GREEN com 15% warning margin
+3. Integrar SGB nos painéis desktop (substituir `ParameterHealthBar`)
+4. Integrar `HalfMoonGauge` (substituir gauge atual)
 
 ---
 
-### `results-panel.tsx` — Spacing
+## Arquivos Críticos
 
-| Linha | Violação | Correção |
-|-------|---------|---------|
-| 84 | `py-1.5` (star btn) | `py-2` |
+| Arquivo | Papel |
+|---------|-------|
+| `src/components/segmented-gradient-bar.tsx` | **NOVO** — substitui ParameterHealthBar |
+| `src/components/half-moon-gauge.tsx` | **NOVO** — substitui gauge circular |
+| `src/components/parameter-health-bar.tsx` | A ser substituído (ler antes) |
+| `src/components/fine-tune-panel.tsx` | Integrar SGB |
+| Componente gauge existente | A identificar — integrar HalfMoonGauge |
 
-> Nota: remover props `glow` e `barGlow` das chamadas de `BigNumber` (agora usam apenas `color`).
+**Referência visual:** `docs/design/PROTOTIPO_V010_MUDANCAS.html`
 
 ---
 
 ## Verificação
 
-- [ ] `shared-result-parts.tsx`: zero `rgba(`, zero `bg-${`, zero `from-${`, zero `backdrop-blur` em ProgressCard
-- [ ] `fine-tune-panel.tsx`: zero `rgba(`, zero `text-${`, spacing 4px grid
-- [ ] Legenda de siglas visível em cada parâmetro (Vc · Velocidade de Corte, etc.)
-- [ ] Botão ℹ visível e funcional (abre/fecha drawer)
-- [ ] `npm run test`: todos os testes passam
-- [ ] `npm run build`: sem erros de tipo
-- [ ] Commit realizado
+- [ ] SGB renderiza 50 segmentos retangulares (NÃO pills/bolinhas)
+- [ ] Cores corretas: RED → ORANGE → GREEN ← ORANGE ← RED
+- [ ] Cursor branco posicionado corretamente no valor atual
+- [ ] HalfMoonGauge renderiza 41 barras em semicírculo
+- [ ] Needle branca com glow aponta para valor correto
+- [ ] Ambos integrados nos painéis desktop
+- [ ] `npm run test` — testes passam
+- [ ] `npm run build` — bundle limpo
+- [ ] Commit: `feat: segmented-gradient-bar + half-moon-gauge`
 
 ---
 
-## Comando de Início da Sessão 6
+## Próxima Sessão (S6)
 
 ```
-/compact Sessão 6: mobile changes — parameter-health-bar redesign equalizer + fusão mobile-config + mobile-fine-tune.
-Contexto: desktop refatorado (sessões 4+5). Bump final para v0.10.0.
+/compact Sessão 6: contraste mobile + SGB/Gauge responsivo + bump v0.10.0.
+Contexto: SGB + Gauge implementados (desktop, sessão 5).
 Plano: docs/plans/redesign-v0.8.0/SESSAO6-mobile-healthbar.md
 ```

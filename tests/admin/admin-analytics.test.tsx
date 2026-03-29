@@ -120,24 +120,26 @@ describe('useAnalyticsStore — fetchData', () => {
   });
 
   it('sets status=loading then success on successful fetch', async () => {
-    vi.spyOn(globalThis, 'fetch').mockResolvedValue(
-      new Response(
-        JSON.stringify({
-          data: {
-            viewer: {
-              zones: [
-                {
-                  httpRequests1dGroups: [
-                    { dimensions: { date: '2026-03-11' }, sum: { pageViews: 120 }, uniq: { uniques: 60 } },
-                    { dimensions: { date: '2026-03-12' }, sum: { pageViews: 200 }, uniq: { uniques: 95 } },
-                  ],
-                  rumPerformanceEventsAdaptiveGroups: [],
-                },
-              ],
+    vi.spyOn(globalThis, 'fetch').mockImplementation(() =>
+      Promise.resolve(
+        new Response(
+          JSON.stringify({
+            data: {
+              viewer: {
+                zones: [
+                  {
+                    httpRequests1dGroups: [
+                      { dimensions: { date: '2026-03-11' }, sum: { pageViews: 120 }, uniq: { uniques: 60 } },
+                      { dimensions: { date: '2026-03-12' }, sum: { pageViews: 200 }, uniq: { uniques: 95 } },
+                    ],
+                    rumPerformanceEventsAdaptiveGroups: [],
+                  },
+                ],
+              },
             },
-          },
-        }),
-        { headers: { 'Content-Type': 'application/json' } },
+          }),
+          { headers: { 'Content-Type': 'application/json' } },
+        ),
       ),
     );
 
@@ -153,23 +155,25 @@ describe('useAnalyticsStore — fetchData', () => {
   });
 
   it('sets vitalsUnavailable=true when vitals returns empty', async () => {
-    vi.spyOn(globalThis, 'fetch').mockResolvedValue(
-      new Response(
-        JSON.stringify({
-          data: {
-            viewer: {
-              zones: [
-                {
-                  httpRequests1dGroups: [
-                    { dimensions: { date: '2026-03-18' }, sum: { pageViews: 5 }, uniq: { uniques: 3 } },
-                  ],
-                  rumPerformanceEventsAdaptiveGroups: [],
-                },
-              ],
+    vi.spyOn(globalThis, 'fetch').mockImplementation(() =>
+      Promise.resolve(
+        new Response(
+          JSON.stringify({
+            data: {
+              viewer: {
+                zones: [
+                  {
+                    httpRequests1dGroups: [
+                      { dimensions: { date: '2026-03-18' }, sum: { pageViews: 5 }, uniq: { uniques: 3 } },
+                    ],
+                    rumPerformanceEventsAdaptiveGroups: [],
+                  },
+                ],
+              },
             },
-          },
-        }),
-        { headers: { 'Content-Type': 'application/json' } },
+          }),
+          { headers: { 'Content-Type': 'application/json' } },
+        ),
       ),
     );
 
@@ -181,8 +185,8 @@ describe('useAnalyticsStore — fetchData', () => {
   });
 
   it('sets status=error when fetch returns HTTP 401', async () => {
-    vi.spyOn(globalThis, 'fetch').mockResolvedValue(
-      new Response('Unauthorized', { status: 401 }),
+    vi.spyOn(globalThis, 'fetch').mockImplementation(() =>
+      Promise.resolve(new Response('Unauthorized', { status: 401 })),
     );
 
     useAnalyticsStore.getState().setCredentials('bad_token', 'zone');
@@ -193,10 +197,12 @@ describe('useAnalyticsStore — fetchData', () => {
   });
 
   it('sets status=error when GraphQL returns errors array', async () => {
-    vi.spyOn(globalThis, 'fetch').mockResolvedValue(
-      new Response(
-        JSON.stringify({ errors: [{ message: 'Invalid zone tag' }] }),
-        { headers: { 'Content-Type': 'application/json' } },
+    vi.spyOn(globalThis, 'fetch').mockImplementation(() =>
+      Promise.resolve(
+        new Response(
+          JSON.stringify({ errors: [{ message: 'Invalid zone tag' }] }),
+          { headers: { 'Content-Type': 'application/json' } },
+        ),
       ),
     );
 
@@ -362,21 +368,23 @@ describe('AdminAnalyticsPage — connected state', () => {
   });
 
   it('changes period and triggers a fresh fetch', async () => {
-    vi.spyOn(globalThis, 'fetch').mockResolvedValue(
-      new Response(
-        JSON.stringify({
-          data: {
-            viewer: {
-              zones: [
-                {
-                  httpRequests1dGroups: [],
-                  rumPerformanceEventsAdaptiveGroups: [],
-                },
-              ],
+    vi.spyOn(globalThis, 'fetch').mockImplementation(() =>
+      Promise.resolve(
+        new Response(
+          JSON.stringify({
+            data: {
+              viewer: {
+                zones: [
+                  {
+                    httpRequests1dGroups: [],
+                    rumPerformanceEventsAdaptiveGroups: [],
+                  },
+                ],
+              },
             },
-          },
-        }),
-        { headers: { 'Content-Type': 'application/json' } },
+          }),
+          { headers: { 'Content-Type': 'application/json' } },
+        ),
       ),
     );
 

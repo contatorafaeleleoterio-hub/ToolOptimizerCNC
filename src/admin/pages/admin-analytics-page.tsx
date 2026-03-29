@@ -269,6 +269,7 @@ export default function AdminAnalyticsPage() {
 
   useEffect(() => {
     if (!hasCredentials) return;
+    if (status === 'loading' || status === 'error') return;
     if (status === 'success' && daysWindow === selectedDays) return;
     void fetchData(selectedDays);
   }, [hasCredentials, selectedDays, fetchData, status, daysWindow]);
