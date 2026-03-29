@@ -25,11 +25,11 @@
 | Item | Valor |
 |------|-------|
 | **Branch** | `main` |
-| **Versão** | `0.9.4` |
-| **Testes** | **893 passando** (51 arquivos) — 0 falhas |
+| **Versão** | `0.10.0` |
+| **Testes** | **940 passando** (53 arquivos) — 0 falhas |
 | **TypeScript** | **zero erros** |
-| **Build** | **limpo** — JS 102.98KB gzip, CSS 16.08KB gzip |
-| **Remote** | `origin/main` sincronizado ✅ — commit `cf11ecd` |
+| **Build** | **limpo** — JS 102.94KB gzip, CSS 16.61KB gzip |
+| **Remote** | `origin/main` sincronizado ✅ — commit `64890cc` |
 | **Worker** | ✅ LIVE — `https://tooloptimizercnc.contatorafaeleleoterio.workers.dev` |
 | **Custom Domains** | ✅ `tooloptimizercnc.com.br` + `app.tooloptimizercnc.com.br` |
 | **GitHub Actions** | ✅ deploy automático ao push para main |
@@ -61,7 +61,7 @@ npx tsc --noEmit
 | 8 | Reestruturação Docs Marketing & Monetização (12 docs) | 📄 Docs | — | ✅ Concluído |
 | 9 | [Redesign Dashboard Principal (8 fases)](#-redesign-dashboard-principal-v080) | 🎨 Redesign | v0.8.0 | ✅ Concluído (Fases 1-6) |
 | 10 | [Implementações Dashboard v0.9 (7 itens)](#-implementações-dashboard-v09) | 🎨 Feature+Redesign | v0.9.4 | ✅ Concluído (`9b61427`) |
-| 11 | [Redesign Visual Dashboard (3 sessões)](#-redesign-visual-dashboard) | 🎨 Design Audit | v0.10.0 | ⬜ Pendente |
+| 11 | [Redesign Visual Dashboard (6 sessões)](#-redesign-visual-dashboard) | 🎨 Design Audit | v0.10.0 | ✅ Concluído (`64890cc`) |
 
 ### ✅ Reestruturação Documental (v0.6.0) — CONCLUÍDA
 
@@ -202,9 +202,9 @@ npx tsc --noEmit
 | 1 | Audit READ-ONLY (8 componentes) | `SESSAO1-VIOLATION-CATALOG.md` | ✅ Concluído (`6aedb49`) |
 | 2 | Relatório + Propostas por componente | `VISUAL-AUDIT-REPORT.md` | ✅ Concluído (`6aedb49`) |
 | 3 | Protótipo HTML visual | `DASHBOARD_V2_PROPOSAL.html` + `PROTOTIPO_V010_MUDANCAS.html` | ✅ Concluído (28/03/2026) |
-| **4** | **slider-tokens.ts + unificar sliders** | **Tokens + StyledSlider → BidirectionalSlider** | **⬜ PRIORIDADE PRÓXIMA SESSÃO** |
-| 5 | SegmentedGradientBar + Gauge meia-lua | Componentes React desktop | ⬜ Após S4 |
-| 6 | Contraste mobile + SGB/Gauge responsivo | Release v0.10.0 | ⬜ Após S5 |
+| 4 | slider-tokens.ts + unificar sliders | Tokens + StyledSlider → BidirectionalSlider | ✅ Concluído (`d18d92b`) |
+| 5 | SegmentedGradientBar + Gauge meia-lua | Componentes React desktop | ✅ Concluído (`08acfbe`) |
+| 6 | Contraste mobile + SGB/Gauge responsivo | Release v0.10.0 | ✅ Concluído (`64890cc`) |
 
 **4 mudanças aprovadas (revisadas na S3):**
 1. **SegmentedGradientBar** — 50 segmentos retangulares RED/ORANGE/GREEN substituindo ParameterHealthBar
