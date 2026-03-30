@@ -29,7 +29,7 @@
 | **Testes** | **940 passando** (53 arquivos) — 0 falhas |
 | **TypeScript** | **zero erros** |
 | **Build** | **limpo** — JS 102.94KB gzip, CSS 16.61KB gzip |
-| **Remote** | `origin/main` sincronizado ✅ (push 30/03) — commit `94b817f` |
+| **Remote** | `origin/main` sincronizado ✅ (push 30/03) — commit `a898b32` |
 | **Worker** | ✅ LIVE — `https://tooloptimizercnc.contatorafaeleleoterio.workers.dev` |
 | **Custom Domains** | ✅ `tooloptimizercnc.com.br` + `app.tooloptimizercnc.com.br` |
 | **GitHub Actions** | ✅ deploy automático ao push para main |
@@ -46,7 +46,30 @@ npx tsc --noEmit
 
 ## Ultimas 3 Sessoes
 
-### Sessão 30/03 — Planejamento: Implementações Dashboard + Simulação Estilo Cassino
+### Sessão 30/03 (2ª) — Docs: Novos planos de implementação + Timeline redesign
+
+**Commit:** `a898b32` — docs only, sem alteração de código
+**Atividade:**
+- Criação de 3 novos planos de implementação (Grupo E — Sistema de Favoritos):
+  - `ITEM-10-FAVORITOS-STORE.md` — useFavoritesStore + snapshot completo + edição
+  - `ITEM-11-ZONA-VERDE-DINAMICA-SGB.md` — prop idealRange no SGB, zona verde ± 10% do favorito
+  - `ITEM-12-PAGINA-FAVORITOS.md` — página /favoritos com filtros, editar/remover/usar
+- `CONTEXTO-PROXIMA-SESSAO.md` atualizado com items 14, 15, 16 + Grupo E
+- `public/timeline.html` completamente redesenhado:
+  - 3 abas: ✅ O que já fizemos (15) · ⚡ Próximas sessões (10) · 🔮 Rumo ao lançamento (6)
+  - Cards visuais por tipo (infra/design/feature/security/marketing/money)
+  - Pending com borda tracejada + action steps numerados
+  - Progress bar da jornada + milestone tags
+  - Linguagem simples para não-desenvolvedores
+- Identificado e mantido repo correto: `ToolOptimizerCNC` (66MB, ativo)
+- Repo `fenix-status` confirmado como vazio (size 0) — deletar manualmente no GitHub
+- Diagnóstico do git travando: causa era Git LFS filter-process global
+
+**Próxima sessão (Claude Code):** Iniciar implementação dos itens do Dashboard 30-03 — começar pelo Item 1.1 (Layout Base Visor Grid) em `results-panel.tsx`
+
+---
+
+### Sessão 30/03 (1ª) — Planejamento: Implementações Dashboard + Simulação Estilo Cassino
 
 **Commit:** `94b817f` — docs only, sem alteração de código
 **Atividade:**
