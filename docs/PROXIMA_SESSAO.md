@@ -29,7 +29,7 @@
 | **Testes** | **940 passando** (53 arquivos) — 0 falhas |
 | **TypeScript** | **zero erros** |
 | **Build** | **limpo** — JS 102.94KB gzip, CSS 16.61KB gzip |
-| **Remote** | `origin/main` sincronizado ✅ (push 29/03) |
+| **Remote** | `origin/main` sincronizado ✅ (push 30/03) — commit `94b817f` |
 | **Worker** | ✅ LIVE — `https://tooloptimizercnc.contatorafaeleleoterio.workers.dev` |
 | **Custom Domains** | ✅ `tooloptimizercnc.com.br` + `app.tooloptimizercnc.com.br` |
 | **GitHub Actions** | ✅ deploy automático ao push para main |
@@ -45,6 +45,22 @@ npx tsc --noEmit
 ---
 
 ## Ultimas 3 Sessoes
+
+### Sessão 30/03 — Planejamento: Implementações Dashboard + Simulação Estilo Cassino
+
+**Commit:** `94b817f` — docs only, sem alteração de código
+**Atividade:**
+- Leitura e revisão completa de todos os 8 arquivos do plano `docs/plans/Implementações ajustes Dashboard 30-03/`
+- Confirmação da ordem de implementação dos 6 itens aprovados (1.1 → 1.2 → 2.1 → 3.1 → 3.2 → 4.1)
+- Criação de spec completa para novo item **5.2 — Simulação Estilo Cassino** (`ITEM-9-SIMULACAO-ESTILO-CASSINO.md`)
+  - 4 fases: Mesa Vazia → Ignição (0–200ms) → Cálculo (200–1500ms) → Jackpot (1500–2300ms)
+  - Timeline detalhada `runSimulation`, novos estados no hook, keyframes CSS, lógica de cores, histórico de rodadas
+  - Posicionado como **item 7 (último)** — depende de visor desktop (1.1) e mobile (4.1) finalizados
+- `CONTEXTO-PROXIMA-SESSAO.md` atualizado com item #13 (5.2) ✅ APROVADO no Grupo D
+
+**Próxima sessão (Claude Code):** Iniciar implementação — começar pelo Item 1 (1.1 — Layout Base Visor Grid) em `results-panel.tsx`
+
+---
 
 ### Sessão 29/03 — Redesign Visual v0.10.0 S6: contraste mobile + SGB/Gauge responsivo
 
