@@ -3,1792 +3,1184 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>ToolOptimizer CNC — Timeline do Projeto</title>
+  <title>ToolOptimizer CNC — Jornada do Projeto</title>
   <style>
     :root {
-      --bg:        #0F1419;
-      --surface:   #161D27;
-      --border:    #1E2A38;
-      --cyan:      #00D9FF;
-      --green:     #39FF14;
-      --yellow:    #f39c12;
-      --red:       #e74c3c;
-      --gray:      #4A5568;
-      --text:      #E2E8F0;
-      --muted:     #718096;
-      --radius:    10px;
+      --bg:       #0F1419;
+      --surface:  rgba(22,27,34,0.95);
+      --border:   rgba(255,255,255,0.07);
+      --border-s: rgba(255,255,255,0.14);
+      --cyan:     #00D9FF;
+      --green:    #39FF14;
+      --yellow:   #f39c12;
+      --red:      #e74c3c;
+      --purple:   #A855F7;
+      --orange:   #F97316;
+      --text:     #E2E8F0;
+      --text2:    #A0AEC0;
+      --muted:    #718096;
+      --r-card:   16px;
+      --r-inner:  10px;
     }
-
     * { box-sizing: border-box; margin: 0; padding: 0; }
+    body { background: var(--bg); color: var(--text); font-family: 'Segoe UI', system-ui, sans-serif; line-height: 1.6; }
+    ::-webkit-scrollbar { width: 6px; }
+    ::-webkit-scrollbar-track { background: #0F1419; }
+    ::-webkit-scrollbar-thumb { background: #2a3040; border-radius: 4px; }
+    ::-webkit-scrollbar-thumb:hover { background: #3a4055; }
 
-    body {
-      background: var(--bg);
-      color: var(--text);
-      font-family: 'Segoe UI', system-ui, sans-serif;
-      line-height: 1.6;
-      padding: 0 0 60px;
-    }
-
-    /* ── HEADER ─────────────────────────────────────────── */
+    /* ── HEADER ── */
     header {
-      background: linear-gradient(135deg, #0a1520 0%, #0F1419 100%);
+      position: sticky; top: 0; z-index: 100;
+      background: rgba(15,20,25,0.92);
+      backdrop-filter: blur(20px);
       border-bottom: 1px solid var(--border);
-      padding: 28px 40px 24px;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      flex-wrap: wrap;
-      gap: 16px;
+      padding: 18px 40px;
+      display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 12px;
     }
-    .header-left { display: flex; align-items: center; gap: 14px; }
-    .logo-icon {
-      width: 44px; height: 44px;
-      background: linear-gradient(135deg, var(--cyan), #0088aa);
-      border-radius: 10px;
+    .h-left { display: flex; align-items: center; gap: 12px; }
+    .logo {
+      width: 44px; height: 44px; border-radius: 12px; flex-shrink: 0;
+      background: linear-gradient(135deg, #00D9FF, #0077aa);
       display: flex; align-items: center; justify-content: center;
       font-size: 22px;
-      box-shadow: 0 0 18px rgba(0,217,255,0.35);
+      box-shadow: 0 0 20px rgba(0,217,255,0.35);
     }
-    .header-title h1 { font-size: 1.4rem; font-weight: 700; color: var(--cyan); }
-    .header-title p  { font-size: 0.8rem; color: var(--muted); margin-top: 2px; }
-
-    .header-right { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
+    .h-title h1 { font-size: 1.2rem; font-weight: 800; color: var(--cyan); letter-spacing: -0.02em; }
+    .h-title p  { font-size: 0.75rem; color: var(--muted); margin-top: 1px; }
+    .h-right { display: flex; gap: 7px; flex-wrap: wrap; }
     .badge {
-      padding: 4px 12px;
-      border-radius: 20px;
-      font-size: 0.75rem;
-      font-weight: 600;
-      letter-spacing: 0.04em;
+      padding: 4px 11px; border-radius: 20px; font-size: 0.7rem; font-weight: 700; letter-spacing: 0.04em;
     }
-    .badge-version { background: rgba(0,217,255,0.12); color: var(--cyan); border: 1px solid rgba(0,217,255,0.3); }
-    .badge-live    { background: rgba(57,255,20,0.12); color: var(--green); border: 1px solid rgba(57,255,20,0.3); }
-    .badge-date    { background: rgba(255,255,255,0.06); color: var(--muted); border: 1px solid var(--border); }
+    .bv { background: rgba(0,217,255,0.1); color: var(--cyan); border: 1px solid rgba(0,217,255,0.3); font-family: monospace; }
+    .bl { background: rgba(57,255,20,0.1); color: var(--green); border: 1px solid rgba(57,255,20,0.3); }
+    .bd { background: rgba(255,255,255,0.05); color: var(--muted); border: 1px solid var(--border); }
 
-    /* ── MAIN LAYOUT ─────────────────────────────────────── */
-    main { max-width: 900px; margin: 0 auto; padding: 36px 24px 0; }
+    /* ── MAIN ── */
+    main { max-width: 980px; margin: 0 auto; padding: 40px 24px 80px; }
 
-    /* ── TODAY CARD ──────────────────────────────────────── */
-    .today-card {
-      background: linear-gradient(135deg, rgba(0,217,255,0.07), rgba(0,217,255,0.02));
-      border: 1px solid rgba(0,217,255,0.25);
-      border-radius: var(--radius);
-      padding: 20px 24px;
+    /* ── HERO ── */
+    .hero {
+      background: linear-gradient(135deg, rgba(0,217,255,0.05), rgba(57,255,20,0.02));
+      border: 1px solid rgba(0,217,255,0.18);
+      border-radius: var(--r-card);
+      padding: 30px 32px 28px;
       margin-bottom: 36px;
+      position: relative; overflow: hidden;
     }
-    .today-card h2 {
-      font-size: 0.75rem;
-      text-transform: uppercase;
-      letter-spacing: 0.1em;
-      color: var(--cyan);
-      margin-bottom: 14px;
-      display: flex; align-items: center; gap: 8px;
+    .hero::after {
+      content: '⚙️';
+      position: absolute; right: 28px; top: 50%; transform: translateY(-50%);
+      font-size: 80px; opacity: 0.06; pointer-events: none;
     }
-    .today-card h2::after { content: ''; flex: 1; height: 1px; background: rgba(0,217,255,0.2); }
-    .today-items { display: flex; flex-wrap: wrap; gap: 8px; }
-    .today-item {
-      background: rgba(0,0,0,0.25);
-      border: 1px solid var(--border);
-      border-radius: 6px;
-      padding: 6px 12px;
-      font-size: 0.82rem;
-      display: flex; align-items: center; gap: 6px;
-    }
-    .today-item .dot { width: 7px; height: 7px; border-radius: 50%; flex-shrink: 0; }
-    .dot-green  { background: var(--green); box-shadow: 0 0 6px var(--green); }
-    .dot-cyan   { background: var(--cyan);  box-shadow: 0 0 6px var(--cyan); }
-    .dot-yellow { background: var(--yellow); }
+    .hero-row { display: flex; align-items: flex-start; justify-content: space-between; gap: 24px; flex-wrap: wrap; }
+    .hero-text h2 { font-size: 1.5rem; font-weight: 800; color: var(--text); line-height: 1.2; margin-bottom: 8px; }
+    .hero-text h2 em { font-style: normal; color: var(--cyan); }
+    .hero-text p { font-size: 0.88rem; color: var(--text2); max-width: 480px; line-height: 1.55; }
+    .hero-nums { display: flex; gap: 20px; flex-shrink: 0; }
+    .hnum { text-align: center; }
+    .hnum-val { font-family: 'Courier New', monospace; font-size: 1.7rem; font-weight: 800; line-height: 1; }
+    .hnum-lbl { font-size: 0.64rem; color: var(--muted); text-transform: uppercase; letter-spacing: 0.08em; margin-top: 4px; }
+    .c-cyan  { color: var(--cyan); }
+    .c-green { color: var(--green); }
+    .c-text  { color: var(--text); }
 
-    /* ── CONTROLS ────────────────────────────────────────── */
-    .controls {
-      display: flex; align-items: center; gap: 12px;
-      margin-bottom: 20px; flex-wrap: wrap;
+    /* progress journey */
+    .journey { margin-top: 24px; }
+    .j-labels { display: flex; justify-content: space-between; font-size: 0.72rem; color: var(--muted); margin-bottom: 8px; }
+    .j-labels strong { color: var(--cyan); }
+    .j-bar { height: 8px; background: rgba(255,255,255,0.06); border-radius: 99px; overflow: hidden; }
+    .j-fill { height: 100%; background: linear-gradient(90deg, var(--cyan) 0%, var(--green) 100%); border-radius: 99px; transition: width 1.4s ease; box-shadow: 0 0 10px rgba(0,217,255,0.45); }
+    .j-tags { display: flex; gap: 6px; flex-wrap: wrap; margin-top: 12px; }
+    .jtag { font-size: 0.67rem; padding: 3px 10px; border-radius: 20px; font-weight: 600; border: 1px solid; }
+    .jtag-done    { background: rgba(57,255,20,0.07); color: var(--green); border-color: rgba(57,255,20,0.22); }
+    .jtag-current { background: rgba(0,217,255,0.08); color: var(--cyan); border-color: rgba(0,217,255,0.3); }
+    .jtag-future  { background: rgba(255,255,255,0.03); color: var(--muted); border-color: var(--border); }
+
+    /* ── TABS ── */
+    .tabs {
+      display: flex; gap: 3px; margin-bottom: 28px;
+      background: rgba(255,255,255,0.03); border: 1px solid var(--border); border-radius: 12px; padding: 4px;
     }
-    .controls span { font-size: 0.78rem; color: var(--muted); }
-    .toggle-btn {
-      background: transparent;
-      border: 1px solid var(--border);
-      color: var(--muted);
-      border-radius: 6px;
-      padding: 5px 14px;
-      font-size: 0.78rem;
-      cursor: pointer;
-      transition: all 0.2s;
+    .tb {
+      flex: 1; padding: 10px 12px; border: none; border-radius: 9px; background: transparent;
+      color: var(--muted); font-size: 0.82rem; font-weight: 600; cursor: pointer; transition: all 0.2s;
+      display: flex; align-items: center; justify-content: center; gap: 7px;
     }
-    .toggle-btn:hover, .toggle-btn.active {
-      border-color: var(--cyan);
-      color: var(--cyan);
-      background: rgba(0,217,255,0.07);
+    .tb.on { background: rgba(255,255,255,0.06); color: var(--text); box-shadow: 0 1px 4px rgba(0,0,0,0.3); }
+    .tb .cnt { font-size: 0.66rem; padding: 2px 7px; border-radius: 10px; }
+    .td .cnt { background: rgba(57,255,20,0.1); color: var(--green); }
+    .tn .cnt { background: rgba(0,217,255,0.1); color: var(--cyan); }
+    .tf .cnt { background: rgba(255,255,255,0.06); color: var(--muted); }
+    .tb.on.td { color: var(--green); }
+    .tb.on.tn { color: var(--cyan); }
+
+    /* ── SECTIONS ── */
+    .sec { display: none; }
+    .sec.on { display: block; }
+
+    .sec-hd { display: flex; align-items: center; justify-content: space-between; margin-bottom: 20px; flex-wrap: wrap; gap: 10px; }
+    .sec-title { font-size: 0.7rem; text-transform: uppercase; letter-spacing: 0.12em; color: var(--muted); display: flex; align-items: center; gap: 8px; }
+    .sec-title::after { content: ''; display: inline-block; width: 32px; height: 1px; background: var(--border); vertical-align: middle; }
+    .btn-expand { background: transparent; border: 1px solid var(--border); color: var(--muted); padding: 5px 13px; border-radius: 6px; font-size: 0.73rem; cursor: pointer; transition: all 0.2s; }
+    .btn-expand:hover { border-color: var(--border-s); color: var(--text); }
+
+    /* group labels */
+    .glabel {
+      font-size: 0.67rem; text-transform: uppercase; letter-spacing: 0.1em; color: var(--muted);
+      margin: 24px 0 10px; display: flex; align-items: center; gap: 10px;
+    }
+    .glabel::after { content: ''; flex: 1; height: 1px; background: var(--border); }
+    .glabel:first-child { margin-top: 0; }
+
+    /* ── GRID ── */
+    .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(276px, 1fr)); gap: 10px; }
+
+    /* ── CARD ── */
+    .card {
+      background: var(--surface); border: 1px solid var(--border); border-radius: var(--r-card);
+      overflow: hidden; transition: border-color 0.2s, box-shadow 0.2s, transform 0.15s; cursor: pointer;
+    }
+    .card:hover { transform: translateY(-2px); }
+    .card.pending { border-style: dashed; opacity: 0.88; }
+    .card.pending:hover { opacity: 1; }
+
+    /* type hover colors */
+    .card[data-t="infra"]:hover        { border-color: rgba(0,217,255,0.35);  box-shadow: 0 6px 24px rgba(0,217,255,0.07); }
+    .card[data-t="design"]:hover       { border-color: rgba(168,85,247,0.35); box-shadow: 0 6px 24px rgba(168,85,247,0.07); }
+    .card[data-t="feature"]:hover      { border-color: rgba(57,255,20,0.35);  box-shadow: 0 6px 24px rgba(57,255,20,0.07); }
+    .card[data-t="security"]:hover     { border-color: rgba(243,156,18,0.35); box-shadow: 0 6px 24px rgba(243,156,18,0.07); }
+    .card[data-t="marketing"]:hover    { border-color: rgba(249,115,22,0.35); box-shadow: 0 6px 24px rgba(249,115,22,0.07); }
+    .card[data-t="money"]:hover        { border-color: rgba(57,255,20,0.5);   box-shadow: 0 6px 24px rgba(57,255,20,0.12); }
+
+    .card-hd { padding: 16px 18px 12px; display: flex; align-items: flex-start; gap: 13px; }
+    .cicon {
+      width: 42px; height: 42px; border-radius: 11px; flex-shrink: 0;
+      display: flex; align-items: center; justify-content: center; font-size: 20px;
+    }
+    [data-t="infra"]    .cicon { background: rgba(0,217,255,0.1); }
+    [data-t="design"]   .cicon { background: rgba(168,85,247,0.1); }
+    [data-t="feature"]  .cicon { background: rgba(57,255,20,0.1); }
+    [data-t="security"] .cicon { background: rgba(243,156,18,0.1); }
+    [data-t="marketing"].cicon { background: rgba(249,115,22,0.1); }
+    [data-t="money"]    .cicon { background: rgba(57,255,20,0.12); }
+
+    .cmeta { flex: 1; min-width: 0; }
+    .ctitle { font-size: 0.93rem; font-weight: 700; color: var(--text); line-height: 1.3; margin-bottom: 4px; }
+    .csub   { font-size: 0.74rem; color: var(--text2); line-height: 1.4; }
+
+    .card-ft { padding: 0 18px 13px; display: flex; align-items: center; justify-content: space-between; }
+    .tags { display: flex; gap: 4px; flex-wrap: wrap; }
+    .tag { font-size: 0.62rem; padding: 2px 7px; border-radius: 4px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.04em; }
+    .t-done    { background: rgba(57,255,20,0.1); color: var(--green); }
+    .t-next    { background: rgba(0,217,255,0.08); color: var(--cyan); }
+    .t-ver     { background: rgba(255,255,255,0.06); color: var(--muted); font-family: monospace; }
+    .chevron   { color: var(--muted); font-size: 0.9rem; transition: transform 0.25s; flex-shrink: 0; }
+    .card.open .chevron { transform: rotate(90deg); }
+
+    /* ── DETAILS ── */
+    .card-det { max-height: 0; overflow: hidden; transition: max-height 0.35s ease; }
+    .card.open .card-det { max-height: 640px; }
+    .card-body { border-top: 1px solid var(--border); padding: 13px 18px 15px; }
+    .det-title { font-size: 0.66rem; text-transform: uppercase; letter-spacing: 0.08em; color: var(--muted); margin-bottom: 10px; font-weight: 700; }
+    .dlist { list-style: none; display: flex; flex-direction: column; gap: 5px; }
+    .dlist li { font-size: 0.8rem; color: var(--text2); display: flex; align-items: flex-start; gap: 8px; line-height: 1.45; }
+    .dlist li::before { content: '›'; color: var(--cyan); flex-shrink: 0; font-weight: 700; }
+
+    /* action steps */
+    .steps { display: flex; flex-direction: column; gap: 5px; }
+    .step {
+      display: flex; align-items: center; gap: 10px;
+      padding: 7px 11px; background: rgba(0,0,0,0.18);
+      border: 1px solid var(--border); border-radius: 8px;
+      font-size: 0.79rem; color: var(--text2);
+    }
+    .step-n {
+      width: 20px; height: 20px; border-radius: 50%; flex-shrink: 0;
+      background: rgba(0,217,255,0.08); border: 1px solid rgba(0,217,255,0.22);
+      color: var(--cyan); font-size: 0.62rem; font-weight: 800;
+      display: flex; align-items: center; justify-content: center; font-family: monospace;
     }
 
-    /* ── SECTION DIVIDER ─────────────────────────────────── */
-    .section-divider {
-      display: flex; align-items: center; gap: 12px;
-      margin: 28px 0 12px 56px;
-    }
-    .section-divider span {
-      font-size: 0.68rem; text-transform: uppercase; letter-spacing: 0.12em;
-      color: var(--muted); white-space: nowrap;
-    }
-    .section-divider::before { content: ''; flex: 0 0 0px; }
-    .section-divider::after  { content: ''; flex: 1; height: 1px; background: var(--border); }
-
-    /* ── TIMELINE ────────────────────────────────────────── */
-    .timeline { position: relative; }
-    .timeline::before {
-      content: '';
-      position: absolute;
-      left: 21px;
-      top: 0; bottom: 0;
-      width: 2px;
-      background: linear-gradient(to bottom, var(--cyan), var(--border) 80%, transparent);
-    }
-
-    .phase {
-      position: relative;
-      padding-left: 56px;
-      margin-bottom: 6px;
-    }
-    .phase-dot {
-      position: absolute;
-      left: 13px;
-      top: 18px;
-      width: 18px; height: 18px;
-      border-radius: 50%;
-      border: 2px solid var(--border);
-      background: var(--surface);
-      display: flex; align-items: center; justify-content: center;
-      font-size: 9px;
-      z-index: 1;
-      transition: box-shadow 0.2s;
-    }
-    .phase[data-status="done"]    .phase-dot { border-color: var(--green); background: rgba(57,255,20,0.15); }
-    .phase[data-status="current"] .phase-dot { border-color: var(--cyan);  background: rgba(0,217,255,0.15); box-shadow: 0 0 12px rgba(0,217,255,0.5); }
-    .phase[data-status="pending"] .phase-dot { border-color: var(--gray);  background: rgba(74,85,104,0.2); }
-
-    .phase-card {
-      background: var(--surface);
-      border: 1px solid var(--border);
-      border-radius: var(--radius);
-      overflow: hidden;
-      transition: border-color 0.2s, box-shadow 0.2s;
-      cursor: pointer;
-    }
-    .phase[data-status="done"]    .phase-card:hover { border-color: rgba(57,255,20,0.4); box-shadow: 0 0 16px rgba(57,255,20,0.08); }
-    .phase[data-status="current"] .phase-card        { border-color: rgba(0,217,255,0.35); box-shadow: 0 0 18px rgba(0,217,255,0.1); }
-    .phase[data-status="current"] .phase-card:hover  { border-color: rgba(0,217,255,0.6); }
-    .phase[data-status="pending"] .phase-card:hover  { border-color: rgba(74,85,104,0.6); }
-
-    .phase-header {
-      padding: 14px 18px;
-      display: flex;
-      align-items: center;
-      gap: 12px;
-    }
-    .phase-icon { font-size: 1.1rem; flex-shrink: 0; }
-    .phase-meta { flex: 1; min-width: 0; }
-    .phase-title { font-size: 0.95rem; font-weight: 600; color: var(--text); }
-    .phase-sub   { font-size: 0.75rem; color: var(--muted); margin-top: 2px; }
-    .phase-right { display: flex; flex-direction: column; align-items: flex-end; gap: 4px; flex-shrink: 0; }
-    .phase-version {
-      font-size: 0.72rem; font-family: monospace; font-weight: 700;
-      padding: 2px 8px; border-radius: 4px;
-    }
-    .phase[data-status="done"]    .phase-version { background: rgba(57,255,20,0.12); color: var(--green); }
-    .phase[data-status="current"] .phase-version { background: rgba(0,217,255,0.12); color: var(--cyan); }
-    .phase[data-status="pending"] .phase-version { background: rgba(74,85,104,0.2);  color: var(--gray); }
-
-    .phase-tag {
-      font-size: 0.65rem; text-transform: uppercase; letter-spacing: 0.06em;
-      padding: 1px 7px; border-radius: 3px; color: var(--muted);
-    }
-    .phase[data-status="done"]    .phase-tag { background: rgba(57,255,20,0.08);  color: var(--green); }
-    .phase[data-status="current"] .phase-tag { background: rgba(0,217,255,0.08);  color: var(--cyan); }
-    .phase[data-status="pending"] .phase-tag { background: rgba(74,85,104,0.15); color: var(--gray); }
-
-    .phase-chevron {
-      margin-left: 8px; flex-shrink: 0;
-      color: var(--muted); font-size: 0.85rem;
-      transition: transform 0.25s;
-    }
-    .phase.open .phase-chevron { transform: rotate(90deg); }
-
-    /* ── DETAILS ─────────────────────────────────────────── */
-    .phase-details {
-      max-height: 0;
-      overflow: hidden;
-      transition: max-height 0.35s ease;
-    }
-    .phase.open .phase-details { max-height: 800px; }
-
-    .phase-body {
-      border-top: 1px solid var(--border);
-      padding: 14px 18px 16px;
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 10px 24px;
-      font-size: 0.8rem;
-    }
-    @media (max-width: 540px) { .phase-body { grid-template-columns: 1fr; } }
-
-    .detail-group h4 {
-      font-size: 0.68rem; text-transform: uppercase; letter-spacing: 0.08em;
-      color: var(--muted); margin-bottom: 6px;
-    }
-    .detail-group ul { list-style: none; }
-    .detail-group ul li {
-      padding: 3px 0;
-      display: flex; align-items: flex-start; gap: 7px;
-      color: #A0AEC0;
-    }
-    .detail-group ul li::before { content: '›'; color: var(--cyan); flex-shrink: 0; }
-
-    .commit-tag {
-      font-family: monospace; font-size: 0.72rem;
-      background: rgba(0,0,0,0.35); border: 1px solid var(--border);
-      border-radius: 4px; padding: 1px 7px; color: var(--cyan);
-      display: inline-block; margin: 2px 2px 2px 0;
-    }
-    .commit-tags { display: flex; flex-wrap: wrap; gap: 4px; }
-
-    /* ── METRICS BAR ─────────────────────────────────────── */
+    /* ── METRICS ── */
     .metrics {
-      margin-top: 40px;
-      background: var(--surface);
-      border: 1px solid var(--border);
-      border-radius: var(--radius);
-      padding: 20px 24px;
+      margin-top: 48px;
+      background: var(--surface); border: 1px solid var(--border);
+      border-radius: var(--r-card); padding: 22px 26px;
     }
-    .metrics h3 {
-      font-size: 0.72rem; text-transform: uppercase; letter-spacing: 0.1em;
-      color: var(--muted); margin-bottom: 16px;
-      display: flex; align-items: center; gap: 8px;
+    .met-title {
+      font-size: 0.7rem; text-transform: uppercase; letter-spacing: 0.1em; color: var(--muted);
+      margin-bottom: 18px; display: flex; align-items: center; gap: 8px;
     }
-    .metrics h3::after { content: ''; flex: 1; height: 1px; background: var(--border); }
-    .metrics-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; }
-    @media (max-width: 600px) { .metrics-grid { grid-template-columns: repeat(2, 1fr); } }
-    .metric-item {
-      background: rgba(0,0,0,0.2);
-      border: 1px solid var(--border);
-      border-radius: 8px;
-      padding: 12px 14px;
-      text-align: center;
-    }
-    .metric-value { font-size: 1.3rem; font-weight: 700; font-family: monospace; }
-    .metric-label { font-size: 0.7rem; color: var(--muted); margin-top: 4px; }
-    .m-green  { color: var(--green); }
-    .m-cyan   { color: var(--cyan); }
-    .m-yellow { color: var(--yellow); }
-    .m-text   { color: var(--text); }
+    .met-title::after { content: ''; flex: 1; height: 1px; background: var(--border); }
+    .met-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; }
+    @media (max-width: 580px) { .met-grid { grid-template-columns: repeat(2, 1fr); } }
+    .met-item { background: rgba(0,0,0,0.22); border: 1px solid var(--border); border-radius: var(--r-inner); padding: 14px; text-align: center; }
+    .met-val { font-size: 1.55rem; font-weight: 800; font-family: 'Courier New', monospace; line-height: 1; }
+    .met-lbl { font-size: 0.67rem; color: var(--muted); margin-top: 5px; }
 
-    /* ── FOOTER ──────────────────────────────────────────── */
-    .footer {
-      text-align: center;
-      color: var(--muted);
-      font-size: 0.72rem;
-      margin-top: 32px;
-      padding-top: 20px;
-      border-top: 1px solid var(--border);
-    }
+    /* ── FOOTER ── */
+    .footer { text-align: center; color: var(--muted); font-size: 0.7rem; margin-top: 36px; padding-top: 18px; border-top: 1px solid var(--border); line-height: 1.8; }
     .footer a { color: var(--cyan); text-decoration: none; }
     .footer a:hover { text-decoration: underline; }
 
-    /* ── PROGRESS BAR ────────────────────────────────────── */
-    .progress-wrap { margin-bottom: 28px; }
-    .progress-label {
-      display: flex; justify-content: space-between;
-      font-size: 0.75rem; color: var(--muted); margin-bottom: 6px;
-    }
-    .progress-bar {
-      height: 6px; background: rgba(255,255,255,0.06);
-      border-radius: 4px; overflow: hidden;
-    }
-    .progress-fill {
-      height: 100%;
-      background: linear-gradient(90deg, var(--cyan), var(--green));
-      border-radius: 4px;
-      transition: width 1s ease;
+    /* ── RESPONSIVE ── */
+    @media (max-width: 620px) {
+      header { padding: 14px 18px; }
+      main { padding: 24px 14px 60px; }
+      .hero { padding: 22px 18px; }
+      .hero::after { display: none; }
+      .hero-text h2 { font-size: 1.2rem; }
+      .hero-nums { gap: 14px; }
+      .hnum-val { font-size: 1.3rem; }
+      .grid { grid-template-columns: 1fr; }
+      .tabs { flex-direction: column; }
     }
   </style>
 </head>
 <body>
 
-<!-- ── HEADER ──────────────────────────────────────────── -->
+<!-- ──────────────────────────────── HEADER -->
 <header>
-  <div class="header-left">
-    <div class="logo-icon">⚙️</div>
-    <div class="header-title">
+  <div class="h-left">
+    <div class="logo">⚙️</div>
+    <div class="h-title">
       <h1>ToolOptimizer CNC</h1>
-      <p>Timeline do Projeto — Histórico de Fases &amp; Roadmap até Monetização</p>
+      <p>Jornada do Projeto — do código ao mercado</p>
     </div>
   </div>
-  <div class="header-right">
-    <span class="badge badge-version">v0.9.4</span>
-    <span class="badge badge-live">● LIVE</span>
-    <span class="badge badge-date">25/03/2026</span>
+  <div class="h-right">
+    <span class="badge bv">v0.10.0</span>
+    <span class="badge bl">● LIVE</span>
+    <span class="badge bd">30/03/2026</span>
   </div>
 </header>
 
-<!-- ── MAIN ────────────────────────────────────────────── -->
+<!-- ──────────────────────────────── MAIN -->
 <main>
 
-  <!-- TODAY CARD -->
-  <div class="today-card">
-    <h2>⚡ Última Sessão — 25/03/2026 (4ª)</h2>
-    <div class="today-items">
-      <div class="today-item"><span class="dot dot-green"></span>Fase C+D v0.9 concluída — Items #05 (HMI Redesign) + #08 (Sidebar Footer) + #09 (Remover Kc) | commit 9b61427</div>
-      <div class="today-item"><span class="dot dot-green"></span>results-panel.tsx: 5 zonas HMI — SafetyBadge → BigNumbers → 4 ProgressCards → Gauges → Alerts → Fórmulas</div>
-      <div class="today-item"><span class="dot dot-green"></span>sidebar-footer.tsx NOVO: Favoritos (N) · Histórico (N) · ⚙ Settings · versão app · history?filter=favoritos</div>
-      <div class="today-item"><span class="dot dot-green"></span>Kc removido: CustomToolConfig/ToolCorrectionFactor deletados + migration v2→v3 + settings simplificado</div>
-      <div class="today-item"><span class="dot dot-green"></span>878 testes passando (+14) | TypeScript zero erros | build limpo | v0.9.4</div>
-      <div class="today-item"><span class="dot dot-yellow"></span>Próxima sessão: itens restantes v0.9 (#04 Gauge Feed, #06 Tooltip Técnico, #10 Onboarding)</div>
+  <!-- HERO -->
+  <div class="hero">
+    <div class="hero-row">
+      <div class="hero-text">
+        <h2>Calculadora CNC para<br><em>operadores reais</em></h2>
+        <p>Ferramenta que calcula RPM, Avanço e segurança de corte em segundos. Desenvolvida para mold shops brasileiros — do zero ao produto pronto.</p>
+      </div>
+      <div class="hero-nums">
+        <div class="hnum">
+          <div class="hnum-val c-green">940</div>
+          <div class="hnum-lbl">Testes ✓</div>
+        </div>
+        <div class="hnum">
+          <div class="hnum-val c-cyan">0</div>
+          <div class="hnum-lbl">Erros TS</div>
+        </div>
+        <div class="hnum">
+          <div class="hnum-val c-text">103<span style="font-size:.75rem">KB</span></div>
+          <div class="hnum-lbl">Bundle</div>
+        </div>
+      </div>
+    </div>
+    <div class="journey">
+      <div class="j-labels">
+        <span>🏁 Início</span>
+        <span>🎯 <strong>v0.10.0 — Aqui agora</strong></span>
+        <span>🏆 v1.0.0</span>
+      </div>
+      <div class="j-bar"><div class="j-fill" id="jbar" style="width:0%"></div></div>
+      <div class="j-tags">
+        <span class="jtag jtag-done">✅ Motor CNC</span>
+        <span class="jtag jtag-done">✅ Deploy + Domínio</span>
+        <span class="jtag jtag-done">✅ Admin Painel</span>
+        <span class="jtag jtag-done">✅ Redesign v0.10</span>
+        <span class="jtag jtag-current">⚡ Dashboard Ajustes</span>
+        <span class="jtag jtag-current">⚡ Favoritos</span>
+        <span class="jtag jtag-future">○ Pré-lançamento</span>
+        <span class="jtag jtag-future">○ PRO v1.0</span>
+      </div>
     </div>
   </div>
 
-  <!-- PROGRESS BAR -->
-  <div class="progress-wrap">
-    <div class="progress-label">
-      <span>Progresso rumo ao Lançamento + Monetização</span>
-      <span id="pct">0%</span>
-    </div>
-    <div class="progress-bar">
-      <div class="progress-fill" id="pbar" style="width:0%"></div>
-    </div>
+  <!-- TABS -->
+  <div class="tabs">
+    <button class="tb td on" onclick="tab('done',this)">
+      ✅ O que já fizemos <span class="cnt">15</span>
+    </button>
+    <button class="tb tn" onclick="tab('next',this)">
+      ⚡ Próximas sessões <span class="cnt">10</span>
+    </button>
+    <button class="tb tf" onclick="tab('future',this)">
+      🔮 Rumo ao lançamento <span class="cnt">6</span>
+    </button>
   </div>
 
-  <!-- CONTROLS -->
-  <div class="controls">
-    <span>Filtrar:</span>
-    <button class="toggle-btn active" onclick="filter('all', this)">Todas</button>
-    <button class="toggle-btn" onclick="filter('done', this)">Concluídas</button>
-    <button class="toggle-btn" onclick="filter('pending', this)">Pendentes</button>
-    <button class="toggle-btn" onclick="expandAll()">Expandir tudo</button>
-    <button class="toggle-btn" onclick="collapseAll()">Recolher tudo</button>
+  <!-- ══════════════════════════════════════════════
+       SEÇÃO: CONCLUÍDO
+  ══════════════════════════════════════════════ -->
+  <div class="sec on" id="sec-done">
+    <div class="sec-hd">
+      <span class="sec-title">🏆 Marcos Concluídos</span>
+      <button class="btn-expand" onclick="expandSec('sec-done')">Expandir / Recolher tudo</button>
+    </div>
+    <div class="grid">
+
+      <!-- 1 -->
+      <div class="card" data-t="infra" onclick="tog(this)">
+        <div class="card-hd">
+          <div class="cicon">🏗️</div>
+          <div class="cmeta">
+            <div class="ctitle">Motor de Cálculo CNC</div>
+            <div class="csub">O cérebro: RPM, Avanço e semáforo de segurança</div>
+          </div>
+        </div>
+        <div class="card-ft">
+          <div class="tags"><span class="tag t-done">Concluído</span><span class="tag t-ver">v0.1.0</span></div>
+          <span class="chevron">›</span>
+        </div>
+        <div class="card-det"><div class="card-body">
+          <p class="det-title">O que foi feito</p>
+          <ul class="dlist">
+            <li>Fórmulas industriais: RPM = (Vc × 1000) / (π × D)</li>
+            <li>Cálculo de Avanço, Potência e força de corte (Kienzle)</li>
+            <li>Semáforo: verde = seguro · amarelo = alerta · vermelho = crítico</li>
+            <li>L/D &gt; 6 bloqueado automaticamente (risco de quebra)</li>
+            <li>Dark theme industrial, números em fonte mono</li>
+          </ul>
+        </div></div>
+      </div>
+
+      <!-- 2 -->
+      <div class="card" data-t="infra" onclick="tog(this)">
+        <div class="card-hd">
+          <div class="cicon">🧹</div>
+          <div class="cmeta">
+            <div class="ctitle">Limpeza e Base Técnica</div>
+            <div class="csub">Código limpo, decisões documentadas, sem legado</div>
+          </div>
+        </div>
+        <div class="card-ft">
+          <div class="tags"><span class="tag t-done">Concluído</span><span class="tag t-ver">v0.2.0</span></div>
+          <span class="chevron">›</span>
+        </div>
+        <div class="card-det"><div class="card-body">
+          <p class="det-title">O que foi feito</p>
+          <ul class="dlist">
+            <li>Remoção de código duplicado e arquivos desnecessários</li>
+            <li>3 ADRs: decisões de stack, CSS e separação desktop/mobile</li>
+            <li>Estrutura de pastas organizada para o projeto crescer</li>
+          </ul>
+        </div></div>
+      </div>
+
+      <!-- 3 -->
+      <div class="card" data-t="infra" onclick="tog(this)">
+        <div class="card-hd">
+          <div class="cicon">🌐</div>
+          <div class="cmeta">
+            <div class="ctitle">Publicado Online!</div>
+            <div class="csub">tooloptimizercnc.com.br no ar com deploy automático</div>
+          </div>
+        </div>
+        <div class="card-ft">
+          <div class="tags"><span class="tag t-done">Concluído</span><span class="tag t-ver">v0.2.1</span></div>
+          <span class="chevron">›</span>
+        </div>
+        <div class="card-det"><div class="card-body">
+          <p class="det-title">O que foi feito</p>
+          <ul class="dlist">
+            <li>Hospedagem na Cloudflare — rápido, global, gratuito</li>
+            <li>Domínio tooloptimizercnc.com.br registrado</li>
+            <li>app.tooloptimizercnc.com.br como alias</li>
+            <li>Toda mudança vai ao ar automaticamente</li>
+          </ul>
+        </div></div>
+      </div>
+
+      <!-- 4 -->
+      <div class="card" data-t="infra" onclick="tog(this)">
+        <div class="card-hd">
+          <div class="cicon">🤖</div>
+          <div class="cmeta">
+            <div class="ctitle">Robô de Qualidade (CI/CD)</div>
+            <div class="csub">Testa, verifica e publica a cada atualização</div>
+          </div>
+        </div>
+        <div class="card-ft">
+          <div class="tags"><span class="tag t-done">Concluído</span><span class="tag t-ver">v0.3.0</span></div>
+          <span class="chevron">›</span>
+        </div>
+        <div class="card-det"><div class="card-body">
+          <p class="det-title">O que foi feito</p>
+          <ul class="dlist">
+            <li>Pipeline: testa → verifica TypeScript → compila → publica</li>
+            <li>Nenhum código com erro chega ao site</li>
+            <li>Cache otimizado para deploys mais rápidos</li>
+          </ul>
+        </div></div>
+      </div>
+
+      <!-- 5 -->
+      <div class="card" data-t="infra" onclick="tog(this)">
+        <div class="card-hd">
+          <div class="cicon">🔍</div>
+          <div class="cmeta">
+            <div class="ctitle">Visível no Google</div>
+            <div class="csub">SEO, meta tags, sitemap — indexável em buscas</div>
+          </div>
+        </div>
+        <div class="card-ft">
+          <div class="tags"><span class="tag t-done">Concluído</span><span class="tag t-ver">v0.3.0</span></div>
+          <span class="chevron">›</span>
+        </div>
+        <div class="card-det"><div class="card-body">
+          <p class="det-title">O que foi feito</p>
+          <ul class="dlist">
+            <li>Meta tags para Google, WhatsApp e LinkedIn</li>
+            <li>Sitemap.xml + robots.txt publicados</li>
+            <li>Preview bonito ao compartilhar o link</li>
+          </ul>
+        </div></div>
+      </div>
+
+      <!-- 6 -->
+      <div class="card" data-t="feature" onclick="tog(this)">
+        <div class="card-hd">
+          <div class="cicon">🎛️</div>
+          <div class="cmeta">
+            <div class="ctitle">Sliders e Indicadores Inteligentes</div>
+            <div class="csub">Ajuste fino em tempo real com feedback visual de zona</div>
+          </div>
+        </div>
+        <div class="card-ft">
+          <div class="tags"><span class="tag t-done">Concluído</span><span class="tag t-ver">v0.3.4–v0.4.3</span></div>
+          <span class="chevron">›</span>
+        </div>
+        <div class="card-det"><div class="card-body">
+          <p class="det-title">O que foi feito</p>
+          <ul class="dlist">
+            <li>4 barras de indicadores: Vc, fz, ae, ap com zonas de cor</li>
+            <li>Ranges automáticos por material e tipo de operação</li>
+            <li>Ajuste fino recalcula em tempo real — sem clicar em Simular</li>
+            <li>Fix crítico: thumb do slider deslocado 50% corrigido</li>
+          </ul>
+        </div></div>
+      </div>
+
+      <!-- 7 -->
+      <div class="card" data-t="feature" onclick="tog(this)">
+        <div class="card-hd">
+          <div class="cicon">📈</div>
+          <div class="cmeta">
+            <div class="ctitle">Histórico de Simulações</div>
+            <div class="csub">Todas as simulações salvas, filtráveis, exportáveis</div>
+          </div>
+        </div>
+        <div class="card-ft">
+          <div class="tags"><span class="tag t-done">Concluído</span><span class="tag t-ver">v0.4.0</span></div>
+          <span class="chevron">›</span>
+        </div>
+        <div class="card-det"><div class="card-body">
+          <p class="det-title">O que foi feito</p>
+          <ul class="dlist">
+            <li>Página de histórico com parâmetros e resultados completos</li>
+            <li>Filtros por material e tipo de operação</li>
+            <li>Export em CSV para análise externa</li>
+          </ul>
+        </div></div>
+      </div>
+
+      <!-- 8 -->
+      <div class="card" data-t="design" onclick="tog(this)">
+        <div class="card-hd">
+          <div class="cicon">🎨</div>
+          <div class="cmeta">
+            <div class="ctitle">Identidade Visual + Ícones</div>
+            <div class="csub">Gauges analíticos, logo real, favicon e .exe com ícone</div>
+          </div>
+        </div>
+        <div class="card-ft">
+          <div class="tags"><span class="tag t-done">Concluído</span><span class="tag t-ver">v0.5.0–v0.5.2</span></div>
+          <span class="chevron">›</span>
+        </div>
+        <div class="card-det"><div class="card-body">
+          <p class="det-title">O que foi feito</p>
+          <ul class="dlist">
+            <li>3 Gauges: Feed Headroom · Produtividade MRR · Saúde da Ferramenta</li>
+            <li>Logo real no header, favicon + ícones PWA</li>
+            <li>Ícone real no .exe portátil (na barra de tarefas)</li>
+            <li>Botão "Reportar Bug" com modal e envio por e-mail</li>
+          </ul>
+        </div></div>
+      </div>
+
+      <!-- 9 -->
+      <div class="card" data-t="infra" onclick="tog(this)">
+        <div class="card-hd">
+          <div class="cicon">📁</div>
+          <div class="cmeta">
+            <div class="ctitle">Organização da Documentação</div>
+            <div class="csub">Projeto bem estruturado, sem duplicatas</div>
+          </div>
+        </div>
+        <div class="card-ft">
+          <div class="tags"><span class="tag t-done">Concluído</span><span class="tag t-ver">v0.6.0</span></div>
+          <span class="chevron">›</span>
+        </div>
+        <div class="card-det"><div class="card-body">
+          <p class="det-title">O que foi feito</p>
+          <ul class="dlist">
+            <li>Docs arquivados por sessão, sem bagunça no root</li>
+            <li>ROADMAP como ponto de entrada único por sessão</li>
+            <li>Zero duplicatas, zero arquivos mortos</li>
+          </ul>
+        </div></div>
+      </div>
+
+      <!-- 10 -->
+      <div class="card" data-t="infra" onclick="tog(this)">
+        <div class="card-hd">
+          <div class="cicon">🖥️</div>
+          <div class="cmeta">
+            <div class="ctitle">Painel Admin Completo</div>
+            <div class="csub">Área interna: KPIs, bugs, analytics, feature flags</div>
+          </div>
+        </div>
+        <div class="card-ft">
+          <div class="tags"><span class="tag t-done">Concluído</span><span class="tag t-ver">v0.7.0</span></div>
+          <span class="chevron">›</span>
+        </div>
+        <div class="card-det"><div class="card-body">
+          <p class="det-title">O que foi feito</p>
+          <ul class="dlist">
+            <li>KPIs em tempo real: simulações, bugs, erros, uso</li>
+            <li>Gerenciar tarefas — criar, editar, fechar</li>
+            <li>Inbox de bugs reportados por usuários</li>
+            <li>Analytics Cloudflare (Core Web Vitals LCP/INP/CLS)</li>
+            <li>Feature flags, changelog e health check</li>
+          </ul>
+        </div></div>
+      </div>
+
+      <!-- 11 -->
+      <div class="card" data-t="marketing" onclick="tog(this)">
+        <div class="card-hd">
+          <div class="cicon">📋</div>
+          <div class="cmeta">
+            <div class="ctitle">Estratégia de Marketing</div>
+            <div class="csub">12 docs: SEO, Google Ads, lançamento, pricing</div>
+          </div>
+        </div>
+        <div class="card-ft">
+          <div class="tags"><span class="tag t-done">Concluído</span><span class="tag t-ver">docs</span></div>
+          <span class="chevron">›</span>
+        </div>
+        <div class="card-det"><div class="card-body">
+          <p class="det-title">O que foi feito</p>
+          <ul class="dlist">
+            <li>TAM Brasil: 300-500k operadores CNC — mercado mapeado</li>
+            <li>Modelo Freemium → PRO R$19,90/mês</li>
+            <li>Break-even: ~250 assinantes (~R$7.000/mês)</li>
+            <li>Canais: Blog, YouTube, LinkedIn, SENAI, Google Ads</li>
+          </ul>
+        </div></div>
+      </div>
+
+      <!-- 12 -->
+      <div class="card" data-t="design" onclick="tog(this)">
+        <div class="card-hd">
+          <div class="cicon">✨</div>
+          <div class="cmeta">
+            <div class="ctitle">Redesign do Dashboard Principal</div>
+            <div class="csub">2 colunas, accordion, biblioteca de ferramentas</div>
+          </div>
+        </div>
+        <div class="card-ft">
+          <div class="tags"><span class="tag t-done">Concluído</span><span class="tag t-ver">v0.8.0</span></div>
+          <span class="chevron">›</span>
+        </div>
+        <div class="card-det"><div class="card-body">
+          <p class="det-title">O que foi feito</p>
+          <ul class="dlist">
+            <li>Layout 2 colunas com seções recolhíveis</li>
+            <li>Campos livres para Diâmetro, Raio e Altura</li>
+            <li>Biblioteca de ferramentas: salvar e reutilizar</li>
+            <li>Fix atômico no store: zero estados inconsistentes</li>
+          </ul>
+        </div></div>
+      </div>
+
+      <!-- 13 -->
+      <div class="card" data-t="feature" onclick="tog(this)">
+        <div class="card-hd">
+          <div class="cicon">🏭</div>
+          <div class="cmeta">
+            <div class="ctitle">Visor HMI Industrial</div>
+            <div class="csub">Padrão Siemens/Heidenhain — lê resultado em &lt;1s</div>
+          </div>
+        </div>
+        <div class="card-ft">
+          <div class="tags"><span class="tag t-done">Concluído</span><span class="tag t-ver">v0.9.4</span></div>
+          <span class="chevron">›</span>
+        </div>
+        <div class="card-det"><div class="card-body">
+          <p class="det-title">O que foi feito</p>
+          <ul class="dlist">
+            <li>5 zonas: Safety Badge → BigNumbers → Métricas → Gauges → Alertas</li>
+            <li>RPM e Avanço em fonte grande no topo — visíveis de longe</li>
+            <li>Arestas como 4 botões (2, 3, 4, 6 flautas)</li>
+            <li>Rodapé com Favoritos, Histórico, Configurações e versão</li>
+          </ul>
+        </div></div>
+      </div>
+
+      <!-- 14 -->
+      <div class="card" data-t="feature" onclick="tog(this)">
+        <div class="card-hd">
+          <div class="cicon">⭐</div>
+          <div class="cmeta">
+            <div class="ctitle">Favoritar + Slider de Segurança</div>
+            <div class="csub">Salva melhores resultados, ajusta conservadorismo</div>
+          </div>
+        </div>
+        <div class="card-ft">
+          <div class="tags"><span class="tag t-done">Concluído</span><span class="tag t-ver">v0.9.4</span></div>
+          <span class="chevron">›</span>
+        </div>
+        <div class="card-det"><div class="card-body">
+          <p class="det-title">O que foi feito</p>
+          <ul class="dlist">
+            <li>Botão ⭐ no painel de resultados — salva simulação completa</li>
+            <li>Filtro "Apenas Favoritos" na página de histórico</li>
+            <li>Slider Fator de Segurança: 0.50 (Conservador) → 1.00 (Agressivo)</li>
+          </ul>
+        </div></div>
+      </div>
+
+      <!-- 15 -->
+      <div class="card" data-t="design" onclick="tog(this)">
+        <div class="card-hd">
+          <div class="cicon">🌈</div>
+          <div class="cmeta">
+            <div class="ctitle">Redesign Visual v0.10.0</div>
+            <div class="csub">SegmentedBar, Gauge meia-lua, contraste mobile</div>
+          </div>
+        </div>
+        <div class="card-ft">
+          <div class="tags"><span class="tag t-done">Concluído</span><span class="tag t-ver">v0.10.0</span></div>
+          <span class="chevron">›</span>
+        </div>
+        <div class="card-det"><div class="card-body">
+          <p class="det-title">O que foi feito</p>
+          <ul class="dlist">
+            <li>SegmentedGradientBar: 50 segmentos RED → ORANGE → GREEN</li>
+            <li>HalfMoonGauge: 41 barras semicirculares com agulha branca</li>
+            <li>Sliders padronizados com tick marks e botões ±</li>
+            <li>Mobile: cards opacos, bordas visíveis, texto legível</li>
+          </ul>
+        </div></div>
+      </div>
+
+    </div><!-- /grid done -->
   </div>
 
-  <!-- TIMELINE -->
-  <div class="timeline" id="timeline">
+  <!-- ══════════════════════════════════════════════
+       SEÇÃO: PRÓXIMAS SESSÕES
+  ══════════════════════════════════════════════ -->
+  <div class="sec" id="sec-next">
+    <div class="sec-hd">
+      <span class="sec-title">⚡ Próximas Sessões de Desenvolvimento</span>
+      <button class="btn-expand" onclick="expandSec('sec-next')">Expandir / Recolher tudo</button>
+    </div>
 
-    <!-- ═══════════════════════════════════════════════════ -->
-    <!-- BLOCO 1 — FUNDAÇÃO TÉCNICA                         -->
-    <!-- ═══════════════════════════════════════════════════ -->
+    <!-- GRUPO A -->
+    <div class="glabel">🖥️ Grupo A — Visor Desktop</div>
+    <div class="grid">
 
-    <!-- 0 - Fundação -->
-    <div class="phase" data-status="done">
-      <div class="phase-dot">✓</div>
-      <div class="phase-card" onclick="toggle(this)">
-        <div class="phase-header">
-          <span class="phase-icon">🏗️</span>
-          <div class="phase-meta">
-            <div class="phase-title">Fundação do Projeto</div>
-            <div class="phase-sub">Setup React 18 · TypeScript strict · Vite 6 · Zustand · Tailwind v4</div>
-          </div>
-          <div class="phase-right">
-            <span class="phase-version">v0.1.0</span>
-            <span class="phase-tag">Concluído</span>
-          </div>
-          <span class="phase-chevron">›</span>
-        </div>
-        <div class="phase-details">
-          <div class="phase-body">
-            <div class="detail-group">
-              <h4>Entregas</h4>
-              <ul>
-                <li>Estrutura de pastas definida (src/, tests/, docs/)</li>
-                <li>Motor de cálculo CNC: RPM, Avanço, Kienzle, CTF</li>
-                <li>Validação L/D ratio com semáforo (verde/amarelo/vermelho/bloqueado)</li>
-                <li>Store Zustand com safety factor 0.7–0.8</li>
-                <li>Dark theme glassmorphism (#0F1419)</li>
-              </ul>
-            </div>
-            <div class="detail-group">
-              <h4>Design Tokens</h4>
-              <ul>
-                <li>Primary: <strong>#00D9FF</strong> (cyan neon)</li>
-                <li>Secondary: <strong>#39FF14</strong> (green neon)</li>
-                <li>Font mono: JetBrains Mono nos números</li>
-                <li>min-width: 1360px (desktop only)</li>
-              </ul>
-            </div>
+      <div class="card pending" data-t="design" onclick="tog(this)">
+        <div class="card-hd">
+          <div class="cicon">📐</div>
+          <div class="cmeta">
+            <div class="ctitle">Reestruturar Layout do Visor</div>
+            <div class="csub">Grid com zonas claras — informação organizada</div>
           </div>
         </div>
+        <div class="card-ft">
+          <div class="tags"><span class="tag t-next">Próximo</span><span class="tag t-ver">item 1.1</span></div>
+          <span class="chevron">›</span>
+        </div>
+        <div class="card-det"><div class="card-body">
+          <p class="det-title">O que vai acontecer</p>
+          <div class="steps">
+            <div class="step"><div class="step-n">1</div>Ler código atual do results-panel.tsx</div>
+            <div class="step"><div class="step-n">2</div>Aplicar grid estruturado com zonas definidas</div>
+            <div class="step"><div class="step-n">3</div>Testar em desktop e validar legibilidade</div>
+          </div>
+        </div></div>
       </div>
-    </div>
 
-    <!-- 1 - Story 001 -->
-    <div class="phase" data-status="done">
-      <div class="phase-dot">✓</div>
-      <div class="phase-card" onclick="toggle(this)">
-        <div class="phase-header">
-          <span class="phase-icon">🧹</span>
-          <div class="phase-meta">
-            <div class="phase-title">Story-001 — Limpeza Técnica + ADRs</div>
-            <div class="phase-sub">Remoção de código morto · 3 ADRs documentados</div>
-          </div>
-          <div class="phase-right">
-            <span class="phase-version">v0.2.0</span>
-            <span class="phase-tag">Concluído</span>
-          </div>
-          <span class="phase-chevron">›</span>
-        </div>
-        <div class="phase-details">
-          <div class="phase-body">
-            <div class="detail-group">
-              <h4>Entregas</h4>
-              <ul>
-                <li>ADR-001: Stack (React 18, TypeScript strict, Vite 6)</li>
-                <li>ADR-002: CSS Strategy (Tailwind v4, sem CSS Modules)</li>
-                <li>ADR-003: Desktop/Mobile separation (auto-detect viewport)</li>
-                <li>Remoção de arquivos CSS duplicados e código morto</li>
-              </ul>
-            </div>
-            <div class="detail-group">
-              <h4>Impacto</h4>
-              <ul>
-                <li>Bundle menor, zero código legado</li>
-                <li>Decisões arquiteturais formalizadas</li>
-                <li>Base sólida para features futuras</li>
-              </ul>
-            </div>
+      <div class="card pending" data-t="feature" onclick="tog(this)">
+        <div class="card-hd">
+          <div class="cicon">✏️</div>
+          <div class="cmeta">
+            <div class="ctitle">Botão Editar Ferramenta</div>
+            <div class="csub">Edita direto do visor — sem sair da tela principal</div>
           </div>
         </div>
+        <div class="card-ft">
+          <div class="tags"><span class="tag t-next">Próximo</span><span class="tag t-ver">item 1.2</span></div>
+          <span class="chevron">›</span>
+        </div>
+        <div class="card-det"><div class="card-body">
+          <p class="det-title">O que vai acontecer</p>
+          <div class="steps">
+            <div class="step"><div class="step-n">1</div>Criar ToolEditModal.tsx</div>
+            <div class="step"><div class="step-n">2</div>Botão ✏️ visível no visor de resultados</div>
+            <div class="step"><div class="step-n">3</div>Modal abre com dados da ferramenta atual</div>
+          </div>
+        </div></div>
       </div>
-    </div>
 
-    <!-- 2 - Story 002 -->
-    <div class="phase" data-status="done">
-      <div class="phase-dot">✓</div>
-      <div class="phase-card" onclick="toggle(this)">
-        <div class="phase-header">
-          <span class="phase-icon">☁️</span>
-          <div class="phase-meta">
-            <div class="phase-title">Story-002 — Deploy Cloudflare + Domínio Custom</div>
-            <div class="phase-sub">tooloptimizercnc.com.br LIVE · Worker + domínio próprio</div>
-          </div>
-          <div class="phase-right">
-            <span class="phase-version">v0.2.1</span>
-            <span class="phase-tag">Concluído</span>
-          </div>
-          <span class="phase-chevron">›</span>
-        </div>
-        <div class="phase-details">
-          <div class="phase-body">
-            <div class="detail-group">
-              <h4>Entregas</h4>
-              <ul>
-                <li>Cloudflare Worker configurado (wrangler.jsonc)</li>
-                <li>Domínio tooloptimizercnc.com.br registrado e propagado</li>
-                <li>app.tooloptimizercnc.com.br como alias</li>
-                <li>SPA routing: single-page-application em not_found_handling</li>
-              </ul>
-            </div>
-            <div class="detail-group">
-              <h4>Infra</h4>
-              <ul>
-                <li>CF Account: 6b8c90369455…</li>
-                <li>Nameservers: fatima + odin (Cloudflare)</li>
-                <li>Worker: tooloptimizercnc</li>
-                <li>ADR-005: Electron desktop build documentado</li>
-              </ul>
-            </div>
+    </div><!-- /grid A -->
+
+    <!-- GRUPO B -->
+    <div class="glabel">⚙️ Grupo B — Configurações e Ajuste Fino</div>
+    <div class="grid">
+
+      <div class="card pending" data-t="feature" onclick="tog(this)">
+        <div class="card-hd">
+          <div class="cicon">🎚️</div>
+          <div class="cmeta">
+            <div class="ctitle">Fator de Correção como Slider</div>
+            <div class="csub">Controle visual bidirecional com display percentual</div>
           </div>
         </div>
+        <div class="card-ft">
+          <div class="tags"><span class="tag t-next">Próximo</span><span class="tag t-ver">item 2.1</span></div>
+          <span class="chevron">›</span>
+        </div>
+        <div class="card-det"><div class="card-body">
+          <p class="det-title">O que vai acontecer</p>
+          <div class="steps">
+            <div class="step"><div class="step-n">1</div>Substituir input por BidirectionalSlider</div>
+            <div class="step"><div class="step-n">2</div>Exibir valor com sinal + ou − e %</div>
+            <div class="step"><div class="step-n">3</div>Integrar com store existente</div>
+          </div>
+        </div></div>
       </div>
-    </div>
 
-    <!-- 3 - Story 003 -->
-    <div class="phase" data-status="done">
-      <div class="phase-dot">✓</div>
-      <div class="phase-card" onclick="toggle(this)">
-        <div class="phase-header">
-          <span class="phase-icon">🤖</span>
-          <div class="phase-meta">
-            <div class="phase-title">Story-003 — CI/CD GitHub Actions</div>
-            <div class="phase-sub">Pipeline automático: test → typecheck → build → deploy</div>
-          </div>
-          <div class="phase-right">
-            <span class="phase-version">v0.3.0</span>
-            <span class="phase-tag">Concluído</span>
-          </div>
-          <span class="phase-chevron">›</span>
-        </div>
-        <div class="phase-details">
-          <div class="phase-body">
-            <div class="detail-group">
-              <h4>Entregas</h4>
-              <ul>
-                <li>.github/workflows/ci.yml</li>
-                <li>Testes + typecheck + build automáticos no push</li>
-                <li>Cache de node_modules (performance)</li>
-                <li>Status badge no README</li>
-                <li>Branch protection rules ativas</li>
-              </ul>
-            </div>
-            <div class="detail-group">
-              <h4>Resultado</h4>
-              <ul>
-                <li>Zero commits quebrados chegam a main</li>
-                <li>Feedback imediato em PRs</li>
-                <li>Deploy automático pós-CI verde</li>
-              </ul>
-            </div>
+      <div class="card pending" data-t="design" onclick="tog(this)">
+        <div class="card-hd">
+          <div class="cicon">📊</div>
+          <div class="cmeta">
+            <div class="ctitle">Barra de Qualidade Acima do Slider</div>
+            <div class="csub">SegmentedBar visível antes de mover o controle</div>
           </div>
         </div>
+        <div class="card-ft">
+          <div class="tags"><span class="tag t-next">Próximo</span><span class="tag t-ver">item 3.1</span></div>
+          <span class="chevron">›</span>
+        </div>
+        <div class="card-det"><div class="card-body">
+          <p class="det-title">O que vai acontecer</p>
+          <div class="steps">
+            <div class="step"><div class="step-n">1</div>SGB posicionada acima de cada slider</div>
+            <div class="step"><div class="step-n">2</div>50 segmentos desktop / 30 mobile</div>
+            <div class="step"><div class="step-n">3</div>Zona verde alinha com posição atual</div>
+          </div>
+        </div></div>
       </div>
-    </div>
 
-    <!-- 4 - Story 004 -->
-    <div class="phase" data-status="done">
-      <div class="phase-dot">✓</div>
-      <div class="phase-card" onclick="toggle(this)">
-        <div class="phase-header">
-          <span class="phase-icon">🔍</span>
-          <div class="phase-meta">
-            <div class="phase-title">Story-004 — SEO + Schema.org</div>
-            <div class="phase-sub">Meta tags · Open Graph · Twitter Card · sitemap.xml</div>
-          </div>
-          <div class="phase-right">
-            <span class="phase-version">v0.3.0</span>
-            <span class="phase-tag">Concluído</span>
-          </div>
-          <span class="phase-chevron">›</span>
-        </div>
-        <div class="phase-details">
-          <div class="phase-body">
-            <div class="detail-group">
-              <h4>Entregas</h4>
-              <ul>
-                <li>Títulos dinâmicos por rota</li>
-                <li>Meta tags: description, keywords, OG, Twitter Card</li>
-                <li>Schema.org JSON-LD (SoftwareApplication)</li>
-                <li>public/sitemap.xml + public/robots.txt</li>
-              </ul>
-            </div>
-            <div class="detail-group">
-              <h4>Resultado</h4>
-              <ul>
-                <li>Lighthouse SEO ≥ 90</li>
-                <li>Indexável por motores de busca</li>
-                <li>Preview rico em redes sociais</li>
-              </ul>
-            </div>
+      <div class="card pending" data-t="feature" onclick="tog(this)">
+        <div class="card-hd">
+          <div class="cicon">ℹ️</div>
+          <div class="cmeta">
+            <div class="ctitle">Botão "O Que É?" com Popover</div>
+            <div class="csub">Explicação de cada parâmetro ao alcance do operador</div>
           </div>
         </div>
+        <div class="card-ft">
+          <div class="tags"><span class="tag t-next">Próximo</span><span class="tag t-ver">item 3.2</span></div>
+          <span class="chevron">›</span>
+        </div>
+        <div class="card-det"><div class="card-body">
+          <p class="det-title">O que vai acontecer</p>
+          <div class="steps">
+            <div class="step"><div class="step-n">1</div>Criar ParamExplanation.tsx (popover)</div>
+            <div class="step"><div class="step-n">2</div>Botão ℹ️ "O QUE É Vc?" ao lado de cada parâmetro</div>
+            <div class="step"><div class="step-n">3</div>Texto explicativo claro para o operador</div>
+          </div>
+        </div></div>
       </div>
-    </div>
 
-    <!-- 5 - Auditoria 5 Fases -->
-    <div class="phase" data-status="done">
-      <div class="phase-dot">✓</div>
-      <div class="phase-card" onclick="toggle(this)">
-        <div class="phase-header">
-          <span class="phase-icon">🔬</span>
-          <div class="phase-meta">
-            <div class="phase-title">Auditoria 5 Fases — UX, Design System, Visual, Qualidade</div>
-            <div class="phase-sub">UX Mobile · StyledSlider · glassmorphism · coverage</div>
-          </div>
-          <div class="phase-right">
-            <span class="phase-version">v0.3.1–v0.3.4</span>
-            <span class="phase-tag">Concluído</span>
-          </div>
-          <span class="phase-chevron">›</span>
-        </div>
-        <div class="phase-details">
-          <div class="phase-body">
-            <div class="detail-group">
-              <h4>Fases 1–2 — UX + Design System</h4>
-              <ul>
-                <li>Removido bloco redundante "Parâmetros Calculados"</li>
-                <li>TouchSlider: resposta imediata (sem 800ms hold)</li>
-                <li>StyledSlider component (14 testes unitários)</li>
-                <li>design-tokens.ts centralizado, −95 linhas duplicadas</li>
-              </ul>
-            </div>
-            <div class="detail-group">
-              <h4>Fases 3–5 — Visual + Qualidade + Testes</h4>
-              <ul>
-                <li>Glassmorphism em ToolSummaryViewer</li>
-                <li>crypto.randomUUID() no histórico</li>
-                <li>+33 testes mobile, +35 UI helpers</li>
-                <li>coverage via @vitest/coverage-v8</li>
-              </ul>
-            </div>
+    </div><!-- /grid B -->
+
+    <!-- GRUPO C -->
+    <div class="glabel">📱 Grupo C — Mobile</div>
+    <div class="grid">
+
+      <div class="card pending" data-t="design" onclick="tog(this)">
+        <div class="card-hd">
+          <div class="cicon">📱</div>
+          <div class="cmeta">
+            <div class="ctitle">Visor Mobile = Desktop</div>
+            <div class="csub">Mesma estrutura e qualidade visual no celular</div>
           </div>
         </div>
+        <div class="card-ft">
+          <div class="tags"><span class="tag t-next">Próximo</span><span class="tag t-ver">item 4.1</span></div>
+          <span class="chevron">›</span>
+        </div>
+        <div class="card-det"><div class="card-body">
+          <p class="det-title">O que vai acontecer</p>
+          <div class="steps">
+            <div class="step"><div class="step-n">1</div>Mapear mobile-results-section.tsx atual</div>
+            <div class="step"><div class="step-n">2</div>Replicar as 5 zonas HMI em formato adaptado</div>
+            <div class="step"><div class="step-n">3</div>Testar legibilidade em telas pequenas</div>
+          </div>
+        </div></div>
       </div>
-    </div>
 
-    <!-- 6 - Story 005 -->
-    <div class="phase" data-status="done">
-      <div class="phase-dot">✓</div>
-      <div class="phase-card" onclick="toggle(this)">
-        <div class="phase-header">
-          <span class="phase-icon">📊</span>
-          <div class="phase-meta">
-            <div class="phase-title">Story-005 — Parameter Health Bars</div>
-            <div class="phase-sub">4 indicadores Vc · fz · ae · ap com zonas de cor</div>
-          </div>
-          <div class="phase-right">
-            <span class="phase-version">v0.3.4</span>
-            <span class="phase-tag">Concluído</span>
-          </div>
-          <span class="phase-chevron">›</span>
-        </div>
-        <div class="phase-details">
-          <div class="phase-body">
-            <div class="detail-group">
-              <h4>Entregas</h4>
-              <ul>
-                <li>ParameterHealthBar component (56 testes unitários)</li>
-                <li>Funções puras: computeVc/Fz/Ae/ApByValue</li>
-                <li>Bounds via calcularSliderBounds() — sem hardcode</li>
-                <li>CTF badge quando ctf &gt; 1.0</li>
-                <li>ap BLOQUEADO quando L/D &gt; 6</li>
-              </ul>
-            </div>
-            <div class="detail-group">
-              <h4>Integração</h4>
-              <ul>
-                <li>Desktop fine-tune panel</li>
-                <li>Mobile fine-tune section</li>
-                <li>ZONE_RGB lookup estático (inline styles)</li>
-                <li>Indicadores sempre ativos (exceto fz que precisa de resultado)</li>
-              </ul>
-            </div>
+    </div><!-- /grid C -->
+
+    <!-- GRUPO D -->
+    <div class="glabel">🎰 Grupo D — Animação Estilo Cassino (último)</div>
+    <div class="grid">
+
+      <div class="card pending" data-t="feature" onclick="tog(this)">
+        <div class="card-hd">
+          <div class="cicon">🎰</div>
+          <div class="cmeta">
+            <div class="ctitle">Simulação com Animação Cassino</div>
+            <div class="csub">Clicar "Simular" vira uma experiência inesquecível</div>
           </div>
         </div>
+        <div class="card-ft">
+          <div class="tags"><span class="tag t-next">Próximo</span><span class="tag t-ver">item 5.2</span></div>
+          <span class="chevron">›</span>
+        </div>
+        <div class="card-det"><div class="card-body">
+          <p class="det-title">O que vai acontecer</p>
+          <div class="steps">
+            <div class="step"><div class="step-n">1</div>Mesa Vazia — aguardando dados do operador</div>
+            <div class="step"><div class="step-n">2</div>Ignição — visuais de aquecimento pré-simulação</div>
+            <div class="step"><div class="step-n">3</div>Cálculo — números rolando como caça-níquel</div>
+            <div class="step"><div class="step-n">4</div>Jackpot — resultado com explosão de luz</div>
+          </div>
+        </div></div>
       </div>
-    </div>
 
-    <!-- 7 - UX Fix Fine Tune -->
-    <div class="phase" data-status="done">
-      <div class="phase-dot">✓</div>
-      <div class="phase-card" onclick="toggle(this)">
-        <div class="phase-header">
-          <span class="phase-icon">🎛️</span>
-          <div class="phase-meta">
-            <div class="phase-title">UX Fix — Ajuste Fino em Tempo Real</div>
-            <div class="phase-sub">ajustarParametros() — sliders recalculam sem zerar resultado</div>
-          </div>
-          <div class="phase-right">
-            <span class="phase-version">v0.3.4</span>
-            <span class="phase-tag">Concluído</span>
-          </div>
-          <span class="phase-chevron">›</span>
-        </div>
-        <div class="phase-details">
-          <div class="phase-body">
-            <div class="detail-group">
-              <h4>Problema Resolvido</h4>
-              <ul>
-                <li>Sliders de fine-tune forçavam re-clicar em "Simular"</li>
-                <li>UX confuso para operadores de torno CNC</li>
-              </ul>
-            </div>
-            <div class="detail-group">
-              <h4>Solução</h4>
-              <ul>
-                <li>Nova action ajustarParametros(p) no store Zustand</li>
-                <li>Atualiza params E chama calcular() imediatamente</li>
-                <li>Fine-tune = resposta live; config = requer Simular</li>
-              </ul>
-            </div>
+    </div><!-- /grid D -->
+
+    <!-- GRUPO E -->
+    <div class="glabel">⭐ Grupo E — Sistema de Favoritos</div>
+    <div class="grid">
+
+      <div class="card pending" data-t="feature" onclick="tog(this)">
+        <div class="card-hd">
+          <div class="cicon">📸</div>
+          <div class="cmeta">
+            <div class="ctitle">Favoritos — Store + Botão + Edição</div>
+            <div class="csub">Salva um "snapshot" completo do resultado, editável</div>
           </div>
         </div>
+        <div class="card-ft">
+          <div class="tags"><span class="tag t-next">Próximo</span><span class="tag t-ver">item 10</span></div>
+          <span class="chevron">›</span>
+        </div>
+        <div class="card-det"><div class="card-body">
+          <p class="det-title">O que vai acontecer</p>
+          <div class="steps">
+            <div class="step"><div class="step-n">1</div>Criar useFavoritesStore com persistência local (50 slots)</div>
+            <div class="step"><div class="step-n">2</div>Botão ★ salva snapshot completo do visor</div>
+            <div class="step"><div class="step-n">3</div>Editar: alterar parâmetros + nota pessoal</div>
+            <div class="step"><div class="step-n">4</div>Recalcula resultado ao salvar edição</div>
+          </div>
+        </div></div>
       </div>
-    </div>
 
-    <!-- 8 - Story 006 -->
-    <div class="phase" data-status="done">
-      <div class="phase-dot">✓</div>
-      <div class="phase-card" onclick="toggle(this)">
-        <div class="phase-header">
-          <span class="phase-icon">📈</span>
-          <div class="phase-meta">
-            <div class="phase-title">Story-006 — Histórico Responsivo + Analytics</div>
-            <div class="phase-sub">HistoryPage responsivo · 5 eventos rastreados · LGPD-safe</div>
-          </div>
-          <div class="phase-right">
-            <span class="phase-version">v0.4.0</span>
-            <span class="phase-tag">Concluído</span>
-          </div>
-          <span class="phase-chevron">›</span>
-        </div>
-        <div class="phase-details">
-          <div class="phase-body">
-            <div class="detail-group">
-              <h4>Histórico</h4>
-              <ul>
-                <li>HistoryPage: layout mobile/tablet/desktop</li>
-                <li>Cards com parâmetros e resultado completo</li>
-                <li>Filtros por material e tipo de operação</li>
-                <li>Export CSV dos dados do histórico</li>
-              </ul>
-            </div>
-            <div class="detail-group">
-              <h4>Analytics (Plausible)</h4>
-              <ul>
-                <li>1KB · privacy-first · sem cookies · LGPD-compliant</li>
-                <li>Simulacao_Executada · Material_Selecionado</li>
-                <li>Resultado_Copiado · Historico_Acessado · Settings_Acessado</li>
-              </ul>
-            </div>
+      <div class="card pending" data-t="feature" onclick="tog(this)">
+        <div class="card-hd">
+          <div class="cicon">🎯</div>
+          <div class="cmeta">
+            <div class="ctitle">Zona Verde Dinâmica nos Sliders</div>
+            <div class="csub">Marca onde o favorito ficou — referência visual</div>
           </div>
         </div>
+        <div class="card-ft">
+          <div class="tags"><span class="tag t-next">Próximo</span><span class="tag t-ver">item 11</span></div>
+          <span class="chevron">›</span>
+        </div>
+        <div class="card-det"><div class="card-body">
+          <p class="det-title">O que vai acontecer</p>
+          <div class="steps">
+            <div class="step"><div class="step-n">1</div>SGB recebe prop idealRange (calculado do favorito)</div>
+            <div class="step"><div class="step-n">2</div>Zona verde = valor favorito ± 10%</div>
+            <div class="step"><div class="step-n">3</div>Atualiza em tempo real ao salvar novo favorito</div>
+          </div>
+        </div></div>
       </div>
-    </div>
 
-    <!-- 9 - Slider Bounds Dinâmicos -->
-    <div class="phase" data-status="done">
-      <div class="phase-dot">✓</div>
-      <div class="phase-card" onclick="toggle(this)">
-        <div class="phase-header">
-          <span class="phase-icon">🎚️</span>
-          <div class="phase-meta">
-            <div class="phase-title">Sliders Bounds Dinâmicos</div>
-            <div class="phase-sub">calcularSliderBounds() por material/operação/ferramenta</div>
-          </div>
-          <div class="phase-right">
-            <span class="phase-version">v0.4.1</span>
-            <span class="phase-tag">Concluído</span>
-          </div>
-          <span class="phase-chevron">›</span>
-        </div>
-        <div class="phase-details">
-          <div class="phase-body">
-            <div class="detail-group">
-              <h4>Problema Resolvido</h4>
-              <ul>
-                <li>Ranges fixos nos sliders não representavam a realidade</li>
-                <li>Fz de 0.01 a 0.5 para qualquer material/operação</li>
-              </ul>
-            </div>
-            <div class="detail-group">
-              <h4>Solução</h4>
-              <ul>
-                <li>calcularSliderBounds() calcula min/max por contexto</li>
-                <li>Bounds baseados nos dados Kienzle + tabelas Vc</li>
-                <li>Sliders mostram range realista para cada combinação</li>
-              </ul>
-            </div>
+      <div class="card pending" data-t="feature" onclick="tog(this)">
+        <div class="card-hd">
+          <div class="cicon">📚</div>
+          <div class="cmeta">
+            <div class="ctitle">Página de Favoritos</div>
+            <div class="csub">Lista completa: ver, filtrar, editar, usar ou excluir</div>
           </div>
         </div>
+        <div class="card-ft">
+          <div class="tags"><span class="tag t-next">Próximo</span><span class="tag t-ver">item 12</span></div>
+          <span class="chevron">›</span>
+        </div>
+        <div class="card-det"><div class="card-body">
+          <p class="det-title">O que vai acontecer</p>
+          <div class="steps">
+            <div class="step"><div class="step-n">1</div>Criar página /favoritos com grid de cards</div>
+            <div class="step"><div class="step-n">2</div>Filtros por material e tipo de operação</div>
+            <div class="step"><div class="step-n">3</div>✏️ Editar · 🗑️ Remover · ↩️ Usar no simulador</div>
+          </div>
+        </div></div>
       </div>
-    </div>
 
-    <!-- 10 - Unificação Indicadores -->
-    <div class="phase" data-status="done">
-      <div class="phase-dot">✓</div>
-      <div class="phase-card" onclick="toggle(this)">
-        <div class="phase-header">
-          <span class="phase-icon">🎨</span>
-          <div class="phase-meta">
-            <div class="phase-title">Unificação de Indicadores + Design System</div>
-            <div class="phase-sub">StyledSlider · design-tokens.ts · glassmorphism unificado</div>
-          </div>
-          <div class="phase-right">
-            <span class="phase-version">v0.4.2</span>
-            <span class="phase-tag">Concluído</span>
-          </div>
-          <span class="phase-chevron">›</span>
-        </div>
-        <div class="phase-details">
-          <div class="phase-body">
-            <div class="detail-group">
-              <h4>Entregas</h4>
-              <ul>
-                <li>StyledSlider: componente único para todos os sliders</li>
-                <li>design-tokens.ts: glassmorphism tokens centralizados</li>
-                <li>−95 linhas de CSS duplicado removidas</li>
-                <li>Thumb com transform só via style={} (sem -translate-x-1/2)</li>
-              </ul>
-            </div>
-            <div class="detail-group">
-              <h4>Lição Crítica</h4>
-              <ul>
-                <li>Tailwind v4: translate (standalone) ≠ transform</li>
-                <li>-translate-x-1/2 + style transform = double translation</li>
-                <li>Solução: usar apenas style={{ transform }} no thumb</li>
-              </ul>
-            </div>
+    </div><!-- /grid E -->
+
+    <!-- GRUPO F -->
+    <div class="glabel">🔒 Grupo F — Segurança</div>
+    <div class="grid">
+
+      <div class="card pending" data-t="security" onclick="tog(this)">
+        <div class="card-hd">
+          <div class="cicon">🔒</div>
+          <div class="cmeta">
+            <div class="ctitle">Segurança Cibernética</div>
+            <div class="csub">CSP headers, auditoria de deps, validação de dados</div>
           </div>
         </div>
+        <div class="card-ft">
+          <div class="tags"><span class="tag t-next">Próximo</span><span class="tag t-ver">v0.5.5</span></div>
+          <span class="chevron">›</span>
+        </div>
+        <div class="card-det"><div class="card-body">
+          <p class="det-title">O que vai acontecer</p>
+          <div class="steps">
+            <div class="step"><div class="step-n">1</div>Corrigir CSP headers (bloqueia scripts externos mal-intencionados)</div>
+            <div class="step"><div class="step-n">2</div>npm audit automático no CI — alerta de vulnerabilidades</div>
+            <div class="step"><div class="step-n">3</div>Validar ranges ao importar dados externos</div>
+            <div class="step"><div class="step-n">4</div>Remover script Plausible inativo do HTML</div>
+          </div>
+        </div></div>
       </div>
-    </div>
 
-    <!-- 11 - Fix Thumb -->
-    <div class="phase" data-status="done">
-      <div class="phase-dot">✓</div>
-      <div class="phase-card" onclick="toggle(this)">
-        <div class="phase-header">
-          <span class="phase-icon">🐛</span>
-          <div class="phase-meta">
-            <div class="phase-title">Fix — Thumb Double-Translation (Tailwind v4)</div>
-            <div class="phase-sub">Bug: thumb deslocado 50% para esquerda em todos os sliders</div>
-          </div>
-          <div class="phase-right">
-            <span class="phase-version">v0.4.3</span>
-            <span class="phase-tag">Concluído</span>
-          </div>
-          <span class="phase-chevron">›</span>
-        </div>
-        <div class="phase-details">
-          <div class="phase-body">
-            <div class="detail-group">
-              <h4>Root Cause</h4>
-              <ul>
-                <li>Tailwind v4 gera CSS translate (propriedade standalone)</li>
-                <li>style={{ transform }} gera CSS transform</li>
-                <li>Ambos ativos = double translation no thumb</li>
-              </ul>
-            </div>
-            <div class="detail-group">
-              <h4>Fix Aplicado</h4>
-              <ul>
-                <li>Removido -translate-x-1/2 de StyledSlider e BidirectionalSlider</li>
-                <li>Track: mx-[18px] em todos os 3 componentes</li>
-                <li>Clearance simétrico: 18px margin + 6px gap − 14px = 10px</li>
-              </ul>
-            </div>
+    </div><!-- /grid F -->
+  </div>
+
+  <!-- ══════════════════════════════════════════════
+       SEÇÃO: LANÇAMENTO
+  ══════════════════════════════════════════════ -->
+  <div class="sec" id="sec-future">
+    <div class="sec-hd">
+      <span class="sec-title">🔮 Rumo ao Lançamento e Monetização</span>
+    </div>
+    <div class="grid">
+
+      <div class="card pending" data-t="marketing" onclick="tog(this)">
+        <div class="card-hd">
+          <div class="cicon">🛠️</div>
+          <div class="cmeta">
+            <div class="ctitle">Pré-lançamento</div>
+            <div class="csub">Landing page, blog, YouTube, Google Search Console</div>
           </div>
         </div>
+        <div class="card-ft">
+          <div class="tags"><span class="tag t-next">Pendente</span><span class="tag t-ver">Sem. 1–6</span></div>
+          <span class="chevron">›</span>
+        </div>
+        <div class="card-det"><div class="card-body">
+          <p class="det-title">O que vai acontecer</p>
+          <ul class="dlist">
+            <li>Landing page tooloptimizercnc.com.br com hero + CTA</li>
+            <li>Blog MestreCNC: 2-4 artigos fundacionais</li>
+            <li>Canal YouTube + 1-2 vídeos iniciais</li>
+            <li>Google Search Console configurado</li>
+            <li>5-10 instrutores SENAI mapeados</li>
+          </ul>
+        </div></div>
       </div>
-    </div>
 
-    <!-- 12 - 3 Gauges + Logo -->
-    <div class="phase" data-status="done">
-      <div class="phase-dot">✓</div>
-      <div class="phase-card" onclick="toggle(this)">
-        <div class="phase-header">
-          <span class="phase-icon">🌡️</span>
-          <div class="phase-meta">
-            <div class="phase-title">3 Gauges Analíticos + Logo Real</div>
-            <div class="phase-sub">Feed Headroom · MRR Productivity · Tool Health Score</div>
-          </div>
-          <div class="phase-right">
-            <span class="phase-version">v0.5.0</span>
-            <span class="phase-tag">Concluído</span>
-          </div>
-          <span class="phase-chevron">›</span>
-        </div>
-        <div class="phase-details">
-          <div class="phase-body">
-            <div class="detail-group">
-              <h4>Entregas</h4>
-              <ul>
-                <li>Gauge 1: Feed Rate Headroom (paleta avanço)</li>
-                <li>Gauge 2: MRR Productivity — substitui Margem de Potência</li>
-                <li>Gauge 3: Tool Health Score (ponderado: ap 40%, fz 30%, ae 20%, Vc 10%)</li>
-                <li>Logo real no header (substitui ícone genérico)</li>
-              </ul>
-            </div>
-            <div class="detail-group">
-              <h4>Métricas</h4>
-              <ul>
-                <li>603 testes passando (99.7%)</li>
-                <li>JS: 95.63KB gzip · CSS: 13.05KB gzip</li>
-                <li>TypeScript: zero erros</li>
-              </ul>
-            </div>
+      <div class="card pending" data-t="marketing" onclick="tog(this)">
+        <div class="card-hd">
+          <div class="cicon">📣</div>
+          <div class="cmeta">
+            <div class="ctitle">Soft Launch</div>
+            <div class="csub">Rede pessoal → WhatsApp/grupos → YouTube/SENAI</div>
           </div>
         </div>
+        <div class="card-ft">
+          <div class="tags"><span class="tag t-next">Pendente</span><span class="tag t-ver">Sem. 7–18</span></div>
+          <span class="chevron">›</span>
+        </div>
+        <div class="card-det"><div class="card-body">
+          <p class="det-title">3 Ondas de Alcance</p>
+          <ul class="dlist">
+            <li>Onda 1: 20-50 contatos via WhatsApp e LinkedIn DM</li>
+            <li>Onda 2: Grupos de usinagem + forum usinagem.com.br</li>
+            <li>Onda 3: YouTube (2 vídeos/mês) + Blog SEO + SENAI</li>
+            <li>Meta: 200+ usuários ativos mensais</li>
+          </ul>
+        </div></div>
       </div>
-    </div>
 
-    <!-- 13 - BugReportButton -->
-    <div class="phase" data-status="done">
-      <div class="phase-dot">✓</div>
-      <div class="phase-card" onclick="toggle(this)">
-        <div class="phase-header">
-          <span class="phase-icon">🪲</span>
-          <div class="phase-meta">
-            <div class="phase-title">BugReportButton + Fix BugReportModal</div>
-            <div class="phase-sub">Modal mailto · card opaco · maxLength 500 · Plausible Bug_Reportado</div>
-          </div>
-          <div class="phase-right">
-            <span class="phase-version">v0.5.1</span>
-            <span class="phase-tag">Concluído</span>
-          </div>
-          <span class="phase-chevron">›</span>
-        </div>
-        <div class="phase-details">
-          <div class="phase-body">
-            <div class="detail-group">
-              <h4>Entregas</h4>
-              <ul>
-                <li>bug-report-button.tsx — botão desktop (texto) + variante mobile (ícone)</li>
-                <li>Modal com textarea de descrição + checkbox "incluir estado da app"</li>
-                <li>Abre cliente de e-mail via mailto com dados da sessão</li>
-                <li>Fix: card opaco, maxLength 500, ordem onClose/mailto</li>
-              </ul>
-            </div>
-            <div class="detail-group">
-              <h4>Commits</h4>
-              <div class="commit-tags">
-                <span class="commit-tag">905cb87</span>
-                <span class="commit-tag">fix v0.5.1</span>
-              </div>
-              <ul style="margin-top:10px">
-                <li>3 testes: desktop + mobile variant</li>
-                <li>export-buttons.test.tsx atualizado</li>
-              </ul>
-            </div>
+      <div class="card pending" data-t="infra" onclick="tog(this)">
+        <div class="card-hd">
+          <div class="cicon">🔑</div>
+          <div class="cmeta">
+            <div class="ctitle">Login Google + Nuvem</div>
+            <div class="csub">Conta opcional, histórico sincronizado entre devices</div>
           </div>
         </div>
+        <div class="card-ft">
+          <div class="tags"><span class="tag t-next">Pendente</span><span class="tag t-ver">Mês 6–12</span></div>
+          <span class="chevron">›</span>
+        </div>
+        <div class="card-det"><div class="card-body">
+          <p class="det-title">O que vai acontecer</p>
+          <ul class="dlist">
+            <li>Login opcional via Google (Firebase Auth)</li>
+            <li>Histórico salvo na nuvem — acessa em qualquer device</li>
+            <li>Base de e-mails para lançamento PRO</li>
+            <li>Meta: 15-25% dos usuários fazendo cadastro</li>
+          </ul>
+        </div></div>
       </div>
-    </div>
 
-    <!-- 14 - Favicon + Ícones + Electron .exe -->
-    <div class="phase" data-status="done">
-      <div class="phase-dot">✓</div>
-      <div class="phase-card" onclick="toggle(this)">
-        <div class="phase-header">
-          <span class="phase-icon">🖼️</span>
-          <div class="phase-meta">
-            <div class="phase-title">Favicon + Ícones PWA + Electron .exe</div>
-            <div class="phase-sub">sharp + png-to-ico · ícone real no .exe portátil</div>
-          </div>
-          <div class="phase-right">
-            <span class="phase-version">v0.5.2</span>
-            <span class="phase-tag">Concluído</span>
-          </div>
-          <span class="phase-chevron">›</span>
-        </div>
-        <div class="phase-details">
-          <div class="phase-body">
-            <div class="detail-group">
-              <h4>Entregas</h4>
-              <ul>
-                <li>favicon.ico + favicon.svg (substituem genérico)</li>
-                <li>apple-touch-icon.png, icon-192.png, icon-512.png (PWA)</li>
-                <li>icon.ico para Electron — aparece na barra de tarefas e no .exe</li>
-                <li>scripts/generate-icons.cjs (sharp + png-to-ico)</li>
-              </ul>
-            </div>
-            <div class="detail-group">
-              <h4>Build Desktop</h4>
-              <ul>
-                <li>ToolOptimizer-CNC-{version}-portable.exe — 85MB</li>
-                <li>ADR-005: Electron desktop build documentado</li>
-                <li>ADR-006: Estratégia versionamento SemVer</li>
-              </ul>
-            </div>
+      <div class="card pending" data-t="marketing" onclick="tog(this)">
+        <div class="card-hd">
+          <div class="cicon">📈</div>
+          <div class="cmeta">
+            <div class="ctitle">Crescimento</div>
+            <div class="csub">SEO, Google Ads, SENAI, 2.000+ usuários ativos</div>
           </div>
         </div>
+        <div class="card-ft">
+          <div class="tags"><span class="tag t-next">Pendente</span><span class="tag t-ver">Sem. 19–48</span></div>
+          <span class="chevron">›</span>
+        </div>
+        <div class="card-det"><div class="card-body">
+          <p class="det-title">O que vai acontecer</p>
+          <ul class="dlist">
+            <li>SEO: top 10 para 5+ keywords long-tail</li>
+            <li>Google Ads: R$15-25/dia após validação orgânica</li>
+            <li>3-5 escolas SENAI adotando em sala de aula</li>
+            <li>Meta: 2.000+ MAU · 12+ artigos · 8+ vídeos YouTube</li>
+          </ul>
+        </div></div>
       </div>
-    </div>
 
-    <!-- 15 - Reestruturação Documental -->
-    <div class="phase" data-status="done">
-      <div class="phase-dot">✓</div>
-      <div class="phase-card" onclick="toggle(this)">
-        <div class="phase-header">
-          <span class="phase-icon">📁</span>
-          <div class="phase-meta">
-            <div class="phase-title">Reestruturação Documental — 4 Fases</div>
-            <div class="phase-sub">Archive · Eliminar duplicatas · Trim/consolidar · Update refs</div>
-          </div>
-          <div class="phase-right">
-            <span class="phase-version">v0.6.0</span>
-            <span class="phase-tag">Concluído</span>
-          </div>
-          <span class="phase-chevron">›</span>
-        </div>
-        <div class="phase-details">
-          <div class="phase-body">
-            <div class="detail-group">
-              <h4>4 Fases</h4>
-              <ul>
-                <li>Fase 1: Archive sessions, stories, planos concluídos (<span class="commit-tag">2651a89</span>)</li>
-                <li>Fase 2: Eliminar duplicatas + update refs código (<span class="commit-tag">d2faf15</span>)</li>
-                <li>Fase 3: Trim PROXIMA_SESSAO + clean workflows (<span class="commit-tag">9770648</span>)</li>
-                <li>Fase 4: Update refs + bump v0.6.0</li>
-              </ul>
-            </div>
-            <div class="detail-group">
-              <h4>Resultado</h4>
-              <ul>
-                <li>Docs organizados em estrutura coesa</li>
-                <li>ROADMAP_SESSAO_ATUAL.md como ponto de entrada único</li>
-                <li>Zero duplicatas, zero arquivos mortos no root</li>
-              </ul>
-            </div>
+      <div class="card pending" data-t="money" onclick="tog(this)">
+        <div class="card-hd">
+          <div class="cicon">💰</div>
+          <div class="cmeta">
+            <div class="ctitle">Monetização PRO</div>
+            <div class="csub">R$19,90/mês · trial 14 dias · break-even 250 clientes</div>
           </div>
         </div>
+        <div class="card-ft">
+          <div class="tags"><span class="tag t-next">Pendente</span><span class="tag t-ver">Mês 13+</span></div>
+          <span class="chevron">›</span>
+        </div>
+        <div class="card-det"><div class="card-body">
+          <p class="det-title">O que vai acontecer</p>
+          <ul class="dlist">
+            <li>PRO Mensal: R$19,90 · Anual: R$149,90 · Vitalício: R$349,90</li>
+            <li>"Fundador PRO": 40% off para os 100 primeiros</li>
+            <li>PRO: 50+ materiais, export PDF, histórico nuvem</li>
+            <li>Break-even: ~250 assinantes (~R$7.000/mês)</li>
+          </ul>
+        </div></div>
       </div>
-    </div>
 
-    <!-- 16 - Admin Dashboard -->
-    <div class="phase" data-status="done">
-      <div class="phase-dot">✓</div>
-      <div class="phase-card" onclick="toggle(this)">
-        <div class="phase-header">
-          <span class="phase-icon">🖥️</span>
-          <div class="phase-meta">
-            <div class="phase-title">Admin Dashboard — 8 Fases Completas</div>
-            <div class="phase-sub">KPIs · Tarefas CRUD · Bugs · Erros · Usage · Analytics CF · Flags · Activity Feed</div>
-          </div>
-          <div class="phase-right">
-            <span class="phase-version">v0.7.0</span>
-            <span class="phase-tag">Concluído</span>
-          </div>
-          <span class="phase-chevron">›</span>
-        </div>
-        <div class="phase-details">
-          <div class="phase-body">
-            <div class="detail-group">
-              <h4>8 Fases Implementadas</h4>
-              <ul>
-                <li>F1: Fundação — layout, store, KpiCard, 9 rotas lazy</li>
-                <li>F2: Tarefas CRUD — AdminModal, vite-plugin-admin-sync</li>
-                <li>F3: Inbox de Bugs — BugReportCard, AdminInboxPage</li>
-                <li>F4: Error Tracking — installErrorTracker, AdminErrorsPage</li>
-                <li>F5: Usage Stats — usage-store, MiniChart, AdminUsagePage</li>
-                <li>F6: Analytics CF — cf-analytics-client, Web Vitals LCP/INP/CLS</li>
-                <li>F7: Flags + Changelog + Health — 5 feature flags, 17 entradas</li>
-                <li>F8: Polish — activity feed unificado, KPIs reais, sparkline</li>
-              </ul>
-            </div>
-            <div class="detail-group">
-              <h4>Métricas v0.7.0</h4>
-              <div class="commit-tags">
-                <span class="commit-tag">ab5eb8f</span>
-              </div>
-              <ul style="margin-top:10px">
-                <li>824 testes passando (49 arquivos) — 0 falhas</li>
-                <li>TypeScript zero erros</li>
-                <li>JS: 99.20KB gzip · CSS: 14.35KB gzip</li>
-                <li>Rota /admin com senha (localStorage)</li>
-              </ul>
-            </div>
+      <div class="card pending" data-t="money" onclick="tog(this)">
+        <div class="card-hd">
+          <div class="cicon">🏆</div>
+          <div class="cmeta">
+            <div class="ctitle">MVP Completo — v1.0.0</div>
+            <div class="csub">Produto validado em campo com receita recorrente</div>
           </div>
         </div>
+        <div class="card-ft">
+          <div class="tags"><span class="tag t-next">Pendente</span><span class="tag t-ver">v1.0.0</span></div>
+          <span class="chevron">›</span>
+        </div>
+        <div class="card-det"><div class="card-body">
+          <p class="det-title">Critérios de aceite</p>
+          <ul class="dlist">
+            <li>1.000+ usuários ativos com login</li>
+            <li>Primeiro assinante PRO confirmado</li>
+            <li>10+ depoimentos de profissionais reais</li>
+            <li>3+ escolas SENAI adotando em aula</li>
+            <li>10.000+ simulações/mês</li>
+          </ul>
+        </div></div>
       </div>
-    </div>
 
-    <!-- 17 - Docs Marketing & Monetização -->
-    <div class="phase" data-status="done">
-      <div class="phase-dot">✓</div>
-      <div class="phase-card" onclick="toggle(this)">
-        <div class="phase-header">
-          <span class="phase-icon">📋</span>
-          <div class="phase-meta">
-            <div class="phase-title">Documentação Marketing &amp; Monetização — 12 Docs</div>
-            <div class="phase-sub">Estratégia completa: Fundação → Aquisição → Monetização → Execução</div>
-          </div>
-          <div class="phase-right">
-            <span class="phase-version">v0.7.0</span>
-            <span class="phase-tag">Concluído</span>
-          </div>
-          <span class="phase-chevron">›</span>
-        </div>
-        <div class="phase-details">
-          <div class="phase-body">
-            <div class="detail-group">
-              <h4>12 Documentos (4 fases)</h4>
-              <ul>
-                <li><strong>Fundação:</strong> Visão Produto · Análise Competitiva · Personas &amp; Jornada</li>
-                <li><strong>Aquisição:</strong> Estratégia SEO · Plano Google Ads · Estratégia Conteúdo</li>
-                <li><strong>Monetização:</strong> Modelo Monetização · Plano Lançamento · Métricas KPIs</li>
-                <li><strong>Execução:</strong> Landing Page Spec · Materiais Marketing · Índice Master</li>
-              </ul>
-            </div>
-            <div class="detail-group">
-              <h4>Dados Chave</h4>
-              <ul>
-                <li>TAM Brasil: 300-500k operadores CNC</li>
-                <li>Modelo: Free → Login (6m) → PRO R$29-49/mês (12m+)</li>
-                <li>Break-even: ~250 assinantes (~R$7.000/mês)</li>
-                <li>Canais: Blog MestreCNC · YouTube · LinkedIn · SENAI</li>
-                <li>7 influenciadores BR mapeados</li>
-                <li>Concorrentes: G-Wizard $80/ano · FSWizard (limitado)</li>
-              </ul>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <!-- 18 - Redesign Dashboard v0.8.0 -->
-    <div class="phase" data-status="done">
-      <div class="phase-dot">✓</div>
-      <div class="phase-card" onclick="toggle(this)">
-        <div class="phase-header">
-          <span class="phase-icon">🎨</span>
-          <div class="phase-meta">
-            <div class="phase-title">Redesign Dashboard Principal — 6 Fases</div>
-            <div class="phase-sub">Layout 2 colunas · Accordion · Dropdowns ferramenta · Biblioteca · Polish</div>
-          </div>
-          <div class="phase-right">
-            <span class="phase-version">v0.8.0</span>
-            <span class="phase-tag">Concluído</span>
-          </div>
-          <span class="phase-chevron">›</span>
-        </div>
-        <div class="phase-details">
-          <div class="phase-body">
-            <div class="detail-group">
-              <h4>6 Fases Implementadas</h4>
-              <ul>
-                <li>F1: Fundação — tipos, store, dados (<span class="commit-tag">5f98c9d</span>)</li>
-                <li>F2: Layout 2 colunas + Accordion colapsável (<span class="commit-tag">7afbe82</span>)</li>
-                <li>F3: Ferramenta → DropdownRow para D, R, Z, H (<span class="commit-tag">70cf508</span>)</li>
-                <li>F4: Fix atômico store — set() único em calcular() (<span class="commit-tag">274cf28</span>)</li>
-                <li>F5: Biblioteca ferramentas — dropdown + salvar manual (<span class="commit-tag">293547a</span>)</li>
-                <li>F6: Fontes +1 nível · gap gap-3 · release v0.8.0 (<span class="commit-tag">78d6a0e</span>)</li>
-              </ul>
-            </div>
-            <div class="detail-group">
-              <h4>Métricas v0.8.0</h4>
-              <ul>
-                <li>864 testes passando (50 arquivos) — 0 falhas</li>
-                <li>TypeScript zero erros</li>
-                <li>JS: 100.11KB gzip · CSS: 14.35KB gzip</li>
-                <li>Collapsible sections com summary text dinâmico</li>
-              </ul>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <!-- ═══════════════════════════════════════════════════ -->
-    <!-- BLOCO 2 — PREPARAÇÃO PARA LANÇAMENTO               -->
-    <!-- ═══════════════════════════════════════════════════ -->
-    <div class="section-divider">
-      <span>🚀 Roadmap de Lançamento &amp; Monetização</span>
-    </div>
-
-    <!-- 19 - Segurança Cibernética -->
-    <div class="phase" data-status="current">
-      <div class="phase-dot">●</div>
-      <div class="phase-card" onclick="toggle(this)">
-        <div class="phase-header">
-          <span class="phase-icon">🔒</span>
-          <div class="phase-meta">
-            <div class="phase-title">Segurança Cibernética — 7 Fases ← Próxima</div>
-            <div class="phase-sub">CSP headers · npm audit CI · validação imports · remover scripts inativos</div>
-          </div>
-          <div class="phase-right">
-            <span class="phase-version">v0.5.5</span>
-            <span class="phase-tag">Próxima</span>
-          </div>
-          <span class="phase-chevron">›</span>
-        </div>
-        <div class="phase-details">
-          <div class="phase-body">
-            <div class="detail-group">
-              <h4>Automáticas (Claude executa)</h4>
-              <ul>
-                <li>F2: CSP header em public/_headers — corrigir connect-src api.cloudflare.com</li>
-                <li>F3: npm audit no CI + Dependabot (.github/ci.yml + dependabot.yml)</li>
-                <li>F4: Validação de ranges em importSettings() e importHistory()</li>
-                <li>F5: Remover script Plausible inativo (index.html + use-plausible.ts)</li>
-              </ul>
-            </div>
-            <div class="detail-group">
-              <h4>Manuais (Rafael executa)</h4>
-              <ul>
-                <li>F1: Repo privado + remover GitHub Pages</li>
-                <li>F6: Cloudflare Bot Fight Mode + Rate Limiting</li>
-                <li>F7: GitHub Branch protection + Dependabot alerts</li>
-                <li>⚠️ Bug conhecido: connect-src 'self' bloqueia api.cloudflare.com</li>
-              </ul>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <!-- v0.8.1 - Input Livre + Arestas Botões -->
-    <div class="phase" data-status="pending">
-      <div class="phase-dot">○</div>
-      <div class="phase-card" onclick="toggle(this)">
-        <div class="phase-header">
-          <span class="phase-icon">⌨️</span>
-          <div class="phase-meta">
-            <div class="phase-title">v0.9 Item 1+2 — Input Livre + Arestas como Botões</div>
-            <div class="phase-sub">Diâmetro · Raio · Altura → digitação livre · campos vazios no início</div>
-          </div>
-          <div class="phase-right">
-            <span class="phase-version">v0.8.1</span>
-            <span class="phase-tag">Pendente</span>
-          </div>
-          <span class="phase-chevron">›</span>
-        </div>
-        <div class="phase-details">
-          <div class="phase-body">
-            <div class="detail-group">
-              <h4>Item 1 — Input Livre</h4>
-              <ul>
-                <li>Diâmetro, Raio da Ponta, Altura de Fixação: dropdown → campo numérico</li>
-                <li>Campos abrem vazios — sem valor pré-carregado</li>
-                <li>Botão Simular desabilitado até Diâmetro e Altura preenchidos</li>
-                <li>Carrega valores ao selecionar ferramenta salva</li>
-              </ul>
-            </div>
-            <div class="detail-group">
-              <h4>Item 2 — Arestas como Botões</h4>
-              <ul>
-                <li>Dropdown [2, 3, 4, 6] → 4 botões selecionáveis</li>
-                <li>Mesmo estilo visual dos botões de Tipo e Operação</li>
-                <li>Fundo cyan + texto preto quando selecionado</li>
-              </ul>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <!-- v0.8.2 - Favoritar Simulação -->
-    <div class="phase" data-status="pending">
-      <div class="phase-dot">○</div>
-      <div class="phase-card" onclick="toggle(this)">
-        <div class="phase-header">
-          <span class="phase-icon">⭐</span>
-          <div class="phase-meta">
-            <div class="phase-title">v0.9 Item 3 — Favoritar Simulação</div>
-            <div class="phase-sub">Botão ⭐ no dashboard + no histórico · diferente de "salvar ferramenta"</div>
-          </div>
-          <div class="phase-right">
-            <span class="phase-version">v0.8.2</span>
-            <span class="phase-tag">Pendente</span>
-          </div>
-          <span class="phase-chevron">›</span>
-        </div>
-        <div class="phase-details">
-          <div class="phase-body">
-            <div class="detail-group">
-              <h4>No Painel de Resultados</h4>
-              <ul>
-                <li>Botão ⭐ visível após simulação bem-sucedida</li>
-                <li>Operador simula → testa na máquina → volta e favorita</li>
-                <li>Salva simulação completa (ferramenta + material + params + resultado)</li>
-                <li>Clique duplo desfavorita · ícone amarelo quando ativo</li>
-              </ul>
-            </div>
-            <div class="detail-group">
-              <h4>No Histórico</h4>
-              <ul>
-                <li>Botão ⭐ em cada card do histórico</li>
-                <li>Filtro "Apenas Favoritos" na página de histórico</li>
-                <li>Contador de favoritos no header da página</li>
-                <li>persist migration v1→v2 no history-store</li>
-              </ul>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <!-- v0.8.3 - Slider Fator de Segurança Desktop -->
-    <div class="phase" data-status="pending">
-      <div class="phase-dot">○</div>
-      <div class="phase-card" onclick="toggle(this)">
-        <div class="phase-header">
-          <span class="phase-icon">🛡️</span>
-          <div class="phase-meta">
-            <div class="phase-title">v0.9 Item 7 — Slider Fator de Segurança no Dashboard</div>
-            <div class="phase-sub">Só existia no mobile e nas Config · agora na coluna esquerda do desktop</div>
-          </div>
-          <div class="phase-right">
-            <span class="phase-version">v0.8.3</span>
-            <span class="phase-tag">Pendente</span>
-          </div>
-          <span class="phase-chevron">›</span>
-        </div>
-        <div class="phase-details">
-          <div class="phase-body">
-            <div class="detail-group">
-              <h4>Comportamento</h4>
-              <ul>
-                <li>Seção colapsável no ConfigPanel: "Fator de Segurança"</li>
-                <li>Slider horizontal + botões − / + (padrão Ajuste Fino)</li>
-                <li>Escala: 0.50 (Conservador) → 1.00 (Agressivo)</li>
-                <li>Multiplicador geral sobre resultado (RPM, Avanço, Potência)</li>
-              </ul>
-            </div>
-            <div class="detail-group">
-              <h4>Técnico</h4>
-              <ul>
-                <li>Reutiliza setSafetyFactor() do store (já implementado)</li>
-                <li>Mesmo componente StyledSlider dos outros sliders</li>
-                <li>Valor exibido em fonte mono em destaque</li>
-              </ul>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <!-- v0.8.4 - Rodapé Coluna Esquerda -->
-    <div class="phase" data-status="done">
-      <div class="phase-dot">✓</div>
-      <div class="phase-card" onclick="toggle(this)">
-        <div class="phase-header">
-          <span class="phase-icon">🧭</span>
-          <div class="phase-meta">
-            <div class="phase-title">v0.9 Item 8 — Rodapé Fixo da Coluna Esquerda</div>
-            <div class="phase-sub">sidebar-footer.tsx · Favoritos (N) · Histórico (N) · ⚙ Settings · versão · commit 9b61427</div>
-          </div>
-          <div class="phase-right">
-            <span class="phase-version">v0.9.4</span>
-            <span class="phase-tag phase-tag-done">Concluído</span>
-          </div>
-          <span class="phase-chevron">›</span>
-        </div>
-        <div class="phase-details">
-          <div class="phase-body">
-            <div class="detail-group">
-              <h4>Conteúdo do Rodapé</h4>
-              <ul>
-                <li>⭐ Favoritos (N salvas) — abre lista de validatedSimulations</li>
-                <li>🕐 Histórico — navega para /history</li>
-                <li>⚙ Configurações — atalho para /settings</li>
-                <li>👤 Operador (provisório) — placeholder até login ser implementado</li>
-                <li>Versão atual do app (v0.x.x)</li>
-              </ul>
-            </div>
-            <div class="detail-group">
-              <h4>Lista de Favoritos</h4>
-              <ul>
-                <li>Painel/modal com simulações favoritadas</li>
-                <li>Cada item: ferramenta · material · RPM · Avanço</li>
-                <li>Ações: carregar simulação · excluir</li>
-                <li>Sem "Mapa do Sistema" (apenas admin via /admin)</li>
-              </ul>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <!-- v0.9.0 - Redesign Visor Central HMI -->
-    <div class="phase" data-status="done">
-      <div class="phase-dot">✓</div>
-      <div class="phase-card" onclick="toggle(this)">
-        <div class="phase-header">
-          <span class="phase-icon">🏭</span>
-          <div class="phase-meta">
-            <div class="phase-title">v0.9 Item 5 — Redesign Visor Central (Padrão HMI Industrial)</div>
-            <div class="phase-sub">5 zonas HMI · SafetyBadge topo · grid-cols-4 ProgressCards · Gauges Zona 3 · commit 9b61427</div>
-          </div>
-          <div class="phase-right">
-            <span class="phase-version">v0.9.4</span>
-            <span class="phase-tag phase-tag-done">Concluído</span>
-          </div>
-          <span class="phase-chevron">›</span>
-        </div>
-        <div class="phase-details">
-          <div class="phase-body">
-            <div class="detail-group">
-              <h4>5 Zonas Visuais</h4>
-              <ul>
-                <li><strong>Zona 1:</strong> Safety Badge + RPM e Avanço em fonte grande (valores principais)</li>
-                <li><strong>Zona 2:</strong> Métricas secundárias compactas — Potência · Vc · Torque · MRR</li>
-                <li><strong>Zona 3:</strong> Gauges de saúde (Feed Efficiency · Prod. MRR · Tool Health)</li>
-                <li><strong>Zona 4:</strong> Alertas e avisos em zona dedicada (nunca entre métricas)</li>
-                <li><strong>Zona 5:</strong> Fórmulas educacionais recolhidas por padrão</li>
-              </ul>
-            </div>
-            <div class="detail-group">
-              <h4>Princípios</h4>
-              <ul>
-                <li>Operador lê RPM e Avanço em menos de 1 segundo</li>
-                <li>Banner "Parâmetros Alterados" na Zona 4 (não no topo)</li>
-                <li>Safety Badge no topo da Zona 1 (destaque imediato)</li>
-                <li>Padrão consagrado: Siemens Sinumerik · Heidenhain · Sandvik CoroGuide</li>
-              </ul>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <!-- v0.9.1 - Revisão Configurações -->
-    <div class="phase" data-status="done">
-      <div class="phase-dot">✓</div>
-      <div class="phase-card" onclick="toggle(this)">
-        <div class="phase-header">
-          <span class="phase-icon">⚙️</span>
-          <div class="phase-meta">
-            <div class="phase-title">v0.9 Item 9 — Revisão do Painel de Configurações</div>
-            <div class="phase-sub">Kc removido · CustomToolConfig/ToolCorrectionFactor deletados · savedTools UI · migration v3</div>
-          </div>
-          <div class="phase-right">
-            <span class="phase-version">v0.9.4</span>
-            <span class="phase-tag phase-tag-done">Concluído</span>
-          </div>
-          <span class="phase-chevron">›</span>
-        </div>
-        <div class="phase-details">
-          <div class="phase-body">
-            <div class="detail-group">
-              <h4>O que sai</h4>
-              <ul>
-                <li>Lista de Diâmetros Padrão customizáveis (sem uso com input livre)</li>
-                <li>Lista de Raios de Ponta customizáveis (idem)</li>
-                <li>Fatores de Correção Kc por tipo/diâmetro (complexidade desnecessária)</li>
-              </ul>
-            </div>
-            <div class="detail-group">
-              <h4>O que entra</h4>
-              <ul>
-                <li>Gestão de Ferramentas Favoritas: lista salva com nome + data + excluir</li>
-                <li>Único fator de ajuste: Fator de Segurança (já na coluna esquerda)</li>
-                <li>Seção Ferramentas simplificada e coesa com o restante do sistema</li>
-              </ul>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <!-- 19 - Fase 0 Pré-lançamento -->
-    <div class="phase" data-status="pending">
-      <div class="phase-dot">○</div>
-      <div class="phase-card" onclick="toggle(this)">
-        <div class="phase-header">
-          <span class="phase-icon">🛠️</span>
-          <div class="phase-meta">
-            <div class="phase-title">Fase 0 — Pré-lançamento (Semanas 1–6)</div>
-            <div class="phase-sub">Landing page · OG tags · Blog MestreCNC · YouTube · Search Console</div>
-          </div>
-          <div class="phase-right">
-            <span class="phase-version">pré-launch</span>
-            <span class="phase-tag">Pendente</span>
-          </div>
-          <span class="phase-chevron">›</span>
-        </div>
-        <div class="phase-details">
-          <div class="phase-body">
-            <div class="detail-group">
-              <h4>Produto (Crítico)</h4>
-              <ul>
-                <li>Landing page tooloptimizercnc.com.br — hero + diferenciais + CTA</li>
-                <li>OG tags validados (preview no WhatsApp/LinkedIn)</li>
-                <li>Bugs críticos resolvidos antes de divulgar</li>
-                <li>Segurança: CSP headers + validação imports (Fase Seg.)</li>
-              </ul>
-            </div>
-            <div class="detail-group">
-              <h4>Conteúdo &amp; Infra</h4>
-              <ul>
-                <li>Blog MestreCNC: 2-4 artigos fundacionais publicados</li>
-                <li>Canal YouTube MestreCNC criado + 1-2 vídeos iniciais</li>
-                <li>Perfil LinkedIn Rafael otimizado (headline, banner)</li>
-                <li>Google Search Console verificado</li>
-                <li>UTM tracking configurado por canal</li>
-                <li>5-10 instrutores SENAI mapeados</li>
-              </ul>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <!-- 20 - Fase 1 Soft Launch -->
-    <div class="phase" data-status="pending">
-      <div class="phase-dot">○</div>
-      <div class="phase-card" onclick="toggle(this)">
-        <div class="phase-header">
-          <span class="phase-icon">📣</span>
-          <div class="phase-meta">
-            <div class="phase-title">Fase 1 — Soft Launch (Semanas 7–18)</div>
-            <div class="phase-sub">Rede pessoal → WhatsApp/LinkedIn → YouTube/SEO/SENAI</div>
-          </div>
-          <div class="phase-right">
-            <span class="phase-version">soft-launch</span>
-            <span class="phase-tag">Pendente</span>
-          </div>
-          <span class="phase-chevron">›</span>
-        </div>
-        <div class="phase-details">
-          <div class="phase-body">
-            <div class="detail-group">
-              <h4>3 Ondas de Alcance</h4>
-              <ul>
-                <li><strong>Onda 1 (sem 7-8):</strong> Rede pessoal — 20-50 contatos diretos via WhatsApp/LinkedIn DM</li>
-                <li><strong>Onda 2 (sem 9-12):</strong> Grupos WhatsApp usinagem + forum usinagem.com.br + LinkedIn posts</li>
-                <li><strong>Onda 3 (sem 13-18):</strong> YouTube (2 vídeos/mês) + Blog SEO + SENAI (5-10 instrutores)</li>
-              </ul>
-            </div>
-            <div class="detail-group">
-              <h4>Metas &amp; Feedback</h4>
-              <ul>
-                <li>Meta: 200+ MAU (Usuários Ativos Mensais)</li>
-                <li>10+ feedbacks qualitativos de profissionais reais</li>
-                <li>2-3 professores SENAI testando em sala de aula</li>
-                <li>1-2 menções orgânicas de influenciadores CNC BR</li>
-                <li>Ciclo: admin inbox → bug fix 24-48h → deploy</li>
-              </ul>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <!-- 21 - Login Opcional -->
-    <div class="phase" data-status="pending">
-      <div class="phase-dot">○</div>
-      <div class="phase-card" onclick="toggle(this)">
-        <div class="phase-header">
-          <span class="phase-icon">🔑</span>
-          <div class="phase-meta">
-            <div class="phase-title">Login Opcional — Google OAuth + Histórico Nuvem</div>
-            <div class="phase-sub">Firebase Auth · Firestore · 5 fases (L1-L5) · retenção</div>
-          </div>
-          <div class="phase-right">
-            <span class="phase-version">v0.8.0</span>
-            <span class="phase-tag">Pendente</span>
-          </div>
-          <span class="phase-chevron">›</span>
-        </div>
-        <div class="phase-details">
-          <div class="phase-body">
-            <div class="detail-group">
-              <h4>Objetivo (mês 6-12)</h4>
-              <ul>
-                <li>Login opcional — não obrigatório para usar o sistema</li>
-                <li>Histórico salvo na nuvem (sync entre dispositivos)</li>
-                <li>Preferências persistentes (materiais, limites de máquina)</li>
-                <li>Base de e-mails para lançamento PRO</li>
-              </ul>
-            </div>
-            <div class="detail-group">
-              <h4>Métricas Alvo</h4>
-              <ul>
-                <li>Taxa de cadastro: 15-25% dos usuários ativos</li>
-                <li>Retenção 30 dias: 40-60%</li>
-                <li>Pré-requisito para monetização: 1.000 MAU com login</li>
-              </ul>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <!-- 22 - Fase 2 Crescimento -->
-    <div class="phase" data-status="pending">
-      <div class="phase-dot">○</div>
-      <div class="phase-card" onclick="toggle(this)">
-        <div class="phase-header">
-          <span class="phase-icon">📈</span>
-          <div class="phase-meta">
-            <div class="phase-title">Fase 2 — Crescimento (Semanas 19–48)</div>
-            <div class="phase-sub">SEO orgânico · Google Ads R$600-900/mês · SENAI 3-5 escolas · 2.000+ MAU</div>
-          </div>
-          <div class="phase-right">
-            <span class="phase-version">crescimento</span>
-            <span class="phase-tag">Pendente</span>
-          </div>
-          <span class="phase-chevron">›</span>
-        </div>
-        <div class="phase-details">
-          <div class="phase-body">
-            <div class="detail-group">
-              <h4>Canais Orgânicos</h4>
-              <ul>
-                <li>SEO: top 10 Google para 5+ keywords long-tail</li>
-                <li>YouTube: 10+ vídeos, 1.000+ views em 6 meses</li>
-                <li>LinkedIn: 500+ conexões no nicho, 3+ posts/semana</li>
-                <li>SENAI: 3-5 escolas adotando em aula, 300+ alunos expostos</li>
-                <li>Influenciadores: 3-5 menções orgânicas em canais BR</li>
-              </ul>
-            </div>
-            <div class="detail-group">
-              <h4>Canal Pago + Metas</h4>
-              <ul>
-                <li>Google Ads: R$15-25/dia após validação orgânica</li>
-                <li>5 grupos de anúncios (calculadora, problema, parâmetros…)</li>
-                <li>CPC estimado R$0,80-3,50 · conversão &gt; 15%</li>
-                <li>Meta: 2.000+ MAU · 12+ artigos · 8+ vídeos YouTube</li>
-                <li>Feiras: EXPOMAFE, FEIMEC, INTERMACH (visitante)</li>
-              </ul>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <!-- 23 - Fase 3 Monetização PRO -->
-    <div class="phase" data-status="pending">
-      <div class="phase-dot">○</div>
-      <div class="phase-card" onclick="toggle(this)">
-        <div class="phase-header">
-          <span class="phase-icon">💰</span>
-          <div class="phase-meta">
-            <div class="phase-title">Fase 3 — Monetização PRO (Mês 13+)</div>
-            <div class="phase-sub">Freemium PRO · R$19,90/mês · trial 14 dias · break-even ~250 assinantes</div>
-          </div>
-          <div class="phase-right">
-            <span class="phase-version">v1.0.0-pro</span>
-            <span class="phase-tag">Pendente</span>
-          </div>
-          <span class="phase-chevron">›</span>
-        </div>
-        <div class="phase-details">
-          <div class="phase-body">
-            <div class="detail-group">
-              <h4>Planos PRO</h4>
-              <ul>
-                <li>Mensal: <strong>R$19,90/mês</strong></li>
-                <li>Anual: <strong>R$149,90/ano</strong> (destaque — 37% off)</li>
-                <li>Vitalício: <strong>R$349,90</strong> (edição limitada)</li>
-                <li>Institucional: <strong>R$499,90/ano</strong> (30 usuários)</li>
-                <li>Trial: 14 dias gratuito sem cartão</li>
-                <li>"Fundador PRO": 40% desconto — 100 primeiros</li>
-              </ul>
-            </div>
-            <div class="detail-group">
-              <h4>Features PRO</h4>
-              <ul>
-                <li>Histórico na nuvem (sync entre dispositivos)</li>
-                <li>Export PDF do relatório de corte</li>
-                <li>50+ materiais (vs 9 no Free)</li>
-                <li>Comparativo de ferramentas (side-by-side)</li>
-                <li>API para integração CAM (futuro)</li>
-                <li>Break-even: ~250 assinantes (~R$7.000/mês)</li>
-                <li>Pré-req: 1.000 MAU com login ativo</li>
-              </ul>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <!-- 24 - MVP v1.0.0 Completo -->
-    <div class="phase" data-status="pending">
-      <div class="phase-dot">○</div>
-      <div class="phase-card" onclick="toggle(this)">
-        <div class="phase-header">
-          <span class="phase-icon">🏆</span>
-          <div class="phase-meta">
-            <div class="phase-title">MVP Completo → v1.0.0 + Primeiro Assinante PRO</div>
-            <div class="phase-sub">Produto estável · validado em campo · receita recorrente ativa</div>
-          </div>
-          <div class="phase-right">
-            <span class="phase-version">v1.0.0</span>
-            <span class="phase-tag">Pendente</span>
-          </div>
-          <span class="phase-chevron">›</span>
-        </div>
-        <div class="phase-details">
-          <div class="phase-body">
-            <div class="detail-group">
-              <h4>Critérios de Aceite Técnicos</h4>
-              <ul>
-                <li>Cálculo RPM/Avanço/Kienzle em &lt; 2s</li>
-                <li>Semáforo de segurança funcional em produção</li>
-                <li>L/D &gt; 6 bloqueado e testado</li>
-                <li>Testes 100% passando</li>
-                <li>Lighthouse Performance ≥ 90</li>
-                <li>Login + histórico na nuvem funcionando</li>
-              </ul>
-            </div>
-            <div class="detail-group">
-              <h4>Critérios de Aceite de Mercado</h4>
-              <ul>
-                <li>1.000+ MAU com login ativo</li>
-                <li>Primeiro assinante PRO confirmado</li>
-                <li>10+ depoimentos de profissionais reais</li>
-                <li>3+ escolas SENAI adotando em aula</li>
-                <li>North star metric: 10.000+ simulações/mês</li>
-              </ul>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-
-  </div><!-- /timeline -->
+    </div><!-- /grid future -->
+  </div>
 
   <!-- METRICS -->
   <div class="metrics">
-    <h3>📊 Métricas de Saúde do Projeto</h3>
-    <div class="metrics-grid">
-      <div class="metric-item">
-        <div class="metric-value m-green">864</div>
-        <div class="metric-label">Testes Passando</div>
+    <p class="met-title">📊 Saúde do Projeto</p>
+    <div class="met-grid">
+      <div class="met-item">
+        <div class="met-val" style="color:var(--green);text-shadow:0 0 18px rgba(57,255,20,0.4)">940</div>
+        <div class="met-lbl">Testes Passando</div>
       </div>
-      <div class="metric-item">
-        <div class="metric-value m-cyan">0</div>
-        <div class="metric-label">Erros TypeScript</div>
+      <div class="met-item">
+        <div class="met-val" style="color:var(--cyan);text-shadow:0 0 18px rgba(0,217,255,0.4)">0</div>
+        <div class="met-lbl">Erros TypeScript</div>
       </div>
-      <div class="metric-item">
-        <div class="metric-value m-text">100<span style="font-size:.7rem">KB</span></div>
-        <div class="metric-label">Bundle JS (gzip)</div>
+      <div class="met-item">
+        <div class="met-val" style="color:var(--text)">103<span style="font-size:.7rem">KB</span></div>
+        <div class="met-lbl">Bundle JS gzip</div>
       </div>
-      <div class="metric-item">
-        <div class="metric-value m-green">LIVE</div>
-        <div class="metric-label">Deploy Status</div>
+      <div class="met-item">
+        <div class="met-val" style="color:var(--green);font-size:1rem;line-height:1.8">● LIVE</div>
+        <div class="met-lbl">Deploy Cloudflare</div>
       </div>
     </div>
   </div>
 
   <!-- FOOTER -->
   <div class="footer">
-    <p>
-      Atualizado em <strong>24/03/2026</strong> · Versão <strong>v0.8.0</strong> ·
-      <a href="https://tooloptimizercnc.com.br" target="_blank">tooloptimizercnc.com.br</a> ·
-      <a href="https://github.com/contatorafaeleleoterio-hub/ToolOptimizerCNC" target="_blank">GitHub</a>
-    </p>
-    <p style="margin-top:6px">Atualizar: editar <code>docs/timeline.html</code> — mover cards ⏳ → ✅ · atualizar métricas · adicionar "Última Sessão"</p>
+    <p>Atualizado em <strong>30/03/2026</strong> · Versão <strong>v0.10.0</strong> · <a href="https://tooloptimizercnc.com.br" target="_blank">tooloptimizercnc.com.br</a></p>
+    <p style="margin-top:5px">ToolOptimizer CNC — Calculadora de Parâmetros de Corte para Operadores Brasileiros</p>
   </div>
 
 </main>
 
 <script>
-  // ── TOGGLE CARD ──────────────────────────────────────────
-  function toggle(card) {
-    const phase = card.closest('.phase');
-    phase.classList.toggle('open');
+  // TABS
+  function tab(id, btn) {
+    document.querySelectorAll('.sec').forEach(s => s.classList.remove('on'));
+    document.querySelectorAll('.tb').forEach(b => b.classList.remove('on'));
+    document.getElementById('sec-' + id).classList.add('on');
+    btn.classList.add('on');
   }
 
-  function expandAll() {
-    document.querySelectorAll('.phase').forEach(p => {
-      if (p.style.display !== 'none') p.classList.add('open');
-    });
+  // TOGGLE CARD
+  function tog(card) { card.classList.toggle('open'); }
+
+  // EXPAND ALL IN SECTION
+  function expandSec(secId) {
+    const sec = document.getElementById(secId);
+    const cards = sec.querySelectorAll('.card');
+    const allOpen = [...cards].every(c => c.classList.contains('open'));
+    cards.forEach(c => allOpen ? c.classList.remove('open') : c.classList.add('open'));
   }
 
-  function collapseAll() {
-    document.querySelectorAll('.phase').forEach(p => p.classList.remove('open'));
-  }
-
-  // ── FILTER ───────────────────────────────────────────────
-  function filter(type, btn) {
-    document.querySelectorAll('.toggle-btn').forEach(b => b.classList.remove('active'));
-    btn.classList.add('active');
-
-    document.querySelectorAll('.phase').forEach(phase => {
-      const status = phase.dataset.status;
-      if (type === 'all') {
-        phase.style.display = '';
-      } else if (type === 'done') {
-        phase.style.display = status === 'done' ? '' : 'none';
-      } else if (type === 'pending') {
-        phase.style.display = (status === 'pending' || status === 'current') ? '' : 'none';
-      }
-    });
-  }
-
-  // ── PROGRESS BAR ─────────────────────────────────────────
-  (function() {
-    const phases   = document.querySelectorAll('.phase');
-    const done     = document.querySelectorAll('.phase[data-status="done"]').length;
-    const total    = phases.length;
-    const pct      = Math.round((done / total) * 100);
-    const pbar     = document.getElementById('pbar');
-    const pctLabel = document.getElementById('pct');
-    setTimeout(() => {
-      pbar.style.width = pct + '%';
-      pctLabel.textContent = pct + '%';
-    }, 200);
-  })();
-
-  // ── AUTO-OPEN CURRENT PHASE ───────────────────────────────
-  const currentPhase = document.querySelector('.phase[data-status="current"]');
-  if (currentPhase) currentPhase.classList.add('open');
+  // PROGRESS ANIMATION
+  window.addEventListener('load', () => {
+    setTimeout(() => { document.getElementById('jbar').style.width = '52%'; }, 300);
+  });
 </script>
-
 </body>
 </html>

@@ -28,6 +28,9 @@ As decisões abaixo são as **únicas válidas para implementação**. Substitue
 | 11 | 4.1 — Visor Mobile (réplica desktop) | ✅ APROVADO | `ITEM-8-VISOR-MOBILE-REPLICA.md` |
 | 12 | 5.1 — Explicações Educacionais | ❌ REPROVADO | — |
 | 13 | 5.2 — Simulação Estilo Cassino | ✅ APROVADO | `ITEM-9-SIMULACAO-ESTILO-CASSINO.md` |
+| 14 | 10 — Sistema de Favoritos (store + botão + edição) | ⬜ Pendente | `ITEM-10-FAVORITOS-STORE.md` |
+| 15 | 11 — Zona Verde Dinâmica no SGB | ⬜ Pendente | `ITEM-11-ZONA-VERDE-DINAMICA-SGB.md` |
+| 16 | 12 — Página de Favoritos | ⬜ Pendente | `ITEM-12-PAGINA-FAVORITOS.md` |
 
 ---
 
@@ -48,6 +51,13 @@ As decisões abaixo são as **únicas válidas para implementação**. Substitue
 ### ✅ Grupo D: Experiência de Simulação
 - **5.2** — Simulação Estilo Cassino (4 fases: Mesa Vazia → Ignição → Cálculo → Jackpot) → `ITEM-9-SIMULACAO-ESTILO-CASSINO.md`
   - ⚠️ Implementar por **último** — depende do visor desktop (1.1) e mobile (4.1) finalizados
+
+### ⬜ Grupo E: Sistema de Favoritos
+- **10** — `useFavoritesStore` + botão Favoritar + edição inline → `ITEM-10-FAVORITOS-STORE.md`
+- **11** — Zona Verde Dinâmica no SGB (`idealRange` prop) → `ITEM-11-ZONA-VERDE-DINAMICA-SGB.md`
+  - Depende de: ITEM-10
+- **12** — Página de Favoritos (`/favoritos`) → `ITEM-12-PAGINA-FAVORITOS.md`
+  - Depende de: ITEM-10
 
 ---
 
@@ -73,6 +83,9 @@ As decisões abaixo são as **únicas válidas para implementação**. Substitue
 ├── ITEM-6-SGB-ACIMA-SLIDER.md .............. Item #9 (3.1) ✅ APROVADO  ← NOVO
 ├── ITEM-7-BOTAO-EXPLICACAO-POPOVER.md ...... Item #10 (3.2) ✅ APROVADO ← NOVO
 ├── ITEM-8-VISOR-MOBILE-REPLICA.md .......... Item #11 (4.1) ✅ APROVADO ← NOVO
-├── ITEM-9-SIMULACAO-ESTILO-CASSINO.md ...... Item #13 (5.2) ✅ APROVADO ← NOVO
+├── ITEM-9-SIMULACAO-ESTILO-CASSINO.md ...... Item #13 (5.2) ✅ APROVADO
+├── ITEM-10-FAVORITOS-STORE.md .............. Item #14 (10) ⬜ Pendente ← NOVO
+├── ITEM-11-ZONA-VERDE-DINAMICA-SGB.md ...... Item #15 (11) ⬜ Pendente ← NOVO
+├── ITEM-12-PAGINA-FAVORITOS.md ............. Item #16 (12) ⬜ Pendente ← NOVO
 └── CONTEXTO-PROXIMA-SESSAO.md .............. Este arquivo
 ```
