@@ -46,6 +46,35 @@ npx tsc --noEmit
 
 ## Ultimas 3 Sessoes
 
+### Sessão 01/04 — Auditoria técnica dos 10 documentos de implementação
+
+**Commit:** pendente (fim de sessão)
+**Atividade:** Curadoria profissional completa — SEM alteração de código
+
+**O que foi feito:**
+- Leitura integral dos 10 documentos aprovados da pasta `Implementações ajustes Dashboard 30-03/`
+- Identificação de 18 problemas críticos 🔴, 13 inconsistências 🟡 e 12 lacunas 🔵
+- Criação do documento `AUDITORIA-E-PLANO-CORRECOES.md` com todas as correções detalhadas
+
+**Principais problemas encontrados:**
+- `limites.maxAvanco` inexistente em 2 documentos (correto: `limites.maxFeed`)
+- Variáveis usadas sem definição (`resultado`, `mrrPct`, `rpmPct`, `latestEntry`, `isFavorited`, etc.) em SPEC-VISOR e ITEM-8
+- Referências a `StyledSlider` no fine-tune desktop (migrou para `BidirectionalSlider` em S4/v0.10.0)
+- Selector Zustand causando infinite loop em ITEM-11 (getByCombo inline em vez de useMemo)
+- Bug de floating-point nos botões [-][+] do Fator de Correção
+- Easing `easeOutBack` com mutação de parâmetro (`--t`)
+- `role="button"` redundante em elemento `<button>` nativo
+- Partículas CSS e ambientOverlay sem snippet concreto no cassino
+
+**Próxima sessão (Claude Code — ESTA É A PRIMEIRA AÇÃO):**
+1. **Ler APENAS:** `docs/plans/Implementações ajustes Dashboard 30-03/AUDITORIA-E-PLANO-CORRECOES.md`
+2. **NÃO ler** os outros documentos ainda — a auditoria já contém todos os problemas e soluções
+3. **Primeira ação:** Corrigir `SPEC-VISOR-RESULTS-PANEL-v1.md` (6 críticos, 1 inconsistência, 3 lacunas)
+4. Mostrar o que foi feito → aguardar aprovação → próximo documento
+5. Ordem: SPEC-VISOR → ITEM-8 → ITEM-9 → ITEM-6 → ITEM-7 → ITEM-10 → ITEM-11 → ITEM-2 → ITEM-12 → ITEM-5
+
+---
+
 ### Sessão 30/03 (2ª) — Docs: Novos planos de implementação + Timeline redesign
 
 **Commit:** `a898b32` — docs only, sem alteração de código
