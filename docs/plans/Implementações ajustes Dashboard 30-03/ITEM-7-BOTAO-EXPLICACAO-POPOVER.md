@@ -13,7 +13,7 @@ Substituir o botão seta (↓) por um botão visível `ℹ️ O QUE É [PARAM]?`
 
 - `src/components/fine-tune-panel.tsx`
 - `src/components/mobile/mobile-fine-tune-section.tsx`
-- Novo arquivo: `src/components/ParamExplanation.tsx` (componente reutilizável)
+- Novo arquivo: `src/components/param-explanation.tsx` (componente reutilizável)
 
 ## Detalhe
 
@@ -95,7 +95,7 @@ Ordem final de cada parâmetro:
 ```
 Header (label + valor editável)
 SegmentedGradientBar               ← ITEM-6 (já acima)
-StyledSlider
+BidirectionalSlider
 ℹ️ O QUE É [PARAM]? (botão)      ← ESTE ITEM (substitui a seta ↓)
 Educational drawer (opcional, ao hover/click)
 ```
@@ -138,7 +138,7 @@ Educational drawer (opcional, ao hover/click)
 3. **Desktop (fine-tune-panel.tsx):**
    - Remover o `<button>` seta (L92-106) — a ação de expand é substituída pelo popover
    - Remover o drawer educacional (L132-153) — texto migra para o popover
-   - Adicionar `<ParamExplanation>` após o `<StyledSlider>` (L126)
+   - Adicionar `<ParamExplanation>` após o `<BidirectionalSlider>` (L126)
    - Passar `desc` do `SLIDER_VISUAL` como `explanationText`
 
 4. **Mobile (mobile-fine-tune-section.tsx):** Mesma substituição — remover drawer, adicionar ParamExplanation
@@ -250,7 +250,6 @@ export function ParamExplanation({ fullLabel, explanationText }: ParamExplanatio
   return (
     <div className="relative">
       <button
-        role="button"
         aria-label={`O que é ${fullLabel}?`}
         onMouseEnter={handleMouseEnter}
         onMouseLeave={handleMouseLeave}
@@ -288,9 +287,13 @@ export function ParamExplanation({ fullLabel, explanationText }: ParamExplanatio
 
 // REMOVER: botão seta com toggleDrawer e toda lógica de isOpen/openKey
 // REMOVER: drawer educacional (isOpen && <div>...)
-// REMOVER: toggleDrawer function e openKey state
+// REMOVER: toggleDrawer function e openKey state — são LOCAL no FineTunePanel:
+//   const [openKey, setOpenKey] = useState<string | null>(null);
+//   const toggleDrawer = (key: string) => setOpenKey(prev => prev === key ? null : key);
+//   Remover AMBAS as declarações e todas as referências (isOpen, toggleDrawer calls).
+//   Verificar com: grep -n "openKey\|toggleDrawer\|isOpen" src/components/fine-tune-panel.tsx
 
-// ADICIONAR: após o StyledSlider (e após o SGB se ITEM-6 já aplicado):
+// ADICIONAR: após o BidirectionalSlider (e após o SGB se ITEM-6 já aplicado):
 <ParamExplanation
   fullLabel={fullLabel}
   explanationText={desc}

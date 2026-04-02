@@ -323,6 +323,7 @@ export function ToolEditModal({ tool, onSave, onClose }: ToolEditModalProps) {
 
   const handleSave = () => {
     if (diametro <= 0 || balanco <= 0) return;
+    if (tipo === 'toroidal' && raio > diametro / 2) return; // raio não pode exceder D/2
     onSave({
       tipo,
       diametro,
@@ -440,3 +441,22 @@ describe('updateSavedTool store action', () => {
   it('does not affect active ferramenta in store', ...)
 })
 ```
+
+### Correções de Auditoria (01/04/2026)
+
+#### Snippet Mobile (mobile-config-section.tsx)
+
+```tsx
+// src/components/mobile/mobile-config-section.tsx
+// Mesma estrutura do desktop, adaptada para mobile:
+// 1. Adicionar state: const [editingTool, setEditingTool] = useState<SavedTool | null>(null);
+// 2. Substituir a seção de ferramentas salvas por lista de cards (igual ao desktop)
+// 3. Renderizar <ToolEditModal> quando editingTool !== null
+// 4. Import: import { ToolEditModal } from '@/components/modals/tool-edit-modal';
+// O modal já tem overlay fullscreen (fixed inset-0) — funciona bem em mobile.
+```
+
+#### Validação `raioQuina <= diametro/2`
+
+Adicionada ao `handleSave` no snippet do `tool-edit-modal.tsx` acima:
+`if (tipo === 'toroidal' && raio > diametro / 2) return;`

@@ -42,7 +42,7 @@ Reposicionar o `SegmentedGradientBar` para **acima do slider** em desktop e mobi
 |------------|---------|--------|------------|
 | `FineTunePanel` | `src/components/fine-tune-panel.tsx` | 1-163 | Desktop — 4 sliders com SGB abaixo |
 | `SegmentedGradientBar` | `src/components/segmented-gradient-bar.tsx` | 1-245 | Componente SGB (props: `paramKey`, `segments?`) |
-| `StyledSlider` | `src/components/styled-slider.tsx` | — | Slider usado no fine-tune desktop |
+| `BidirectionalSlider` | `src/components/bidirectional-slider.tsx` | — | Slider usado no fine-tune desktop (pós-S4 v0.10.0, commit `d18d92b`) |
 | Mobile fine-tune | `src/components/mobile/mobile-fine-tune-section.tsx` | 1-358 | Mobile — TouchSlider + SGB(30) abaixo |
 
 ### Ordem Atual no Desktop (fine-tune-panel.tsx:88-157)
@@ -51,7 +51,7 @@ Dentro do `.map()` de `SLIDER_VISUAL` (L80-158), cada parâmetro renderiza:
 
 ```
 L89-106:  Header (label clicável + seta ↓ + valor editável)
-L121-126: StyledSlider (value, min, max, step, color, recomendado)
+L121-126: BidirectionalSlider (value, min, max, step, color, recomendado)
 L128-129: SegmentedGradientBar (paramKey={key})        ← MOVER PARA CIMA
 L131-153: Educational drawer (condicional isOpen)
 ```
@@ -88,7 +88,7 @@ interface SegmentedGradientBarProps {
 
 | Arquivo | Ação | Linhas afetadas |
 |---------|------|-----------------|
-| `src/components/fine-tune-panel.tsx` | Reordenar JSX: mover SGB (L128-129) para antes do StyledSlider (L121) | L88-158 (dentro do .map) |
+| `src/components/fine-tune-panel.tsx` | Reordenar JSX: mover SGB (L128-129) para antes do BidirectionalSlider (L121) | L88-158 (dentro do .map) |
 | `src/components/mobile/mobile-fine-tune-section.tsx` | Reordenar JSX: mover SGB para antes da row [−] TouchSlider [+] | Seções de cada parâmetro |
 
 ### Sequência de Execução
@@ -97,19 +97,19 @@ interface SegmentedGradientBarProps {
    ```tsx
    <SegmentedGradientBar paramKey={key} />
    ```
-   De **após** o `<StyledSlider>` (L129) para **antes** dele (entre o header e o slider).
+   De **após** o `<BidirectionalSlider>` (L129) para **antes** dele (entre o header e o slider).
 
    **Ordem final:**
    ```
    Header (label + valor)
    SegmentedGradientBar(paramKey={key})    ← NOVO LOCAL
-   StyledSlider(value, min, max, step...)
+   BidirectionalSlider(value, min, max, step...)
    Educational drawer
    ```
 
 2. **Mobile (mobile-fine-tune-section.tsx):** Mesma reordenação — SGB(30) antes da row [-] TouchSlider [+].
 
-3. **Verificar alinhamento visual:** SGB e slider devem ter mesma largura. O slider usa `mx-[18px]` de margin — verificar se SGB precisa do mesmo margin para alinhar.
+3. **Verificar alinhamento visual:** SGB e slider devem ter mesma largura. O slider usa `mx-[18px]` de margin (ver MEMORY.md: "Track margin: mx-[18px]"). **Ação concreta:** se o SGB não alinhar com o slider, adicionar `className="mx-[18px]"` no `<SegmentedGradientBar>` para igualar o margin interno do slider.
 
 ### Dependências
 
@@ -176,11 +176,11 @@ Item é pura reordenação de JSX. Sem novos imports.
 ```tsx
 // ANTES (L88-158 dentro do .map):
 //   Header (label + valor)
-//   StyledSlider          ← L121-126
+//   BidirectionalSlider          ← L121-126
 //   SegmentedGradientBar  ← L128-129  (abaixo do slider)
 //   Educational drawer    ← L131-153
 
-// DEPOIS — mover SegmentedGradientBar para ANTES do StyledSlider:
+// DEPOIS — mover SegmentedGradientBar para ANTES do BidirectionalSlider:
 <div key={key} className="flex flex-col gap-1 group relative">
   {/* Header (label clicável + valor editável) — inalterado */}
   <div className="flex justify-between items-end">
@@ -191,7 +191,7 @@ Item é pura reordenação de JSX. Sem novos imports.
   <SegmentedGradientBar paramKey={key} />
 
   {/* Slider — agora abaixo do SGB */}
-  <StyledSlider
+  <BidirectionalSlider
     value={val} min={min} max={max} step={step}
     color={color} label={label}
     recomendado={recomendado}
@@ -224,7 +224,7 @@ Item é pura reordenação de JSX. Sem novos imports.
 
 ```ts
 describe('FineTunePanel — SGB position', () => {
-  it('SGB renders before StyledSlider in DOM for each parameter', ...)
+  it('SGB renders before BidirectionalSlider in DOM for each parameter', ...)
   it('SGB indicator position is unchanged after reorder', ...)
   it('desktop SGB uses 50 segments (default)', ...)
 })

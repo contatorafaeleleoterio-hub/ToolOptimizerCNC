@@ -47,14 +47,13 @@ const [gaugeTarget, setGaugeTarget] = useState<number>(0); // dispara animação
 
 | t (ms) | Ação |
 |--------|------|
-| 0 | `setIsCalculating(true)`, `setCalcProgress(0)`, inicia tick 60fps |
+| 0 | `setIsCalculating(true)`, `setCalcProgress(0)`, `setGaugeAnimating(true)` |
 | 80 | `setGaugeTarget(1)` — gauges iniciam animação do zero |
-| 200 | Contadores dos result cards começam a subir |
-| 0–1500 | Tick atualiza `calcProgress` de 0→98 (`Math.min(98, ...)`) |
+| 80 | `setInterval` inicia — `calcProgress` sobe 0→98 até t=1500ms |
 | 1500 | `clearInterval`, `originalSimular()`, `setCalcProgress(100)` |
-| 1750 | `setIsCalculating(false)`, `setIsRevealing(true)` |
-| 2300 | `setIsRevealing(false)`, `setCalcProgress(0)` |
-| 2650 | `setGaugeAnimating(false)` |
+| 1750 | `setIsCalculating(false)`, `setIsRevealing(true)`, `setTriggerPulse(true)` |
+| 2300 | `setIsRevealing(false)`, `setTriggerPulse(false)`, `setCalcProgress(0)` |
+| 2650 | `setGaugeAnimating(false)`, `setGaugeTarget(0)` |
 
 > **Regra crítica:** `originalSimular()` (lógica de cálculo existente) não deve ser alterada — apenas chamada dentro de `runSimulation`.
 
@@ -62,16 +61,16 @@ const [gaugeTarget, setGaugeTarget] = useState<number>(0); // dispara animação
 
 ## Fase 1 — Estado Inicial ("Mesa Vazia")
 
+> **Nota de auditoria:** "Mesa Vazia" = estado de `storeResultado === null` do ResultsPanel existente. O placeholder já exibe mensagem "Clique em Simular". NÃO é necessário criar estado idle nos cards (`opacity: 0.3`) — os cards simplesmente não existem no DOM quando `resultado === null`.
+
 Comportamento antes de qualquer simulação:
 
-- Gauges: `strokeDashoffset = totalArc` (agulha em zero, arco vazio)
-- Valores numéricos dos gauges: `—` (sem animação)
-- Result cards: `—` com `opacity: 0.3`
-- Safety indicator: texto `AGUARDANDO SIMULAÇÃO`, dot cinza sem glow
+- **ResultsPanel/MobileResultsSection:** exibe placeholder existente (guard `storeResultado === null`)
+- Gauges, result cards, safety indicator: **não renderizados** (estão dentro do guard)
 - Botão Simular: glow idle → `animation: btnIdleGlow 2.5s ease-in-out infinite`
 - Sliders e inputs: estado normal, totalmente interativos
 
-**Ao resetar / nova configuração:** todos os estados voltam à Fase 1.
+**Ao resetar / nova configuração:** store zera `resultado = null` → placeholder reaparece automaticamente.
 
 ---
 
@@ -107,7 +106,16 @@ Ao clicar em Simular:
 
 **Ambiente:**
 - Canvas de partículas ativo: 30 partículas neon (cyan e verde), `radius: 0.5–2.5px`, velocidade variada, subindo pelo fundo
-- `ambientOverlay`: glow radial no fundo pulsa via `animation: ambientPulse`
+- `ambientOverlay`: glow radial no fundo pulsa via `animation: ambientPulse` — **Localização:** `div` absolute dentro do `ConfigPanel`, antes do restante do JSX, com `pointer-events: none` e `z-0`:
+  ```tsx
+  {isCalculating && (
+    <div className="absolute inset-0 pointer-events-none z-0 rounded-2xl"
+      style={{
+        background: 'radial-gradient(ellipse at center, rgba(0,217,255,0.04) 0%, transparent 70%)',
+        animation: 'ambientPulse 1.5s ease-in-out infinite',
+      }} />
+  )}
+  ```
 
 ---
 
@@ -215,7 +223,7 @@ Este item deve ser implementado **por último** (após todos os outros 6 itens a
 | Componente | Arquivo | Linhas | Props/Interface | Papel na animação |
 |------------|---------|--------|-----------------|-------------------|
 | `useSimulationAnimation` | `src/hooks/use-simulation-animation.ts` | 1-45 | Hook (sem props) | **EXTENSÃO** — novos estados + timeline |
-| `HalfMoonGauge` | `src/components/half-moon-gauge.tsx` | 56-185 | `{ value, maxValue, label?, palette?, badge?, size? }` | Animação progressiva do arco + needle |
+| `HalfMoonGauge` | `src/components/half-moon-gauge.tsx` | 56-185 | `{ value, maxValue, label?, palette?, badge?, size?, animateOnMount? }` — **Nova prop `animateOnMount?: boolean`:** quando `true`, gauge anima de 0 → `value` via rAF interno; quando `false`/omitido, exibe `value` estático. Palettes: `'avanco' \| 'power' \| 'health' \| 'mrr'` | Animação progressiva do arco + needle |
 | `BigNumber` | `src/components/shared-result-parts.tsx` | 51-92 | `BigNumberProps` | Contador animado 0 → valorFinal |
 | `ProgressCard` | `src/components/shared-result-parts.tsx` | 94-109 | `{ label, value, unit, pct, barColor, barShadow, compact? }` | Contador animado |
 | `SafetyBadge` | `src/components/shared-result-parts.tsx` | 111-121 | `{ nivel, avisosCount }` | Reveal atrasado com glow |
@@ -328,7 +336,7 @@ export function useSimulationAnimation() {
 | `setInterval` para calcProgress pode acumular se simular múltiplas vezes | `clearInterval` antes de iniciar novo, usar flag `isCalculating` como guard |
 | `pointer-events: none` nos sliders durante simulação conflita com touch events mobile | Aplicar apenas durante Fase 2-3 (restaurar em Fase 4) |
 | Material Symbols `casino` pode não estar no subset carregado | Verificar se o ícone `casino` está disponível no MaterialSymbols CDN já importado |
-| Gauges via `requestAnimationFrame` com easing `easeOutBack` — fórmula precisa estar correta | Usar fórmula: `t => 1 + (--t) * t * ((1.70158 + 1) * t + 1.70158)` |
+| Gauges via `requestAnimationFrame` com easing `easeOutBack` — fórmula precisa estar correta | Usar fórmula: `(t) => { const s = t - 1; return 1 + s * s * (2.70158 * s + 1.70158); }` — sem mutação de parâmetro |
 | Complexidade alta — maior chance de bugs | Implementar fase por fase, testar cada uma isoladamente |
 
 ### Critérios de Aceitação
@@ -369,7 +377,15 @@ export function useSimulationAnimation() {
 | Testes (8 casos) | 3 |
 | **Total** | **24 pontos (~3 sessões)** |
 
-> **Maior item do conjunto.** Recomendação: dividir em sub-sessões (Fase 1+2, Fase 3, Fase 4).
+> **Maior item do conjunto.** Dividido em 3 sub-sessões:
+
+### Sub-sessões recomendadas (3 sessões)
+
+| Sessão | Escopo | Pts |
+|--------|--------|-----|
+| **A** | Keyframes CSS (5) + hook `useSimulationAnimation` reescrito + botão Simular desktop | ~8 |
+| **B** | Botão Simular mobile + `HalfMoonGauge` animação rAF (`animateOnMount`) | ~8 |
+| **C** | Fase 4 reveal (`jackpotFlash`, contadores BigNumber) + cleanup rAF/interval + testes (8 casos) | ~8 |
 
 ---
 
@@ -393,7 +409,7 @@ npm run build       # Build sem erros
 |---------|-----------|
 | Partículas: canvas real ou CSS-only? | **CSS-only** — partículas via `::before`/pseudo-elements com `@keyframes` de translateY e opacity. Evita gestão de canvas + API mais simples de testar. Se efeito parecer fraco, pode ser promovido para canvas em iteração futura. |
 | Ícone `casino` Material Symbols | Verificar disponibilidade: `document.querySelector('span.material-symbols-outlined')` no browser. Se não disponível, usar `casino` ou fallback para `settings` (gear). |
-| Easing `easeOutBack` | Fórmula inline: `(t: number) => 1 + (--t) * t * (2.70158 * t + 1.70158)` |
+| Easing `easeOutBack` | Fórmula inline: `(t: number) => { const s = t - 1; return 1 + s * s * (2.70158 * s + 1.70158); }` |
 
 ### Imports Adicionais
 
@@ -558,6 +574,30 @@ const { isCalculating, calcProgress, runSimulation } = useSimulationAnimation();
   from { transform: rotate(0deg); }
   to   { transform: rotate(360deg); }
 }
+
+/* Partículas neon CSS-only — pseudo-elements com translateY */
+.particle-field {
+  position: relative;
+  overflow: hidden;
+}
+.particle-field::before,
+.particle-field::after {
+  content: '';
+  position: absolute;
+  width: 2px; height: 2px;
+  border-radius: 50%;
+  background: #00D9FF;
+  animation: particleRise 2s ease-in infinite;
+}
+.particle-field::before { left: 20%; animation-delay: 0.3s; background: #39FF14; }
+.particle-field::after  { left: 70%; animation-delay: 0.8s; }
+
+@keyframes particleRise {
+  0%   { opacity: 0; transform: translateY(0) scale(0.5); }
+  20%  { opacity: 0.8; }
+  100% { opacity: 0; transform: translateY(-80px) scale(1.5); }
+}
+/* Nota: efeito sutil — se parecer fraco, pode ser removido sem impacto funcional. */
 ```
 
 ### Testes — Nomes Exatos (describe/it)

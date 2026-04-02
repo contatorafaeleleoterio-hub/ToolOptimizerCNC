@@ -122,7 +122,24 @@ interface SegBarProps {
 
 ```ts
 // Para cada parâmetro (vc, fz, ae, ap):
-const favorito = useFavoritesStore.getByCombo(materialId, tipoOperacao, ferramenta.tipo);
+// ✅ CORRETO — selecionar array estável + computar com useMemo
+const favorites = useFavoritesStore((s) => s.favorites);
+const materialId   = useMachiningStore((s) => s.materialId);
+const tipoOperacao = useMachiningStore((s) => s.tipoOperacao);
+const ferramenta   = useMachiningStore((s) => s.ferramenta);
+
+const favorito = useMemo(
+  () => favorites
+    .filter(
+      (f) => f.materialId === materialId &&
+             f.tipoOperacao === tipoOperacao &&
+             f.ferramenta.tipo === ferramenta.tipo
+    )
+    .sort((a, b) => b.timestamp.localeCompare(a.timestamp))[0],
+  [favorites, materialId, tipoOperacao, ferramenta.tipo]
+);
+// ❌ ERRADO — causa infinite loop:
+// const favorito = useFavoritesStore((s) => s.getByCombo(materialId, tipoOperacao, ferramenta.tipo));
 
 if (favorito) {
   const valorIdeal = favorito.parametros[paramKey]; // ex: favorito.parametros.vc
@@ -191,8 +208,14 @@ if (favorito) {
 
 4. **Integrar no fine-tune-panel.tsx (desktop):**
    - Importar `useFavoritesStore` e `FavoritoCompleto`
-   - Buscar favorito: `const favorito = useFavoritesStore((s) => s.getByCombo(materialId, tipoOperacao, ferramenta.tipo));`
-   - **CUIDADO Zustand selector:** `getByCombo` retorna novo objeto a cada call → usar `useMemo` ou selecionar `favorites` array e computar fora
+   - **OBRIGATÓRIO (regra Zustand do projeto):** NÃO usar `getByCombo` inline no selector. Selecionar `favorites` array estável + computar com `useMemo`:
+     ```tsx
+     const favorites = useFavoritesStore((s) => s.favorites);
+     const favorito = useMemo(
+       () => favorites.filter(f => f.materialId === materialId && ...).sort(...)[0],
+       [favorites, materialId, tipoOperacao, ferramenta.tipo]
+     );
+     ```
    - Passar `idealRange={computeIdealRange(key, favorito, bounds)}` ao `<SegmentedGradientBar>`
 
 5. **Integrar no mobile** — mesma lógica
@@ -259,3 +282,32 @@ npm run typecheck   # Zero erros TypeScript
 npm run test -- --run   # Todos os testes passando (incluindo regressão SGB)
 npm run build       # Build sem erros
 ```
+
+---
+
+## REFINAMENTO FINAL (01/04/2026 — Correções de Auditoria)
+
+### 🔴 CRÍTICO — Visual da zona verde: snippet concreto do loop de segmentos
+
+Decisão: usar `opacity` aumentada + borda top verde sutil (não mudar cor base):
+
+```tsx
+// Dentro do loop de renderização de segmentos no SegBar:
+const segPct = idx / total;
+const isInIdealZone = idealRange &&
+  segPct >= idealRange.start &&
+  segPct <= idealRange.end;
+
+<div
+  key={idx}
+  style={{
+    backgroundColor: segmentColor(idx, total),
+    opacity: isInIdealZone ? 1.0 : 0.65,
+    borderTop: isInIdealZone ? '2px solid rgba(0,230,118,0.7)' : '2px solid transparent',
+    // height, width: inalterados
+  }}
+/>
+```
+
+**Onde `segPct = idx / total`** — mesmo cálculo usado em `segmentColor`.
+Segmentos fora da zona verde ficam com `opacity: 0.65` (sutilmente mais escuros), criando contraste visual sem alterar as cores do gradient.

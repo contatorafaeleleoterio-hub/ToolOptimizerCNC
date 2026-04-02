@@ -683,15 +683,16 @@ onClick={() => setSafetyFactor(Math.round(Math.min(1.00, safetyFactor + 0.05) * 
 
 | Documento | Status correção |
 |-----------|----------------|
-| SPEC-VISOR-RESULTS-PANEL-v1.md | ⬜ Pendente |
-| ITEM-2-BOTAO-EDITAR-FERRAMENTA.md | ⬜ Pendente |
-| ITEM-5-FATOR-CORRECAO-SLIDER.md | ⬜ Pendente |
-| ITEM-6-SGB-ACIMA-SLIDER.md | ⬜ Pendente |
-| ITEM-7-BOTAO-EXPLICACAO-POPOVER.md | ⬜ Pendente |
-| ITEM-8-VISOR-MOBILE-REPLICA.md | ⬜ Pendente |
-| ITEM-9-SIMULACAO-ESTILO-CASSINO.md | ⬜ Pendente |
-| ITEM-10-FAVORITOS-STORE.md | ⬜ Pendente |
-| ITEM-11-ZONA-VERDE-DINAMICA-SGB.md | ⬜ Pendente |
-| ITEM-12-PAGINA-FAVORITOS.md | ⬜ Pendente |
+| SPEC-VISOR-RESULTS-PANEL-v1.md | ✅ Corrigido (02/04/2026) — 6C + 1I + 3L |
+| ITEM-8-VISOR-MOBILE-REPLICA.md | ✅ Corrigido (02/04/2026) — 4C + 1I + 1L |
+| ITEM-9-SIMULACAO-ESTILO-CASSINO.md | ✅ Corrigido (02/04/2026) — 3C + 3I + 1L |
+| ITEM-6-SGB-ACIMA-SLIDER.md | ✅ Corrigido (02/04/2026) — 1C + 1L |
+| ITEM-7-BOTAO-EXPLICACAO-POPOVER.md | ✅ Corrigido (02/04/2026) — 1C + 2I + 1L |
+| ITEM-10-FAVORITOS-STORE.md | ✅ Corrigido (02/04/2026) — 1C + 1I + 1L |
+| ITEM-11-ZONA-VERDE-DINAMICA-SGB.md | ✅ Corrigido (02/04/2026) — 2C + 1L |
+| ITEM-2-BOTAO-EDITAR-FERRAMENTA.md | ✅ Corrigido (02/04/2026) — 1I + 1L |
+| ITEM-12-PAGINA-FAVORITOS.md | ✅ Corrigido (02/04/2026) — 2I + 2L |
+| ITEM-5-FATOR-CORRECAO-SLIDER.md | ✅ Corrigido (02/04/2026) — 1I + 1L |
 
-> Atualizar esta tabela conforme os docs forem corrigidos e aprovados por Rafael.
+> **Todas as correções aplicadas e aprovadas por Rafael em 02/04/2026.**
+> **Total: 18 críticos + 13 inconsistências + 12 lacunas = 43 correções.**

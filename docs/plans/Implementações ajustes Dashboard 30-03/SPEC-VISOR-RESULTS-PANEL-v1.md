@@ -50,7 +50,7 @@
 ```
 
 **Arquivo fonte:** `src/components/results-panel.tsx`
-**Store de dados:** `src/stores/machining-store.ts` (estado `resultado` após `calcular()`)
+**Store de dados:** `src/store/machining-store.ts` (estado `resultado` após `calcular()`)
 **Componente pai:** `src/App.tsx` → layout principal em 3 colunas
 
 ---
@@ -113,6 +113,8 @@ Cada dado é um par vertical composto por:
 ## 8. Estrutura e Ordem dos Dados (20 itens)
 
 ### CABEÇALHO (barra horizontal compacta — contexto da simulação)
+
+> **Nota:** Item #16 (badge de segurança) está no CABEÇALHO propositalmente, não na LINHA 5. A numeração 1-3, 16 é intencional — os itens 4-15 estão nas linhas do grid abaixo.
 
 | # | Dado | Exemplo | Lado | Fonte de dados |
 |---|------|---------|------|----------------|
@@ -270,7 +272,7 @@ Cada dado é um par vertical composto por:
 | `SafetyBadge` | `src/components/shared-result-parts.tsx` | 111-121 | `{ nivel: StatusSeguranca['nivel'], avisosCount: number }` |
 | `WarningsSection` | `src/components/shared-result-parts.tsx` | 123-139 | `{ avisos: string[] }` |
 | `MetricCell` | `src/components/shared-result-parts.tsx` | 25-37 | `{ label, value, unit, unitColor }` |
-| `HalfMoonGauge` | `src/components/half-moon-gauge.tsx` | 56-185 | `{ value, maxValue, label?, palette?, badge?, size?: 'sm'\|'md' }` |
+| `HalfMoonGauge` | `src/components/half-moon-gauge.tsx` | 56-185 | `{ value, maxValue, label?, palette?, badge?, size?: 'sm'\|'md' }` — **Palettes aceitas:** `'avanco' \| 'power' \| 'health' \| 'mrr'` (type `ColorPalette`, L6) |
 | `ToolSummaryViewer` | `src/components/tool-summary-viewer.tsx` | — | Sem props (lê do store) |
 | `FormulaCard` / `Fraction` | `src/components/formula-card.tsx` | — | Fórmulas educacionais |
 | `fmt()` | `src/components/shared-result-parts.tsx` | 5 | `(n: number) => string` — `Math.round(n).toLocaleString('pt-BR')` |
@@ -384,7 +386,7 @@ interface ParametrosUsinagem { ap: number; ae: number; fz: number; vc: number; }
 | Risco | Mitigação |
 |-------|-----------|
 | Botão ★ conectado a `useHistoryStore` — ITEM-10 cria `useFavoritesStore` separado | Manter conexão atual; ITEM-10 migrará depois |
-| `ToolSummaryViewer` já renderiza ferramenta — remoção pode quebrar outros consumidores | Verificar se só é usado em `results-panel.tsx` antes de remover |
+| `ToolSummaryViewer` já renderiza ferramenta — remoção pode quebrar outros consumidores | **Antes de remover, executar:** `grep -r "ToolSummaryViewer" src/ --include="*.tsx"` — se só aparecer em `results-panel.tsx` → remover com segurança. Se aparecer em outros → manter arquivo, apenas remover do grid |
 | FormulaCards ocupam ~100 linhas — decidir se ficam no grid ou fora | Manter fora do grid principal, em seção colapsável abaixo |
 | Tailwind dinâmico (`text-${color}`) — não funciona em purge | Usar `style={{ color }}` inline ou mapa estático (padrão existente `SEG_COLORS`) |
 | `EMPTY_RESULTADO` como fallback quando null — visor deve mostrar placeholder, não zeros | Verificar: usar `storeResultado !== null` para condicional, não `resultado` (que nunca é null) |
@@ -460,7 +462,9 @@ import { useState, useEffect } from 'react';           // para timestamp
 import { MATERIAIS } from '@/data';                    // para material.nome
 // já existentes: useMachiningStore, useHistoryStore, TipoUsinagem, ResultadoUsinagem
 // já existentes: HalfMoonGauge, fmt, SafetyBadge, BigNumber, ProgressCard, WarningsSection
-// REMOVER: FormulaCard, Fraction (movidos para seção abaixo do grid — imports mantidos)
+// FormulaCard e Fraction: NÃO remover do import — componentes permanecem
+// abaixo do grid (seção colapsável existente), apenas saem da ZONA PRIMÁRIA do grid.
+// O import continua necessário.
 // REMOVER: ToolSummaryViewer (substituído pela LINHA 1)
 ```
 
@@ -512,8 +516,26 @@ export function ResultsPanel() {
     );
   }
 
+  const resultado = storeResultado;
   const { rpm, avanco, potenciaMotor, torque, mrr, vcReal, seguranca } = resultado;
-  // ... cálculos de pct existentes (rpmPct, feedPct, etc.) mantidos ...
+
+  // MRR percentual (MRR_BENCHMARKS já existe no arquivo)
+  const mrrPct = Math.min((mrr / MRR_BENCHMARKS[tipoOperacao]) * 100, 100);
+
+  // Variáveis derivadas
+  const latestEntry = historyEntries[0] ?? null;
+  const isFavorited = latestEntry?.favorited ?? false;
+  const pulseClass = triggerPulse ? 'animate-[subtlePulse_0.5s_ease-in-out]' : '';
+
+  // Percentuais para progress bars
+  const rpmPct    = Math.min((rpm / limites.maxRPM) * 100, 100);
+  const feedPct   = Math.min((avanco / limites.maxFeed) * 100, 100);
+  const powerPct  = Math.min((potenciaMotor / limites.maxPower) * 100, 100);
+  const torquePct = Math.min((torque / limites.maxTorque) * 100, 100);
+
+  // Selectors adicionais (RPM/Feed manual override)
+  const setManualRPMPercent  = useMachiningStore((s) => s.setManualRPMPercent);
+  const setManualFeedPercent = useMachiningStore((s) => s.setManualFeedPercent);
 
   return (
     <div className="flex flex-col gap-3 animate-[fadeInUp_0.4s_ease-out]">
@@ -592,7 +614,7 @@ export function ResultsPanel() {
             {Math.round(safetyFactor * 100)}%
           </div>
         </div>
-        <HalfMoonGauge value={avanco} maxValue={limites.maxAvanco}
+        <HalfMoonGauge value={avanco} maxValue={limites.maxFeed}
           label="Eficiência de Avanço" palette="avanco" />
         <HalfMoonGauge value={mrrPct} maxValue={100}
           label="Produtividade MRR" palette="mrr"

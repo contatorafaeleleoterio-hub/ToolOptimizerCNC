@@ -219,7 +219,7 @@ interface FavoritoCompleto {
    - **✏️ Editar:** Abre modal/inline com campos `parametros` (Vc, fz, ae, ap) + `userNote`
      - Ao salvar: `useFavoritesStore.updateFavorite(id, { parametros: newParams, resultado: recalculated, userNote })`
      - Recálculo: importar funções de `@/engine/index`
-   - **🗑️ Remover:** Confirmação simples (window.confirm ou mini-dialog) → `useFavoritesStore.removeFavorite(id)`
+   - **🗑️ Remover:** Confirmação inline via estado local `confirmingId` (ver REFINAMENTO FINAL) → `useFavoritesStore.removeFavorite(id)`
    - **↩️ Usar:** Carregar no machining-store e navegar:
      ```ts
      const { setParametros, setMaterial, setFerramenta, setTipoOperacao } = useMachiningStore();
@@ -313,4 +313,57 @@ npm run test -- --run   # Todos os testes passando
 npm run build       # Build sem erros
 # Verificar: rota /favoritos acessível no browser
 # Verificar: link no sidebar navega corretamente
+```
+
+---
+
+## REFINAMENTO FINAL (01/04/2026 — Correções de Auditoria)
+
+### 🟡 INCONSISTÊNCIA 1 — `window.confirm` difícil de testar
+
+Substituir `window.confirm` por estado local (testável com Testing Library):
+
+```tsx
+const [confirmingId, setConfirmingId] = useState<string | null>(null);
+
+// No card, botão Remover:
+{confirmingId === fav.id ? (
+  <div className="flex gap-1">
+    <button onClick={() => { removeFavorite(fav.id); setConfirmingId(null); }}
+      className="text-xs text-red-400 border border-red-400/30 px-2 py-0.5 rounded">
+      Confirmar
+    </button>
+    <button onClick={() => setConfirmingId(null)}
+      className="text-xs text-gray-500 px-2 py-0.5">
+      Cancelar
+    </button>
+  </div>
+) : (
+  <button onClick={() => setConfirmingId(fav.id)}>🗑️ Remover</button>
+)}
+```
+
+### 🟡 INCONSISTÊNCIA 2 — Dropdown de material sem deduplicação
+
+```tsx
+// Deduplica materiais para o dropdown de filtro:
+const uniqueMaterials = [...new Set(favorites.map(f => f.materialNome))].sort();
+```
+
+### 🔵 LACUNA 1 — `setFerramenta` assinatura não verificada
+
+Adicionar ao checklist pré-implementação:
+```bash
+grep -A 2 "setFerramenta:" src/store/machining-store.ts
+# Confirmar se aceita Ferramenta completo ou Partial<Ferramenta>
+# O snapshot FavoritoCompleto.ferramenta é Ferramenta completo — deve funcionar
+```
+
+### 🔵 LACUNA 2 — Funções do engine para recálculo na edição
+
+Adicionar ao checklist pré-implementação:
+```bash
+grep -n "^export" src/engine/index.ts
+# Identificar a função principal de cálculo — provavelmente calcularResultado ou similar
+# Usar para recalcular resultado ao editar favorito
 ```

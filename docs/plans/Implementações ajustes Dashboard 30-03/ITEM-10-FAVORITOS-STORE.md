@@ -243,3 +243,60 @@ npm run test -- --run   # Todos os testes passando
 npm run build       # Build sem erros
 # Verificar localStorage: chave fenix_favorites_v1 presente após salvar favorito
 ```
+
+---
+
+## REFINAMENTO FINAL (01/04/2026 — Correções de Auditoria)
+
+### 🔴 CRÍTICO — Edição de favorito: `calcular()` do store não aceita parâmetros externos
+
+`calcular()` é action do store Zustand que usa o estado atual — não aceita parâmetros. Para recalcular com dados do favorito editado, usar funções puras do engine:
+
+```ts
+// Para recalcular resultado de um favorito editado, importar funções puras:
+import { calcularResultado } from '@/engine/index';
+// Verificar nome exato: grep -r "^export function\|^export const" src/engine/index.ts
+
+// Uso no updateFavorite com recálculo:
+const novoResultado = calcularResultado({
+  parametros:    novosFavorito.parametros,
+  ferramenta:    novosFavorito.ferramenta,
+  material:      MATERIAIS.find(m => m.id === fav.materialId)!,
+  tipoOperacao:  fav.tipoOperacao,
+  safetyFactor:  fav.safetyFactor,
+  limitesMaquina: DEFAULT_LIMITES,
+});
+```
+
+### 🟡 INCONSISTÊNCIA — `isFavorited` sem implementação clara
+
+Comparar floats de `parametros` gera falsos negativos. Simplificar: comparar apenas `(materialId, tipoOperacao, ferramenta.tipo)`:
+
+```ts
+isFavorited: (materialId, tipoOperacao, ferramentaTipo) =>
+  get().favorites.some(
+    (f) => f.materialId === materialId &&
+           f.tipoOperacao === tipoOperacao &&
+           f.ferramenta.tipo === ferramentaTipo
+  ),
+```
+
+### 🔵 LACUNA — `addFavorite` sem snippet concreto (guard FIFO)
+
+```ts
+addFavorite: (data) => {
+  const { favorites } = get();
+  const newFav: FavoritoCompleto = {
+    ...data,
+    id: crypto.randomUUID(),
+    timestamp: new Date().toISOString(),
+    editedAt: null,
+    userNote: '',
+  };
+  // FIFO: remover mais antigo se limite atingido
+  const trimmed = favorites.length >= 50
+    ? favorites.slice(1)  // remove o [0] (mais antigo)
+    : favorites;
+  set({ favorites: [...trimmed, newFav] });
+},
+```

@@ -197,8 +197,10 @@ Depende de ITEM-1 (desktop) estar concluído. Ao implementar, ler a versão fina
 
 ```tsx
 // src/components/mobile/mobile-results-section.tsx
-// Importar MATERIAIS, TipoUsinagem — mesmo padrão do ResultsPanel
-// Adicionar selector materialId ao store
+import { useState, useEffect } from 'react';
+import { MATERIAIS } from '@/data';
+// + imports existentes: useMachiningStore, useHistoryStore, shared-result-parts, HalfMoonGauge
+// TIPO_LABEL definido inline (mesmo padrão do ResultsPanel)
 
 export function MobileResultsSection() {
   // ... selectors idênticos ao ResultsPanel ...
@@ -207,13 +209,38 @@ export function MobileResultsSection() {
   const [calcTimestamp, setCalcTimestamp] = useState('');
   useEffect(() => {
     if (storeResultado !== null) {
-      setCalcTimestamp(new Date().toLocaleString('pt-BR', { ... }));
+      setCalcTimestamp(new Date().toLocaleString('pt-BR', {
+        day: '2-digit', month: '2-digit', year: 'numeric',
+        hour: '2-digit', minute: '2-digit',
+      }));
     }
   }, [storeResultado]);
+
+  // Labels
+  const material = MATERIAIS.find((m) => m.id === materialId);
+  const TIPO_LABEL: Record<TipoUsinagem, string> = {
+    [TipoUsinagem.DESBASTE]: 'Desbaste',
+    [TipoUsinagem.SEMI_ACABAMENTO]: 'Semi-acabamento',
+    [TipoUsinagem.ACABAMENTO]: 'Acabamento',
+  };
+  const ferramentaLabel = [
+    ferramenta.tipo.charAt(0).toUpperCase() + ferramenta.tipo.slice(1),
+    `Ø${ferramenta.diametro}`,
+    ferramenta.raioQuina != null ? `R${ferramenta.raioQuina}` : null,
+    `H${ferramenta.balanco}`,
+    `F${ferramenta.numeroArestas}`,
+  ].filter(Boolean).join(' ');
 
   if (storeResultado === null) {
     return <div className="...placeholder..." />;  // mesmo do desktop
   }
+
+  const resultado = storeResultado;
+  const { rpm, avanco, potenciaMotor, torque, mrr, vcReal, seguranca } = resultado;
+
+  // Variáveis derivadas
+  const latestEntry = historyEntries[0] ?? null;
+  const isFavorited = latestEntry?.favorited ?? false;
 
   return (
     <div className="flex flex-col gap-2 p-2">
@@ -272,7 +299,7 @@ export function MobileResultsSection() {
         <ProgressCard label="Torque"   value={...} unit="Nm" ... compact />
         <ProgressCard label="Vc Real"  value={...} unit="m/min" ... compact />
         <div className="flex gap-1.5">
-          <LdCell razao={seguranca.razaoLD} />   {/* componente criado no ITEM-1 */}
+          <LdCell razao={seguranca.razaoLD} />   {/* componente local — definido abaixo */}
           <div className="flex-1 bg-[rgba(45,55,70,0.90)] ...">
             <div className="text-[10px] text-white/70">CTF</div>
             <div className="font-mono text-sm">{seguranca.ctf.toFixed(2)}</div>
@@ -281,6 +308,21 @@ export function MobileResultsSection() {
       </div>
 
       <WarningsSection avisos={seguranca.avisos} />
+    </div>
+  );
+}
+
+/** Célula L/D com cor condicional — componente local (mesmo padrão do desktop) */
+function LdCell({ razao }: { razao: number }) {
+  const color =
+    razao <= 3 ? '#2ecc71' :
+    razao <= 4 ? '#f39c12' :
+    razao <= 6 ? '#e74c3c' : '#e74c3c';
+  const label = razao > 6 ? 'BLOQ.' : razao.toFixed(1);
+  return (
+    <div className="bg-[rgba(45,55,70,0.90)] border border-white/15 rounded-md p-1.5">
+      <div className="text-[10px] text-white/70 mb-0.5">L/D</div>
+      <div className="font-mono text-sm font-bold" style={{ color }}>{label}</div>
     </div>
   );
 }

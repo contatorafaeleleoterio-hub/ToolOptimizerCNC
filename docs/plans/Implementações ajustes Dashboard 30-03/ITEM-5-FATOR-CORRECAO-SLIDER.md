@@ -216,8 +216,9 @@ npm run build       # Build sem erros
 | Decisão | Resolução |
 |---------|-----------|
 | BidirectionalSlider vs StyledSlider | **Opção A confirmada** — `StyledSlider` existente + botões [-][+] manuais no wrapper JSX |
-| Step dos botões | 0.05 (5%) — clamp em `[0.50, 1.00]` |
+| Step dos botões | 0.05 (5%) — clamp em `[0.50, 1.00]` — com `Math.round(... * 100) / 100` para evitar drift floating-point |
 | Display | `Math.round(safetyFactor * 100) + '%'` — store inalterado (continua decimal) |
+| Settings page | Atualizar label e display (ver snippet abaixo) |
 
 ### Imports Adicionais
 
@@ -235,7 +236,7 @@ import { StyledSlider } from '@/components/styled-slider';   // NOVO (substituin
   <div className="space-y-2 pt-1">
     <div className="flex items-center gap-2">
       <button
-        onClick={() => setSafetyFactor(Math.max(0.50, safetyFactor - 0.05))}
+        onClick={() => setSafetyFactor(Math.round(Math.max(0.50, safetyFactor - 0.05) * 100) / 100)}
         className="w-7 h-7 flex items-center justify-center rounded-md bg-black/30
                    border border-white/10 text-gray-400 hover:text-white hover:bg-white/10
                    transition-all text-base font-bold shrink-0"
@@ -249,7 +250,7 @@ import { StyledSlider } from '@/components/styled-slider';   // NOVO (substituin
         />
       </div>
       <button
-        onClick={() => setSafetyFactor(Math.min(1.00, safetyFactor + 0.05))}
+        onClick={() => setSafetyFactor(Math.round(Math.min(1.00, safetyFactor + 0.05) * 100) / 100)}
         className="w-7 h-7 flex items-center justify-center rounded-md bg-black/30
                    border border-white/10 text-gray-400 hover:text-white hover:bg-white/10
                    transition-all text-base font-bold shrink-0"
@@ -276,7 +277,7 @@ import { StyledSlider } from '@/components/styled-slider';   // NOVO (substituin
 <AccordionSection color="bg-seg-verde" label="Fator de Correção" summary={`${Math.round(safetyFactor * 100)}%`}>
   <div className="flex items-center gap-2 mt-1">
     <button
-      onClick={() => setSafetyFactor(Math.max(0.50, safetyFactor - 0.05))}
+      onClick={() => setSafetyFactor(Math.round(Math.max(0.50, safetyFactor - 0.05) * 100) / 100)}
       className="w-8 h-8 flex items-center justify-center rounded-md bg-black/40
                  border border-white/10 text-gray-400 text-base font-bold shrink-0"
     >−</button>
@@ -288,7 +289,7 @@ import { StyledSlider } from '@/components/styled-slider';   // NOVO (substituin
       />
     </div>
     <button
-      onClick={() => setSafetyFactor(Math.min(1.00, safetyFactor + 0.05))}
+      onClick={() => setSafetyFactor(Math.round(Math.min(1.00, safetyFactor + 0.05) * 100) / 100)}
       className="w-8 h-8 flex items-center justify-center rounded-md bg-black/40
                  border border-white/10 text-gray-400 text-base font-bold shrink-0"
     >+</button>
@@ -298,6 +299,21 @@ import { StyledSlider } from '@/components/styled-slider';   // NOVO (substituin
   </div>
   <p className="text-[10px] text-gray-500 mt-2">50% = conservador · 100% = agressivo</p>
 </AccordionSection>
+```
+
+### Testes — Nomes Exatos (describe/it)
+
+```ts
+### Correções de Auditoria (01/04/2026)
+
+#### Settings Page — Snippet de atualização
+
+```tsx
+// settings-page.tsx — localizar e substituir:
+// 1. Label: "Fator de Segurança" → "Fator de Correção"
+// 2. Display: {safetyFactor.toFixed(2)} → {Math.round(safetyFactor * 100)}%
+// 3. Texto explicativo: "0.80 recomendado" → "80% recomendado"
+// Localizar com: grep -n "Fator de Segurança\|safetyFactor" src/pages/settings-page.tsx
 ```
 
 ### Testes — Nomes Exatos (describe/it)
