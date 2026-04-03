@@ -83,11 +83,11 @@ export const EDGE_COLORS: Record<ArchEdgeType, string> = {
 };
 
 const FILE_LINES: Record<string, number> = {
-  'src/App.tsx': 45,
+  'src/App.tsx': 55,
   'src/main.tsx': 33,
   'src/components/bidirectional-slider.tsx': 223,
   'src/components/bug-report-button.tsx': 137,
-  'src/components/config-panel.tsx': 183,
+  'src/components/config-panel.tsx': 200,
   'src/components/design-tokens.ts': 15,
   'src/components/disclaimer.tsx': 8,
   'src/components/export-buttons.tsx': 85,
@@ -99,7 +99,7 @@ const FILE_LINES: Record<string, number> = {
   'src/components/mobile/mobile-header.tsx': 20,
   'src/components/mobile/mobile-results-section.tsx': 64,
   'src/components/parameter-health-bar.tsx': 344,
-  'src/components/results-panel.tsx': 239,
+  'src/components/results-panel.tsx': 250,
   'src/components/seo-head.tsx': 61,
   'src/components/shared-result-parts.tsx': 129,
   'src/components/styled-slider.tsx': 108,
@@ -121,7 +121,7 @@ const FILE_LINES: Record<string, number> = {
   'src/data/materials.ts': 138,
   'src/data/operations.ts': 35,
   'src/data/tools.ts': 39,
-  'src/data/architecture-graph.ts': 379,
+  'src/data/architecture-graph.ts': 400,
   'src/engine/chip-thinning.ts': 58,
   'src/engine/feed.ts': 28,
   'src/engine/index.ts': 9,
@@ -174,11 +174,16 @@ const FILE_LINES: Record<string, number> = {
   'src/admin/utils/cf-analytics-client.ts': 178,
   'src/admin/utils/format-admin.ts': 46,
   'src/admin/vite-plugin-admin-sync.ts': 63,
-  'src/components/collapsible-section.tsx': 53,
+  'src/components/collapsible-section.tsx': 65,
   'src/components/half-moon-gauge.tsx': 174,
   'src/components/segmented-gradient-bar.tsx': 239,
   'src/components/sidebar-footer.tsx': 52,
   'src/components/slider-tokens.ts': 17,
+  'src/components/ticker-display.tsx': 45,
+  'src/components/onboarding/welcome-modal.tsx': 45,
+  'src/components/onboarding/onboarding-dots.tsx': 40,
+  'src/components/onboarding/onboarding-controller.tsx': 40,
+  'src/hooks/use-onboarding.ts': 100,
   'src/vite-env.d.ts': 3,
 };
 
@@ -289,11 +294,16 @@ const NODE_SEEDS: NodeSeed[] = [
   { id: 'admin-cf-analytics-client', labelPt: 'Admin cf analytics client', category: 'util', filePath: 'src/admin/utils/cf-analytics-client.ts', group: 'components' },
   { id: 'admin-format-admin', labelPt: 'Admin format admin', category: 'util', filePath: 'src/admin/utils/format-admin.ts', group: 'components' },
   { id: 'admin-vite-plugin-admin-sync', labelPt: 'Admin vite plugin admin sync', category: 'util', filePath: 'src/admin/vite-plugin-admin-sync.ts', group: 'components' },
-  { id: 'collapsible-section', labelPt: 'collapsible section', category: 'component', filePath: 'src/components/collapsible-section.tsx', group: 'components' },
-  { id: 'half-moon-gauge', labelPt: 'half moon gauge', category: 'component', filePath: 'src/components/half-moon-gauge.tsx', group: 'components' },
-  { id: 'segmented-gradient-bar', labelPt: 'segmented gradient bar', category: 'component', filePath: 'src/components/segmented-gradient-bar.tsx', group: 'components' },
-  { id: 'sidebar-footer', labelPt: 'sidebar footer', category: 'component', filePath: 'src/components/sidebar-footer.tsx', group: 'components' },
-  { id: 'slider-tokens', labelPt: 'slider tokens', category: 'util', filePath: 'src/components/slider-tokens.ts', group: 'components' },
+  { id: 'collapsible-section', labelPt: 'Gaveta colapsavel para secoes de configuracao', category: 'component', filePath: 'src/components/collapsible-section.tsx', group: 'components' },
+  { id: 'half-moon-gauge', labelPt: 'Indicador em meia-lua (v0.10.0)', category: 'component', filePath: 'src/components/half-moon-gauge.tsx', group: 'components' },
+  { id: 'segmented-gradient-bar', labelPt: 'Barra de segmentos coloridos (v0.10.0)', category: 'component', filePath: 'src/components/segmented-gradient-bar.tsx', group: 'components' },
+  { id: 'sidebar-footer', labelPt: 'Rodape da secao de configuracao', category: 'component', filePath: 'src/components/sidebar-footer.tsx', group: 'components' },
+  { id: 'slider-tokens', labelPt: 'Definicoes de tokens para os sliders', category: 'util', filePath: 'src/components/slider-tokens.ts', group: 'components' },
+  { id: 'ticker-display', labelPt: 'Letreiro digital de mensagens (v0.10.0)', category: 'component', filePath: 'src/components/ticker-display.tsx', group: 'components' },
+  { id: 'welcome-modal', labelPt: 'Modal de boas-vindas do onboarding', category: 'component', filePath: 'src/components/onboarding/welcome-modal.tsx', group: 'components' },
+  { id: 'onboarding-dots', labelPt: 'Indicador de progresso do onboarding', category: 'component', filePath: 'src/components/onboarding/onboarding-dots.tsx', group: 'components' },
+  { id: 'onboarding-controller', labelPt: 'Orquestrador do fluxo de onboarding', category: 'component', filePath: 'src/components/onboarding/onboarding-controller.tsx', group: 'components' },
+  { id: 'use-onboarding', labelPt: 'Hook de estado do onboarding persistente', category: 'hook', filePath: 'src/hooks/use-onboarding.ts', group: 'hooks' },
   { id: 'vite-env.d', labelPt: 'vite env.d', category: 'type', filePath: 'src/vite-env.d.ts', group: 'types' },
 ];
 
@@ -353,6 +363,9 @@ const LEVEL2_EDGES: ArchEdge[] = [
   { from: 'app', to: 'disclaimer', type: 'renders', level: 2 },
   { from: 'app', to: 'seo-head', type: 'renders', level: 2 },
   { from: 'app', to: 'use-page-title', type: 'import', level: 2 },
+  { from: 'app', to: 'onboarding-controller', type: 'renders', level: 2 },
+  { from: 'app', to: 'welcome-modal', type: 'renders', level: 2 },
+  { from: 'app', to: 'use-onboarding', type: 'import', level: 2 },
 
   { from: 'export-buttons', to: 'bug-report-button', type: 'renders', level: 2 },
   { from: 'bug-report-button', to: 'export-buttons', type: 'import', level: 2 },
@@ -360,10 +373,12 @@ const LEVEL2_EDGES: ArchEdge[] = [
   { from: 'bug-report-button', to: 'store-index', type: 'state', level: 2 },
 
   { from: 'config-panel', to: 'ui-helpers', type: 'renders', level: 2 },
+  { from: 'config-panel', to: 'collapsible-section', type: 'renders', level: 2 },
   { from: 'config-panel', to: 'data-index', type: 'import', level: 2 },
   { from: 'config-panel', to: 'store-index', type: 'state', level: 2 },
   { from: 'config-panel', to: 'use-plausible', type: 'import', level: 2 },
   { from: 'config-panel', to: 'use-simulation-animation', type: 'import', level: 2 },
+  { from: 'config-panel', to: 'use-onboarding', type: 'import', level: 2 },
   { from: 'config-panel', to: 'types-index', type: 'import', level: 2 },
 
   { from: 'fine-tune-panel', to: 'parameter-health-bar', type: 'renders', level: 2 },
@@ -374,12 +389,19 @@ const LEVEL2_EDGES: ArchEdge[] = [
   { from: 'fine-tune-panel', to: 'types-index', type: 'import', level: 2 },
 
   { from: 'results-panel', to: 'formula-card', type: 'renders', level: 2 },
-  { from: 'results-panel', to: 'gauge', type: 'renders', level: 2 },
+  { from: 'results-panel', to: 'half-moon-gauge', type: 'renders', level: 2 },
+  { from: 'results-panel', to: 'ticker-display', type: 'renders', level: 2 },
+  { from: 'results-panel', to: 'onboarding-dots', type: 'renders', level: 2 },
   { from: 'results-panel', to: 'shared-result-parts', type: 'renders', level: 2 },
-  { from: 'results-panel', to: 'tool-summary-viewer', type: 'renders', level: 2 },
   { from: 'results-panel', to: 'use-simulation-animation', type: 'import', level: 2 },
+  { from: 'results-panel', to: 'use-onboarding', type: 'import', level: 2 },
   { from: 'results-panel', to: 'store-index', type: 'state', level: 2 },
   { from: 'results-panel', to: 'types-index', type: 'import', level: 2 },
+
+  { from: 'onboarding-controller', to: 'use-onboarding', type: 'import', level: 2 },
+  { from: 'onboarding-controller', to: 'store-index', type: 'state', level: 2 },
+  { from: 'welcome-modal', to: 'use-onboarding', type: 'import', level: 2 },
+  { from: 'onboarding-dots', to: 'use-onboarding', type: 'import', level: 2 },
 
   { from: 'shared-result-parts', to: 'bidirectional-slider', type: 'renders', level: 2 },
   { from: 'shared-result-parts', to: 'types-index', type: 'import', level: 2 },
@@ -491,6 +513,7 @@ const LEVEL2_EDGES: ArchEdge[] = [
   { from: 'use-reset-feedback', to: 'store-index', type: 'state', level: 2 },
   { from: 'use-simulation-animation', to: 'store-index', type: 'state', level: 2 },
   { from: 'use-simulation-animation', to: 'types-index', type: 'import', level: 2 },
+  { from: 'use-onboarding', to: 'types-index', type: 'import', level: 2 },
 ];
 
 const totalLines = Object.values(FILE_LINES).reduce((sum, value) => sum + value, 0);
@@ -503,6 +526,6 @@ export const ARCHITECTURE_GRAPH: ArchGraph = {
     version: '0.10.0',
     totalFiles: Object.keys(FILE_LINES).length,
     totalLines,
-    lastUpdated: '2026-03-25',
+    lastUpdated: '2026-04-03',
   },
 };

@@ -1,12 +1,16 @@
+import { useState, useEffect } from 'react';
 import { useMachiningStore } from '@/store';
 import { useHistoryStore } from '@/store';
 import { TipoUsinagem } from '@/types/index';
 import type { ResultadoUsinagem } from '@/types/index';
+import { MATERIAIS } from '@/data';
 import { HalfMoonGauge } from './half-moon-gauge';
 import { FormulaCard, Fraction } from './formula-card';
-import { ToolSummaryViewer } from './tool-summary-viewer';
 import { fmt, SafetyBadge, BigNumber, ProgressCard, WarningsSection } from './shared-result-parts';
 import { useSimulationAnimation } from '@/hooks/use-simulation-animation';
+import { TickerDisplay } from './ticker-display';
+import { OnboardingDots } from './onboarding/onboarding-dots';
+import { useOnboardingStore, ONBOARDING_MESSAGES, NORMAL_MESSAGES } from '@/hooks/use-onboarding';
 
 // MRR benchmarks by operation type (cm³/min) — based on Sandvik/Kennametal reference values
 const MRR_BENCHMARKS: Record<TipoUsinagem, number> = {
@@ -29,6 +33,12 @@ const EMPTY_RESULTADO: ResultadoUsinagem = {
   healthScore: 0,
 };
 
+const TIPO_LABEL: Record<TipoUsinagem, string> = {
+  [TipoUsinagem.DESBASTE]: 'Desbaste',
+  [TipoUsinagem.SEMI_ACABAMENTO]: 'Semi-acabamento',
+  [TipoUsinagem.ACABAMENTO]: 'Acabamento',
+};
+
 export function ResultsPanel() {
   const storeResultado = useMachiningStore((s) => s.resultado);
   const limites = useMachiningStore((s) => s.limitesMaquina);
@@ -39,16 +49,31 @@ export function ResultsPanel() {
   const baseFeed = useMachiningStore((s) => s.baseFeed);
   const manualOverrides = useMachiningStore((s) => s.manualOverrides);
   const tipoOperacao = useMachiningStore((s) => s.tipoOperacao);
+  const materialId = useMachiningStore((s) => s.materialId);
   const setManualRPMPercent = useMachiningStore((s) => s.setManualRPMPercent);
   const setManualFeedPercent = useMachiningStore((s) => s.setManualFeedPercent);
 
   const historyEntries = useHistoryStore((s) => s.entries);
   const toggleFavorite = useHistoryStore((s) => s.toggleFavorite);
 
+  const { completed: onboardingCompleted, currentStep } = useOnboardingStore();
+
+  const [calcTimestamp, setCalcTimestamp] = useState('');
+  useEffect(() => {
+    if (storeResultado !== null) {
+      setCalcTimestamp(
+        new Date().toLocaleString('pt-BR', {
+          day: '2-digit', month: '2-digit', year: 'numeric',
+          hour: '2-digit', minute: '2-digit',
+        })
+      );
+    }
+  }, [storeResultado]);
+
   const { triggerPulse, safetyLevel } = useSimulationAnimation();
   const resultado = storeResultado ?? EMPTY_RESULTADO;
 
-  // The most recent history entry — created by simular() just before resultado was set
+  // The most recent history entry
   const latestEntry = historyEntries[0];
   const isFavorited = latestEntry?.favorited ?? false;
 
@@ -58,209 +83,189 @@ export function ResultsPanel() {
   const powerPct = Math.min((potenciaMotor / limites.maxPotencia) * 100, 100);
   const mrrBenchmark = MRR_BENCHMARKS[tipoOperacao] ?? MRR_BENCHMARKS[TipoUsinagem.DESBASTE];
   const mrrPct = mrrBenchmark > 0 ? (mrr / mrrBenchmark) * 100 : 0;
+  const torquePct = Math.min((resultado.torque / limites.maxTorque) * 100, 100);
 
-  const pulseClass = triggerPulse && safetyLevel === 'verde'
-    ? 'animate-[subtlePulse_0.9s_ease-in-out]' // 0.6s → 0.9s (+50%)
+  const isAhaMoment = !onboardingCompleted && storeResultado !== null;
+  const pulseClass = (triggerPulse && safetyLevel === 'verde') || isAhaMoment
+    ? 'animate-[subtlePulse_0.9s_ease-in-out]'
     : triggerPulse && (safetyLevel === 'vermelho' || safetyLevel === 'bloqueado')
-    ? 'animate-[subtlePulse_0.45s_ease-in-out_2]' // 0.3s → 0.45s (+50%)
+    ? 'animate-[subtlePulse_0.45s_ease-in-out_2]'
     : '';
 
-  const torquePct = Math.min((resultado.torque / limites.maxTorque) * 100, 100);
-  const showResetMessage = storeResultado === null;
+  const ahaMomentClass = isAhaMoment ? 'animate-[aha-pulse_1.5s_ease-in-out]' : '';
+
+  const material = MATERIAIS.find((m) => m.id === materialId);
+  const ferramentaLabel = [
+    ferramenta.tipo.charAt(0).toUpperCase() + ferramenta.tipo.slice(1),
+    `Ø${ferramenta.diametro}`,
+    ferramenta.raioQuina != null ? `R${ferramenta.raioQuina}` : null,
+    `H${ferramenta.balanco}`,
+    `F${ferramenta.numeroArestas}`,
+  ].filter(Boolean).join(' ');
+
+  const tickerMessages = !onboardingCompleted 
+    ? ONBOARDING_MESSAGES[currentStep] 
+    : [...NORMAL_MESSAGES, ...(seguranca.avisos.length > 0 ? seguranca.avisos : [])];
 
   return (
-    <div className="flex flex-col gap-3">
-      <ToolSummaryViewer />
-
-      {/* ═══ ZONA 1 — Valores Principais (SafetyBadge + RPM + Avanço) ═══ */}
-      <div className="flex items-center justify-between gap-3">
-        <div className={`flex-1 ${pulseClass}`}>
-          <SafetyBadge nivel={seguranca.nivel} avisosCount={seguranca.avisos.length} />
+    <div className="flex flex-col h-full bg-surface-dark border border-white/5 rounded-2xl overflow-hidden shadow-glass relative">
+      <TickerDisplay messages={tickerMessages} highlight={!onboardingCompleted} />
+      
+      {storeResultado === null ? (
+        <div className="flex-1 flex flex-col items-center justify-center gap-4 text-gray-500 p-8">
+          <span className="material-symbols-outlined text-5xl opacity-30">precision_manufacturing</span>
+          <p className="text-sm text-center leading-relaxed">
+            Configure os parâmetros e clique em{' '}
+            <strong className="text-cyan-400 uppercase">Calcular Parâmetros</strong> para ver os resultados
+          </p>
+          <OnboardingDots />
         </div>
-        {storeResultado !== null && latestEntry && (
-          <button
-            aria-label={isFavorited ? 'Remover dos favoritos' : 'Favoritar simulação'}
-            onClick={() => toggleFavorite(latestEntry.id)}
-            className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-black/30 border border-white/10 hover:bg-white/5 transition-all active:scale-95 shrink-0"
-          >
-            <span
-              className="material-symbols-outlined text-lg transition-all"
-              style={{
-                fontVariationSettings: isFavorited ? "'FILL' 1" : "'FILL' 0",
-                color: isFavorited ? '#facc15' : undefined,
-                filter: isFavorited ? 'drop-shadow(0 0 6px rgba(250,204,21,0.5))' : undefined,
-              }}
-            >star</span>
-            <span className={`text-xs font-semibold ${isFavorited ? 'text-yellow-400' : 'text-gray-500'}`}>
-              {isFavorited ? 'Favoritado' : 'Favoritar'}
+      ) : (
+        <div className="flex-1 p-4 flex flex-col gap-3 overflow-y-auto animate-[fadeInUp_0.4s_ease-out]">
+          {/* ══ CABEÇALHO ══ */}
+          <div className="flex items-center justify-between px-3 py-1.5 bg-white/[0.03] rounded-xl border border-white/8">
+            <span className="text-xs text-gray-400 font-mono truncate">
+              {calcTimestamp} · {material?.nome ?? 'Material'} · {TIPO_LABEL[tipoOperacao]}
             </span>
-          </button>
-        )}
-      </div>
+            <div className="flex items-center gap-2 shrink-0">
+              <div className={pulseClass}>
+                <SafetyBadge nivel={seguranca.nivel} avisosCount={seguranca.avisos.length} />
+              </div>
+              {latestEntry && (
+                <button
+                  aria-label={isFavorited ? 'Remover dos favoritos' : 'Favoritar simulação'}
+                  onClick={() => toggleFavorite(latestEntry.id)}
+                  className="flex items-center gap-1.5 px-2 py-1 rounded-lg bg-black/30 border border-white/10 hover:bg-white/5 transition-all active:scale-95 shrink-0"
+                >
+                  <span
+                    className="material-symbols-outlined text-base transition-all"
+                    style={{
+                      fontVariationSettings: isFavorited ? "'FILL' 1" : "'FILL' 0",
+                      color: isFavorited ? '#facc15' : undefined,
+                      filter: isFavorited ? 'drop-shadow(0 0 6px rgba(250,204,21,0.5))' : undefined,
+                    }}
+                  >star</span>
+                </button>
+              )}
+            </div>
+          </div>
 
-      <div className="grid grid-cols-2 gap-3">
-        <BigNumber label="Rotação (RPM)" value={fmt(rpm)} unit="RPM" pct={rpmPct}
-          color="primary" glow="rgba(0,217,255,0.4)" barGlow="rgba(0,217,255,1)" icon="speed"
-          useBidirectionalSlider
-          baseValue={baseRPM}
-          currentPercent={manualOverrides.rpmPercent ?? 0}
-          onPercentChange={setManualRPMPercent} />
-        <BigNumber label="Avanço (mm/min)" value={fmt(avanco)} unit="mm/min" pct={feedPct}
-          color="secondary" glow="rgba(57,255,20,0.4)" barGlow="rgba(57,255,20,1)" icon="moving"
-          useBidirectionalSlider
-          baseValue={baseFeed}
-          currentPercent={manualOverrides.feedPercent ?? 0}
-          onPercentChange={setManualFeedPercent} />
-      </div>
+          {/* ══ LINHA 1 — Ferramenta (full-width) ══ */}
+          <div className="bg-[rgba(45,55,70,0.90)] border border-white/15 rounded-md p-3">
+            <div className="text-[10px] text-white/50 font-bold uppercase tracking-wider mb-0.5">Ferramenta</div>
+            <div className="font-mono text-xl text-white">{ferramentaLabel}</div>
+          </div>
 
-      {/* ═══ ZONA 2 — Métricas Secundárias (4 colunas) ═══ */}
-      <div className="grid grid-cols-4 gap-2">
-        <ProgressCard label="Potência Est." value={potenciaMotor.toFixed(2)} unit="kW" pct={powerPct}
-          barColor="bg-accent-orange" barShadow="rgba(249,115,22,0.5)" compact />
-        <ProgressCard label="Vc Real" value={vcReal.toFixed(0)} unit="m/min" pct={Math.min(vcReal / 500 * 100, 100)}
-          barColor="bg-blue-500" barShadow="rgba(59,130,246,0.5)" compact />
-        <ProgressCard label="Torque" value={resultado.torque.toFixed(2)} unit="Nm" pct={torquePct}
-          barColor="bg-purple-500" barShadow="rgba(168,85,247,0.5)" compact />
-        <ProgressCard label="MRR" value={mrr.toFixed(1)} unit="cm³/min" pct={Math.min(mrrPct, 100)}
-          barColor="bg-emerald-500" barShadow="rgba(16,185,129,0.5)" compact />
-      </div>
+          {/* ══ LINHA 2 — RPM + Avanço (2 caixas grandes) ══ */}
+          <div className="grid grid-cols-2 gap-3">
+            <div className={`${ahaMomentClass} transition-all duration-700`}>
+              <BigNumber label="Rotação (RPM)" value={fmt(rpm)} unit="RPM" pct={rpmPct}
+                color="primary" glow="rgba(0,217,255,0.4)" barGlow="rgba(0,217,255,1)" icon="speed"
+                useBidirectionalSlider baseValue={baseRPM}
+                currentPercent={manualOverrides.rpmPercent ?? 0}
+                onPercentChange={setManualRPMPercent} />
+            </div>
+            <div className={`${ahaMomentClass} transition-all duration-700`}>
+              <BigNumber label="Avanço (mm/min)" value={fmt(avanco)} unit="mm/min" pct={feedPct}
+                color="secondary" glow="rgba(57,255,20,0.4)" barGlow="rgba(57,255,20,1)" icon="moving"
+                useBidirectionalSlider baseValue={baseFeed}
+                currentPercent={manualOverrides.feedPercent ?? 0}
+                onPercentChange={setManualFeedPercent} />
+            </div>
+          </div>
 
-      {/* ═══ ZONA 3 — Indicadores de Saúde (Gauges) ═══ */}
-      <div className="grid grid-cols-3 gap-3">
-        <HalfMoonGauge
-          value={avanco}
-          maxValue={limites.maxAvanco}
-          label="Eficiência de Avanço"
-          palette="avanco"
-        />
-        <HalfMoonGauge
-          value={mrrPct}
-          maxValue={100}
-          label="Produtividade MRR"
-          palette="mrr"
-          badge={storeResultado ? `${mrr.toFixed(1)} cm³/min` : undefined}
-        />
-        <HalfMoonGauge
-          value={resultado.healthScore}
-          maxValue={100}
-          label="Saúde da Ferramenta"
-          palette="health"
-          badge={storeResultado ? (resultado.healthScore === 0 ? 'BLOQUEADO' : undefined) : undefined}
-        />
-      </div>
+          {/* ══ LINHA 3 — Parâmetros de entrada (4 caixas iguais) ══ */}
+          <div className="grid grid-cols-4 gap-2">
+            {[
+              { label: 'Vc', unit: 'm/min', val: parametros.vc.toFixed(0) },
+              { label: 'fz', unit: 'mm/z', val: parametros.fz.toFixed(3) },
+              { label: 'ap', unit: 'mm', val: parametros.ap.toFixed(2) },
+              { label: 'ae', unit: 'mm', val: parametros.ae.toFixed(1) },
+            ].map((item) => (
+              <div key={item.label} className="bg-[rgba(45,55,70,0.90)] border border-white/15 rounded-md p-2">
+                <div className="text-[10px] text-white/50 font-bold mb-0.5">{item.label}</div>
+                <div className="font-mono text-base text-white/90">
+                  {item.val} <span className="text-[10px] text-white/40">{item.unit}</span>
+                </div>
+              </div>
+            ))}
+          </div>
 
-      {/* ═══ ZONA 4 — Alertas e Avisos (zona dedicada) ═══ */}
-      {showResetMessage && (
-        <div className="bg-yellow-500/10 border border-yellow-500/30 rounded-xl p-4 animate-[fadeInUp_0.4s_ease-out]">
-          <div className="flex items-center gap-3">
-            <span className="material-symbols-outlined text-yellow-400 animate-pulse">refresh</span>
-            <div>
-              <p className="text-base font-semibold text-yellow-300">Parâmetros Alterados</p>
-              <p className="text-sm text-yellow-400/80 mt-0.5">Clique em "SIMULAR" para recalcular os resultados</p>
+          {/* ══ LINHA 4 — Indicadores (Fat. Correção + 3 Gauges) ══ */}
+          <div className="grid grid-cols-4 gap-3">
+            <div className="bg-[rgba(45,55,70,0.90)] border border-white/15 rounded-md p-2 flex flex-col justify-center">
+              <div className="text-[10px] text-white/50 font-bold mb-1 uppercase tracking-wider">Fator Corr.</div>
+              <div className="font-mono text-base text-white/90">{Math.round(safetyFactor * 100)}%</div>
+            </div>
+            <HalfMoonGauge value={avanco} maxValue={limites.maxAvanco} label="Efic. Avanço" palette="avanco" size="sm" />
+            <HalfMoonGauge value={mrrPct} maxValue={100} label="Prod. MRR" palette="mrr" size="sm" />
+            <HalfMoonGauge value={resultado.healthScore} maxValue={100} label="Saúde Ferram." palette="health" size="sm" />
+          </div>
+
+          <OnboardingDots />
+
+          {/* ══ LINHA 5 — Dados secundários (5 colunas) ══ */}
+          <div className="grid gap-2" style={{ gridTemplateColumns: '1fr 1fr 1fr 0.6fr 0.6fr' }}>
+            <ProgressCard label="Potência" value={potenciaMotor.toFixed(2)} unit="kW" pct={powerPct} barColor="bg-accent-orange" barShadow="rgba(249,115,22,0.5)" compact />
+            <ProgressCard label="Torque" value={resultado.torque.toFixed(2)} unit="Nm" pct={torquePct} barColor="bg-purple-500" barShadow="rgba(168,85,247,0.5)" compact />
+            <ProgressCard label="Vc Real" value={vcReal.toFixed(0)} unit="m/min" pct={Math.min(vcReal / 500 * 100, 100)} barColor="bg-blue-500" barShadow="rgba(59,130,246,0.5)" compact />
+            <LdCell razao={seguranca.razaoLD} />
+            <div className="bg-[rgba(45,55,70,0.90)] border border-white/15 rounded-md p-2 flex flex-col justify-center">
+              <div className="text-[10px] text-white/50 font-bold uppercase tracking-widest text-[8px]">CTF</div>
+              <div className="font-mono text-sm text-white/90">{seguranca.ctf.toFixed(2)}</div>
+            </div>
+          </div>
+
+          <WarningsSection avisos={seguranca.avisos} />
+
+          {/* ══ Fórmulas Educacionais ══ */}
+          <div className="bg-surface-dark border border-white/5 rounded-2xl p-5 mt-2">
+            <div className="flex items-center gap-3 mb-4">
+              <div className="w-10 h-10 rounded-lg bg-cyan-400/10 flex items-center justify-center border border-cyan-400/20">
+                <span className="material-symbols-outlined text-cyan-400">school</span>
+              </div>
+              <div>
+                <h3 className="text-base font-bold text-white uppercase tracking-widest">Entenda os Cálculos</h3>
+                <p className="text-xs text-gray-500 mt-0.5">Como cada valor é calculado</p>
+              </div>
+            </div>
+            <div className="space-y-2">
+              <FormulaCard 
+                title="RPM (Rotação)" 
+                icon="speed" 
+                resultValue={fmt(rpm)} 
+                resultUnit="RPM" 
+                formula={<>N = <Fraction num="Vc × 1000" den="π × D" /></>} 
+                substitution={<>N = <Fraction num={<>{parametros.vc} × 1000</>} den={<>3.14159 × {ferramenta.diametro}</>} /> = <span className="text-white font-bold">{fmt(rpm)}</span></>} 
+                variables={[{ symbol: 'Vc', value: `${parametros.vc} m/min`, description: 'velocidade de corte' }, { symbol: 'D', value: `${ferramenta.diametro} mm`, description: 'diâmetro da ferramenta' }]} 
+                tip="Para aumentar RPM: aumente Vc ou reduza o diâmetro. Vc maior → RPM maior."
+              />
+              <FormulaCard 
+                title="Avanço (mm/min)" 
+                icon="moving" 
+                resultValue={fmt(avanco)} 
+                resultUnit="mm/min" 
+                formula={<>F = fz<sub>ef</sub> × Z × N</>} 
+                substitution={<>F = {resultado.fzEfetivo.toFixed(3)} × {ferramenta.numeroArestas} × {fmt(rpm)} = <span className="text-white font-bold">{fmt(avanco)}</span></>} 
+                variables={[{ symbol: 'fz_ef', value: `${resultado.fzEfetivo.toFixed(3)} mm`, description: 'fz efetivo' }, { symbol: 'Z', value: `${ferramenta.numeroArestas}`, description: 'número de arestas' }, { symbol: 'N', value: `${fmt(rpm)} RPM`, description: 'rotação' }]} 
+                tip="Avanço depende do fz, número de arestas e RPM. Mais arestas = mais avanço."
+              />
+
             </div>
           </div>
         </div>
       )}
+    </div>
+  );
+}
 
-      <WarningsSection avisos={seguranca.avisos} />
-
-      {/* ═══ ZONA 5 — Fórmulas Educacionais (recolhidas) ═══ */}
-      <div className="bg-surface-dark backdrop-blur-xl border border-white/5 rounded-2xl p-5 shadow-glass">
-        <div className="flex items-center gap-3 mb-4">
-          <div className="w-10 h-10 rounded-lg bg-primary/10 flex items-center justify-center border border-primary/20">
-            <span className="material-symbols-outlined text-primary">school</span>
-          </div>
-          <div>
-            <h3 className="text-base font-bold text-white uppercase tracking-widest">Entenda os Cálculos</h3>
-            <p className="text-xs text-gray-500 mt-0.5">Clique para expandir e ver como cada valor é calculado</p>
-          </div>
-        </div>
-        <div className="space-y-2">
-          {/* RPM */}
-          <FormulaCard
-            title="RPM (Rotação)"
-            icon="speed"
-            resultValue={fmt(rpm)}
-            resultUnit="RPM"
-            formula={<>N = <Fraction num="Vc × 1000" den="π × D" /></>}
-            substitution={<>N = <Fraction num={<>{parametros.vc} × 1000</>} den={<>3.14159 × {ferramenta.diametro}</>} /> = <span className="text-white font-bold">{fmt(rpm)}</span></>}
-            variables={[
-              { symbol: 'Vc', value: `${parametros.vc} m/min`, description: 'velocidade de corte' },
-              { symbol: 'D', value: `${ferramenta.diametro} mm`, description: 'diâmetro da ferramenta' },
-            ]}
-            contextBar={{ value: rpm, min: 0, max: limites.maxRPM, label: `${fmt(rpm)} / ${limites.maxRPM.toLocaleString('pt-BR')} RPM`, color: '#00D9FF' }}
-            tip="Para aumentar RPM: aumente Vc ou reduza o diâmetro. Vc maior → RPM maior."
-          />
-
-          {/* Feed Rate */}
-          <FormulaCard
-            title="Avanço (mm/min)"
-            icon="moving"
-            resultValue={fmt(avanco)}
-            resultUnit="mm/min"
-            formula={<>F = fz<sub>ef</sub> × Z × N</>}
-            substitution={<>F = {resultado.fzEfetivo.toFixed(3)} × {ferramenta.numeroArestas} × {fmt(rpm)} = <span className="text-white font-bold">{fmt(avanco)}</span></>}
-            variables={[
-              { symbol: 'fz_ef', value: `${resultado.fzEfetivo.toFixed(3)} mm`, description: resultado.seguranca.ctf > 1 ? `fz × CTF (${resultado.seguranca.ctf.toFixed(2)})` : 'fz efetivo' },
-              { symbol: 'Z', value: `${ferramenta.numeroArestas}`, description: 'número de arestas' },
-              { symbol: 'N', value: `${fmt(rpm)} RPM`, description: 'rotação' },
-            ]}
-            contextBar={{ value: avanco, min: 0, max: limites.maxAvanco, label: `${fmt(avanco)} / ${limites.maxAvanco.toLocaleString('pt-BR')} mm/min`, color: '#39FF14' }}
-            tip={resultado.seguranca.ctf > 1
-              ? `CTF ativo (${resultado.seguranca.ctf.toFixed(2)}) — ae < 50% de D, fz compensado para manter espessura do cavaco.`
-              : 'Mais arestas = mais avanço na mesma fz. Aumente Z para maior produtividade.'}
-          />
-
-          {/* MRR */}
-          <FormulaCard
-            title="MRR (Taxa Remoção)"
-            icon="speed"
-            resultValue={mrr.toFixed(1)}
-            resultUnit="cm³/min"
-            formula={<>MRR = <Fraction num="ap × ae × F" den="1000" /></>}
-            substitution={<>MRR = <Fraction num={<>{parametros.ap} × {parametros.ae} × {fmt(avanco)}</>} den="1000" /> = <span className="text-white font-bold">{mrr.toFixed(1)}</span></>}
-            variables={[
-              { symbol: 'ap', value: `${parametros.ap} mm`, description: 'profundidade axial' },
-              { symbol: 'ae', value: `${parametros.ae} mm`, description: 'profundidade radial' },
-              { symbol: 'F', value: `${fmt(avanco)} mm/min`, description: 'avanço' },
-            ]}
-            tip="Principal indicador de produtividade. Aumente ap ou ae para maior volume removido."
-          />
-
-          {/* Power */}
-          <FormulaCard
-            title="Potência (Motor)"
-            icon="bolt"
-            resultValue={potenciaMotor.toFixed(2)}
-            resultUnit="kW"
-            formula={<>P = <Fraction num="MRR × Kc" den={<>60000 × η</>} /> × SF</>}
-            substitution={<>P = <Fraction num={<>{mrr.toFixed(1)} × Kc</>} den={<>60000 × {limites.eficiencia}</>} /> × {safetyFactor} = <span className="text-white font-bold">{potenciaMotor.toFixed(2)}</span></>}
-            variables={[
-              { symbol: 'MRR', value: `${mrr.toFixed(1)} cm³/min`, description: 'taxa de remoção' },
-              { symbol: 'η', value: `${(limites.eficiencia * 100).toFixed(0)}%`, description: 'eficiência da máquina' },
-              { symbol: 'SF', value: `${safetyFactor}`, description: 'fator de segurança' },
-            ]}
-            contextBar={{ value: potenciaMotor, min: 0, max: limites.maxPotencia, label: `${potenciaMotor.toFixed(2)} / ${limites.maxPotencia} kW`, color: '#F97316' }}
-            tip="Material mais duro (Kc alto) = mais potência necessária. Reduza ap/ae se próximo do limite."
-          />
-
-          {/* Torque */}
-          <FormulaCard
-            title="Torque"
-            icon="rotate_right"
-            resultValue={resultado.torque.toFixed(2)}
-            resultUnit="Nm"
-            formula={<>T = <Fraction num="P × 9549" den="N" /></>}
-            substitution={<>T = <Fraction num={<>{potenciaMotor.toFixed(2)} × 9549</>} den={fmt(rpm)} /> = <span className="text-white font-bold">{resultado.torque.toFixed(2)}</span></>}
-            variables={[
-              { symbol: 'P', value: `${potenciaMotor.toFixed(2)} kW`, description: 'potência do motor' },
-              { symbol: 'N', value: `${fmt(rpm)} RPM`, description: 'rotação' },
-            ]}
-            contextBar={{ value: resultado.torque, min: 0, max: limites.maxTorque, label: `${resultado.torque.toFixed(2)} / ${limites.maxTorque} Nm`, color: '#A855F7' }}
-            tip="RPM baixo com potência alta = torque alto. Cuidado com ferramentas de diâmetro pequeno."
-          />
-        </div>
-      </div>
+function LdCell({ razao }: { razao: number }) {
+  const color = razao <= 3 ? '#2ecc71' : razao <= 4 ? '#f39c12' : '#e74c3c';
+  const label = razao > 6 ? 'BLOQ.' : razao.toFixed(1);
+  return (
+    <div className="bg-[rgba(45,55,70,0.90)] border border-white/15 rounded-md p-2 flex flex-col justify-center">
+      <div className="text-[10px] text-white/50 font-bold uppercase tracking-widest text-[8px]">L/D</div>
+      <div className="font-mono text-sm font-bold" style={{ color }}>{label}</div>
     </div>
   );
 }
