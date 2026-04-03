@@ -8,7 +8,6 @@ import { usePlausible } from '@/hooks/use-plausible';
 import { CollapsibleSection } from './collapsible-section';
 import { FineTunePanel } from './fine-tune-panel';
 import { StyledSlider } from './styled-slider';
-import { useOnboardingStore } from '@/hooks/use-onboarding';
 
 const OPERACAO_LABELS: Record<TipoUsinagem, string> = {
   [TipoUsinagem.DESBASTE]: 'Desbaste',
@@ -90,8 +89,6 @@ export function ConfigPanel() {
     safetyFactor, setSafetyFactor,
   } = useMachiningStore();
 
-  const { completed: onboardingCompleted, currentStep } = useOnboardingStore();
-
   const [showSavedBadge, setShowSavedBadge] = useState(false);
 
   const handleSaveTool = () => {
@@ -137,12 +134,7 @@ export function ConfigPanel() {
       <div className="sticky top-0 z-10 bg-background-dark/90 backdrop-blur-md pt-0 pb-2">
         <div className="flex gap-3">
           <button onClick={handleSimulate} disabled={isCalculating}
-            data-testid="btn-simular"
-            className={`flex-1 py-2 px-4 rounded-xl font-bold tracking-wide transition-all active:scale-[0.98] flex items-center justify-center gap-2 text-base uppercase disabled:opacity-70 disabled:cursor-not-allowed ${
-              currentStep === 'simular' && !onboardingCompleted
-                ? 'bg-gradient-to-r from-cyan-500 to-cyan-400 text-black shadow-[0_0_25px_rgba(0,217,255,0.6)] animate-pulse'
-                : 'bg-gradient-to-r from-cyan-600 to-cyan-500 text-white shadow-neon-cyan hover:brightness-110'
-            }`}>
+            className="flex-1 py-2 px-4 rounded-xl bg-gradient-to-r from-cyan-600 to-cyan-500 text-white font-bold tracking-wide shadow-neon-cyan hover:brightness-110 transition-all active:scale-[0.98] flex items-center justify-center gap-2 text-base uppercase disabled:opacity-70 disabled:cursor-not-allowed">
             {isCalculating ? (
               <>
                 <span className="material-symbols-outlined text-lg animate-[spinner_0.9s_linear_infinite]">refresh</span>
@@ -151,7 +143,7 @@ export function ConfigPanel() {
             ) : (
               <>
                 <span className="material-symbols-outlined text-lg">play_arrow</span>
-                {currentStep === 'simular' && !onboardingCompleted ? 'Calcular Parâmetros' : 'Simular'}
+                Simular
               </>
             )}
           </button>
@@ -168,9 +160,8 @@ export function ConfigPanel() {
         <CollapsibleSection
           title="Configuração Base"
           summary={summaryBase}
-          pulsing={currentStep === 'config-base' && !onboardingCompleted}
         >
-          <div className="space-y-3 pt-1" data-testid="drawer-config-base">
+          <div className="space-y-3 pt-1">
             <FieldGroup label="Material da Peça">
               <select value={materialId} onChange={(e) => {
                 const id = Number(e.target.value);
@@ -205,6 +196,7 @@ export function ConfigPanel() {
                 ))}
               </div>
             </FieldGroup>
+            {/* Objetivo Usinagem — será adicionado na Fase 5 */}
           </div>
         </CollapsibleSection>
 
@@ -212,9 +204,9 @@ export function ConfigPanel() {
         <CollapsibleSection
           title="Ferramenta"
           summary={summaryFerramenta}
-          pulsing={currentStep === 'ferramenta' && !onboardingCompleted}
         >
-          <div className="space-y-3 pt-1" data-testid="drawer-ferramenta">
+          <div className="space-y-3 pt-1">
+            {/* Saved Tools — Manual Save + Dropdown */}
             <div className="mb-1">
               <div className="flex items-center gap-2">
                 <select
@@ -252,6 +244,7 @@ export function ConfigPanel() {
               <div className="border-b border-white/5 mt-3" />
             </div>
 
+            {/* 1. Tool type */}
             <FieldGroup label="Tipo">
               <div className="grid grid-cols-3 gap-2">
                 {FERRAMENTAS_PADRAO.map((f) => (
@@ -265,6 +258,7 @@ export function ConfigPanel() {
               </div>
             </FieldGroup>
 
+            {/* 2. Diameter — free input (0.1–200 mm) */}
             <NumberInputRow
               label="Diâmetro (mm)"
               value={ferramenta.diametro}
@@ -275,6 +269,7 @@ export function ConfigPanel() {
               onChange={(v) => setFerramenta({ diametro: v })}
             />
 
+            {/* 3. Corner radius — free input (toroidal only, 0.05–50 mm) */}
             {ferramenta.tipo === 'toroidal' && (
               <NumberInputRow
                 label="Raio da Ponta (mm)"
@@ -287,6 +282,7 @@ export function ConfigPanel() {
               />
             )}
 
+            {/* 4. Arestas — 4 fixed buttons [2, 3, 4, 6] */}
             <div className="flex items-center justify-between gap-3 rounded-md px-3 py-2" style={ROW_STYLE}>
               <span className="text-base font-semibold text-white/85 leading-none">Arestas (Z)</span>
               <div className="flex gap-1">
@@ -306,6 +302,7 @@ export function ConfigPanel() {
               </div>
             </div>
 
+            {/* 5. Altura de Fixação — free input (5–300 mm) */}
             <NumberInputRow
               label="Altura Fixação (mm)"
               value={ferramenta.balanco}
@@ -318,15 +315,12 @@ export function ConfigPanel() {
           </div>
         </CollapsibleSection>
 
-        {/* Seção 3: Ajuste Fino */}
+        {/* Seção 3: Ajuste Fino (movido do FineTunePanel) */}
         <CollapsibleSection
           title="Ajuste Fino"
           summary={summaryAjuste}
-          pulsing={currentStep === 'ajuste-fino' && !onboardingCompleted}
         >
-          <div data-testid="drawer-ajuste-fino">
-            <FineTunePanel embedded />
-          </div>
+          <FineTunePanel embedded />
         </CollapsibleSection>
 
         {/* Seção 4: Segurança — Safety Factor slider */}
@@ -334,9 +328,8 @@ export function ConfigPanel() {
           title="Segurança"
           summary={summarySeguranca}
           defaultOpen={false}
-          pulsing={currentStep === 'seguranca' && !onboardingCompleted}
         >
-          <div className="space-y-3 pt-1" data-testid="drawer-seguranca">
+          <div className="space-y-3 pt-1">
             <div className="flex items-center gap-2">
               <div className="flex-1">
                 <StyledSlider

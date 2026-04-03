@@ -19,10 +19,14 @@ function setupSafeCalc(balanco = 20) {
 describe('ResultsPanel', () => {
   beforeEach(() => { useMachiningStore.getState().reset(); });
 
-  it('shows onboarding ticker and placeholder when no simulation yet', () => {
+  it('shows zeroed results when no simulation yet', () => {
     renderPanel();
-    expect(screen.getByTestId('ticker-display')).toBeInTheDocument();
-    expect(screen.getByText(/Configure os parâmetros/i)).toBeInTheDocument();
+    expect(screen.getByText('SEGURO')).toBeInTheDocument();
+  });
+
+  it('renders tool summary viewer', () => {
+    renderPanel();
+    expect(screen.getByTestId('tool-summary')).toBeInTheDocument();
   });
 
   it('shows calculated results after calcular()', () => {
@@ -30,7 +34,7 @@ describe('ResultsPanel', () => {
     renderPanel();
     expect(screen.getAllByText('Rotação (RPM)').length).toBeGreaterThan(0);
     expect(screen.getAllByText('Avanço (mm/min)').length).toBeGreaterThan(0);
-    expect(screen.getByText('Potência')).toBeInTheDocument();
+    expect(screen.getByText('Potência Est.')).toBeInTheDocument();
   });
 
   it('shows safety badge', () => {
@@ -49,12 +53,14 @@ describe('ResultsPanel', () => {
   it('shows progress cards', () => {
     setupSafeCalc();
     renderPanel();
-    // Zona 5: 3 ProgressCards + L/D + CTF (Redesign v0.10.0)
-    expect(screen.getByText('Potência')).toBeInTheDocument();
+    // Zona 2: 4 ProgressCards (HMI redesign v0.9.3)
+    expect(screen.getByText('Potência Est.')).toBeInTheDocument();
     expect(screen.getByText('Vc Real')).toBeInTheDocument();
-    expect(screen.getByText('Torque')).toBeInTheDocument();
-    // Zona 4: Gauges (HMI labels v0.10.0)
-    expect(screen.getByText('Prod. MRR')).toBeInTheDocument();
+    // 'Torque' appears in both ProgressCard (Zona 2) and FormulaCard (Zona 5)
+    expect(screen.getAllByText('Torque').length).toBeGreaterThanOrEqual(1);
+    expect(screen.getByText('MRR')).toBeInTheDocument();
+    // Zona 3: Gauges still present
+    expect(screen.getByText('Produtividade MRR')).toBeInTheDocument();
   });
 
   it('shows warnings when L/D is critical', () => {

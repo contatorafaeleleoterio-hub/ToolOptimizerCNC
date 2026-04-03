@@ -6,21 +6,13 @@ import { ExportButtons } from './components/export-buttons';
 import { Disclaimer } from './components/disclaimer';
 import { SeoHead } from './components/seo-head';
 import { usePageTitle } from './hooks/use-page-title';
-import { OnboardingController } from './components/onboarding/onboarding-controller';
-import { WelcomeModal } from './components/onboarding/welcome-modal';
-import { useOnboardingStore } from './hooks/use-onboarding';
 
 const BASE_URL = 'https://contatorafaeleleoterio-hub.github.io/ToolOptimizerCNC';
 
 export default function App() {
   usePageTitle('ToolOptimizer CNC — Calculadora de Parâmetros de Corte');
-  const { completed, currentStep } = useOnboardingStore();
-
   return (
     <div className="flex flex-col h-screen mx-auto p-3 gap-3 relative">
-      <OnboardingController />
-      {!completed && currentStep === 'welcome' && <WelcomeModal />}
-      
       <SeoHead
         title="ToolOptimizer CNC — Calculadora de Parâmetros de Corte"
         url={`${BASE_URL}/`}
