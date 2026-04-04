@@ -460,3 +460,64 @@ describe('updateSavedTool store action', () => {
 
 Adicionada ao `handleSave` no snippet do `tool-edit-modal.tsx` acima:
 `if (tipo === 'toroidal' && raio > diametro / 2) return;`
+
+---
+
+## DESIGN VISUAL APROVADO (04/04/2026)
+
+**Mockup:** `docs/mockups/item2-editar-ferramenta.html`
+
+### Estrutura do Modal de Seleção
+
+O modal de seleção de ferramenta usa **lista compacta organizada por categoria de diâmetro**, não dropdown `<select>`.
+
+#### Categorias de Diâmetro
+
+| Categoria | Faixa |
+|-----------|-------|
+| 1 | ≤ 6 mm |
+| 2 | 6 – 12 mm |
+| 3 | 12 – 20 mm |
+| 4 | > 20 mm |
+
+Dentro de cada categoria, ferramentas ordenadas por diâmetro crescente.
+
+#### Linha única por ferramenta — campos exatos (nesta ordem)
+
+```
+⌀ [valor]mm  |  R [valor]  |  H [valor]  |  Hél. [valor]°  |  [Tipo da fresa]
+```
+
+| Campo | Label | Representa | Exemplo |
+|-------|-------|------------|---------|
+| Símbolo + valor | ⌀ (SVG) | Diâmetro | ⌀ 8mm |
+| Raio de canto | R | `raioQuina` | R 0 |
+| Fixação | H | `balanco` (fixação/garra) | H 4 |
+| Hélice | Hél. | Ângulo de hélice | Hél. 45° |
+| Tipo | — | `tipo` traduzido | Fresa de topo |
+
+> **Regra:** Material e operação (acabamento/desbaste) NÃO são dados da ferramenta — nunca exibir neste modal.
+
+#### Símbolo ⌀
+
+Desenhado em SVG inline (círculo + linha diagonal):
+```tsx
+<svg width="11" height="11" viewBox="0 0 12 12" fill="none">
+  <circle cx="6" cy="6" r="4.5" stroke="#475569" stroke-width="1.3"/>
+  <line x1="1.5" y1="10.5" x2="10.5" y2="1.5" stroke="#475569" stroke-width="1.3"/>
+</svg>
+```
+
+#### Comportamento
+
+- **Hover** no card → revela botões "Editar" e "Excluir"
+- **Card ativo** (ferramenta em uso) → borda e texto em `#00D9FF`
+- **Botão "+ Nova Ferramenta"** no rodapé do modal
+
+### Campo Hélice (`anguloHelice`)
+
+> **Pendência técnica:** O campo `anguloHelice` não existe atualmente na interface `SavedTool` nem no store. Será necessário:
+> 1. Adicionar `anguloHelice: number` à interface `SavedTool` (ex: default 30°)
+> 2. Adicionar ao `gerarNomeFerramenta()` ou manter separado
+> 3. Adicionar input no `ToolEditModal` (botões 30° / 45° / 60°)
+> 4. Exibir na linha única da lista

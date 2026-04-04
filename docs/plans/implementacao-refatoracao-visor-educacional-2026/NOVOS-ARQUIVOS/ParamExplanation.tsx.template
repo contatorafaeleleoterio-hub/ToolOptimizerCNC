@@ -1,0 +1,139 @@
+/**
+ * ParamExplanation.tsx
+ *
+ * NOVO ARQUIVO — Componente reutilizável para explicações educacionais
+ *
+ * Localização: src/components/ParamExplanation.tsx
+ * Usado por: fine-tune-panel.tsx, mobile-fine-tune-section.tsx (ATUALIZAÇÃO 3.2)
+ *
+ * Objetivo:
+ * - Botão maior e mais visível com estilo popover/tooltip
+ * - Educação de cada parâmetro (Vc, fz, ae, ap)
+ * - Hover/click para mostrar explicação
+ */
+
+import { useState } from 'react';
+
+export interface ParamExplanationProps {
+  paramName: 'vc' | 'fz' | 'ae' | 'ap';
+  label: string;
+  explanation: string;
+  tips?: string[];
+}
+
+/**
+ * Mapeamento de explicações por parâmetro
+ */
+const PARAM_EXPLANATIONS: Record<string, { title: string; description: string; tips: string[] }> = {
+  vc: {
+    title: 'Velocidade de Corte (Vc)',
+    description: 'Velocidade tangencial na qual a ferramenta corta o material. Medida em metros por minuto (m/min). Valores mais altos = maior agressividade, maior geração de calor.',
+    tips: [
+      '📌 Materiais dúcteis (aço): 50-150 m/min',
+      '📌 Materiais duros (ferro fundido): 20-80 m/min',
+      '📌 Alumínio: 100-300 m/min',
+      '⚠️ Acima do ideal = aquecimento, vibração, desgaste rápido',
+      '⚠️ Abaixo do ideal = pouca produção, acabamento pobre',
+    ],
+  },
+  fz: {
+    title: 'Avanço por Dente (fz)',
+    description: 'Quantidade de material removida por cada dente da ferramenta. Medida em mm/dente. Afeta diretamente a rugosidade do acabamento.',
+    tips: [
+      '📌 Desbaste: 0.15-0.30 mm/dente (mais agressivo)',
+      '📌 Acabamento: 0.05-0.10 mm/dente (mais fino)',
+      '⚠️ Acima do ideal = vibração, quebra de ferramenta',
+      '⚠️ Abaixo do ideal = pouca eficiência, aquecimento',
+    ],
+  },
+  ae: {
+    title: 'Engajamento Radial (ae)',
+    description: 'Profundidade de corte lateral (radial). Determinada pela geometria da ferramenta. Afeta carga na ferramenta e qualidade do acabamento.',
+    tips: [
+      '📌 Máximo recomendado: 50% do diâmetro da ferramenta',
+      '📌 Acima: maior vibração',
+      '📌 Abaixo: melhor acabamento, menor carga',
+      '⚠️ >60% do diâmetro = comportamento instável',
+    ],
+  },
+  ap: {
+    title: 'Profundidade Axial (ap)',
+    description: 'Profundidade de corte na direção do eixo da ferramenta (Z). Determina quanto material é removido a cada passada. Afeta potência e tempo de usinagem.',
+    tips: [
+      '📌 Desbaste: até 5-10 mm (depende da ferramenta)',
+      '📌 Acabamento: 0.5-2 mm (mais leve)',
+      '⚠️ Muito alto = sobrecarga, vibração, quebra',
+      '⚠️ Manter L/D ratio ≤ 6 para estabilidade',
+    ],
+  },
+};
+
+/**
+ * Componente principal
+ */
+export function ParamExplanation({ paramName, label }: ParamExplanationProps) {
+  const [showTooltip, setShowTooltip] = useState(false);
+  const config = PARAM_EXPLANATIONS[paramName] || {};
+
+  if (!config.title) {
+    return null;
+  }
+
+  return (
+    <div className="relative group mt-2">
+      {/* Botão visível */}
+      <button
+        className="w-full px-3 py-2 text-xs font-semibold text-cyan-400
+                   bg-cyan-500/10 border border-cyan-400/40 rounded
+                   hover:bg-cyan-500/20 hover:border-cyan-400/60 transition
+                   flex items-center justify-center gap-2
+                   active:scale-95 shrink-0"
+        title={`Clique para aprender sobre ${label}`}
+        onClick={() => setShowTooltip(!showTooltip)}
+        onMouseEnter={() => setShowTooltip(true)}
+        onMouseLeave={() => setShowTooltip(false)}
+      >
+        <span className="material-symbols-outlined text-sm">info</span>
+        <span>ℹ️ O QUE É {label.toUpperCase()}?</span>
+      </button>
+
+      {/* Popover/Tooltip — aparece ao hover ou click */}
+      {showTooltip && (
+        <div className="absolute bottom-full mb-2 left-0 right-0
+                        bg-gray-950 border border-cyan-400/40 rounded-lg p-3
+                        text-xs text-gray-300 z-50 backdrop-blur
+                        shadow-lg"
+             style={{ minWidth: '300px', maxWidth: '400px' }}>
+          {/* Título */}
+          <h4 className="text-cyan-400 font-semibold mb-2">
+            {config.title}
+          </h4>
+
+          {/* Descrição */}
+          <p className="text-gray-400 mb-3 leading-relaxed">
+            {config.description}
+          </p>
+
+          {/* Dicas */}
+          {config.tips && config.tips.length > 0 && (
+            <div className="space-y-1 border-t border-cyan-400/20 pt-2">
+              <p className="text-cyan-400 font-semibold text-[10px] mb-1">DICAS:</p>
+              {config.tips.map((tip, i) => (
+                <p key={i} className="text-gray-400 text-[10px] leading-tight">
+                  {tip}
+                </p>
+              ))}
+            </div>
+          )}
+
+          {/* Arrow (CSS) */}
+          <div className="absolute top-full left-1/2 -translate-x-1/2
+                          w-2 h-2 bg-gray-950 border-r border-b
+                          border-cyan-400/40 rounded-sm"
+               style={{ transform: 'translateX(-50%) rotate(45deg)' }}>
+          </div>
+        </div>
+      )}
+    </div>
+  );
+}

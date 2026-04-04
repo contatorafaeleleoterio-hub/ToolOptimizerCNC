@@ -46,6 +46,32 @@ npx tsc --noEmit
 
 ## Ultimas 3 Sessoes
 
+### Sessão 04/04 — Design visual ITEM-2 (modal seleção de ferramenta)
+
+**Commit:** pendente (docs only — sem alteração de código)
+**Atividade:** Decisões de UX para o modal de seleção/edição de ferramenta + mockup HTML aprovado
+
+**Decisões tomadas:**
+- **ITEM-2 — Layout do modal:** Lista de cards compactos organizados por categoria de diâmetro (≤6 / 6–12 / 12–20 / >20mm), ordenados por tamanho crescente
+- **Linha única por ferramenta:** `⌀ valor` | `R` | `H` | `Hél.` | `Tipo da fresa`
+- **Símbolo ⌀:** desenhado em SVG inline (círculo + diagonal)
+- **Material e operação (acabamento/desbaste)** removidos — NÃO são dados da ferramenta
+- **Hover** revela botões Editar / Excluir
+- **Mockup aprovado:** `docs/mockups/item2-editar-ferramenta.html`
+- **Pendência técnica identificada:** campo `anguloHelice` não existe no `SavedTool` — precisa ser adicionado
+
+**Decisões pendentes (para próxima sessão — continuar questionário):**
+- **ITEM-5:** formato do slider Safety Factor (usuário escolheu "B — outro formato" mas não especificou ainda)
+- **ITEM-7:** popover mostra só desc curto OU inclui aumentar/diminuir/equilíbrio?
+- **ITEM-7:** drawer educacional coexiste com popover OU é substituído?
+- **ITEM-10:** modal de favorito: reutilizar `ToolEditModal` ou criar novo?
+
+**Próxima sessão (Claude Code):**
+1. Continuar questionário de decisões pendentes (ITEM-5 primeiro — perguntar formato do slider)
+2. Após todas as decisões resolvidas → iniciar implementação pelo ITEM-1.1 (layout grid visor)
+
+---
+
 ### Sessão 01/04 — Auditoria técnica dos 10 documentos de implementação
 
 **Commit:** pendente (fim de sessão)

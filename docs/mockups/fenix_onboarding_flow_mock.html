@@ -1,0 +1,426 @@
+﻿<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>FENIX Onboarding - Visual Flow Mockup</title>
+  <style>
+    :root {
+      --bg: #0b0f14;
+      --panel: #101823;
+      --panel-2: #0e141c;
+      --cyan: #00d9ff;
+      --cyan-dim: rgba(0, 217, 255, 0.35);
+      --text: #d6e2ee;
+      --muted: rgba(214, 226, 238, 0.6);
+      --good: #35d07f;
+      --warning: #f9b14b;
+      --shadow: 0 12px 40px rgba(0,0,0,0.45);
+      --mono: "JetBrains Mono", "Consolas", "SFMono-Regular", "Menlo", monospace;
+      --sans: "Space Grotesk", "Segoe UI", "Arial", sans-serif;
+    }
+
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      font-family: var(--sans);
+      background: radial-gradient(1200px 700px at 20% -10%, rgba(0, 217, 255, 0.08), transparent 60%),
+                  radial-gradient(900px 600px at 100% 0%, rgba(53, 208, 127, 0.08), transparent 55%),
+                  var(--bg);
+      color: var(--text);
+    }
+
+    .wrap {
+      padding: 28px 28px 40px;
+      display: grid;
+      gap: 24px;
+      grid-template-columns: 1.05fr 1.45fr;
+      align-items: start;
+    }
+
+    header {
+      grid-column: 1 / -1;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 18px 22px;
+      background: linear-gradient(135deg, rgba(0, 217, 255, 0.1), rgba(16, 24, 35, 0.9));
+      border: 1px solid var(--cyan-dim);
+      border-radius: 14px;
+      box-shadow: var(--shadow);
+    }
+
+    header .title {
+      font-size: 20px;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+    }
+
+    header .meta {
+      font-size: 12px;
+      color: var(--muted);
+      text-align: right;
+      line-height: 1.4;
+    }
+
+    .flow {
+      background: var(--panel);
+      border: 1px solid rgba(255,255,255,0.08);
+      border-radius: 16px;
+      padding: 18px;
+      box-shadow: var(--shadow);
+    }
+
+    .flow h2 {
+      margin: 0 0 12px 0;
+      font-size: 14px;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: var(--muted);
+    }
+
+    .step {
+      border: 1px solid rgba(255,255,255,0.08);
+      border-left: 3px solid var(--cyan);
+      border-radius: 12px;
+      padding: 14px 16px;
+      margin-bottom: 12px;
+      background: var(--panel-2);
+      position: relative;
+    }
+
+    .step:last-child { margin-bottom: 0; }
+
+    .step .label {
+      display: inline-block;
+      font-size: 12px;
+      letter-spacing: 0.16em;
+      text-transform: uppercase;
+      color: var(--cyan);
+      font-family: var(--mono);
+    }
+
+    .step .desc {
+      margin-top: 8px;
+      font-size: 14px;
+      color: var(--text);
+    }
+
+    .arrow {
+      text-align: center;
+      font-family: var(--mono);
+      color: var(--muted);
+      margin: -2px 0 10px;
+    }
+
+    .dashboard {
+      background: #0e141c;
+      border: 1px solid rgba(255,255,255,0.08);
+      border-radius: 20px;
+      box-shadow: var(--shadow);
+      padding: 18px;
+      position: relative;
+    }
+
+    .ticker {
+      background: rgba(0,0,0,0.6);
+      border-bottom: 1px solid var(--cyan-dim);
+      padding: 10px 14px;
+      font-family: var(--mono);
+      font-size: 12px;
+      letter-spacing: 0.12em;
+      color: var(--cyan);
+      text-transform: uppercase;
+      border-radius: 12px 12px 0 0;
+    }
+
+    .ticker span { color: #9be9ff; }
+
+    .gauges {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 16px;
+      padding: 18px 12px 8px;
+    }
+
+    .gauge {
+      background: #0b1017;
+      border: 1px solid rgba(255,255,255,0.08);
+      border-radius: 14px;
+      padding: 14px 16px;
+      min-height: 80px;
+    }
+
+    .gauge .label {
+      font-size: 12px;
+      color: var(--muted);
+      text-transform: uppercase;
+      letter-spacing: 0.12em;
+    }
+
+    .gauge .value {
+      font-size: 26px;
+      font-weight: 600;
+      margin-top: 8px;
+      color: var(--text);
+    }
+
+    .dots {
+      display: flex;
+      gap: 8px;
+      justify-content: center;
+      padding: 8px 0 6px;
+    }
+
+    .dot {
+      height: 8px;
+      width: 8px;
+      border-radius: 999px;
+      background: rgba(255,255,255,0.18);
+    }
+
+    .dot.active {
+      width: 20px;
+      background: var(--cyan);
+    }
+
+    .drawers {
+      display: grid;
+      gap: 10px;
+      padding: 8px 0 4px;
+    }
+
+    .drawer {
+      background: #0b1017;
+      border: 1px solid rgba(255,255,255,0.08);
+      border-radius: 12px;
+      padding: 10px 12px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 13px;
+    }
+
+    .drawer .name { text-transform: uppercase; letter-spacing: 0.1em; }
+    .drawer .summary { color: var(--muted); font-size: 12px; }
+    .drawer.active {
+      border-color: var(--cyan);
+      box-shadow: 0 0 14px rgba(0,217,255,0.25);
+    }
+
+    .drawer .badge {
+      font-size: 11px;
+      color: var(--cyan);
+      border: 1px solid rgba(0,217,255,0.4);
+      padding: 2px 6px;
+      border-radius: 999px;
+      margin-left: 8px;
+    }
+
+    .cta {
+      display: flex;
+      justify-content: center;
+      padding: 12px 0 8px;
+    }
+
+    .cta button {
+      background: linear-gradient(90deg, #0891b2, #00d9ff);
+      border: none;
+      color: #00131a;
+      font-weight: 700;
+      letter-spacing: 0.14em;
+      padding: 10px 18px;
+      border-radius: 12px;
+      text-transform: uppercase;
+      font-size: 12px;
+      cursor: default;
+    }
+
+    .modal {
+      position: absolute;
+      inset: 18px;
+      background: rgba(0,0,0,0.62);
+      border-radius: 18px;
+      display: grid;
+      place-items: center;
+      padding: 18px;
+    }
+
+    .modal-card {
+      width: min(380px, 92%);
+      background: rgba(22, 27, 34, 0.95);
+      border: 1px solid var(--cyan-dim);
+      border-radius: 16px;
+      padding: 18px;
+      text-align: center;
+    }
+
+    .modal-card h3 {
+      margin: 0;
+      font-size: 16px;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+    }
+
+    .modal-card p {
+      color: var(--muted);
+      font-size: 13px;
+      line-height: 1.4;
+    }
+
+    .modal-actions {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+      margin-top: 12px;
+    }
+
+    .modal-actions .primary {
+      background: linear-gradient(90deg, #0891b2, #00d9ff);
+      border: none;
+      border-radius: 10px;
+      padding: 8px 12px;
+      text-transform: uppercase;
+      letter-spacing: 0.12em;
+      font-size: 11px;
+      color: #00131a;
+      font-weight: 700;
+    }
+
+    .modal-actions .ghost {
+      background: transparent;
+      border: 1px solid rgba(255,255,255,0.14);
+      border-radius: 10px;
+      padding: 8px 12px;
+      text-transform: uppercase;
+      letter-spacing: 0.12em;
+      font-size: 11px;
+      color: var(--text);
+    }
+
+    .legend {
+      margin-top: 14px;
+      display: grid;
+      gap: 6px;
+      color: var(--muted);
+      font-size: 12px;
+    }
+
+    .legend span { color: var(--text); }
+
+    @media (max-width: 980px) {
+      .wrap { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <header>
+      <div class="title">FENIX Onboarding Guided Flow</div>
+      <div class="meta">
+        Visual mockup apenas (sem logica real)<br />
+        Documento base: 01/04/2026
+      </div>
+    </header>
+
+    <section class="flow">
+      <h2>Fluxo Alvo</h2>
+      <div class="step">
+        <div class="label">Step 0</div>
+        <div class="desc">Welcome modal &gt; Comecar agora</div>
+      </div>
+      <div class="arrow">|</div>
+      <div class="step">
+        <div class="label">Step 1</div>
+        <div class="desc">Configuracao base (material + operacao)</div>
+      </div>
+      <div class="arrow">|</div>
+      <div class="step">
+        <div class="label">Step 2</div>
+        <div class="desc">Ferramenta (tipo, diametro, arestas)</div>
+      </div>
+      <div class="arrow">|</div>
+      <div class="step">
+        <div class="label">Step 3</div>
+        <div class="desc">Ajuste fino (Vc, fz, ae, ap)</div>
+      </div>
+      <div class="arrow">|</div>
+      <div class="step">
+        <div class="label">Step 4</div>
+        <div class="desc">Seguranca (SF 0.80 recomendado)</div>
+      </div>
+      <div class="arrow">|</div>
+      <div class="step">
+        <div class="label">Step 5</div>
+        <div class="desc">Calcular parametros (AHA: RPM + Avanco)</div>
+      </div>
+
+      <div class="legend">
+        <div><span>Destaques:</span> gaveta ativa pulsa em cyan + badge "ABRA AQUI".</div>
+        <div><span>Letreiro:</span> mensagens rotativas estilo display LCD.</div>
+        <div><span>Dots:</span> progresso 5 passos.</div>
+      </div>
+    </section>
+
+    <section class="dashboard">
+      <div class="ticker">&gt; INSIRA OS PARAMETROS PARA CALCULAR &bull; <span>ABRA A GAVETA CONFIGURACAO BASE</span></div>
+
+      <div class="gauges">
+        <div class="gauge">
+          <div class="label">RPM</div>
+          <div class="value">----</div>
+        </div>
+        <div class="gauge">
+          <div class="label">AVANCO</div>
+          <div class="value">----</div>
+        </div>
+      </div>
+
+      <div class="dots">
+        <div class="dot active"></div>
+        <div class="dot"></div>
+        <div class="dot"></div>
+        <div class="dot"></div>
+        <div class="dot"></div>
+      </div>
+
+      <div class="drawers">
+        <div class="drawer active">
+          <div>
+            <span class="name">Configuracao Base</span>
+            <span class="badge">ABRA AQUI</span>
+          </div>
+          <div class="summary">Aco 1045 | Desbaste</div>
+        </div>
+        <div class="drawer">
+          <div class="name">Ferramenta</div>
+          <div class="summary">Toroidal &Oslash;6 | A4</div>
+        </div>
+        <div class="drawer">
+          <div class="name">Ajuste Fino</div>
+          <div class="summary">Vc 180 | fz 0.10</div>
+        </div>
+        <div class="drawer">
+          <div class="name">Seguranca</div>
+          <div class="summary">SF 0.80</div>
+        </div>
+      </div>
+
+      <div class="cta">
+        <button>CALCULAR PARAMETROS</button>
+      </div>
+
+      <div class="modal">
+        <div class="modal-card">
+          <h3>FENIX</h3>
+          <p>Parametros CNC em menos de 1 minuto. Configure material + fresa e calcule RPM e Avanco.</p>
+          <div class="modal-actions">
+            <button class="primary">Comecar agora</button>
+            <button class="ghost">Pular</button>
+          </div>
+        </div>
+      </div>
+    </section>
+  </div>
+</body>
+</html>
