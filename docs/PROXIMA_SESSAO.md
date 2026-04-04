@@ -48,7 +48,7 @@ npx tsc --noEmit
 
 ### Sessão 04/04 — Design visual ITEM-2 (modal seleção de ferramenta)
 
-**Commit:** pendente (docs only — sem alteração de código)
+**Commit:** `40c3229` — docs only, sem alteração de código
 **Atividade:** Decisões de UX para o modal de seleção/edição de ferramenta + mockup HTML aprovado
 
 **Decisões tomadas:**
@@ -58,17 +58,54 @@ npx tsc --noEmit
 - **Material e operação (acabamento/desbaste)** removidos — NÃO são dados da ferramenta
 - **Hover** revela botões Editar / Excluir
 - **Mockup aprovado:** `docs/mockups/item2-editar-ferramenta.html`
-- **Pendência técnica identificada:** campo `anguloHelice` não existe no `SavedTool` — precisa ser adicionado
+- **Pendência técnica identificada:** campo `anguloHelice` não existe no `SavedTool` — precisa ser adicionado na implementação
 
-**Decisões pendentes (para próxima sessão — continuar questionário):**
-- **ITEM-5:** formato do slider Safety Factor (usuário escolheu "B — outro formato" mas não especificou ainda)
-- **ITEM-7:** popover mostra só desc curto OU inclui aumentar/diminuir/equilíbrio?
-- **ITEM-7:** drawer educacional coexiste com popover OU é substituído?
-- **ITEM-10:** modal de favorito: reutilizar `ToolEditModal` ou criar novo?
+---
 
-**Próxima sessão (Claude Code):**
-1. Continuar questionário de decisões pendentes (ITEM-5 primeiro — perguntar formato do slider)
-2. Após todas as decisões resolvidas → iniciar implementação pelo ITEM-1.1 (layout grid visor)
+## ⚡ CONTINUAR AQUI — Próxima Sessão (questionário de decisões)
+
+> **Contexto:** Rafael e o assistente estavam resolvendo decisões de UX pendentes dos 10 itens de implementação, uma pergunta por vez. O ITEM-2 foi o último concluído — mockup criado iterativamente e aprovado por Rafael. A seguir, o questionário parou no ITEM-5.
+
+### O que foi feito (resumo do fluxo)
+
+1. Sessão iniciou com "proxima sessao" → leitura do ROADMAP
+2. Identificadas 5 decisões abertas nos docs de implementação
+3. Método: **uma pergunta por vez**, Rafael responde, se necessário cria artefato visual (mockup HTML), refina até aprovação, passa para próxima
+4. **ITEM-2 concluído:** 3 iterações de mockup — aprovado na 3ª versão
+   - Artefato final: `docs/mockups/item2-editar-ferramenta.html`
+   - Design documentado em: `docs/plans/ATUALIZACAO_DASH_APROVADO/ITEM-2-BOTAO-EDITAR-FERRAMENTA.md` (seção "DESIGN VISUAL APROVADO 04/04/2026" no final do arquivo)
+
+### Onde parou exatamente
+
+**Próxima pergunta a fazer (ITEM-5 — Safety Factor):**
+
+> "Como quer que o Safety Factor apareça no slider? Descreva o formato ideal — range, display, comportamento."
+
+**Contexto do ITEM-5 para o assistente:**
+- O slider atual de Safety Factor usa um input nativo (`<input type="range">`) em `config-panel.tsx` (~L277)
+- A proposta original era usar `StyledSlider` simples (unidirecional, 0.50–1.00, display "70%")
+- Rafael escolheu **"B — outro formato"** mas não especificou ainda
+- O `BidirectionalSlider` (−150% a +150% relativo) NÃO é adequado para Safety Factor (valor absoluto)
+- Após Rafael descrever o formato → criar mockup HTML se necessário → aprovar → documentar em `ITEM-5-FATOR-CORRECAO-SLIDER.md`
+
+### Fila completa de decisões restantes (4 pendentes)
+
+| Ordem | Item | Pergunta a fazer |
+|-------|------|-----------------|
+| **1 — PRÓXIMA** | ITEM-5 | Como quer o slider do Safety Factor? (range, display, comportamento) |
+| 2 | ITEM-7 (a) | Popover "O QUE É [PARAM]?": mostra só descrição curta OU inclui dicas de aumentar/diminuir/equilíbrio? |
+| 3 | ITEM-7 (b) | O drawer educacional atual coexiste com o popover OU é substituído por ele? |
+| 4 | ITEM-10 | Modal de edição de favorito: reutilizar o `ToolEditModal` (mesmo do ITEM-2) ou criar um componente separado? |
+
+### Instrução para o assistente
+
+1. Ler este bloco como contexto
+2. Retomar o questionário **sem reintroduzir** — Rafael já sabe o que está acontecendo
+3. Fazer apenas a primeira pergunta pendente (ITEM-5)
+4. Após cada resposta: criar mockup se necessário → aguardar aprovação → documentar → próxima pergunta
+5. Após todas as 4 decisões resolvidas → propor início da implementação pelo ITEM-1.1
+
+---
 
 ---
 
