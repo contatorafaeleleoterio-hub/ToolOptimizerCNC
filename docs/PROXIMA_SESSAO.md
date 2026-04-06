@@ -73,14 +73,21 @@ npx tsc --noEmit
 
 ## ⚡ CONTINUAR AQUI — Próxima Sessão (implementação)
 
-> **ITEM-1.1 concluído** (`cfece4a`, v0.10.1). **Próximo: ITEM-1.2.**
+> **ITEM-1.2 concluído** (`ad5e003`, v0.10.1). **Próximo: ITEM-2.1 (Fator de Correção Slider).**
 
 ### Instrução para o assistente
 
 1. Ler `docs/plans/ATUALIZACAO_DASH_APROVADO/CONTEXTO-PROXIMA-SESSAO.md` — fila completa, ordem, pts
-2. Ler `docs/plans/ATUALIZACAO_DASH_APROVADO/ITEM-2-BOTAO-EDITAR-FERRAMENTA.md` — spec completa
-3. Implementar **ITEM-1.2 — Botão "Editar Ferramenta" + ToolEditModal.tsx**
+2. Ler `docs/plans/ATUALIZACAO_DASH_APROVADO/ITEM-5-FATOR-CORRECAO-SLIDER.md` — spec completa
+3. Implementar **ITEM-2.1 — Fator de Correção como BidirectionalSlider**
 4. **NÃO** sugerir ou iniciar Segurança Cibernética — está pausada até Rafael decidir retomar
+
+### Sessão 06/04 (2ª) — Implementação ITEM-1.2 (ToolEditModal + lista cards)
+
+- **Commit:** `ad5e003` feat: ITEM-1.2 — saved tools cards list + ToolEditModal
+- **Entregável:** `<select>` substituído por lista de cards agrupados por faixa de diâmetro; `ToolEditModal` criado em `src/components/modals/`; `updateSavedTool` adicionado ao store; campo `anguloHelice` na interface `SavedTool`
+- **Testes:** 952 passando, 0 falhas, TS limpo, build 106.59 KB gzip
+- **Deploy:** Worker live `tooloptimizercnc.com.br`
 
 ### Sessão 06/04 — Implementação ITEM-1.1 (results-panel.tsx 7 zonas)
 

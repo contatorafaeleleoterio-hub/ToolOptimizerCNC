@@ -250,7 +250,7 @@
     </div>
   </div>
   <div class="h-right">
-    <span class="badge bv">v0.10.0</span>
+    <span class="badge bv">v0.10.1</span>
     <span class="badge bl">● LIVE</span>
     <span class="badge bd">30/03/2026</span>
   </div>
@@ -284,7 +284,7 @@
     <div class="journey">
       <div class="j-labels">
         <span>🏁 Início</span>
-        <span>🎯 <strong>v0.10.0 — Aqui agora</strong></span>
+        <span>🎯 <strong>v0.10.1 — Aqui agora</strong></span>
         <span>🏆 v1.0.0</span>
       </div>
       <div class="j-bar"><div class="j-fill" id="jbar" style="width:0%"></div></div>
@@ -304,10 +304,10 @@
   <!-- TABS -->
   <div class="tabs">
     <button class="tb td on" onclick="tab('done',this)">
-      ✅ O que já fizemos <span class="cnt">15</span>
+      ✅ O que já fizemos <span class="cnt">17</span>
     </button>
     <button class="tb tn" onclick="tab('next',this)">
-      ⚡ Próximas sessões <span class="cnt">10</span>
+      ⚡ Próximas sessões <span class="cnt">8</span>
     </button>
     <button class="tb tf" onclick="tab('future',this)">
       🔮 Rumo ao lançamento <span class="cnt">6</span>
@@ -680,6 +680,54 @@
         </div></div>
       </div>
 
+      <!-- 16 -->
+      <div class="card" data-t="design" onclick="tog(this)">
+        <div class="card-hd">
+          <div class="cicon">🖥️</div>
+          <div class="cmeta">
+            <div class="ctitle">Visor de Resultados 7 Zonas</div>
+            <div class="csub">Layout industrial com LCD digital e sliders compactos</div>
+          </div>
+        </div>
+        <div class="card-ft">
+          <div class="tags"><span class="tag t-done">Concluído</span><span class="tag t-ver">v0.10.1</span></div>
+          <span class="chevron">›</span>
+        </div>
+        <div class="card-det"><div class="card-body">
+          <p class="det-title">O que foi feito</p>
+          <ul class="dlist">
+            <li>results-panel.tsx reescrito com 7 zonas: Console Header → LCD Display → Tool Row → RPM+Avanço → Input Params → Calc Row → Gauges</li>
+            <li>Display LCD dinâmico: 3 linhas (alerta / ação / info)</li>
+            <li>BidirectionalSlider compact: prop para versão condensada no visor</li>
+            <li>Calc Row: Potência · Torque · Vc Real · MRR · L/D · CTF inline</li>
+          </ul>
+        </div></div>
+      </div>
+
+      <!-- 17 -->
+      <div class="card" data-t="feature" onclick="tog(this)">
+        <div class="card-hd">
+          <div class="cicon">✏️</div>
+          <div class="cmeta">
+            <div class="ctitle">Editar Ferramenta — Modal + Lista Cards</div>
+            <div class="csub">Substituiu dropdown por lista visual por faixa de diâmetro</div>
+          </div>
+        </div>
+        <div class="card-ft">
+          <div class="tags"><span class="tag t-done">Concluído</span><span class="tag t-ver">v0.10.1</span></div>
+          <span class="chevron">›</span>
+        </div>
+        <div class="card-det"><div class="card-body">
+          <p class="det-title">O que foi feito</p>
+          <ul class="dlist">
+            <li>Cards agrupados por faixa de diâmetro (≤6 / 6–12 / 12–20 / &gt;20mm)</li>
+            <li>Hover revela botões ✏️ Editar e 🗑️ Excluir por ferramenta</li>
+            <li>ToolEditModal: 6 campos editáveis (tipo, diâmetro, raio, arestas, fixação, hélice)</li>
+            <li>Campo anguloHelice adicionado à interface SavedTool</li>
+          </ul>
+        </div></div>
+      </div>
+
     </div><!-- /grid done -->
   </div>
 
@@ -695,50 +743,6 @@
     <!-- GRUPO A -->
     <div class="glabel">🖥️ Grupo A — Visor Desktop</div>
     <div class="grid">
-
-      <div class="card pending" data-t="design" onclick="tog(this)">
-        <div class="card-hd">
-          <div class="cicon">📐</div>
-          <div class="cmeta">
-            <div class="ctitle">Reestruturar Layout do Visor</div>
-            <div class="csub">Grid com zonas claras — informação organizada</div>
-          </div>
-        </div>
-        <div class="card-ft">
-          <div class="tags"><span class="tag t-next">Próximo</span><span class="tag t-ver">item 1.1</span></div>
-          <span class="chevron">›</span>
-        </div>
-        <div class="card-det"><div class="card-body">
-          <p class="det-title">O que vai acontecer</p>
-          <div class="steps">
-            <div class="step"><div class="step-n">1</div>Ler código atual do results-panel.tsx</div>
-            <div class="step"><div class="step-n">2</div>Aplicar grid estruturado com zonas definidas</div>
-            <div class="step"><div class="step-n">3</div>Testar em desktop e validar legibilidade</div>
-          </div>
-        </div></div>
-      </div>
-
-      <div class="card pending" data-t="feature" onclick="tog(this)">
-        <div class="card-hd">
-          <div class="cicon">✏️</div>
-          <div class="cmeta">
-            <div class="ctitle">Botão Editar Ferramenta</div>
-            <div class="csub">Edita direto do visor — sem sair da tela principal</div>
-          </div>
-        </div>
-        <div class="card-ft">
-          <div class="tags"><span class="tag t-next">Próximo</span><span class="tag t-ver">item 1.2</span></div>
-          <span class="chevron">›</span>
-        </div>
-        <div class="card-det"><div class="card-body">
-          <p class="det-title">O que vai acontecer</p>
-          <div class="steps">
-            <div class="step"><div class="step-n">1</div>Criar ToolEditModal.tsx</div>
-            <div class="step"><div class="step-n">2</div>Botão ✏️ visível no visor de resultados</div>
-            <div class="step"><div class="step-n">3</div>Modal abre com dados da ferramenta atual</div>
-          </div>
-        </div></div>
-      </div>
 
     </div><!-- /grid A -->
 
