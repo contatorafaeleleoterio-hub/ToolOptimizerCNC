@@ -7,6 +7,13 @@
  *
  * Visual design matches StyledSlider from fine-tune-panel:
  * ring + inner dot + glow on press + scale(1.15) animation.
+ *
+ * compact=true: reduced height/size for embedding in RPM/Feed cards.
+ *   - Thumb 20×20px (vs 28×28px)
+ *   - Track height h-8 32px (vs h-10 40px)
+ *   - Track margin mx-[12px] (vs mx-[18px])
+ *   - Only center tick mark (vs 31 ticks)
+ *   - Value display hidden (parent card shows the value)
  */
 
 import { useState, useRef, useCallback } from 'react';
@@ -19,9 +26,11 @@ interface BidirectionalSliderProps {
   color: string;
   label: string;
   unit: string;
+  compact?: boolean;
 }
 
 const BTN_CLS = 'w-6 h-6 rounded bg-black/40 border border-white/10 text-gray-400 hover:text-white hover:bg-white/10 active:scale-90 transition-all text-xs font-bold flex items-center justify-center';
+const BTN_CLS_COMPACT = 'w-5 h-5 rounded bg-black/40 border border-white/10 text-gray-400 hover:text-white hover:bg-white/10 active:scale-90 transition-all text-[11px] font-bold flex items-center justify-center';
 
 export function BidirectionalSlider({
   baseValue,
@@ -30,6 +39,7 @@ export function BidirectionalSlider({
   color,
   label,
   unit,
+  compact = false,
 }: BidirectionalSliderProps) {
   const rgb = getSliderRgb(color);
   const [pressed, setPressed] = useState(false);
@@ -73,32 +83,119 @@ export function BidirectionalSlider({
     if (e.key === 'ArrowLeft') onChange(clampPercent(currentPercent - 10));
   };
 
-  // Handle increment/decrement buttons (step = 10%)
   const handleIncrement = () => onChange(clampPercent(currentPercent + 10));
   const handleDecrement = () => onChange(clampPercent(currentPercent - 10));
 
-  // Tick marks: -150%, -140%, ..., -10%, 0%, +10%, ..., +140%, +150%
-  const ticks = [];
-  for (let i = -150; i <= 150; i += 10) {
-    ticks.push(i);
-  }
-
-  // Filled track style: bidirecional fill from center or edge
+  // Filled track style: bidirectional fill from center or edge
   const filledTrackStyle = (() => {
     if (currentPercent === 0) return { width: 0, left: '50%' };
     if (currentPercent < 0) {
-      // Fill from thumb to center (left side)
       return {
         width: `${50 - progressPercent}%`,
         left: `${progressPercent}%`,
       };
     }
-    // Fill from center to thumb (right side)
     return {
       width: `${progressPercent - 50}%`,
       left: '50%',
     };
   })();
+
+  // ── COMPACT MODE ─────────────────────────────────────────────────────────────
+  if (compact) {
+    return (
+      <div className="space-y-0.5">
+        {/* Slider row */}
+        <div className="flex items-center gap-1">
+          <button className={BTN_CLS_COMPACT} aria-label={`Decrease ${label}`} onClick={handleDecrement}>−</button>
+
+          <div
+            ref={trackRef}
+            className="relative h-8 flex-1 mx-[12px] flex items-center cursor-pointer select-none"
+            onMouseDown={handleMouseDown}
+            role="slider"
+            aria-label={`${label} slider`}
+            aria-valuenow={currentPercent}
+            aria-valuemin={-150}
+            aria-valuemax={150}
+            tabIndex={0}
+            onKeyDown={handleKeyDown}
+          >
+            {/* Track background */}
+            <div className="absolute left-0 right-0 h-1 bg-black/40 rounded-full" />
+
+            {/* Filled track */}
+            {currentPercent !== 0 && (
+              <div
+                className="absolute h-1 rounded-full pointer-events-none"
+                style={{
+                  left: filledTrackStyle.left,
+                  width: filledTrackStyle.width,
+                  background: `rgba(${rgb},1)`,
+                  boxShadow: `0 0 6px rgba(${rgb},0.6)`,
+                }}
+              />
+            )}
+
+            {/* Center tick only */}
+            <div className="absolute inset-0 flex items-center justify-center pointer-events-none z-20">
+              <div className="h-3 w-[2px] bg-white/30" />
+            </div>
+
+            {/* Thumb — 20×20px */}
+            <div
+              className="absolute pointer-events-none transition-transform duration-100 z-30"
+              style={{
+                left: `${progressPercent}%`,
+                transform: `translateX(-50%) scale(${pressed ? 1.15 : 1})`,
+              }}
+            >
+              <div
+                className="w-5 h-5 rounded-full flex items-center justify-center border-2 transition-all duration-150"
+                style={{
+                  borderColor: `rgba(${rgb},1)`,
+                  boxShadow: pressed
+                    ? `0 0 16px rgba(${rgb},0.9), 0 0 6px rgba(${rgb},0.5)`
+                    : `0 0 8px rgba(${rgb},0.4)`,
+                  background: 'rgba(15,20,25,0.9)',
+                }}
+              >
+                <div
+                  className="rounded-full transition-all duration-150"
+                  style={{
+                    width: pressed ? '7px' : '6px',
+                    height: pressed ? '7px' : '6px',
+                    background: `rgba(${rgb},1)`,
+                    boxShadow: `0 0 4px rgba(${rgb},0.8)`,
+                  }}
+                />
+              </div>
+            </div>
+          </div>
+
+          <button className={BTN_CLS_COMPACT} aria-label={`Increase ${label}`} onClick={handleIncrement}>+</button>
+        </div>
+
+        {/* Tick labels row */}
+        <div className="flex justify-between items-center px-6">
+          <span className="font-mono text-[9px] text-white/25">-150%</span>
+          <span className={`font-mono text-[10px] font-bold ${
+            currentPercent === 0 ? 'text-white/40' : currentPercent > 0 ? 'text-secondary' : 'text-seg-vermelho'
+          }`}>
+            {currentPercent > 0 ? '+' : ''}{currentPercent}%
+          </span>
+          <span className="font-mono text-[9px] text-white/25">+150%</span>
+        </div>
+      </div>
+    );
+  }
+
+  // ── FULL MODE ─────────────────────────────────────────────────────────────────
+  // Tick marks: -150%, -140%, ..., 0%, ..., +150%
+  const ticks = [];
+  for (let i = -150; i <= 150; i += 10) {
+    ticks.push(i);
+  }
 
   return (
     <div className="space-y-2">
@@ -175,7 +272,7 @@ export function BidirectionalSlider({
             })}
           </div>
 
-          {/* Thumb — same as StyledSlider: ring + inner dot + glow */}
+          {/* Thumb — ring + inner dot + glow */}
           <div
             className="absolute pointer-events-none transition-transform duration-100 z-30"
             style={{

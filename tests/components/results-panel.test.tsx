@@ -34,6 +34,7 @@ describe('ResultsPanel', () => {
     renderPanel();
     expect(screen.getAllByText('Rotação (RPM)').length).toBeGreaterThan(0);
     expect(screen.getAllByText('Avanço (mm/min)').length).toBeGreaterThan(0);
+    // Zona 6: calc-row compact labels
     expect(screen.getByText('Potência Est.')).toBeInTheDocument();
   });
 
@@ -68,7 +69,8 @@ describe('ResultsPanel', () => {
     renderPanel();
     const resultado = useMachiningStore.getState().resultado;
     expect(resultado?.seguranca.nivel).toBe('vermelho');
-    expect(screen.getByText('Avisos')).toBeInTheDocument();
+    // LCD display shows action line when level is vermelho
+    expect(screen.getAllByText(/REDUZIR|VERIFICAR|CRÍTICO/i).length).toBeGreaterThan(0);
   });
 
   it('shows RPM values as formatted numbers', () => {
