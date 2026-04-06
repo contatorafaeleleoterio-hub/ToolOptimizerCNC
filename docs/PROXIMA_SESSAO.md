@@ -46,6 +46,15 @@ npx tsc --noEmit
 
 ## Ultimas 3 Sessoes
 
+### Sessão 05/04 — Design + Tokenização: Results Panel (ITEM-1.1)
+- **Escopo:** Cloud Code — design visual do painel de resultados
+- **Entregável:** Protótipo HTML aprovado `PROTOTIPO_PAINEL_CNC_v2.html`
+- **Design tokenizado em:** `.interface-design/system.md` (seção "Painel de Resultados CNC")
+- **Plano de implementação:** `.claude/plans/abundant-foraging-harp.md`
+- **Código alterado:** NENHUM — sessão de design puro
+- **Contexto:** Rafael trouxe protótipo do Google Stitch como referência visual. Layout aprovado com 7 zonas obrigatórias (Console Header, Digital Display LCD, Tool Row, RPM+Avanço, Input Params, Dados Calculados, Gauges) + FormulaCards abaixo (scrollável).
+- **Próxima sessão Cloud Code:** implementar `results-panel.tsx` conforme protótipo aprovado + `bidirectional-slider.tsx` (prop `compact`)
+
 ### Sessão 04/04 — Design visual ITEM-2 (modal seleção de ferramenta)
 
 **Commit:** `40c3229` — docs only, sem alteração de código

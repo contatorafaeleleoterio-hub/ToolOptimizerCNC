@@ -1,0 +1,965 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>ToolOptimizer CNC — Protótipo Painel de Resultados v2</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
+<style>
+  /* === DESIGN TOKENS (from system.md + index.css) === */
+  :root {
+    --bg-dark: #0F1419;
+    --surface-dark: rgba(22, 27, 34, 0.7);
+    --card-dark: rgba(30, 35, 45, 0.6);
+    --primary: #00D9FF;
+    --secondary: #39FF14;
+    --accent-orange: #F97316;
+    --accent-purple: #A855F7;
+    --seg-verde: #2ecc71;
+    --seg-amarelo: #f39c12;
+    --seg-vermelho: #e74c3c;
+    --shadow-glass: 0 8px 32px 0 rgba(0, 0, 0, 0.5);
+    --shadow-inner-glow: inset 0 0 20px rgba(255, 255, 255, 0.03);
+    --shadow-neon-cyan: 0 0 15px rgba(0, 217, 255, 0.4), 0 0 30px rgba(0, 217, 255, 0.15);
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    font-family: 'Inter', sans-serif;
+    background: var(--bg-dark);
+    color: #e5e7eb;
+    display: flex;
+    justify-content: center;
+    padding: 12px;
+    min-height: 100vh;
+  }
+
+  .panel-container {
+    width: 100%;
+    max-width: 820px;
+    display: flex;
+    flex-direction: column;
+    gap: 8px; /* gap-2 = 8px */
+  }
+
+  /* === 1. CONSOLE HEADER BAR === */
+  .console-header {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 6px 12px;
+    background: var(--bg-dark);
+    border: 1px solid rgba(255,255,255,0.10);
+    border-radius: 8px; /* rounded-lg */
+  }
+  .console-header .meta {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    flex: 1;
+  }
+  .console-header .timestamp {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    color: rgba(255,255,255,0.40);
+  }
+  .console-header .material-name {
+    font-size: 12px;
+    font-weight: 600;
+    color: #fff;
+  }
+  .console-header .operation-badge {
+    font-size: 11px;
+    font-weight: 600;
+    color: rgba(255,255,255,0.70);
+    background: rgba(255,255,255,0.08);
+    padding: 2px 8px;
+    border-radius: 4px;
+    text-transform: uppercase;
+  }
+  .console-header .dot-separator {
+    width: 3px;
+    height: 3px;
+    border-radius: 50%;
+    background: rgba(255,255,255,0.20);
+  }
+  .console-header .actions {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  /* Safety Badge */
+  .safety-badge {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    padding: 4px 12px;
+    border-radius: 8px;
+    font-size: 11px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+  }
+  .safety-badge.verde {
+    background: rgba(46,204,113,0.10);
+    border: 1px solid rgba(46,204,113,0.30);
+    color: var(--seg-verde);
+  }
+  .safety-badge.amarelo {
+    background: rgba(243,156,18,0.10);
+    border: 1px solid rgba(243,156,18,0.30);
+    color: var(--seg-amarelo);
+  }
+  .safety-badge.vermelho {
+    background: rgba(231,76,60,0.10);
+    border: 1px solid rgba(231,76,60,0.30);
+    color: var(--seg-vermelho);
+  }
+  .safety-badge .material-symbols-outlined {
+    font-size: 14px;
+  }
+
+  /* Favorite Button */
+  .fav-btn {
+    background: rgba(0,0,0,0.30);
+    border: 1px solid rgba(255,255,255,0.10);
+    border-radius: 8px;
+    padding: 4px 8px;
+    cursor: pointer;
+    color: rgba(255,255,255,0.40);
+    transition: all 0.2s;
+    display: flex;
+    align-items: center;
+  }
+  .fav-btn:hover { color: #facc15; background: rgba(255,255,255,0.05); }
+  .fav-btn .material-symbols-outlined { font-size: 18px; }
+
+  /* === 2. DIGITAL DISPLAY (LCD) === */
+  .digital-display {
+    background: #05070a;
+    border: 1px solid rgba(0, 229, 255, 0.12);
+    border-radius: 8px;
+    padding: 10px 12px;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+  }
+  .digital-display .line {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 0.03em;
+  }
+  .digital-display .line.alert {
+    color: var(--seg-vermelho);
+    text-shadow: 0 0 5px rgba(231, 76, 60, 0.3);
+  }
+  .digital-display .line.action {
+    color: var(--primary);
+    text-shadow: 0 0 5px rgba(0, 229, 255, 0.3);
+  }
+  .digital-display .line.info {
+    color: rgba(255,255,255,0.30);
+    font-size: 10px;
+    border-top: 1px solid rgba(255,255,255,0.05);
+    padding-top: 4px;
+  }
+  .digital-display .line .material-symbols-outlined {
+    font-size: 14px;
+    flex-shrink: 0;
+  }
+
+  /* === 3. TOOL ROW === */
+  .tool-row {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 8px 12px;
+    background: var(--card-dark);
+    border: 1px solid rgba(255,255,255,0.05);
+    border-radius: 8px;
+  }
+  .tool-row .material-symbols-outlined {
+    color: var(--primary);
+    font-size: 20px;
+  }
+  .tool-row .tool-label {
+    font-size: 10px;
+    color: rgba(255,255,255,0.40);
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+  }
+  .tool-row .tool-value {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 16px;
+    font-weight: 700;
+    color: #fff;
+    letter-spacing: -0.02em;
+  }
+
+  /* === 4. RPM + AVANÇO CARDS === */
+  .big-numbers-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 8px;
+  }
+  .compact-big-number {
+    background: var(--surface-dark);
+    backdrop-filter: blur(24px);
+    border: 1px solid rgba(255,255,255,0.05);
+    border-radius: 12px; /* rounded-xl */
+    padding: 12px 16px;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    box-shadow: var(--shadow-glass);
+    position: relative;
+    overflow: hidden;
+  }
+  .compact-big-number .header-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  .compact-big-number .param-label {
+    font-size: 10px;
+    font-weight: 700;
+    color: rgba(255,255,255,0.50);
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+  }
+  .compact-big-number .param-icon {
+    font-size: 20px;
+    opacity: 0.6;
+  }
+  .compact-big-number .value-row {
+    display: flex;
+    align-items: baseline;
+    gap: 6px;
+    padding: 4px 0;
+  }
+  .compact-big-number .value {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 36px; /* ~text-4xl */
+    font-weight: 700;
+    line-height: 1;
+  }
+  .compact-big-number .unit {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    color: rgba(255,255,255,0.30);
+  }
+  .compact-big-number.rpm .value {
+    color: var(--primary);
+    filter: drop-shadow(0 0 12px rgba(0, 217, 255, 0.5));
+  }
+  .compact-big-number.rpm .param-icon { color: var(--primary); }
+  .compact-big-number.feed .value {
+    color: var(--secondary);
+    filter: drop-shadow(0 0 12px rgba(57, 255, 20, 0.5));
+  }
+  .compact-big-number.feed .param-icon { color: var(--secondary); }
+
+  /* Compact Slider */
+  .compact-slider {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    margin-top: 4px;
+  }
+  .compact-slider .slider-btn {
+    width: 24px;
+    height: 24px;
+    border-radius: 4px;
+    background: rgba(0,0,0,0.40);
+    border: 1px solid rgba(255,255,255,0.10);
+    color: rgba(255,255,255,0.40);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    font-size: 12px;
+    font-weight: 700;
+    transition: all 0.2s;
+  }
+  .compact-slider .slider-btn:hover { color: #fff; background: rgba(255,255,255,0.10); }
+  .compact-slider .slider-track {
+    flex: 1;
+    height: 32px;
+    display: flex;
+    align-items: center;
+    position: relative;
+    margin: 0 12px;
+  }
+  .compact-slider .track-bg {
+    position: absolute;
+    left: 0; right: 0;
+    height: 4px;
+    background: rgba(0,0,0,0.40);
+    border-radius: 9999px;
+  }
+  .compact-slider .track-fill {
+    position: absolute;
+    height: 4px;
+    border-radius: 9999px;
+    left: 50%;
+    width: 0%;
+  }
+  .compact-slider .track-fill.rpm-fill {
+    background: var(--primary);
+    box-shadow: 0 0 8px rgba(0, 217, 255, 0.6);
+  }
+  .compact-slider .track-fill.feed-fill {
+    background: var(--secondary);
+    box-shadow: 0 0 8px rgba(57, 255, 20, 0.6);
+  }
+  .compact-slider .thumb {
+    position: absolute;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    background: rgba(15,20,25,0.9);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 10;
+  }
+  .compact-slider .thumb.rpm-thumb {
+    border: 2px solid var(--primary);
+    box-shadow: 0 0 10px rgba(0, 217, 255, 0.4);
+  }
+  .compact-slider .thumb.feed-thumb {
+    border: 2px solid var(--secondary);
+    box-shadow: 0 0 10px rgba(57, 255, 20, 0.4);
+  }
+  .compact-slider .thumb-dot {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+  }
+  .compact-slider .thumb-dot.rpm-dot { background: var(--primary); box-shadow: 0 0 4px rgba(0,217,255,0.8); }
+  .compact-slider .thumb-dot.feed-dot { background: var(--secondary); box-shadow: 0 0 4px rgba(57,255,20,0.8); }
+  .compact-slider .tick-labels {
+    display: flex;
+    justify-content: space-between;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 9px;
+    color: rgba(255,255,255,0.25);
+    padding: 0 4px;
+    margin-top: 2px;
+  }
+  .compact-slider .offset-label {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px;
+    font-weight: 700;
+    text-align: center;
+  }
+
+  /* === 5. INPUT PARAMETERS (4-column grid) === */
+  .input-params-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 8px;
+  }
+  .param-cell {
+    background: var(--card-dark);
+    border: 1px solid rgba(255,255,255,0.05);
+    border-radius: 8px;
+    padding: 8px 10px;
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+  }
+  .param-cell .param-label {
+    font-size: 10px;
+    color: rgba(255,255,255,0.40);
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+  }
+  .param-cell .param-value {
+    display: flex;
+    align-items: baseline;
+    gap: 4px;
+  }
+  .param-cell .param-value .number {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 18px;
+    font-weight: 700;
+    color: #fff;
+  }
+  .param-cell .param-value .unit {
+    font-size: 10px;
+    color: rgba(255,255,255,0.30);
+  }
+
+  /* === 6. CALCULATED DATA ROW === */
+  .calc-row {
+    display: flex;
+    align-items: center;
+    padding: 6px 12px;
+    background: rgba(0,0,0,0.30);
+    border: 1px solid rgba(255,255,255,0.05);
+    border-radius: 8px;
+    gap: 0;
+  }
+  .calc-row .calc-item {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 8px;
+  }
+  .calc-row .calc-item .calc-label {
+    font-size: 9px;
+    color: rgba(255,255,255,0.35);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+  }
+  .calc-row .calc-item .calc-value {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 12px;
+    font-weight: 700;
+    color: rgba(255,255,255,0.85);
+  }
+  .calc-row .calc-item .calc-value .calc-unit {
+    font-size: 9px;
+    opacity: 0.40;
+    margin-left: 2px;
+  }
+  .calc-row .divider {
+    width: 1px;
+    height: 16px;
+    background: rgba(255,255,255,0.08);
+    flex-shrink: 0;
+  }
+  /* L/D color zones */
+  .calc-value.ld-verde { color: var(--seg-verde) !important; }
+  .calc-value.ld-amarelo { color: var(--seg-amarelo) !important; }
+  .calc-value.ld-vermelho { color: var(--seg-vermelho) !important; }
+
+  /* === 7. GAUGES PLACEHOLDER === */
+  .gauges-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 8px;
+    margin-top: 4px;
+  }
+  .gauge-placeholder {
+    background: var(--surface-dark);
+    backdrop-filter: blur(24px);
+    border: 1px solid rgba(255,255,255,0.05);
+    border-radius: 16px; /* rounded-2xl */
+    padding: 12px 16px;
+    text-align: center;
+    box-shadow: var(--shadow-glass);
+  }
+  .gauge-placeholder .gauge-label {
+    font-size: 10px;
+    font-weight: 700;
+    color: rgba(255,255,255,0.40);
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    margin-bottom: 8px;
+  }
+  .gauge-visual {
+    width: 160px;
+    height: 80px;
+    margin: 0 auto;
+    position: relative;
+  }
+  /* Simple CSS arc to represent gauge */
+  .gauge-arc {
+    width: 160px;
+    height: 80px;
+    border-radius: 80px 80px 0 0;
+    background: linear-gradient(
+      90deg,
+      rgba(231,76,60,0.3) 0%,
+      rgba(243,156,18,0.3) 20%,
+      rgba(46,204,113,0.5) 40%,
+      rgba(46,204,113,0.5) 60%,
+      rgba(243,156,18,0.3) 80%,
+      rgba(231,76,60,0.3) 100%
+    );
+    position: relative;
+    overflow: hidden;
+  }
+  .gauge-arc::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 120px;
+    height: 60px;
+    border-radius: 60px 60px 0 0;
+    background: var(--bg-dark);
+  }
+  .gauge-value {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 24px;
+    font-weight: 700;
+    color: #fff;
+    margin-top: 4px;
+  }
+  .gauge-pct {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px;
+    color: rgba(255,255,255,0.40);
+  }
+
+  /* === 8. FORMULA CARDS PLACEHOLDER === */
+  .formulas-section {
+    background: var(--surface-dark);
+    backdrop-filter: blur(24px);
+    border: 1px solid rgba(255,255,255,0.05);
+    border-radius: 16px;
+    padding: 16px 20px;
+    margin-top: 4px;
+    box-shadow: var(--shadow-glass);
+  }
+  .formulas-header {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 12px;
+  }
+  .formulas-header .icon-box {
+    width: 32px;
+    height: 32px;
+    border-radius: 8px;
+    background: rgba(0,217,255,0.10);
+    border: 1px solid rgba(0,217,255,0.20);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .formulas-header .icon-box .material-symbols-outlined {
+    font-size: 18px;
+    color: var(--primary);
+  }
+  .formulas-header .title {
+    font-size: 12px;
+    font-weight: 700;
+    color: #fff;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+  }
+  .formulas-header .subtitle {
+    font-size: 10px;
+    color: rgba(255,255,255,0.40);
+    margin-top: 2px;
+  }
+  .formula-placeholder {
+    background: var(--card-dark);
+    border: 1px solid rgba(255,255,255,0.05);
+    border-radius: 8px;
+    padding: 10px 12px;
+    margin-bottom: 6px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+  .formula-placeholder:hover { background: rgba(30,35,45,0.8); border-color: rgba(255,255,255,0.10); }
+  .formula-placeholder .material-symbols-outlined { font-size: 16px; color: var(--primary); }
+  .formula-placeholder .formula-title { font-size: 12px; font-weight: 600; color: rgba(255,255,255,0.70); }
+  .formula-placeholder .formula-result {
+    margin-left: auto;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 12px;
+    font-weight: 700;
+    color: var(--primary);
+  }
+  .formula-placeholder .expand-icon {
+    font-size: 16px;
+    color: rgba(255,255,255,0.20);
+    margin-left: 4px;
+  }
+
+  /* === VIEWPORT FIT INDICATOR === */
+  .viewport-marker {
+    border-top: 2px dashed rgba(231,76,60,0.30);
+    padding-top: 8px;
+    margin-top: 8px;
+    position: relative;
+  }
+  .viewport-marker::before {
+    content: '↑ ACIMA: deve caber em 768px sem scroll | ABAIXO: scrollável ↓';
+    position: absolute;
+    top: -10px;
+    left: 50%;
+    transform: translateX(-50%);
+    font-size: 9px;
+    color: rgba(231,76,60,0.50);
+    background: var(--bg-dark);
+    padding: 0 8px;
+    white-space: nowrap;
+  }
+
+  /* State toggle buttons */
+  .state-toggles {
+    display: flex;
+    gap: 8px;
+    margin-bottom: 12px;
+    flex-wrap: wrap;
+  }
+  .state-btn {
+    font-size: 11px;
+    font-weight: 600;
+    padding: 4px 12px;
+    border-radius: 6px;
+    border: 1px solid rgba(255,255,255,0.10);
+    background: rgba(0,0,0,0.30);
+    color: rgba(255,255,255,0.50);
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+  .state-btn:hover { color: #fff; background: rgba(255,255,255,0.05); }
+  .state-btn.active { border-color: var(--primary); color: var(--primary); background: rgba(0,217,255,0.08); }
+</style>
+</head>
+<body>
+
+<!-- State toggle demo -->
+<div style="max-width: 820px; width: 100%; margin: 0 auto;">
+<div class="state-toggles">
+  <span style="font-size: 10px; color: rgba(255,255,255,0.30); align-self: center; margin-right: 4px;">ESTADO:</span>
+  <button class="state-btn active" onclick="setDisplay('vermelho')">Vermelho</button>
+  <button class="state-btn" onclick="setDisplay('amarelo')">Amarelo</button>
+  <button class="state-btn" onclick="setDisplay('verde')">Verde</button>
+  <button class="state-btn" onclick="setDisplay('null')">Sem Resultado</button>
+</div>
+
+<div class="panel-container">
+
+  <!-- ═══ 1. CONSOLE HEADER BAR ═══ -->
+  <div class="console-header">
+    <div class="meta">
+      <span class="timestamp">05/04/2026 14:32</span>
+      <span class="dot-separator"></span>
+      <span class="material-name">Aço 1045</span>
+      <span class="dot-separator"></span>
+      <span class="operation-badge">Desbaste</span>
+    </div>
+    <div class="actions">
+      <div class="safety-badge vermelho" id="safety-badge">
+        <span class="material-symbols-outlined">warning</span>
+        <span>Crítico</span>
+        <span style="font-size:9px; opacity:0.7;">(3)</span>
+      </div>
+      <button class="fav-btn">
+        <span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 0;">star</span>
+      </button>
+    </div>
+  </div>
+
+  <!-- ═══ 2. DIGITAL DISPLAY (LCD) ═══ -->
+  <div class="digital-display" id="digital-display">
+    <div class="line alert">
+      <span class="material-symbols-outlined" style="color: var(--seg-vermelho);">emergency_home</span>
+      <span>⚠ ALERTA: RPM EXCEDE LIMITE (9.337 > 8.000) | AVANÇO CRÍTICO</span>
+    </div>
+    <div class="line action">
+      <span class="material-symbols-outlined" style="color: var(--primary);">arrow_forward</span>
+      <span>AÇÃO: REDUZIR AVANÇO POR DENTE (fz). VERIFICAR SAÚDE DA FERRAMENTA.</span>
+    </div>
+    <div class="line info">
+      <span class="material-symbols-outlined" style="color: rgba(255,255,255,0.20);">info</span>
+      <span>L/D: 4.2 (VERMELHO) · CTF: 1.65 · POTÊNCIA DISPONÍVEL: 62%</span>
+    </div>
+  </div>
+
+  <!-- ═══ 3. TOOL ROW ═══ -->
+  <div class="tool-row">
+    <span class="material-symbols-outlined">precision_manufacturing</span>
+    <span class="tool-label">Ferramenta:</span>
+    <span class="tool-value">Toroidal Ø6 R1 H25 F4</span>
+  </div>
+
+  <!-- ═══ 4. RPM + AVANÇO ═══ -->
+  <div class="big-numbers-grid">
+    <!-- RPM Card -->
+    <div class="compact-big-number rpm">
+      <div class="header-row">
+        <span class="param-label">Rotação (RPM)</span>
+        <span class="material-symbols-outlined param-icon">speed</span>
+      </div>
+      <div class="value-row">
+        <span class="value">9.337</span>
+        <span class="unit">rev/min</span>
+      </div>
+      <div class="compact-slider">
+        <button class="slider-btn">−</button>
+        <div style="flex:1; display:flex; flex-direction:column; margin: 0 4px;">
+          <div class="slider-track">
+            <div class="track-bg"></div>
+            <div class="track-fill rpm-fill"></div>
+            <div class="thumb rpm-thumb">
+              <div class="thumb-dot rpm-dot"></div>
+            </div>
+          </div>
+          <div class="tick-labels">
+            <span>-150%</span>
+            <span class="offset-label" style="color: var(--primary);">0%</span>
+            <span>+150%</span>
+          </div>
+        </div>
+        <button class="slider-btn">+</button>
+      </div>
+    </div>
+
+    <!-- AVANÇO Card -->
+    <div class="compact-big-number feed">
+      <div class="header-row">
+        <span class="param-label">Avanço (mm/min)</span>
+        <span class="material-symbols-outlined param-icon">moving</span>
+      </div>
+      <div class="value-row">
+        <span class="value">8.635</span>
+        <span class="unit">mm/min</span>
+      </div>
+      <div class="compact-slider">
+        <button class="slider-btn">−</button>
+        <div style="flex:1; display:flex; flex-direction:column; margin: 0 4px;">
+          <div class="slider-track">
+            <div class="track-bg"></div>
+            <div class="track-fill feed-fill"></div>
+            <div class="thumb feed-thumb">
+              <div class="thumb-dot feed-dot"></div>
+            </div>
+          </div>
+          <div class="tick-labels">
+            <span>-150%</span>
+            <span class="offset-label" style="color: var(--secondary);">0%</span>
+            <span>+150%</span>
+          </div>
+        </div>
+        <button class="slider-btn">+</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══ 5. INPUT PARAMETERS ═══ -->
+  <div class="input-params-grid">
+    <div class="param-cell">
+      <span class="param-label">Vc (Vel. Corte)</span>
+      <div class="param-value">
+        <span class="number">176</span>
+        <span class="unit">m/min</span>
+      </div>
+    </div>
+    <div class="param-cell">
+      <span class="param-label">fz (Av. Dente)</span>
+      <div class="param-value">
+        <span class="number">0.14</span>
+        <span class="unit">mm</span>
+      </div>
+    </div>
+    <div class="param-cell">
+      <span class="param-label">ap (Prof. Axial)</span>
+      <div class="param-value">
+        <span class="number">4.2</span>
+        <span class="unit">mm</span>
+      </div>
+    </div>
+    <div class="param-cell">
+      <span class="param-label">ae (Prof. Radial)</span>
+      <div class="param-value">
+        <span class="number">2.2</span>
+        <span class="unit">mm</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══ 6. CALCULATED DATA ROW ═══ -->
+  <div class="calc-row">
+    <div class="calc-item">
+      <span class="calc-label">Potência</span>
+      <span class="calc-value">3.39<span class="calc-unit">kW</span></span>
+    </div>
+    <div class="divider"></div>
+    <div class="calc-item">
+      <span class="calc-label">Torque</span>
+      <span class="calc-value">3.46<span class="calc-unit">Nm</span></span>
+    </div>
+    <div class="divider"></div>
+    <div class="calc-item">
+      <span class="calc-label">Vc Real</span>
+      <span class="calc-value">176<span class="calc-unit">m/min</span></span>
+    </div>
+    <div class="divider"></div>
+    <div class="calc-item">
+      <span class="calc-label" style="color: rgba(231,76,60,0.60);">L/D</span>
+      <span class="calc-value ld-vermelho">4.2</span>
+    </div>
+    <div class="divider"></div>
+    <div class="calc-item">
+      <span class="calc-label">CTF</span>
+      <span class="calc-value" style="color: var(--primary);">1.65</span>
+    </div>
+  </div>
+
+  <!-- ═══ 7. HALF MOON GAUGES ═══ -->
+  <div class="gauges-grid">
+    <div class="gauge-placeholder">
+      <div class="gauge-label">Eficiência de Avanço</div>
+      <div class="gauge-visual">
+        <div class="gauge-arc"></div>
+      </div>
+      <div class="gauge-value">78<span class="gauge-pct">%</span></div>
+    </div>
+    <div class="gauge-placeholder">
+      <div class="gauge-label">Produtividade MRR</div>
+      <div class="gauge-visual">
+        <div class="gauge-arc"></div>
+      </div>
+      <div class="gauge-value">79.8</div>
+      <div class="gauge-pct">cm³/min</div>
+    </div>
+    <div class="gauge-placeholder">
+      <div class="gauge-label">Saúde Ferramenta</div>
+      <div class="gauge-visual">
+        <div class="gauge-arc"></div>
+      </div>
+      <div class="gauge-value">85<span class="gauge-pct">%</span></div>
+    </div>
+  </div>
+
+  <!-- ═══ VIEWPORT LIMIT MARKER ═══ -->
+  <div class="viewport-marker"></div>
+
+  <!-- ═══ 8. FORMULA CARDS (scrollável) ═══ -->
+  <div class="formulas-section">
+    <div class="formulas-header">
+      <div class="icon-box">
+        <span class="material-symbols-outlined">school</span>
+      </div>
+      <div>
+        <div class="title">Entenda os Cálculos</div>
+        <div class="subtitle">Clique para expandir e ver como cada valor é calculado</div>
+      </div>
+    </div>
+    <div class="formula-placeholder">
+      <span class="material-symbols-outlined">speed</span>
+      <span class="formula-title">RPM (Rotação)</span>
+      <span class="formula-result">9.337 RPM</span>
+      <span class="material-symbols-outlined expand-icon">expand_more</span>
+    </div>
+    <div class="formula-placeholder">
+      <span class="material-symbols-outlined">moving</span>
+      <span class="formula-title">Avanço (mm/min)</span>
+      <span class="formula-result">8.635 mm/min</span>
+      <span class="material-symbols-outlined expand-icon">expand_more</span>
+    </div>
+    <div class="formula-placeholder">
+      <span class="material-symbols-outlined">speed</span>
+      <span class="formula-title">MRR (Taxa Remoção)</span>
+      <span class="formula-result">37.4 cm³/min</span>
+      <span class="material-symbols-outlined expand-icon">expand_more</span>
+    </div>
+    <div class="formula-placeholder">
+      <span class="material-symbols-outlined">bolt</span>
+      <span class="formula-title">Potência (Motor)</span>
+      <span class="formula-result">3.39 kW</span>
+      <span class="material-symbols-outlined expand-icon">expand_more</span>
+    </div>
+    <div class="formula-placeholder">
+      <span class="material-symbols-outlined">rotate_right</span>
+      <span class="formula-title">Torque</span>
+      <span class="formula-result">3.46 Nm</span>
+      <span class="material-symbols-outlined expand-icon">expand_more</span>
+    </div>
+  </div>
+
+</div>
+</div>
+
+<script>
+function setDisplay(state) {
+  const display = document.getElementById('digital-display');
+  const badge = document.getElementById('safety-badge');
+
+  // Update toggle buttons
+  document.querySelectorAll('.state-btn').forEach(btn => {
+    btn.classList.remove('active');
+    if (btn.textContent.toLowerCase().includes(state === 'null' ? 'sem' : state)) {
+      btn.classList.add('active');
+    }
+  });
+
+  if (state === 'verde') {
+    display.innerHTML = `
+      <div class="line" style="color: var(--seg-verde); text-shadow: 0 0 5px rgba(46,204,113,0.3);">
+        <span class="material-symbols-outlined" style="color: var(--seg-verde);">check_circle</span>
+        <span>✓ PARÂMETROS SEGUROS — SISTEMA OPERANDO NORMALMENTE</span>
+      </div>
+      <div class="line info">
+        <span class="material-symbols-outlined" style="color: rgba(255,255,255,0.20);">info</span>
+        <span>L/D: 2.1 (SEGURO) · CTF: 1.00 · POTÊNCIA DISPONÍVEL: 85%</span>
+      </div>
+    `;
+    badge.className = 'safety-badge verde';
+    badge.innerHTML = '<span class="material-symbols-outlined">verified_user</span><span>Seguro</span>';
+  } else if (state === 'amarelo') {
+    display.innerHTML = `
+      <div class="line" style="color: var(--seg-amarelo); text-shadow: 0 0 5px rgba(243,156,18,0.3);">
+        <span class="material-symbols-outlined" style="color: var(--seg-amarelo);">warning</span>
+        <span>⚠ ALERTA: PROFUNDIDADE AXIAL ELEVADA — RISCO DE VIBRAÇÃO</span>
+      </div>
+      <div class="line action">
+        <span class="material-symbols-outlined" style="color: var(--primary);">arrow_forward</span>
+        <span>AÇÃO: REDUZIR ap OU AUMENTAR ae PARA COMPENSAR.</span>
+      </div>
+      <div class="line info">
+        <span class="material-symbols-outlined" style="color: rgba(255,255,255,0.20);">info</span>
+        <span>L/D: 3.5 (ALERTA) · CTF: 1.32 · POTÊNCIA DISPONÍVEL: 74%</span>
+      </div>
+    `;
+    badge.className = 'safety-badge amarelo';
+    badge.innerHTML = '<span class="material-symbols-outlined">warning</span><span>Alerta</span><span style="font-size:9px;opacity:0.7;">(1)</span>';
+  } else if (state === 'vermelho') {
+    display.innerHTML = `
+      <div class="line alert">
+        <span class="material-symbols-outlined" style="color: var(--seg-vermelho);">emergency_home</span>
+        <span>⚠ ALERTA: RPM EXCEDE LIMITE (9.337 > 8.000) | AVANÇO CRÍTICO</span>
+      </div>
+      <div class="line action">
+        <span class="material-symbols-outlined" style="color: var(--primary);">arrow_forward</span>
+        <span>AÇÃO: REDUZIR AVANÇO POR DENTE (fz). VERIFICAR SAÚDE DA FERRAMENTA.</span>
+      </div>
+      <div class="line info">
+        <span class="material-symbols-outlined" style="color: rgba(255,255,255,0.20);">info</span>
+        <span>L/D: 4.2 (VERMELHO) · CTF: 1.65 · POTÊNCIA DISPONÍVEL: 62%</span>
+      </div>
+    `;
+    badge.className = 'safety-badge vermelho';
+    badge.innerHTML = '<span class="material-symbols-outlined">warning</span><span>Crítico</span><span style="font-size:9px;opacity:0.7;">(3)</span>';
+  } else {
+    display.innerHTML = `
+      <div class="line" style="color: rgba(255,255,255,0.40); text-shadow: none;">
+        <span class="material-symbols-outlined" style="color: rgba(255,255,255,0.20);">hourglass_empty</span>
+        <span>AGUARDANDO SIMULAÇÃO — CONFIGURE PARÂMETROS E CLIQUE EM SIMULAR</span>
+      </div>
+      <div class="line info" style="border: none; padding: 0;">
+        <span class="material-symbols-outlined" style="color: rgba(255,255,255,0.15);">settings_suggest</span>
+        <span style="color: rgba(255,255,255,0.20);">SELECIONE MATERIAL, FERRAMENTA E OPERAÇÃO NO PAINEL ESQUERDO</span>
+      </div>
+    `;
+    badge.className = 'safety-badge verde';
+    badge.innerHTML = '<span class="material-symbols-outlined">hourglass_empty</span><span>—</span>';
+  }
+}
+</script>
+
+</body>
+</html>

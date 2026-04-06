@@ -15,7 +15,7 @@
 
 ## PROXIMAS 2 SESSOES (SEPARADAS)
 
-1. Sessao Cloud Code: trabalhar no sistema de parametros/calculos do produto final.
+1. Sessao Cloud Code: implementar o novo Results Panel aprovado (ITEM-1.1) conforme `PROTOTIPO_PAINEL_CNC_v2.html` e tokens em `.interface-design/system.md`.
 2. Sessao Codex: trabalhar somente no Admin Dashboard (`/admin`).
 
 ---
@@ -314,7 +314,7 @@ Quando uma nova implementação for planejada durante a sessão:
 
 ---
 
-*Última atualização: 28/03/2026 — Sessão de encerramento concluída com limpeza de workspace, estabilização da suíte de testes e push do commit `cf11ecd` (fix de compatibilidade de testes/UI). **PRÓXIMA SESSÃO: S4 — slider-tokens.ts + unificar sliders** (ler `SESSAO4-tokens-sliders-desktop.md`). ⚠️ `public/_headers` tem CSP não commitado: `connect-src 'self'` bloqueia `api.cloudflare.com` — corrigir na Fase 2 da Segurança.*
+*Última atualização: 05/04/2026 — Sessão de design: protótipo `PROTOTIPO_PAINEL_CNC_v2.html` aprovado por Rafael. Design tokenizado em `.interface-design/system.md`. **PRÓXIMA SESSÃO Cloud Code: implementar ITEM-1.1 — reescrita de `results-panel.tsx` conforme protótipo aprovado.** ⚠️ `public/_headers` tem CSP não commitado: `connect-src 'self'` bloqueia `api.cloudflare.com` — corrigir na Fase 2 da Segurança.*
 
 ### Atualizacao de Encerramento - 28/03/2026 (sessao longa)
 

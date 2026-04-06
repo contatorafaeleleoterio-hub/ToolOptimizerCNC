@@ -323,6 +323,129 @@ text-xs text-gray-400 for labels
 
 ---
 
-*Last updated: 2026-03-26*
+## Painel de Resultados CNC (Results Panel) — Padrões Aprovados 05/04/2026
+
+> Protótipo aprovado: `PROTOTIPO_PAINEL_CNC_v2.html`
+> Implementação: `src/components/results-panel.tsx`
+
+### Estrutura de 7 Zonas (ordem obrigatória — todas devem caber sem scroll)
+
+```
+1. Console Header Bar   (~36px)
+2. Digital Display LCD  (~68px)
+3. Tool Row             (~36px)
+4. RPM + Avanço         (~148px)   ← dois cards lado a lado
+5. Input Params         (~48px)    ← grid 4 colunas
+6. Calculated Data Row  (~32px)    ← row horizontal compacta
+7. HalfMoonGauges       (~170px)   ← 3 gauges lado a lado
+─────────────────────────────────
+Total: ~538px de ~664px disponíveis (margem de 126px)
+─────────────────────────────────
+8. FormulaCards         (scrollável — abaixo dos gauges)
+```
+
+### Console Header Bar
+```
+bg-[#0f1419] border border-white/10 rounded-lg
+px-3 py-1.5 (4px grid)
+Layout: [timestamp · material · operação] ─── [SafetyBadge] [★]
+Timestamp: font-mono text-[11px] text-white/40
+Material: text-xs font-semibold text-white
+Operação: text-[11px] font-semibold text-white/70 bg-white/8 px-2 py-0.5 rounded
+```
+
+### Digital Display LCD (DigitalDisplay component)
+```
+bg-[#05070a] border border-primary/12 rounded-lg
+p-[10px] px-3 gap-1 (flex-col)
+Texto: font-mono text-[11px] uppercase tracking-[0.03em]
+
+Estados dinâmicos:
+  resultado=null → text-white/40  (sem glow)
+  verde  → text-seg-verde  + textShadow: '0 0 5px rgba(46,204,113,0.3)'
+  amarelo → text-seg-amarelo + textShadow: '0 0 5px rgba(243,156,18,0.3)'
+  vermelho/bloqueado → text-seg-vermelho + textShadow: '0 0 5px rgba(231,76,60,0.3)'
+
+Linha 1: ícone Material + mensagem principal (alerta ou status)
+Linha 2: ícone + ação sugerida (apenas amarelo/vermelho) [text-primary]
+Linha 3: info secundária — L/D · CTF · potência disponível [text-white/30 text-[10px] border-t border-white/5]
+
+Fonte de dados: seguranca.avisos[], seguranca.razaoLD, seguranca.ctf, resultado.powerHeadroom
+```
+
+### Tool Row
+```
+bg-card-dark border border-white/5 rounded-lg
+px-3 py-2 flex items-center gap-2
+Ícone: precision_manufacturing text-primary text-xl
+Label: text-[10px] text-white/40 uppercase tracking-[0.1em]
+Valor: font-mono text-base font-bold text-white
+Formato: "[Tipo] Ø[D] R[R] H[H] F[Z]" (raio só se toroidal/bull-nose)
+```
+
+### CompactBigNumber (RPM e Avanço)
+```
+bg-surface-dark backdrop-blur-xl border border-white/5 rounded-xl shadow-glass
+p-3 flex-col gap-1 (grid 2 colunas, gap-2)
+
+Header: param-label text-[10px] font-bold text-white/50 uppercase tracking-[0.12em]
+        ícone text-xl opacity-60 (cor do parâmetro)
+Valor:  text-4xl (36px) font-mono font-bold — cor dinâmica via semáforo
+        drop-shadow(0 0 12px rgba(rgb,0.5))
+Unidade: font-mono text-[11px] text-white/30
+
+BidirectionalSlider compact (prop compact=true):
+  Sem linha de "value display" (valor já exibido acima)
+  Sem linha "tick labels" (−150% / 0% / +150%) visíveis mas compactas
+  mt-1 interno (gap reduzido)
+
+Cores padrão: RPM=primary(cyan) | Avanço=secondary(green)
+Cores alerta: amarelo=seg-amarelo | vermelho/bloqueado=seg-vermelho
+```
+
+### Input Params Grid (Vc / fz / ap / ae)
+```
+grid grid-cols-4 gap-2
+Cada cell: bg-card-dark border border-white/5 rounded-lg p-2
+  Label: text-[10px] text-white/40 uppercase tracking-[0.08em]
+  Valor: font-mono text-lg font-bold text-white
+  Unidade: text-[10px] text-white/30
+
+Fonte: store.parametros (vc, fz, ap, ae) — valores inseridos pelo operador, NÃO calculados
+```
+
+### Calculated Data Row (Potência / Torque / Vc Real / L/D / CTF)
+```
+flex items-center px-3 py-1.5
+bg-black/30 border border-white/5 rounded-lg
+
+Cada item: flex-1 flex justify-between px-2
+  Label: text-[9px] text-white/35 uppercase tracking-[0.05em]
+  Valor: font-mono text-xs font-bold text-white/85
+  Unidade: text-[9px] opacity-40 ml-0.5
+
+Dividers: w-px h-4 bg-white/8
+
+L/D: cor dinâmica de zona
+  ≤3 → text-seg-verde
+  3-4 → text-seg-amarelo
+  4-6 → text-seg-vermelho
+  label também muda de cor para reforçar
+
+CTF: text-primary quando > 1.0 (fator ativo)
+```
+
+### Gauges (HalfMoonGauge — sem alteração no componente)
+```
+grid grid-cols-3 gap-2
+size="md" (240×120) → se não couber: size="sm" (160×80)
+3 gauges: Eficiência de Avanço | Produtividade MRR | Saúde Ferramenta
+Mesmos props e paletas atuais
+REGRA: SEMPRE visíveis junto com o painel sem scroll necessário
+```
+
+---
+
+*Last updated: 2026-04-05*
 *Direction: Boldness & Clarity*
 *Source: ToolOptimizer CNC existing codebase + docs/design/*
