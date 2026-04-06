@@ -14,7 +14,7 @@
 
 ## PROXIMAS 2 SESSOES (SEPARADAS)
 
-1. Sessao Cloud Code: trabalhar no sistema de parametros/calculos do produto final.
+1. Sessao Cloud Code: Segurança Cibernética v0.5.5 (fases 2-5) ou próximo item backlog.
 2. Sessao Codex: trabalhar somente no Admin Dashboard (`/admin`).
 
 ---
@@ -24,12 +24,12 @@
 | Item | Valor |
 |------|-------|
 | **Branch** | `main` |
-| **Versão** | `0.10.0` |
-| **Último commit** | `64890cc` feat: redesign visual v0.10.0 — contraste mobile + SGB/Gauge responsivo |
+| **Versão** | `0.10.1` |
+| **Último commit** | `cfece4a` feat: rewrite results-panel 7-zone layout + compact slider (v0.10.1) |
 | **Testes** | **940 passando** (53 arquivos) — 0 falhas |
 | **TypeScript** | **zero erros** |
-| **Build** | **limpo** — JS 102.94KB gzip, CSS 16.61KB gzip |
-| **Remote** | `origin/main` sincronizado ✅ (push 30/03) — commit `a898b32` |
+| **Build** | **limpo** — JS 104.62KB gzip |
+| **Remote** | `origin/main` sincronizado ✅ (push 06/04) — commit `cfece4a` |
 | **Worker** | ✅ LIVE — `https://tooloptimizercnc.contatorafaeleleoterio.workers.dev` |
 | **Custom Domains** | ✅ `tooloptimizercnc.com.br` + `app.tooloptimizercnc.com.br` |
 | **GitHub Actions** | ✅ deploy automático ao push para main |

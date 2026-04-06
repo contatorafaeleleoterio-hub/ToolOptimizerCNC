@@ -15,7 +15,7 @@
 
 ## PROXIMAS 2 SESSOES (SEPARADAS)
 
-1. Sessao Cloud Code: implementar o novo Results Panel aprovado (ITEM-1.1) conforme `PROTOTIPO_PAINEL_CNC_v2.html` e tokens em `.interface-design/system.md`.
+1. ✅ Sessao Cloud Code: ITEM-1.1 concluído — results-panel.tsx reescrito (7 zonas, compact slider). Commit `cfece4a` v0.10.1.
 2. Sessao Codex: trabalhar somente no Admin Dashboard (`/admin`).
 
 ---
@@ -25,11 +25,11 @@
 | Item | Valor |
 |------|-------|
 | **Branch** | `main` |
-| **Versão** | `0.10.0` |
+| **Versão** | `0.10.1` |
 | **Testes** | **940 passando** (53 arquivos) — 0 falhas |
 | **TypeScript** | **zero erros** |
-| **Build** | **limpo** — JS 102.94KB gzip, CSS 16.61KB gzip |
-| **Remote** | `origin/main` sincronizado ✅ — commit `64890cc` |
+| **Build** | **limpo** — JS 104.62KB gzip |
+| **Remote** | `origin/main` sincronizado ✅ — commit `cfece4a` |
 | **Worker** | ✅ LIVE — `https://tooloptimizercnc.contatorafaeleleoterio.workers.dev` |
 | **Custom Domains** | ✅ `tooloptimizercnc.com.br` + `app.tooloptimizercnc.com.br` |
 | **GitHub Actions** | ✅ deploy automático ao push para main |
@@ -314,7 +314,7 @@ Quando uma nova implementação for planejada durante a sessão:
 
 ---
 
-*Última atualização: 05/04/2026 — Sessão de design: protótipo `PROTOTIPO_PAINEL_CNC_v2.html` aprovado por Rafael. Design tokenizado em `.interface-design/system.md`. **PRÓXIMA SESSÃO Cloud Code: implementar ITEM-1.1 — reescrita de `results-panel.tsx` conforme protótipo aprovado.** ⚠️ `public/_headers` tem CSP não commitado: `connect-src 'self'` bloqueia `api.cloudflare.com` — corrigir na Fase 2 da Segurança.*
+*Última atualização: 06/04/2026 — ITEM-1.1 implementado: `results-panel.tsx` reescrito em 7 zonas (Console Header, LCD Display, Tool Row, RPM+Avanço compact, Input Params, Calc Row, Gauges) + prop `compact` em `bidirectional-slider.tsx`. v0.10.1 em produção. **PRÓXIMA SESSÃO Cloud Code:** Segurança Cibernética v0.5.5 (fases 2-5) ou próximo item da fila. ⚠️ `public/_headers` tem CSP não commitado: `connect-src 'self'` bloqueia `api.cloudflare.com` — corrigir na Fase 2 da Segurança.*
 
 ### Atualizacao de Encerramento - 28/03/2026 (sessao longa)
 
