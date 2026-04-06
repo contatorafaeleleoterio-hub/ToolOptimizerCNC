@@ -13,9 +13,22 @@
 - Cloud Code e o ambiente autorizado para evolucoes do dashboard de calculos/parametros e demais partes do produto final.
 - Esta separacao e obrigatoria e deve ser conferida no inicio de cada sessao.
 
+## ⚡ PRÓXIMA AÇÃO OBRIGATÓRIA (Cloud Code)
+
+> **Leia estes dois arquivos NESTA ORDEM antes de escrever qualquer código:**
+> 1. `docs/plans/ATUALIZACAO_DASH_APROVADO/CONTEXTO-PROXIMA-SESSAO.md` — fila completa dos 10 itens, ordem, pts
+> 2. `docs/plans/ATUALIZACAO_DASH_APROVADO/ITEM-2-BOTAO-EDITAR-FERRAMENTA.md` — spec completa do próximo item
+
+**Implementar: ITEM-1.2 — Botão "Editar Ferramenta" + ToolEditModal.tsx**
+- ITEM-1.1 ✅ concluído (results-panel.tsx 7 zonas, v0.10.1, `cfece4a`)
+- ITEM-1.2 é o próximo na fila aprovada
+- **NÃO** iniciar nada de Segurança Cibernética — ver nota abaixo
+
+---
+
 ## PROXIMAS 2 SESSOES (SEPARADAS)
 
-1. ✅ Sessao Cloud Code: ITEM-1.1 concluído — results-panel.tsx reescrito (7 zonas, compact slider). Commit `cfece4a` v0.10.1.
+1. Sessao Cloud Code: implementar **ITEM-1.2** (Botão Editar Ferramenta + ToolEditModal) — ler docs acima.
 2. Sessao Codex: trabalhar somente no Admin Dashboard (`/admin`).
 
 ---
@@ -55,7 +68,7 @@ npx tsc --noEmit
 | 2 | Fix TouchSlider Mobile | 🐛 Bug Fix | v0.5.2 | ✅ Concluído |
 | 3 | Unificar Indicadores Ajuste Fino | ✨ Feature | v0.5.3 | ✅ Concluído |
 | 4 | Favicon e Ícones | 💄 Polish | v0.5.4 | ✅ Concluído |
-| 5 | Segurança Cibernética | 🔒 Security | v0.5.5 | ⬜ Pendente |
+| 5 | Segurança Cibernética | 🔒 Security | v0.5.5 | ⏸️ PAUSADO — aguardando decisão de Rafael |
 | 6 | Reestruturação Documental | 🏗️ Infra | v0.6.0 | ✅ Concluído |
 | 7 | Admin Dashboard (8 fases) | ✨ Feature | v0.7.0 | ✅ Concluído (`ab5eb8f`) |
 | 8 | Reestruturação Docs Marketing & Monetização (12 docs) | 📄 Docs | — | ✅ Concluído |
@@ -95,22 +108,10 @@ npx tsc --noEmit
 
 ---
 
-### ⬜ Segurança Cibernética (v0.5.5)
+### ⏸️ Segurança Cibernética (v0.5.5) — PAUSADO
 
-**Plano completo:** `docs/plans/PLAN_Seguranca_Cibernetica.md`
-
-**7 fases — executar na ordem:**
-
-1. Repo privado + remover GitHub Pages *(manual — Rafael faz)*
-2. CSP header em `public/_headers`
-3. `npm audit` no CI + Dependabot (`ci.yml` + novo `dependabot.yml`)
-4. Validação de ranges em `importSettings()` e `importHistory()`
-5. Remover script Plausible inativo (`index.html` + `use-plausible.ts`)
-6. Cloudflare: Bot Fight Mode + Rate Limiting *(manual — Rafael faz)*
-7. GitHub: Branch protection + Dependabot alerts *(manual — Rafael faz)*
-
-**Testes necessários:** casos de importação com valores inválidos
-**Arquivos:** `public/_headers`, `.github/ci.yml`, `dependabot.yml`, stores, `index.html`, `use-plausible.ts`
+> **NÃO iniciar esta fase.** Aguardando decisão explícita de Rafael para retomar.
+> Plano completo disponível em: `docs/plans/PLAN_Seguranca_Cibernetica.md`
 
 ---
 
@@ -314,7 +315,7 @@ Quando uma nova implementação for planejada durante a sessão:
 
 ---
 
-*Última atualização: 06/04/2026 — ITEM-1.1 implementado: `results-panel.tsx` reescrito em 7 zonas (Console Header, LCD Display, Tool Row, RPM+Avanço compact, Input Params, Calc Row, Gauges) + prop `compact` em `bidirectional-slider.tsx`. v0.10.1 em produção. **PRÓXIMA SESSÃO Cloud Code:** Segurança Cibernética v0.5.5 (fases 2-5) ou próximo item da fila. ⚠️ `public/_headers` tem CSP não commitado: `connect-src 'self'` bloqueia `api.cloudflare.com` — corrigir na Fase 2 da Segurança.*
+*Última atualização: 06/04/2026 — ITEM-1.1 concluído: `results-panel.tsx` reescrito em 7 zonas + prop `compact` em `bidirectional-slider.tsx`. v0.10.1 em produção. **PRÓXIMA SESSÃO Cloud Code:** ITEM-1.2 — Botão Editar Ferramenta + ToolEditModal.tsx (ler `docs/plans/ATUALIZACAO_DASH_APROVADO/CONTEXTO-PROXIMA-SESSAO.md` + `ITEM-2-BOTAO-EDITAR-FERRAMENTA.md`). Segurança Cibernética ⏸️ PAUSADA — não sugerir.*
 
 ### Atualizacao de Encerramento - 28/03/2026 (sessao longa)
 

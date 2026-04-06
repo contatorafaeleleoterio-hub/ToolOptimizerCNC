@@ -14,7 +14,7 @@
 
 ## PROXIMAS 2 SESSOES (SEPARADAS)
 
-1. Sessao Cloud Code: Segurança Cibernética v0.5.5 (fases 2-5) ou próximo item backlog.
+1. Sessao Cloud Code: implementar **ITEM-1.2** (Botão Editar Ferramenta + ToolEditModal) — ler `docs/plans/ATUALIZACAO_DASH_APROVADO/CONTEXTO-PROXIMA-SESSAO.md` + `ITEM-2-BOTAO-EDITAR-FERRAMENTA.md`.
 2. Sessao Codex: trabalhar somente no Admin Dashboard (`/admin`).
 
 ---
@@ -71,50 +71,23 @@ npx tsc --noEmit
 
 ---
 
-## ⚡ CONTINUAR AQUI — Próxima Sessão (questionário de decisões)
+## ⚡ CONTINUAR AQUI — Próxima Sessão (implementação)
 
-> **Contexto:** Rafael e o assistente estavam resolvendo decisões de UX pendentes dos 10 itens de implementação, uma pergunta por vez. O ITEM-2 foi o último concluído — mockup criado iterativamente e aprovado por Rafael. A seguir, o questionário parou no ITEM-5.
-
-### O que foi feito (resumo do fluxo)
-
-1. Sessão iniciou com "proxima sessao" → leitura do ROADMAP
-2. Identificadas 5 decisões abertas nos docs de implementação
-3. Método: **uma pergunta por vez**, Rafael responde, se necessário cria artefato visual (mockup HTML), refina até aprovação, passa para próxima
-4. **ITEM-2 concluído:** 3 iterações de mockup — aprovado na 3ª versão
-   - Artefato final: `docs/mockups/item2-editar-ferramenta.html`
-   - Design documentado em: `docs/plans/ATUALIZACAO_DASH_APROVADO/ITEM-2-BOTAO-EDITAR-FERRAMENTA.md` (seção "DESIGN VISUAL APROVADO 04/04/2026" no final do arquivo)
-
-### Onde parou exatamente
-
-**Próxima pergunta a fazer (ITEM-5 — Safety Factor):**
-
-> "Como quer que o Safety Factor apareça no slider? Descreva o formato ideal — range, display, comportamento."
-
-**Contexto do ITEM-5 para o assistente:**
-- O slider atual de Safety Factor usa um input nativo (`<input type="range">`) em `config-panel.tsx` (~L277)
-- A proposta original era usar `StyledSlider` simples (unidirecional, 0.50–1.00, display "70%")
-- Rafael escolheu **"B — outro formato"** mas não especificou ainda
-- O `BidirectionalSlider` (−150% a +150% relativo) NÃO é adequado para Safety Factor (valor absoluto)
-- Após Rafael descrever o formato → criar mockup HTML se necessário → aprovar → documentar em `ITEM-5-FATOR-CORRECAO-SLIDER.md`
-
-### Fila completa de decisões restantes (4 pendentes)
-
-| Ordem | Item | Pergunta a fazer |
-|-------|------|-----------------|
-| **1 — PRÓXIMA** | ITEM-5 | Como quer o slider do Safety Factor? (range, display, comportamento) |
-| 2 | ITEM-7 (a) | Popover "O QUE É [PARAM]?": mostra só descrição curta OU inclui dicas de aumentar/diminuir/equilíbrio? |
-| 3 | ITEM-7 (b) | O drawer educacional atual coexiste com o popover OU é substituído por ele? |
-| 4 | ITEM-10 | Modal de edição de favorito: reutilizar o `ToolEditModal` (mesmo do ITEM-2) ou criar um componente separado? |
+> **ITEM-1.1 concluído** (`cfece4a`, v0.10.1). **Próximo: ITEM-1.2.**
 
 ### Instrução para o assistente
 
-1. Ler este bloco como contexto
-2. Retomar o questionário **sem reintroduzir** — Rafael já sabe o que está acontecendo
-3. Fazer apenas a primeira pergunta pendente (ITEM-5)
-4. Após cada resposta: criar mockup se necessário → aguardar aprovação → documentar → próxima pergunta
-5. Após todas as 4 decisões resolvidas → propor início da implementação pelo ITEM-1.1
+1. Ler `docs/plans/ATUALIZACAO_DASH_APROVADO/CONTEXTO-PROXIMA-SESSAO.md` — fila completa, ordem, pts
+2. Ler `docs/plans/ATUALIZACAO_DASH_APROVADO/ITEM-2-BOTAO-EDITAR-FERRAMENTA.md` — spec completa
+3. Implementar **ITEM-1.2 — Botão "Editar Ferramenta" + ToolEditModal.tsx**
+4. **NÃO** sugerir ou iniciar Segurança Cibernética — está pausada até Rafael decidir retomar
 
----
+### Sessão 06/04 — Implementação ITEM-1.1 (results-panel.tsx 7 zonas)
+
+- **Commit:** `cfece4a` feat: rewrite results-panel 7-zone layout + compact slider (v0.10.1)
+- **Entregável:** `results-panel.tsx` totalmente reescrito com 7 zonas (Console Header, Digital LCD, Tool Row, RPM+Avanço compact, Input Params, Calc Row, Gauges) + prop `compact` em `bidirectional-slider.tsx`
+- **Testes:** 940 passando, 0 falhas, TS limpo, build limpo
+- **Deploy:** Worker live `tooloptimizercnc.com.br`
 
 ---
 
