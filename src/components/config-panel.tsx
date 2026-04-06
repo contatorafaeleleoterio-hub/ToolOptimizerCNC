@@ -2,12 +2,14 @@ import { useState } from 'react';
 import { useMachiningStore } from '@/store';
 import { MATERIAIS, FERRAMENTAS_PADRAO } from '@/data';
 import { TipoUsinagem } from '@/types';
+import type { SavedTool } from '@/types';
 import { FieldGroup } from './ui-helpers';
 import { useSimulationAnimation } from '@/hooks/use-simulation-animation';
 import { usePlausible } from '@/hooks/use-plausible';
 import { CollapsibleSection } from './collapsible-section';
 import { FineTunePanel } from './fine-tune-panel';
 import { StyledSlider } from './styled-slider';
+import { ToolEditModal } from './modals/tool-edit-modal';
 
 const OPERACAO_LABELS: Record<TipoUsinagem, string> = {
   [TipoUsinagem.DESBASTE]: 'Desbaste',
@@ -80,16 +82,121 @@ function NumberInputRow({
   );
 }
 
+// Diameter categories for grouping saved tools
+const DIAMETER_CATEGORIES = [
+  { label: '≤ 6mm', min: 0, max: 6 },
+  { label: '6 – 12mm', min: 6, max: 12 },
+  { label: '12 – 20mm', min: 12, max: 20 },
+  { label: '> 20mm', min: 20, max: Infinity },
+] as const;
+
+const TIPO_LABEL: Record<SavedTool['tipo'], string> = {
+  topo: 'Fresa de topo',
+  toroidal: 'Fresa toroidal',
+  esferica: 'Fresa esférica',
+};
+
+// SVG symbol for diameter (circle with diagonal line)
+function DiameterSymbol() {
+  return (
+    <svg width="11" height="11" viewBox="0 0 12 12" fill="none" aria-hidden="true">
+      <circle cx="6" cy="6" r="4.5" stroke="#475569" strokeWidth="1.3" />
+      <line x1="1.5" y1="10.5" x2="10.5" y2="1.5" stroke="#475569" strokeWidth="1.3" />
+    </svg>
+  );
+}
+
+interface SavedToolsListProps {
+  savedTools: SavedTool[];
+  activeDiametro: number;
+  onLoad: (id: string) => void;
+  onEdit: (tool: SavedTool) => void;
+  onRemove: (id: string) => void;
+}
+
+function SavedToolsList({ savedTools, activeDiametro, onLoad, onEdit, onRemove }: SavedToolsListProps) {
+  return (
+    <div className="flex flex-col gap-2">
+      {DIAMETER_CATEGORIES.map((cat) => {
+        const tools = savedTools
+          .filter((t) => t.diametro > cat.min && t.diametro <= (cat.max === Infinity ? Infinity : cat.max))
+          .sort((a, b) => a.diametro - b.diametro);
+        if (tools.length === 0) return null;
+        return (
+          <div key={cat.label}>
+            <span className="text-[10px] uppercase tracking-widest text-gray-600 px-1">{cat.label}</span>
+            <div className="flex flex-col gap-0.5 mt-0.5">
+              {tools.map((tool) => {
+                const isActive = tool.diametro === activeDiametro;
+                return (
+                  <div
+                    key={tool.id}
+                    className={`group flex items-center justify-between px-2 py-1.5 rounded-lg border transition-all ${
+                      isActive
+                        ? 'bg-primary/10 border-primary/30'
+                        : 'bg-black/20 border-white/8 hover:bg-white/5 hover:border-white/15'
+                    }`}
+                  >
+                    <button
+                      className="flex-1 flex items-center gap-1.5 text-left min-w-0"
+                      onClick={() => onLoad(tool.id)}
+                      aria-label={`Carregar ${tool.nome}`}
+                    >
+                      <DiameterSymbol />
+                      <span className={`font-mono text-xs truncate ${isActive ? 'text-primary' : 'text-gray-300'}`}>
+                        {tool.diametro}mm
+                      </span>
+                      <span className="text-gray-600 text-xs">|</span>
+                      <span className="text-gray-500 text-xs">R {tool.raioQuina ?? 0}</span>
+                      <span className="text-gray-600 text-xs">|</span>
+                      <span className="text-gray-500 text-xs">H {tool.balanco}</span>
+                      {tool.anguloHelice != null && (
+                        <>
+                          <span className="text-gray-600 text-xs">|</span>
+                          <span className="text-gray-500 text-xs">Hél. {tool.anguloHelice}°</span>
+                        </>
+                      )}
+                      <span className="text-gray-600 text-xs">|</span>
+                      <span className="text-gray-500 text-xs truncate">{TIPO_LABEL[tool.tipo]}</span>
+                    </button>
+                    <div className="flex items-center gap-0.5 ml-1 opacity-0 group-hover:opacity-100 transition-opacity">
+                      <button
+                        aria-label={`Editar ${tool.nome}`}
+                        onClick={() => onEdit(tool)}
+                        className="p-0.5 text-gray-500 hover:text-primary transition-colors"
+                      >
+                        <span className="material-symbols-outlined" style={{ fontSize: '14px' }}>edit</span>
+                      </button>
+                      <button
+                        aria-label={`Remover ${tool.nome}`}
+                        onClick={() => onRemove(tool.id)}
+                        className="p-0.5 text-gray-500 hover:text-red-400 transition-colors"
+                      >
+                        <span className="material-symbols-outlined" style={{ fontSize: '14px' }}>delete</span>
+                      </button>
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
+          </div>
+        );
+      })}
+    </div>
+  );
+}
+
 export function ConfigPanel() {
   const {
     materialId, ferramenta, tipoOperacao, parametros,
     setMaterial, setFerramenta, setTipoOperacao,
     simular, reset,
-    savedTools, loadSavedTool, addSavedTool,
+    savedTools, loadSavedTool, addSavedTool, removeSavedTool, updateSavedTool,
     safetyFactor, setSafetyFactor,
   } = useMachiningStore();
 
   const [showSavedBadge, setShowSavedBadge] = useState(false);
+  const [editingTool, setEditingTool] = useState<SavedTool | null>(null);
 
   const handleSaveTool = () => {
     const { tipo, diametro, raioQuina, numeroArestas, balanco } = ferramenta;
@@ -206,36 +313,27 @@ export function ConfigPanel() {
           summary={summaryFerramenta}
         >
           <div className="space-y-3 pt-1">
-            {/* Saved Tools — Manual Save + Dropdown */}
+            {/* Saved Tools — cards list with edit/delete per item */}
             <div className="mb-1">
-              <div className="flex items-center gap-2">
-                <select
-                  aria-label="Ferramenta Salva"
-                  value=""
-                  onChange={(e) => { if (e.target.value) loadSavedTool(e.target.value); }}
-                  disabled={savedTools.length === 0}
-                  className="flex-1 bg-black/50 border border-white/15 rounded-lg px-3 py-2 text-sm text-white focus:outline-none focus:border-primary cursor-pointer appearance-none select-chevron disabled:opacity-50 disabled:cursor-not-allowed"
-                >
-                  {savedTools.length === 0 ? (
-                    <option value="">Nenhuma ferramenta salva</option>
-                  ) : (
-                    <>
-                      <option value="">Selecionar ferramenta salva...</option>
-                      {savedTools.map((tool) => (
-                        <option key={tool.id} value={tool.id}>{tool.nome}</option>
-                      ))}
-                    </>
-                  )}
-                </select>
-                <button
-                  aria-label="Salvar ferramenta"
-                  onClick={handleSaveTool}
-                  className="p-2 rounded-lg bg-white/5 border border-white/10 hover:bg-white/10 transition-colors"
-                  title="Salvar configuração atual"
-                >
-                  <span className="material-symbols-outlined text-sm text-white/70">save</span>
-                </button>
-              </div>
+              {savedTools.length > 0 ? (
+                <SavedToolsList
+                  savedTools={savedTools}
+                  activeDiametro={ferramenta.diametro}
+                  onLoad={loadSavedTool}
+                  onEdit={setEditingTool}
+                  onRemove={removeSavedTool}
+                />
+              ) : (
+                <p className="text-xs text-gray-600 text-center py-2">Nenhuma ferramenta salva</p>
+              )}
+              <button
+                aria-label="Salvar ferramenta"
+                onClick={handleSaveTool}
+                className="mt-2 w-full flex items-center justify-center gap-1.5 py-1.5 rounded-lg bg-white/5 border border-white/10 hover:bg-white/10 transition-colors text-xs text-gray-400 hover:text-white"
+              >
+                <span className="material-symbols-outlined text-sm">save</span>
+                Salvar ferramenta atual
+              </button>
               {showSavedBadge && (
                 <span className="text-xs font-semibold mt-1 block animate-[fadeInUp_0.3s_ease]" style={{ color: '#2ecc71' }}>
                   ✓ Ferramenta salva
@@ -243,6 +341,14 @@ export function ConfigPanel() {
               )}
               <div className="border-b border-white/5 mt-3" />
             </div>
+
+            {editingTool && (
+              <ToolEditModal
+                tool={editingTool}
+                onSave={(updates) => { updateSavedTool(editingTool.id, updates); setEditingTool(null); }}
+                onClose={() => setEditingTool(null)}
+              />
+            )}
 
             {/* 1. Tool type */}
             <FieldGroup label="Tipo">

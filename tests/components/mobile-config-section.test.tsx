@@ -108,10 +108,10 @@ describe('MobileConfigSection', () => {
     expect(screen.getByText('Fator de Segurança')).toBeInTheDocument();
   });
 
-  it('renders saved tools dropdown', () => {
+  it('renders saved tools empty state', () => {
     renderSection();
     fireEvent.click(screen.getByText('Ferramenta'));
-    expect(screen.getByRole('combobox', { name: 'Ferramenta Salva' })).toBeInTheDocument();
+    expect(screen.getByText('Nenhuma ferramenta salva')).toBeInTheDocument();
   });
 
   it('renders save tool button', () => {

@@ -221,6 +221,7 @@ export interface SavedTool {
   tipo: Ferramenta['tipo'];
   diametro: number;
   raioQuina?: number;   // toroidal only
+  anguloHelice?: number; // helix angle in degrees (30 | 45 | 60)
   numeroArestas: number;
   balanco: number;
   createdAt: string;    // ISO 8601

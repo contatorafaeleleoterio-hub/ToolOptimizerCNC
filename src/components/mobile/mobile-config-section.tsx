@@ -2,7 +2,9 @@ import { useState } from 'react';
 import { useMachiningStore } from '@/store';
 import { MATERIAIS, FERRAMENTAS_PADRAO } from '@/data';
 import { TipoUsinagem } from '@/types';
+import type { SavedTool } from '@/types';
 import { SectionTitle, FieldGroup, NumInput } from '../ui-helpers';
+import { ToolEditModal } from '@/components/modals/tool-edit-modal';
 
 /**
  * Mobile-friendly number input with raw/blur pattern.
@@ -103,15 +105,100 @@ function AccordionSection({
   );
 }
 
+const MOBILE_DIAMETER_CATEGORIES = [
+  { label: '≤ 6mm', min: 0, max: 6 },
+  { label: '6 – 12mm', min: 6, max: 12 },
+  { label: '12 – 20mm', min: 12, max: 20 },
+  { label: '> 20mm', min: 20, max: Infinity },
+] as const;
+
+const MOBILE_TIPO_LABEL: Record<SavedTool['tipo'], string> = {
+  topo: 'Fresa de topo',
+  toroidal: 'Fresa toroidal',
+  esferica: 'Fresa esférica',
+};
+
+interface MobileSavedToolsListProps {
+  savedTools: SavedTool[];
+  activeDiametro: number;
+  onLoad: (id: string) => void;
+  onEdit: (tool: SavedTool) => void;
+  onRemove: (id: string) => void;
+}
+
+function MobileSavedToolsList({ savedTools, activeDiametro, onLoad, onEdit, onRemove }: MobileSavedToolsListProps) {
+  return (
+    <div className="flex flex-col gap-2">
+      {MOBILE_DIAMETER_CATEGORIES.map((cat) => {
+        const tools = savedTools
+          .filter((t) => t.diametro > cat.min && t.diametro <= (cat.max === Infinity ? Infinity : cat.max))
+          .sort((a, b) => a.diametro - b.diametro);
+        if (tools.length === 0) return null;
+        return (
+          <div key={cat.label}>
+            <span className="text-[10px] uppercase tracking-widest text-gray-600 px-1">{cat.label}</span>
+            <div className="flex flex-col gap-0.5 mt-0.5">
+              {tools.map((tool) => {
+                const isActive = tool.diametro === activeDiametro;
+                return (
+                  <div
+                    key={tool.id}
+                    className={`flex items-center justify-between px-2 py-2 rounded-lg border transition-all ${
+                      isActive
+                        ? 'bg-primary/10 border-primary/30'
+                        : 'bg-black/20 border-white/8'
+                    }`}
+                  >
+                    <button
+                      className="flex-1 flex items-center gap-1.5 text-left min-h-[36px] min-w-0"
+                      onClick={() => onLoad(tool.id)}
+                      aria-label={`Carregar ${tool.nome}`}
+                    >
+                      <span className={`font-mono text-xs truncate ${isActive ? 'text-primary' : 'text-gray-300'}`}>
+                        Ø{tool.diametro}mm
+                      </span>
+                      <span className="text-gray-600 text-xs">|</span>
+                      <span className="text-gray-500 text-xs">H {tool.balanco}</span>
+                      <span className="text-gray-600 text-xs">|</span>
+                      <span className="text-gray-500 text-xs truncate">{MOBILE_TIPO_LABEL[tool.tipo]}</span>
+                    </button>
+                    <div className="flex items-center gap-1 ml-1">
+                      <button
+                        aria-label={`Editar ${tool.nome}`}
+                        onClick={() => onEdit(tool)}
+                        className="p-1.5 min-h-[36px] min-w-[36px] flex items-center justify-center text-gray-500 active:text-primary transition-colors"
+                      >
+                        <span className="material-symbols-outlined" style={{ fontSize: '16px' }}>edit</span>
+                      </button>
+                      <button
+                        aria-label={`Remover ${tool.nome}`}
+                        onClick={() => onRemove(tool.id)}
+                        className="p-1.5 min-h-[36px] min-w-[36px] flex items-center justify-center text-gray-500 active:text-red-400 transition-colors"
+                      >
+                        <span className="material-symbols-outlined" style={{ fontSize: '16px' }}>delete</span>
+                      </button>
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
+          </div>
+        );
+      })}
+    </div>
+  );
+}
+
 export function MobileConfigSection() {
   const {
     materialId, ferramenta, tipoOperacao, parametros, safetyFactor,
     setMaterial, setFerramenta, setTipoOperacao, setParametros,
     setSafetyFactor,
-    savedTools, loadSavedTool, addSavedTool,
+    savedTools, loadSavedTool, addSavedTool, removeSavedTool, updateSavedTool,
   } = useMachiningStore();
 
   const [showSavedBadge, setShowSavedBadge] = useState(false);
+  const [editingTool, setEditingTool] = useState<SavedTool | null>(null);
 
   const handleSaveTool = () => {
     const { tipo, diametro, raioQuina, numeroArestas, balanco } = ferramenta;
@@ -176,36 +263,27 @@ export function MobileConfigSection() {
       {/* Tool section */}
       <AccordionSection color="bg-secondary" label="Ferramenta" summary={summaryTool}>
         <div className="space-y-4 mt-1">
-          {/* Saved Tools — same as desktop */}
+          {/* Saved Tools — cards list with edit/delete per item */}
           <div className="mb-1">
-            <div className="flex items-center gap-2">
-              <select
-                aria-label="Ferramenta Salva"
-                value=""
-                onChange={(e) => { if (e.target.value) loadSavedTool(e.target.value); }}
-                disabled={savedTools.length === 0}
-                className="flex-1 min-h-[44px] bg-black/50 border border-white/15 rounded-lg px-3 py-2 text-sm text-white focus:outline-none focus:border-primary cursor-pointer appearance-none select-chevron disabled:opacity-50 disabled:cursor-not-allowed"
-              >
-                {savedTools.length === 0 ? (
-                  <option value="">Nenhuma ferramenta salva</option>
-                ) : (
-                  <>
-                    <option value="">Selecionar ferramenta salva...</option>
-                    {savedTools.map((tool) => (
-                      <option key={tool.id} value={tool.id}>{tool.nome}</option>
-                    ))}
-                  </>
-                )}
-              </select>
-              <button
-                aria-label="Salvar ferramenta"
-                onClick={handleSaveTool}
-                className="p-2.5 min-h-[44px] min-w-[44px] rounded-lg bg-white/5 border border-white/12 active:bg-white/10 transition-colors flex items-center justify-center"
-                title="Salvar configuração atual"
-              >
-                <span className="material-symbols-outlined text-sm text-white/70">save</span>
-              </button>
-            </div>
+            {savedTools.length > 0 ? (
+              <MobileSavedToolsList
+                savedTools={savedTools}
+                activeDiametro={ferramenta.diametro}
+                onLoad={loadSavedTool}
+                onEdit={setEditingTool}
+                onRemove={removeSavedTool}
+              />
+            ) : (
+              <p className="text-xs text-gray-600 text-center py-2">Nenhuma ferramenta salva</p>
+            )}
+            <button
+              aria-label="Salvar ferramenta"
+              onClick={handleSaveTool}
+              className="mt-2 w-full flex items-center justify-center gap-1.5 min-h-[44px] rounded-lg bg-white/5 border border-white/12 active:bg-white/10 transition-colors text-xs text-gray-400"
+            >
+              <span className="material-symbols-outlined text-sm">save</span>
+              Salvar ferramenta atual
+            </button>
             {showSavedBadge && (
               <span className="text-xs font-semibold mt-1 block animate-[fadeInUp_0.3s_ease]" style={{ color: '#2ecc71' }}>
                 ✓ Ferramenta salva
@@ -213,6 +291,14 @@ export function MobileConfigSection() {
             )}
             <div className="border-b border-white/5 mt-3" />
           </div>
+
+          {editingTool && (
+            <ToolEditModal
+              tool={editingTool}
+              onSave={(updates) => { updateSavedTool(editingTool.id, updates); setEditingTool(null); }}
+              onClose={() => setEditingTool(null)}
+            />
+          )}
 
           <FieldGroup label="Tipo">
             <div className="grid grid-cols-3 gap-2">

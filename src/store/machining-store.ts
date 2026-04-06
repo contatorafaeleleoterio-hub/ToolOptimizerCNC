@@ -95,6 +95,7 @@ interface MachiningActions {
   setObjetivoUsinagem: (objetivo: ObjetivoUsinagem) => void;
   addSavedTool: (tool: Pick<Ferramenta, 'tipo' | 'diametro' | 'raioQuina' | 'numeroArestas' | 'balanco'>) => void;
   removeSavedTool: (id: string) => void;
+  updateSavedTool: (id: string, updates: Partial<Omit<SavedTool, 'id' | 'createdAt'>>) => void;
   loadSavedTool: (id: string) => void;
   addValidatedSimulation: (sim: Omit<ValidatedSimulation, 'id' | 'createdAt'>) => void;
   removeValidatedSimulation: (id: string) => void;
@@ -456,6 +457,16 @@ export const useMachiningStore = create<MachiningState & MachiningActions>()(
 
         removeSavedTool: (id) => {
           set((state) => ({ savedTools: state.savedTools.filter((t) => t.id !== id) }));
+        },
+
+        updateSavedTool: (id, updates) => {
+          set((state) => ({
+            savedTools: state.savedTools.map((t) =>
+              t.id === id
+                ? { ...t, ...updates, nome: gerarNomeFerramenta({ ...t, ...updates }) }
+                : t
+            ),
+          }));
         },
 
         loadSavedTool: (id) => {

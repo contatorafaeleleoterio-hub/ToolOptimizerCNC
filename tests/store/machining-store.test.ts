@@ -673,6 +673,38 @@ describe('SavedTools CRUD', () => {
     useMachiningStore.getState().loadSavedTool('id-inexistente');
     expect(useMachiningStore.getState().resultado).not.toBeNull();
   });
+
+  it('updateSavedTool updates tool fields in-place by id', () => {
+    useMachiningStore.getState().addSavedTool({
+      tipo: 'topo', diametro: 10, numeroArestas: 4, balanco: 20,
+    });
+    const id = useMachiningStore.getState().savedTools[0].id;
+    useMachiningStore.getState().updateSavedTool(id, { diametro: 12, balanco: 25 });
+    const updated = useMachiningStore.getState().savedTools[0];
+    expect(updated.id).toBe(id);
+    expect(updated.diametro).toBe(12);
+    expect(updated.balanco).toBe(25);
+    expect(updated.tipo).toBe('topo');
+  });
+
+  it('updateSavedTool regenerates nome after update', () => {
+    useMachiningStore.getState().addSavedTool({
+      tipo: 'topo', diametro: 10, numeroArestas: 4, balanco: 20,
+    });
+    const id = useMachiningStore.getState().savedTools[0].id;
+    useMachiningStore.getState().updateSavedTool(id, { diametro: 8, numeroArestas: 3, balanco: 30 });
+    expect(useMachiningStore.getState().savedTools[0].nome).toBe('Topo Ø8 - H30 - A3');
+  });
+
+  it('updateSavedTool does not affect active ferramenta in store', () => {
+    useMachiningStore.getState().setFerramenta({ tipo: 'topo', diametro: 10, numeroArestas: 4, balanco: 20 });
+    useMachiningStore.getState().addSavedTool({
+      tipo: 'topo', diametro: 10, numeroArestas: 4, balanco: 20,
+    });
+    const id = useMachiningStore.getState().savedTools[0].id;
+    useMachiningStore.getState().updateSavedTool(id, { diametro: 99 });
+    expect(useMachiningStore.getState().ferramenta.diametro).toBe(10);
+  });
 });
 
 // ─── ValidatedSimulations CRUD ───────────────────────────────────────────────
