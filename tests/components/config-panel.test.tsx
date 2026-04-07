@@ -325,22 +325,22 @@ describe('ConfigPanel', () => {
     expect(segBtn).toHaveAttribute('aria-expanded', 'false');
   });
 
-  it('SeguranÃ§a summary shows SF value when collapsed', () => {
+  it('Segurança summary shows percentage when collapsed', () => {
     renderPanel();
-    expect(screen.getByText('SF 0.80')).toBeInTheDocument();
+    expect(screen.getAllByText('80%').length).toBeGreaterThan(0);
   });
 
-  it('opening SeguranÃ§a section shows slider with correct aria-label', () => {
+  it('opening Segurança section shows slider with correct aria-label', () => {
     renderPanel();
     fireEvent.click(screen.getByText(/Seguran/i));
-    expect(screen.getByRole('slider', { name: /Fator de Seguran/i })).toBeInTheDocument();
+    expect(screen.getByRole('slider', { name: /Fator de Corre/i })).toBeInTheDocument();
   });
 
   it('+ button increases safetyFactor by 0.05', () => {
     renderPanel();
     fireEvent.click(screen.getByText(/Seguran/i));
     const initialSF = useMachiningStore.getState().safetyFactor;
-    fireEvent.click(screen.getByRole('button', { name: /Increase Fator de Seguran/i }));
+    fireEvent.click(screen.getByRole('button', { name: /Aumentar fator de corre/i }));
     expect(useMachiningStore.getState().safetyFactor).toBeCloseTo(initialSF + 0.05, 5);
   });
 
@@ -348,7 +348,7 @@ describe('ConfigPanel', () => {
     renderPanel();
     fireEvent.click(screen.getByText(/Seguran/i));
     const initialSF = useMachiningStore.getState().safetyFactor;
-    fireEvent.click(screen.getByRole('button', { name: /Decrease Fator de Seguran/i }));
+    fireEvent.click(screen.getByRole('button', { name: /Reduzir fator de corre/i }));
     expect(useMachiningStore.getState().safetyFactor).toBeCloseTo(initialSF - 0.05, 5);
   });
 
@@ -356,7 +356,7 @@ describe('ConfigPanel', () => {
     useMachiningStore.getState().setSafetyFactor(0.50);
     renderPanel();
     fireEvent.click(screen.getByText(/Seguran/i));
-    fireEvent.click(screen.getByRole('button', { name: /Decrease Fator de Seguran/i }));
+    fireEvent.click(screen.getByRole('button', { name: /Reduzir fator de corre/i }));
     expect(useMachiningStore.getState().safetyFactor).toBe(0.50);
   });
 
@@ -364,7 +364,7 @@ describe('ConfigPanel', () => {
     useMachiningStore.getState().setSafetyFactor(1.00);
     renderPanel();
     fireEvent.click(screen.getByText(/Seguran/i));
-    fireEvent.click(screen.getByRole('button', { name: /Increase Fator de Seguran/i }));
+    fireEvent.click(screen.getByRole('button', { name: /Aumentar fator de corre/i }));
     expect(useMachiningStore.getState().safetyFactor).toBe(1.00);
   });
 

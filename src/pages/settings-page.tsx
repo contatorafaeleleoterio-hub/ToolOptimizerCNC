@@ -126,7 +126,7 @@ function SegurancaSection() {
       <div className={CARD}>
         <h3 className="text-xs font-bold text-gray-400 uppercase tracking-widest mb-4 flex items-center gap-2">
           <span className="w-1 h-3 bg-seg-verde rounded-full" />
-          Fator de Segurança
+          Fator de Correção
         </h3>
         <div className="flex items-center gap-2">
           <div className="flex-1">
@@ -136,11 +136,11 @@ function SegurancaSection() {
               max={1.0}
               step={0.05}
               color="primary"
-              label="Fator de Segurança"
+              label="Fator de Correção"
               onChange={(v) => setSafetyFactor(+(v.toFixed(2)))}
             />
           </div>
-          <span className="text-lg font-mono font-bold text-primary w-14 text-right">{safetyFactor.toFixed(2)}</span>
+          <span className="text-lg font-mono font-bold text-primary w-14 text-right">{Math.round(safetyFactor * 100)}%</span>
         </div>
         <p className="text-2xs text-gray-500 mt-2">Aplicado a Potência, Torque. Valores mais baixos = mais conservador.</p>
       </div>

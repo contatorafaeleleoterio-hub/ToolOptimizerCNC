@@ -5,6 +5,7 @@ import { TipoUsinagem } from '@/types';
 import type { SavedTool } from '@/types';
 import { SectionTitle, FieldGroup, NumInput } from '../ui-helpers';
 import { ToolEditModal } from '@/components/modals/tool-edit-modal';
+import { StyledSlider } from '@/components/styled-slider';
 
 /**
  * Mobile-friendly number input with raw/blur pattern.
@@ -221,7 +222,7 @@ export function MobileConfigSection() {
   const summaryBase = `${material?.nome ?? '—'} | ${OPERACAO_LABELS[tipoOperacao]}`;
   const summaryTool = `${FERRAMENTAS_PADRAO.find((f) => f.tipo === ferramenta.tipo)?.descricao.split(' ')[0] ?? ferramenta.tipo} D${ferramenta.diametro} ${ferramenta.numeroArestas}Z`;
   const summaryParams = `ap ${parametros.ap} | ae ${parametros.ae} | fz ${parametros.fz}`;
-  const summarySafety = `SF ${safetyFactor.toFixed(2)}`;
+  const summarySafety = `${Math.round(safetyFactor * 100)}%`;
 
   return (
     <section className="flex flex-col gap-3 px-4">
@@ -357,15 +358,35 @@ export function MobileConfigSection() {
         </div>
       </AccordionSection>
 
-      {/* Safety factor */}
-      <AccordionSection color="bg-seg-verde" label="Fator de Segurança" summary={summarySafety}>
-        <div className="flex items-center gap-4 mt-1">
-          <input type="range" min={0.5} max={1} step={0.05} value={safetyFactor}
-            onChange={(e) => setSafetyFactor(Number(e.target.value))}
-            className="flex-1 h-2 bg-black/40 rounded-full appearance-none cursor-pointer [&::-webkit-slider-thumb]:w-6 [&::-webkit-slider-thumb]:h-6 [&::-webkit-slider-thumb]:rounded-full [&::-webkit-slider-thumb]:bg-seg-verde [&::-webkit-slider-thumb]:appearance-none [&::-webkit-slider-thumb]:shadow-[0_0_10px_rgba(46,204,113,0.6)]" />
-          <span className="text-sm font-mono text-white w-10 text-right">{safetyFactor.toFixed(2)}</span>
+      {/* Fator de Correção */}
+      <AccordionSection color="bg-seg-verde" label="Fator de Correção" summary={summarySafety}>
+        <div className="flex items-center gap-2 mt-1">
+          <button
+            onClick={() => setSafetyFactor(Math.round(Math.max(0.50, safetyFactor - 0.05) * 100) / 100)}
+            className="w-8 h-8 flex items-center justify-center rounded-md bg-black/40 border border-white/10 text-gray-400 text-base font-bold shrink-0"
+            aria-label="Reduzir fator de correção"
+          >−</button>
+          <div className="flex-1">
+            <StyledSlider
+              value={safetyFactor}
+              min={0.50}
+              max={1.00}
+              step={0.05}
+              color="primary"
+              label="Fator de Correção"
+              onChange={(v) => setSafetyFactor(v)}
+            />
+          </div>
+          <button
+            onClick={() => setSafetyFactor(Math.round(Math.min(1.00, safetyFactor + 0.05) * 100) / 100)}
+            className="w-8 h-8 flex items-center justify-center rounded-md bg-black/40 border border-white/10 text-gray-400 text-base font-bold shrink-0"
+            aria-label="Aumentar fator de correção"
+          >+</button>
+          <span className="text-sm font-mono text-white w-12 text-right shrink-0">
+            {Math.round(safetyFactor * 100)}%
+          </span>
         </div>
-        <p className="text-[10px] text-gray-500 mt-2">0.70 = conservador · 0.85 = agressivo</p>
+        <p className="text-[10px] text-gray-500 mt-2">50% = conservador · 100% = agressivo</p>
       </AccordionSection>
     </section>
   );

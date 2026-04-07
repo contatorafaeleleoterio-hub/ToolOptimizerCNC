@@ -44,7 +44,7 @@ describe('SettingsPage', () => {
     const segurancaBtn = navButtons.find((b) => b.textContent?.includes('Segurança'));
     expect(segurancaBtn).toBeDefined();
     fireEvent.click(segurancaBtn!);
-    expect(screen.getByText('Fator de Segurança')).toBeInTheDocument();
+    expect(screen.getByText('Fator de Correção')).toBeInTheDocument();
     expect(screen.getByText('Limites L/D (Balanço / Diâmetro)')).toBeInTheDocument();
   });
 
@@ -106,7 +106,7 @@ describe('SettingsPage', () => {
     const segBtn = navButtons.find((b) => b.textContent?.includes('Segurança'));
     fireEvent.click(segBtn!);
     // Default safetyFactor is 0.80 — click − twice to reach 0.70
-    const minusBtn = screen.getByRole('button', { name: /Decrease Fator de Seguran/i });
+    const minusBtn = screen.getByRole('button', { name: /Decrease Fator de Corre/i });
     fireEvent.click(minusBtn);
     fireEvent.click(minusBtn);
     expect(useMachiningStore.getState().safetyFactor).toBeCloseTo(0.70, 2);

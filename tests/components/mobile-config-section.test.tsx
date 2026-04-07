@@ -105,7 +105,7 @@ describe('MobileConfigSection', () => {
 
   it('renders safety factor section', () => {
     renderSection();
-    expect(screen.getByText('Fator de Segurança')).toBeInTheDocument();
+    expect(screen.getByText('Fator de Correção')).toBeInTheDocument();
   });
 
   it('renders saved tools empty state', () => {

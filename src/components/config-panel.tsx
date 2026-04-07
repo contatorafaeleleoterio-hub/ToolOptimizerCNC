@@ -225,7 +225,7 @@ export function ConfigPanel() {
   const summaryBase = `${materialNome} | ${operacaoLabel}`;
   const summaryFerramenta = `${ferramentaTipoLabel} Ø${ferramenta.diametro} | A${ferramenta.numeroArestas}`;
   const summaryAjuste = `Vc ${parametros.vc} | fz ${parametros.fz}`;
-  const summarySeguranca = `SF ${safetyFactor.toFixed(2)}`;
+  const summarySeguranca = `${Math.round(safetyFactor * 100)}%`;
 
   const handleSimulate = () => {
     track('Simulacao_Executada', {
@@ -429,14 +429,19 @@ export function ConfigPanel() {
           <FineTunePanel embedded />
         </CollapsibleSection>
 
-        {/* Seção 4: Segurança — Safety Factor slider */}
+        {/* Seção 4: Segurança — Fator de Correção slider */}
         <CollapsibleSection
           title="Segurança"
           summary={summarySeguranca}
           defaultOpen={false}
         >
-          <div className="space-y-3 pt-1">
+          <div className="space-y-2 pt-1">
             <div className="flex items-center gap-2">
+              <button
+                onClick={() => setSafetyFactor(Math.round(Math.max(0.50, safetyFactor - 0.05) * 100) / 100)}
+                className="w-7 h-7 flex items-center justify-center rounded-md bg-black/30 border border-white/10 text-gray-400 hover:text-white hover:bg-white/10 transition-all text-base font-bold shrink-0"
+                aria-label="Reduzir fator de correção"
+              >−</button>
               <div className="flex-1">
                 <StyledSlider
                   value={safetyFactor}
@@ -444,12 +449,17 @@ export function ConfigPanel() {
                   max={1.00}
                   step={0.05}
                   color="primary"
-                  label="Fator de Segurança"
+                  label="Fator de Correção"
                   onChange={(v) => setSafetyFactor(v)}
                 />
               </div>
-              <span className="text-base font-mono text-primary w-10 text-right">
-                {safetyFactor.toFixed(2)}
+              <button
+                onClick={() => setSafetyFactor(Math.round(Math.min(1.00, safetyFactor + 0.05) * 100) / 100)}
+                className="w-7 h-7 flex items-center justify-center rounded-md bg-black/30 border border-white/10 text-gray-400 hover:text-white hover:bg-white/10 transition-all text-base font-bold shrink-0"
+                aria-label="Aumentar fator de correção"
+              >+</button>
+              <span className="text-base font-mono text-primary w-12 text-right shrink-0">
+                {Math.round(safetyFactor * 100)}%
               </span>
             </div>
             <div className="flex justify-between text-xs text-gray-600 px-8">
@@ -457,7 +467,7 @@ export function ConfigPanel() {
               <span>Agressivo →</span>
             </div>
             <p className="text-xs text-gray-500 px-1">
-              Aplicado à Potência e Torque. 0.80 recomendado para operação segura.
+              Aplicado à Potência e Torque. 80% recomendado para operação segura.
             </p>
           </div>
         </CollapsibleSection>
