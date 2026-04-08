@@ -2,6 +2,7 @@ import { fireEvent, render, screen } from '@testing-library/react';
 import { describe, it, expect, beforeEach } from 'vitest';
 import { BrowserRouter } from 'react-router-dom';
 import ArchitecturePage from '@/pages/architecture-page';
+import { ARCHITECTURE_GRAPH } from '@/data/architecture-graph';
 
 function renderPage() {
   return render(
@@ -30,7 +31,9 @@ describe('ArchitecturePage', () => {
     renderPage();
     fireEvent.click(screen.getByText('Components'));
     expect(screen.getByText('config-panel.tsx')).toBeInTheDocument();
-    expect(screen.getAllByText('32 arquivos').length).toBeGreaterThanOrEqual(1);
+    const componentsGroup = ARCHITECTURE_GRAPH.groups.find((g) => g.id === 'components');
+    const expectedLabel = `${componentsGroup?.nodeIds.length ?? 0} arquivos`;
+    expect(screen.getAllByText(expectedLabel).length).toBeGreaterThanOrEqual(1);
   });
 
   it('opens and closes the data flow overlay', () => {

@@ -304,8 +304,18 @@ function HistoryEntryCard({ entry, isExpanded, onToggle, onRestore, onRemove, on
   return (
     <div className="bg-surface-dark backdrop-blur-xl border border-white/5 rounded-2xl overflow-hidden shadow-glass transition-all">
       {/* Summary row */}
-      <button onClick={onToggle}
-        className="w-full flex items-center gap-4 px-5 py-4 hover:bg-white/[0.02] transition-all text-left">
+      <div
+        role="button"
+        tabIndex={0}
+        onClick={onToggle}
+        onKeyDown={(e) => {
+          if (e.key === 'Enter' || e.key === ' ') {
+            e.preventDefault();
+            onToggle();
+          }
+        }}
+        className="w-full flex items-center gap-4 px-5 py-4 hover:bg-white/[0.02] transition-all text-left"
+      >
         {/* Timestamp */}
         <div className="shrink-0 min-w-0">
           <span className="text-[10px] text-gray-500 block whitespace-nowrap">{formatDate(entry.timestamp)}</span>
@@ -368,7 +378,7 @@ function HistoryEntryCard({ entry, isExpanded, onToggle, onRestore, onRemove, on
         <span className={`material-symbols-outlined text-gray-500 transition-transform ${isExpanded ? 'rotate-180' : ''}`}>
           expand_more
         </span>
-      </button>
+      </div>
 
       {/* Expanded detail */}
       {isExpanded && (
