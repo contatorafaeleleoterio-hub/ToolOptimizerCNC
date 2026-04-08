@@ -1,7 +1,10 @@
 import { render, screen, fireEvent } from '@testing-library/react';
-import { describe, it, expect, beforeEach } from 'vitest';
+import { describe, it, expect, beforeEach, vi } from 'vitest';
 import { FineTunePanel } from '@/components/fine-tune-panel';
 import { useMachiningStore } from '@/store';
+
+// Mock useIsMobile as desktop (false) so hover-based popover behavior applies
+vi.mock('@/hooks/use-is-mobile', () => ({ useIsMobile: () => false }));
 
 describe('FineTunePanel', () => {
   beforeEach(() => { useMachiningStore.getState().reset(); });
@@ -55,39 +58,31 @@ describe('FineTunePanel', () => {
     expect(screen.getByLabelText('fz slider')).toBeInTheDocument();
   });
 
-  it('renders info toggle button for each slider', () => {
+  it('renders info button for each parameter', () => {
     render(<FineTunePanel />);
-    expect(screen.getByLabelText('Informações sobre VEL. DE CORTE')).toBeInTheDocument();
-    expect(screen.getByLabelText('Informações sobre AVANÇO/DENTE')).toBeInTheDocument();
-    expect(screen.getByLabelText('Informações sobre ENGAJ. RADIAL')).toBeInTheDocument();
-    expect(screen.getByLabelText('Informações sobre PROF. AXIAL')).toBeInTheDocument();
+    expect(screen.getByLabelText('O que é VEL. DE CORTE?')).toBeInTheDocument();
+    expect(screen.getByLabelText('O que é AVANÇO/DENTE?')).toBeInTheDocument();
+    expect(screen.getByLabelText('O que é ENGAJ. RADIAL?')).toBeInTheDocument();
+    expect(screen.getByLabelText('O que é PROF. AXIAL?')).toBeInTheDocument();
   });
 
-  it('drawer is hidden by default', () => {
+  it('educational drawer (▲ MAIS) is not rendered', () => {
     render(<FineTunePanel />);
     expect(screen.queryByText('▲ MAIS')).not.toBeInTheDocument();
   });
 
-  it('clicking label opens drawer with content', () => {
+  it('mouseEnter on info button shows popover', () => {
     render(<FineTunePanel />);
-    fireEvent.click(screen.getByLabelText('Informações sobre VEL. DE CORTE'));
-    expect(screen.getByText('▲ MAIS')).toBeInTheDocument();
-    expect(screen.getByText('▼ MENOS')).toBeInTheDocument();
+    fireEvent.mouseEnter(screen.getByLabelText('O que é VEL. DE CORTE?'));
+    expect(screen.getByRole('tooltip')).toBeInTheDocument();
   });
 
-  it('clicking same label again closes drawer', () => {
+  it('mouseLeave on info button hides popover', () => {
     render(<FineTunePanel />);
-    const btn = screen.getByLabelText('Informações sobre VEL. DE CORTE');
-    fireEvent.click(btn);
-    fireEvent.click(btn);
-    expect(screen.queryByText('▲ MAIS')).not.toBeInTheDocument();
-  });
-
-  it('opening one drawer closes the previous', () => {
-    render(<FineTunePanel />);
-    fireEvent.click(screen.getByLabelText('Informações sobre VEL. DE CORTE'));
-    fireEvent.click(screen.getByLabelText('Informações sobre AVANÇO/DENTE'));
-    expect(screen.getAllByText('▲ MAIS')).toHaveLength(1);
+    const btn = screen.getByLabelText('O que é VEL. DE CORTE?');
+    fireEvent.mouseEnter(btn);
+    fireEvent.mouseLeave(btn);
+    expect(screen.queryByRole('tooltip')).not.toBeInTheDocument();
   });
 
   // Health bar integration tests
@@ -120,10 +115,8 @@ describe('FineTunePanel', () => {
     expect(screen.queryByTestId('health-bar-fz-inactive')).not.toBeInTheDocument();
   });
 
-  it('health bars visible when educational drawer is open', () => {
+  it('health bars always visible', () => {
     render(<FineTunePanel />);
-    fireEvent.click(screen.getByLabelText('Informações sobre VEL. DE CORTE'));
-    // Drawer is open, but health bar is still in DOM (rendered before drawer)
     expect(screen.getByTestId('health-bar-vc')).toBeInTheDocument();
   });
 

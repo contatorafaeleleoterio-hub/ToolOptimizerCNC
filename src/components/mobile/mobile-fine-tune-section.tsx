@@ -6,6 +6,7 @@ import type { ParametrosUsinagem } from '@/types';
 import { SectionTitle } from '../ui-helpers';
 import { SegmentedGradientBar } from '../segmented-gradient-bar';
 import { getSliderRgb } from '../slider-tokens';
+import { ParamExplanation } from '../param-explanation';
 
 /** Fine-tune value input with raw/blur pattern — allows free typing */
 function FineTuneValueInput({ display, step, min, max, color, label, unit, onChange }: {
@@ -236,8 +237,6 @@ export function MobileFineTuneSection() {
   const tipoOperacao = useMachiningStore((s) => s.tipoOperacao);
   const material = MATERIAIS.find((m) => m.id === materialId);
 
-  const [openKey, setOpenKey] = useState<string | null>(null);
-
   // Calcular bounds dinâmicos baseados no contexto atual
   const bounds = calcularSliderBounds(material ?? null, ferramenta, tipoOperacao);
 
@@ -264,41 +263,24 @@ export function MobileFineTuneSection() {
     ajustarParametros({ [key]: val });
   }, [ajustarParametros]);
 
-  const toggleDrawer = (key: string) => {
-    setOpenKey((prev) => (prev === key ? null : key));
-  };
-
   return (
     <section className="flex flex-col gap-4 px-4">
       <div className="bg-[rgba(30,38,50,0.95)] rounded-xl p-4 border border-white/12">
         <SectionTitle color="bg-primary" label="Fine Tune" />
         <p className="text-[9px] text-gray-500 mb-3">Arraste os controles para ajustar os parâmetros</p>
         <div className="flex flex-col gap-5">
-          {SLIDER_VISUAL.map(({ key, label, fullLabel, unit, color, desc, aumentar, diminuir, equilibrio }) => {
+          {SLIDER_VISUAL.map(({ key, label, fullLabel, unit, color, desc }) => {
             const { min, max, step, recomendado } = bounds[key];
             const val = parametros[key];
-            const rgb = getSliderRgb(color);
             const display = key === 'fz' || key === 'ap' ? val.toFixed(2) : key === 'ae' ? val.toFixed(1) : val.toFixed(0);
-            const isOpen = openKey === key;
 
             return (
               <div key={key} className="flex flex-col gap-1">
                 <div className="flex justify-between items-center">
-                  <button
-                    onClick={() => toggleDrawer(key)}
-                    className="flex items-center gap-2 cursor-pointer min-h-[44px]"
-                    aria-expanded={isOpen}
-                    aria-label={`Informações sobre ${fullLabel}`}
-                  >
+                  <div className="flex items-center gap-2 min-h-[44px]">
                     <span className={`text-sm font-bold font-mono text-${color}`}>{label}</span>
                     <span className="text-2xs text-gray-500 uppercase">{fullLabel}</span>
-                    <span
-                      className="material-symbols-outlined text-gray-500 transition-transform duration-300"
-                      style={{ fontSize: '14px', transform: isOpen ? 'rotate(180deg)' : 'rotate(0deg)' }}
-                    >
-                      expand_more
-                    </span>
-                  </button>
+                  </div>
                   <FineTuneValueInput
                     display={display} step={step} min={min} max={max}
                     color={color} label={label} unit={unit}
@@ -324,29 +306,7 @@ export function MobileFineTuneSection() {
                     onClick={() => ajustarParametros({ [key]: Math.min(max, +(val + step).toFixed(4)) })}>+</button>
                 </div>
 
-                {/* Educational drawer */}
-                {isOpen && (
-                  <div
-                    className="mt-1 rounded-xl border bg-black/30 p-3 animate-[fadeInUp_0.25s_ease-out]"
-                    style={{ borderColor: `rgba(${rgb},0.18)` }}
-                  >
-                    <p className="text-xs text-gray-400 leading-relaxed mb-2.5">{desc}</p>
-                    <div className="space-y-1.5">
-                      <div className="flex items-start gap-2">
-                        <span className="text-fine font-bold text-green-400 w-16 shrink-0 pt-0.5 tracking-wide">▲ MAIS</span>
-                        <span className="text-xs text-gray-400 leading-relaxed">{aumentar}</span>
-                      </div>
-                      <div className="flex items-start gap-2">
-                        <span className="text-fine font-bold text-red-400 w-16 shrink-0 pt-0.5 tracking-wide">▼ MENOS</span>
-                        <span className="text-xs text-gray-400 leading-relaxed">{diminuir}</span>
-                      </div>
-                      <div className="flex items-start gap-2 pt-1.5 mt-1 border-t border-white/5">
-                        <span className="material-symbols-outlined text-yellow-500 shrink-0 leading-none" style={{ fontSize: '14px' }}>balance</span>
-                        <span className="text-xs text-gray-500 italic leading-relaxed">{equilibrio}</span>
-                      </div>
-                    </div>
-                  </div>
-                )}
+                <ParamExplanation fullLabel={fullLabel} explanationText={desc} />
               </div>
             );
           })}

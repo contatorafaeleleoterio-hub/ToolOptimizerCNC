@@ -1,10 +1,13 @@
 import { render, screen, fireEvent } from '@testing-library/react';
-import { describe, it, expect, beforeEach } from 'vitest';
+import { describe, it, expect, beforeEach, vi } from 'vitest';
 import { BrowserRouter } from 'react-router-dom';
 import { MobileFineTuneSection } from '@/components/mobile/mobile-fine-tune-section';
 import { MATERIAIS } from '@/data';
 import { calcularSliderBounds } from '@/engine';
 import { useMachiningStore } from '@/store';
+
+// Mock useIsMobile as mobile (true) so click-based popover behavior applies
+vi.mock('@/hooks/use-is-mobile', () => ({ useIsMobile: () => true }));
 
 function renderSection() {
   return render(
@@ -71,19 +74,16 @@ describe('MobileFineTuneSection', () => {
     expect(next).toBeCloseTo(initial + expectedStep, 4);
   });
 
-  it('renders info drawer toggle button for Vc (aria-expanded=false initially)', () => {
+  it('renders info button for Vc parameter', () => {
     renderSection();
-    const infoBtn = screen.getByLabelText('Informações sobre Velocidade Corte');
-    expect(infoBtn).toBeInTheDocument();
-    expect(infoBtn.getAttribute('aria-expanded')).toBe('false');
+    expect(screen.getByLabelText('O que é Velocidade Corte?')).toBeInTheDocument();
   });
 
-  it('opens drawer when info button is clicked', () => {
+  it('info button click shows popover with desc text (mobile click toggle)', () => {
     renderSection();
-    const infoBtn = screen.getByLabelText('Informações sobre Velocidade Corte');
+    const infoBtn = screen.getByLabelText('O que é Velocidade Corte?');
     fireEvent.click(infoBtn);
-    expect(infoBtn.getAttribute('aria-expanded')).toBe('true');
-    // Drawer should show educational content
+    expect(screen.getByRole('tooltip')).toBeInTheDocument();
     expect(screen.getByText(/Velocidade tangencial/)).toBeInTheDocument();
   });
 
