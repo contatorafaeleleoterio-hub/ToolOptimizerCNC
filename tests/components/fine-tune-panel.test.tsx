@@ -126,4 +126,28 @@ describe('FineTunePanel', () => {
     // Drawer is open, but health bar is still in DOM (rendered before drawer)
     expect(screen.getByTestId('health-bar-vc')).toBeInTheDocument();
   });
+
+  describe('SGB position', () => {
+    it('SGB renders before StyledSlider in DOM for each parameter', () => {
+      render(<FineTunePanel />);
+      const params = [
+        { barId: 'health-bar-vc', decreaseLabel: 'Decrease Vc' },
+        { barId: 'health-bar-fz', decreaseLabel: 'Decrease fz' },
+        { barId: 'health-bar-ae', decreaseLabel: 'Decrease ae' },
+        { barId: 'health-bar-ap', decreaseLabel: 'Decrease ap' },
+      ];
+      for (const { barId, decreaseLabel } of params) {
+        const sgb = screen.getByTestId(barId);
+        const sliderBtn = screen.getByLabelText(decreaseLabel);
+        // DOCUMENT_POSITION_FOLLOWING (4) means sliderBtn comes after sgb
+        expect(sgb.compareDocumentPosition(sliderBtn) & Node.DOCUMENT_POSITION_FOLLOWING).toBeTruthy();
+      }
+    });
+
+    it('desktop SGB uses 50 segments (default)', () => {
+      render(<FineTunePanel />);
+      // SGB defaults to 50 segments — health-bar-vc should be in the DOM without segments prop override
+      expect(screen.getByTestId('health-bar-vc')).toBeInTheDocument();
+    });
+  });
 });

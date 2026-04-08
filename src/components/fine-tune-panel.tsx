@@ -118,15 +118,15 @@ export function FineTunePanel({ embedded = false }: { embedded?: boolean }) {
                 </div>
               </div>
 
+              {/* Parameter health bar — above slider */}
+              <SegmentedGradientBar paramKey={key} />
+
               <StyledSlider
                 value={val} min={min} max={max} step={step}
                 color={color} label={label}
                 recomendado={recomendado}
                 onChange={(v) => ajustarParametros({ [key]: v })}
               />
-
-              {/* Parameter health bar — always visible below slider */}
-              <SegmentedGradientBar paramKey={key} />
 
               {/* Educational drawer */}
               {isOpen && (

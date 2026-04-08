@@ -306,6 +306,9 @@ export function MobileFineTuneSection() {
                   />
                 </div>
 
+                {/* Parameter health bar — above slider */}
+                <SegmentedGradientBar paramKey={key} segments={30} />
+
                 <div className="flex items-center gap-2">
                   <button className={BTN_CLS} aria-label={`Decrease ${label}`}
                     onClick={() => ajustarParametros({ [key]: Math.max(min, +(val - step).toFixed(4)) })}>−</button>
@@ -320,9 +323,6 @@ export function MobileFineTuneSection() {
                   <button className={BTN_CLS} aria-label={`Increase ${label}`}
                     onClick={() => ajustarParametros({ [key]: Math.min(max, +(val + step).toFixed(4)) })}>+</button>
                 </div>
-
-                {/* Parameter health bar — always visible below slider */}
-                <SegmentedGradientBar paramKey={key} segments={30} />
 
                 {/* Educational drawer */}
                 {isOpen && (

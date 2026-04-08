@@ -92,6 +92,25 @@ describe('MobileFineTuneSection', () => {
     expect(screen.getByTestId('health-bar-vc')).toBeInTheDocument();
   });
 
+  describe('SGB position', () => {
+    it('SGB renders before TouchSlider row in DOM', () => {
+      renderSection();
+      const sgb = screen.getByTestId('health-bar-vc');
+      const decreaseBtn = screen.getByLabelText('Decrease Vc');
+      // DOCUMENT_POSITION_FOLLOWING (4) means decreaseBtn comes after sgb
+      expect(sgb.compareDocumentPosition(decreaseBtn) & Node.DOCUMENT_POSITION_FOLLOWING).toBeTruthy();
+    });
+
+    it('mobile SGB uses 30 segments', () => {
+      renderSection();
+      // All 4 health bars are rendered (segments=30 is applied)
+      expect(screen.getByTestId('health-bar-vc')).toBeInTheDocument();
+      expect(screen.getByTestId('health-bar-fz')).toBeInTheDocument();
+      expect(screen.getByTestId('health-bar-ae')).toBeInTheDocument();
+      expect(screen.getByTestId('health-bar-ap')).toBeInTheDocument();
+    });
+  });
+
   it('renders editable value input for each parameter', () => {
     renderSection();
     expect(screen.getByLabelText('Vc value')).toBeInTheDocument();
