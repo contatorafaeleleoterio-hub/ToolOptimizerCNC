@@ -22,7 +22,8 @@
 **Implementar: ITEM-3.2 — Botão info + Popover parâmetros**
 - ITEM-2.1 ✅ concluído (`e21d4bc`) — Fator de Correção slider com botões [-][+] e display %
 - ITEM-3.1 ✅ concluído (`7f7032f`) — SGB acima do slider (desktop + mobile)
-- ITEM-3.2 é o próximo na fila aprovada
+- ITEM-3.2 ✅ concluído (`f8882b1`) — Botão info + Popover parâmetros (hover desktop / click mobile)
+- ITEM-4.1 é o próximo na fila aprovada
 - **NÃO** iniciar nada de Segurança Cibernética — ver nota abaixo
 
 ---
@@ -40,10 +41,10 @@
 |------|-------|
 | **Branch** | `main` |
 | **Versão** | `0.10.1` |
-| **Testes** | **956 passando** (54 arquivos) — 0 falhas |
+| **Testes** | **966 passando** (55 arquivos) — 0 falhas |
 | **TypeScript** | **zero erros** |
 | **Build** | **limpo** — JS 106.73KB gzip |
-| **Remote** | `origin/main` sincronizado ✅ — commit `7f7032f` |
+| **Remote** | `origin/main` sincronizado ✅ — commit `f8882b1` |
 | **Worker** | ✅ LIVE — `https://tooloptimizercnc.contatorafaeleleoterio.workers.dev` |
 | **Custom Domains** | ✅ `tooloptimizercnc.com.br` + `app.tooloptimizercnc.com.br` |
 | **GitHub Actions** | ✅ deploy automático ao push para main |
@@ -316,7 +317,7 @@ Quando uma nova implementação for planejada durante a sessão:
 
 ---
 
-*Última atualização: 08/04/2026 — ITEM-2.1 concluído (`e21d4bc`): Fator de Correção slider com botões [-][+] e display %. ITEM-3.1 concluído (`7f7032f`): SGB acima do slider desktop + mobile. v0.10.1 em produção, 956 testes. **PRÓXIMA SESSÃO Cloud Code:** ITEM-3.2 — Botão info + Popover parâmetros (ler `CONTEXTO-PROXIMA-SESSAO.md` + `ITEM-7-BOTAO-EXPLICACAO-POPOVER.md`). Segurança Cibernética ⏸️ PAUSADA — não sugerir.*
+*Última atualização: 08/04/2026 — ITEM-3.2 concluído (`f8882b1`): Botão info + Popover parâmetros (hover desktop / click mobile). feat(admin) `217c09f`: analytics credentials from env vars. fix(a11y) `6da57b7`: history-page keyboard accessible. 966 testes, v0.10.1 em produção. **PRÓXIMA SESSÃO Cloud Code:** ITEM-4.1 — Visor Mobile (réplica desktop) (ler `CONTEXTO-PROXIMA-SESSAO.md` + `ITEM-8-VISOR-MOBILE-REPLICA.md`). Segurança Cibernética ⏸️ PAUSADA — não sugerir.*
 
 ### Atualizacao de Encerramento - 28/03/2026 (sessao longa)
 

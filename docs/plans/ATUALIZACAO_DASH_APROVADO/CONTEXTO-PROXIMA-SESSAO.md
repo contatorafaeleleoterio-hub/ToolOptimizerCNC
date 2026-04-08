@@ -1,7 +1,8 @@
 # Contexto — Próxima Sessão
 
-**Última atualização:** 30/03/2026 — Planos enriquecidos com mapeamento técnico completo
-**Próxima sessão:** Início de implementação (ordem: 1.1 → 1.2 → 2.1 → 3.1 → 3.2 → 4.1 → 10 → 11 → 12 → 5.2)
+**Última atualização:** 08/04/2026 — ITEM-3.2 implementado (`f8882b1`)
+**Implementados:** ~~1.1~~ ~~1.2~~ ~~2.1~~ ~~3.1~~ ~~3.2~~ → **ITEM-4.1 é o próximo**
+**Próxima sessão:** Implementar ITEM-4.1 — Visor Mobile (réplica desktop) → `ITEM-8-VISOR-MOBILE-REPLICA.md`
 
 ---
 

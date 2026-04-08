@@ -14,8 +14,30 @@
 
 ## PROXIMAS 2 SESSOES (SEPARADAS)
 
-1. Sessao Cloud Code: implementar **ITEM-3.2** (Popover info params) — ler `docs/plans/ATUALIZACAO_DASH_APROVADO/CONTEXTO-PROXIMA-SESSAO.md` + `ITEM-7-BOTAO-EXPLICACAO-POPOVER.md`.
+1. Sessao Cloud Code: implementar **ITEM-4.1** — Visor Mobile (réplica desktop) — ler `CONTEXTO-PROXIMA-SESSAO.md` + `ITEM-8-VISOR-MOBILE-REPLICA.md`.
 2. Sessao Codex: trabalhar somente no Admin Dashboard (`/admin`).
+
+---
+
+## Sessão 08/04/2026 — ITEM-3.2 + Admin Fixes
+
+**Commits desta sessão:**
+- `f8882b1` feat: ITEM-3.2 — Botão info + Popover parâmetros (hover desktop / click mobile)
+- `217c09f` feat(admin): analytics credentials from env vars + isUsingEnv guard
+- `6da57b7` fix(a11y): history-page card toggle keyboard accessible + architecture test fix
+
+**O que foi feito:**
+- `ParamExplanation.tsx`: componente popover com textos explicativos (Vc, fz, ae, ap) — hover no desktop, click no mobile — substitui drawer ▲/▼
+- Admin: `isUsingEnv()` guard + carregamento automático de `VITE_CF_ANALYTICS_TOKEN`
+- A11y: history-page card `div[role=button]` + `onKeyDown` para acessibilidade por teclado
+
+**Estado ao encerrar:**
+- 966 testes passando (55 arquivos), 0 erros TypeScript, build limpo 106.45 KB gzip
+- v0.10.1 em produção (Cloudflare Worker + custom domains)
+
+**Próxima sessão (Cloud Code):** ITEM-4.1 — Visor Mobile (réplica desktop)
+- Arquivos: `CONTEXTO-PROXIMA-SESSAO.md` + `ITEM-8-VISOR-MOBILE-REPLICA.md`
+- Arquivo alvo: `src/components/mobile/mobile-results-section.tsx`
 
 ---
 
