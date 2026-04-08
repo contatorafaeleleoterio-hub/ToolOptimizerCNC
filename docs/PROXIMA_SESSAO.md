@@ -14,7 +14,7 @@
 
 ## PROXIMAS 2 SESSOES (SEPARADAS)
 
-1. Sessao Cloud Code: implementar **ITEM-1.2** (Botão Editar Ferramenta + ToolEditModal) — ler `docs/plans/ATUALIZACAO_DASH_APROVADO/CONTEXTO-PROXIMA-SESSAO.md` + `ITEM-2-BOTAO-EDITAR-FERRAMENTA.md`.
+1. Sessao Cloud Code: implementar **ITEM-3.2** (Popover info params) — ler `docs/plans/ATUALIZACAO_DASH_APROVADO/CONTEXTO-PROXIMA-SESSAO.md` + `ITEM-7-BOTAO-EXPLICACAO-POPOVER.md`.
 2. Sessao Codex: trabalhar somente no Admin Dashboard (`/admin`).
 
 ---
@@ -25,11 +25,11 @@
 |------|-------|
 | **Branch** | `main` |
 | **Versão** | `0.10.1` |
-| **Último commit** | `cfece4a` feat: rewrite results-panel 7-zone layout + compact slider (v0.10.1) |
-| **Testes** | **940 passando** (53 arquivos) — 0 falhas |
+| **Último commit** | `7f7032f` feat: ITEM-3.1 — SGB acima do slider (desktop + mobile) |
+| **Testes** | **956 passando** (54 arquivos) — 0 falhas |
 | **TypeScript** | **zero erros** |
-| **Build** | **limpo** — JS 104.62KB gzip |
-| **Remote** | `origin/main` sincronizado ✅ (push 06/04) — commit `cfece4a` |
+| **Build** | **limpo** — JS 106.73KB gzip |
+| **Remote** | `origin/main` sincronizado ✅ (push 08/04) — commit `7f7032f` |
 | **Worker** | ✅ LIVE — `https://tooloptimizercnc.contatorafaeleleoterio.workers.dev` |
 | **Custom Domains** | ✅ `tooloptimizercnc.com.br` + `app.tooloptimizercnc.com.br` |
 | **GitHub Actions** | ✅ deploy automático ao push para main |
@@ -71,16 +71,69 @@ npx tsc --noEmit
 
 ---
 
+### Sessão 08/04 — ITEM-3.1: SGB acima do slider (desktop + mobile)
+
+- **Commit:** `7f7032f` feat: ITEM-3.1 — SGB acima do slider (desktop + mobile)
+- **Escopo:** Cloud Code — SegmentedGradientBar reposicionada acima do slider em fine-tune
+- **Arquivos:** `src/components/fine-tune-panel.tsx`, `src/components/mobile/mobile-fine-tune-section.tsx`
+- **Resultado:** SGB não fica escondida por dedo/cursor durante drag; ordem: Header → SGB → Slider → Popover
+- **Testes:** 956 passando, 0 falhas, TS limpo, build 106.73KB gzip
+- **Deploy:** Worker live `tooloptimizercnc.com.br`
+
+### Sessão 07/04 — ITEM-2.1: Fator de Correção slider com botões [-][+]
+
+- **Commit:** `e21d4bc` feat: ITEM-2.1 — Fator de Correção slider com botões [-][+] e display %
+- **Escopo:** Cloud Code — renomeação + novo slider com display percentual
+- **Arquivos:** `src/components/config-panel.tsx`, `src/components/mobile/mobile-config-section.tsx`, `src/pages/settings-page.tsx`
+- **Resultado:** "Fator de Segurança" → "Fator de Correção" em todo o sistema; valor exibido como `80%` em vez de `0.80`; botões [-][+] com clamping
+- **Testes:** 952 passando, 0 falhas, TS limpo, build 106.73KB gzip
+- **Deploy:** Worker live `tooloptimizercnc.com.br`
+
+---
+
 ## ⚡ CONTINUAR AQUI — Próxima Sessão (implementação)
 
-> **ITEM-1.2 concluído** (`ad5e003`, v0.10.1). **Próximo: ITEM-2.1 (Fator de Correção Slider).**
+> **ITEM-3.1 concluído** (`7f7032f`). **Próximo: ITEM-3.2 (Popover info params) — 8 pts (~1 sessão).**
 
-### Instrução para o assistente
+### 🎯 ITEM-3.2 — BOTÃO INFO + POPOVER PARÂMETROS
 
-1. Ler `docs/plans/ATUALIZACAO_DASH_APROVADO/CONTEXTO-PROXIMA-SESSAO.md` — fila completa, ordem, pts
-2. Ler `docs/plans/ATUALIZACAO_DASH_APROVADO/ITEM-5-FATOR-CORRECAO-SLIDER.md` — spec completa
-3. Implementar **ITEM-2.1 — Fator de Correção como BidirectionalSlider**
-4. **NÃO** sugerir ou iniciar Segurança Cibernética — está pausada até Rafael decidir retomar
+**O que é:** Substituir o botão `↓` (expandir drawer) por botão `ℹ️ O QUE É [PARAM]?` visível + popover contextual.
+
+**Especificação completa:** `docs/plans/ATUALIZACAO_DASH_APROVADO/ITEM-7-BOTAO-EXPLICACAO-POPOVER.md`
+
+#### Resumo Executivo
+- **Novo componente:** `src/components/param-explanation.tsx` — botão + popover reutilizável
+- **Desktop:** hover abre/fecha o popover
+- **Mobile:** click toggle (via `useIsMobile` hook)
+- **Conteúdo:** campo `desc` do `SLIDER_VISUAL` (explicação breve)
+- **Estilo:** tema cyan (`text-cyan-400`, `border-cyan-400/40`), posicionado `bottom-full` (acima do botão)
+- **Remove:** drawer educacional completo (▲ MAIS, ▼ MENOS, ⚖️ content)
+- **Estimativa:** 8 pts (~1 sessão)
+
+#### Arquivos a Modificar
+
+| Arquivo | O quê |
+|---------|-------|
+| `src/components/param-explanation.tsx` | NOVO — componente reutilizável (botão + popover) |
+| `src/components/fine-tune-panel.tsx` | Substituir expand button por `<ParamExplanation>` |
+| `src/components/mobile/mobile-fine-tune-section.tsx` | Mesmo substituição no mobile |
+
+#### Critérios de Aceitação
+
+- ✅ Botão `ℹ️ O QUE É [PARAM]?` visível em todos os sliders do fine-tune
+- ✅ Desktop: hover mostra/esconde popover
+- ✅ Mobile: click toggle via `useIsMobile`
+- ✅ Popover posicionado acima (`bottom-full`) sem sair da viewport
+- ✅ Drawer educacional (▲ MAIS, ▼ MENOS, ⚖️) removido completamente
+- ✅ Sem quebra de testes existentes
+
+#### Instrução para o assistente
+
+1. Ler `docs/plans/ATUALIZACAO_DASH_APROVADO/ITEM-7-BOTAO-EXPLICACAO-POPOVER.md` (spec completa)
+2. Criar `param-explanation.tsx` primeiro (componente puro, sem dependências)
+3. Substituir expand buttons no fine-tune desktop e mobile
+4. Verificar: `npx vitest run && npx tsc --noEmit && npx vite build`
+5. Commit + docs
 
 ### Sessão 06/04 (2ª) — Implementação ITEM-1.2 (ToolEditModal + lista cards)
 

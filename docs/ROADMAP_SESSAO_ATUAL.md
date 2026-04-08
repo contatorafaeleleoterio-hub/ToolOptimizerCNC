@@ -17,18 +17,19 @@
 
 > **Leia estes dois arquivos NESTA ORDEM antes de escrever qualquer código:**
 > 1. `docs/plans/ATUALIZACAO_DASH_APROVADO/CONTEXTO-PROXIMA-SESSAO.md` — fila completa dos 10 itens, ordem, pts
-> 2. `docs/plans/ATUALIZACAO_DASH_APROVADO/ITEM-2-BOTAO-EDITAR-FERRAMENTA.md` — spec completa do próximo item
+> 2. `docs/plans/ATUALIZACAO_DASH_APROVADO/ITEM-7-BOTAO-EXPLICACAO-POPOVER.md` — spec completa do próximo item
 
-**Implementar: ITEM-1.2 — Botão "Editar Ferramenta" + ToolEditModal.tsx**
-- ITEM-1.1 ✅ concluído (results-panel.tsx 7 zonas, v0.10.1, `cfece4a`)
-- ITEM-1.2 é o próximo na fila aprovada
+**Implementar: ITEM-3.2 — Botão info + Popover parâmetros**
+- ITEM-2.1 ✅ concluído (`e21d4bc`) — Fator de Correção slider com botões [-][+] e display %
+- ITEM-3.1 ✅ concluído (`7f7032f`) — SGB acima do slider (desktop + mobile)
+- ITEM-3.2 é o próximo na fila aprovada
 - **NÃO** iniciar nada de Segurança Cibernética — ver nota abaixo
 
 ---
 
 ## PROXIMAS 2 SESSOES (SEPARADAS)
 
-1. Sessao Cloud Code: implementar **ITEM-1.2** (Botão Editar Ferramenta + ToolEditModal) — ler docs acima.
+1. Sessao Cloud Code: implementar **ITEM-3.2** (Popover info params) — ler docs acima.
 2. Sessao Codex: trabalhar somente no Admin Dashboard (`/admin`).
 
 ---
@@ -39,10 +40,10 @@
 |------|-------|
 | **Branch** | `main` |
 | **Versão** | `0.10.1` |
-| **Testes** | **940 passando** (53 arquivos) — 0 falhas |
+| **Testes** | **956 passando** (54 arquivos) — 0 falhas |
 | **TypeScript** | **zero erros** |
-| **Build** | **limpo** — JS 104.62KB gzip |
-| **Remote** | `origin/main` sincronizado ✅ — commit `cfece4a` |
+| **Build** | **limpo** — JS 106.73KB gzip |
+| **Remote** | `origin/main` sincronizado ✅ — commit `7f7032f` |
 | **Worker** | ✅ LIVE — `https://tooloptimizercnc.contatorafaeleleoterio.workers.dev` |
 | **Custom Domains** | ✅ `tooloptimizercnc.com.br` + `app.tooloptimizercnc.com.br` |
 | **GitHub Actions** | ✅ deploy automático ao push para main |
@@ -315,7 +316,7 @@ Quando uma nova implementação for planejada durante a sessão:
 
 ---
 
-*Última atualização: 06/04/2026 — ITEM-1.1 concluído: `results-panel.tsx` reescrito em 7 zonas + prop `compact` em `bidirectional-slider.tsx`. v0.10.1 em produção. **PRÓXIMA SESSÃO Cloud Code:** ITEM-1.2 — Botão Editar Ferramenta + ToolEditModal.tsx (ler `docs/plans/ATUALIZACAO_DASH_APROVADO/CONTEXTO-PROXIMA-SESSAO.md` + `ITEM-2-BOTAO-EDITAR-FERRAMENTA.md`). Segurança Cibernética ⏸️ PAUSADA — não sugerir.*
+*Última atualização: 08/04/2026 — ITEM-2.1 concluído (`e21d4bc`): Fator de Correção slider com botões [-][+] e display %. ITEM-3.1 concluído (`7f7032f`): SGB acima do slider desktop + mobile. v0.10.1 em produção, 956 testes. **PRÓXIMA SESSÃO Cloud Code:** ITEM-3.2 — Botão info + Popover parâmetros (ler `CONTEXTO-PROXIMA-SESSAO.md` + `ITEM-7-BOTAO-EXPLICACAO-POPOVER.md`). Segurança Cibernética ⏸️ PAUSADA — não sugerir.*
 
 ### Atualizacao de Encerramento - 28/03/2026 (sessao longa)
 
