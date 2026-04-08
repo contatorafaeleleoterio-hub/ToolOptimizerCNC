@@ -228,6 +228,7 @@ export default function AdminAnalyticsPage() {
   const fetchedAt = useAnalyticsStore((s) => s.fetchedAt);
   const fetchData = useAnalyticsStore((s) => s.fetchData);
   const clearCredentials = useAnalyticsStore((s) => s.clearCredentials);
+  const isUsingEnv = useAnalyticsStore((s) => s.isUsingEnv());
 
   const [selectedDays, setSelectedDays] = useState<DaysWindow>(() => {
     if (daysWindow === 30 || daysWindow === 90) return daysWindow;
@@ -359,11 +360,13 @@ export default function AdminAnalyticsPage() {
 
           <button
             onClick={clearCredentials}
-            className="flex items-center gap-2 px-3 py-1.5 rounded-lg text-sm font-medium text-gray-400 bg-white/5 border border-white/10 hover:bg-red-500/10 hover:text-red-400 hover:border-red-500/20 transition-colors"
+            disabled={isUsingEnv}
+            className="flex items-center gap-2 px-3 py-1.5 rounded-lg text-sm font-medium text-gray-400 bg-white/5 border border-white/10 transition-colors
+            hover:bg-red-500/10 hover:text-red-400 hover:border-red-500/20 disabled:opacity-60 disabled:cursor-not-allowed"
             aria-label="Desconectar"
           >
             <span className="material-symbols-outlined text-base">link_off</span>
-            Desconectar
+            {isUsingEnv ? 'Gerenciado por ambiente' : 'Desconectar'}
           </button>
         </div>
       </div>

@@ -9,17 +9,23 @@ import { persist } from 'zustand/middleware';
 import { fetchDailyTraffic, fetchWebVitals } from '../utils/cf-analytics-client';
 import type { AnalyticsState, DailyTraffic, WebVitalsResult } from '../types/admin-types';
 
+const IS_TEST = import.meta.env.MODE === 'test' || Boolean(import.meta.env.VITEST);
+const ENV_TOKEN = IS_TEST ? '' : (import.meta.env.VITE_CF_ANALYTICS_TOKEN ?? '');
+const ENV_ZONE_ID = IS_TEST ? '' : (import.meta.env.VITE_CF_ZONE_ID ?? '');
+const HAS_ENV = ENV_TOKEN.trim().length > 0 && ENV_ZONE_ID.trim().length > 0;
+
 interface AnalyticsActions {
   setCredentials: (token: string, zoneId: string) => void;
   clearCredentials: () => void;
   fetchData: (days?: number) => Promise<void>;
   clearData: () => void;
   hasCredentials: () => boolean;
+  isUsingEnv: () => boolean;
 }
 
 const INITIAL_STATE: AnalyticsState = {
-  token: '',
-  zoneId: '',
+  token: ENV_TOKEN,
+  zoneId: ENV_ZONE_ID,
   daysWindow: 7,
   dailyTraffic: [],
   webVitals: null,
@@ -57,6 +63,12 @@ export const useAnalyticsStore = create<AnalyticsState & AnalyticsActions>()(
       hasCredentials: () => {
         const { token, zoneId } = get();
         return token.trim().length > 0 && zoneId.trim().length > 0;
+      },
+
+      isUsingEnv: () => {
+        if (!HAS_ENV) return false;
+        const { token, zoneId } = get();
+        return token.trim() === ENV_TOKEN.trim() && zoneId.trim() === ENV_ZONE_ID.trim();
       },
 
       fetchData: async (days = 7) => {
@@ -103,8 +115,12 @@ export const useAnalyticsStore = create<AnalyticsState & AnalyticsActions>()(
     {
       name: 'tooloptimizer-analytics',
       version: 1,
-      // Only persist credentials — not transient fetch state
-      partialize: (s) => ({ token: s.token, zoneId: s.zoneId }),
+      // Only persist credentials when they are not coming from env
+      partialize: (s) => {
+        const usingEnv =
+          s.token.trim() === ENV_TOKEN.trim() && s.zoneId.trim() === ENV_ZONE_ID.trim();
+        return usingEnv ? {} : { token: s.token, zoneId: s.zoneId };
+      },
     },
   ),
 );

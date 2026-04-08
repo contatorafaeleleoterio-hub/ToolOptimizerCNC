@@ -160,7 +160,7 @@ export default function AdminHealthPage() {
     setLastChecked(new Date().toLocaleTimeString('pt-BR'));
   }
 
-  useEffect(() => { runChecks(); }, []); // eslint-disable-line react-hooks/exhaustive-deps
+  useEffect(() => { runChecks(); }, []);
 
   const errorCount = checks.filter((c) => c.status === 'error').length;
   const warnCount  = checks.filter((c) => c.status === 'warn').length;

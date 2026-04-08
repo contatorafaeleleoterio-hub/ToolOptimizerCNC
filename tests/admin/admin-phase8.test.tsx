@@ -280,15 +280,15 @@ describe('AdminDashboardPage (Phase 8)', () => {
   });
 });
 
-// ── CHANGELOG (v0.7.0) ────────────────────────────────────────────────────────
+// ── CHANGELOG (v0.7.1) ────────────────────────────────────────────────────────
 
 describe('CHANGELOG (Phase 8 entry)', () => {
-  it('newest entry is v0.7.0', async () => {
+  it('newest entry is v0.7.1', async () => {
     const { CHANGELOG } = await import('@/admin/data/changelog-data');
-    expect(CHANGELOG[0].version).toBe('0.7.0');
+    expect(CHANGELOG[0].version).toBe('0.7.1');
   });
 
-  it('v0.7.0 entry has expected items', async () => {
+  it('v0.7.1 entry has expected items', async () => {
     const { CHANGELOG } = await import('@/admin/data/changelog-data');
     const entry = CHANGELOG[0];
     expect(entry.items.length).toBeGreaterThanOrEqual(3);

@@ -1,4 +1,4 @@
-import { render, screen, fireEvent } from '@testing-library/react';
+import { render, screen, fireEvent, act } from '@testing-library/react';
 import { describe, it, expect, beforeEach } from 'vitest';
 import { MemoryRouter } from 'react-router-dom';
 import { useAdminStore } from '@/admin/store/admin-store';
@@ -36,8 +36,8 @@ describe('CHANGELOG data', () => {
     expect(CHANGELOG.length).toBeGreaterThanOrEqual(10);
   });
 
-  it('newest entry is v0.7.0', () => {
-    expect(CHANGELOG[0].version).toBe('0.7.0');
+  it('newest entry is v0.7.1', () => {
+    expect(CHANGELOG[0].version).toBe('0.7.1');
   });
 
   it('all entries have required fields', () => {
@@ -159,11 +159,15 @@ describe('AdminFlagsPage', () => {
     await renderFlags();
     const before = useAdminStore.getState().flags.find((f) => f.id === 'admin_dashboard')?.enabled;
     const toggle = screen.getByRole('button', { name: /Desativar Admin Dashboard|Ativar Admin Dashboard/i });
-    fireEvent.click(toggle);
+    await act(async () => {
+      fireEvent.click(toggle);
+    });
     const after = useAdminStore.getState().flags.find((f) => f.id === 'admin_dashboard')?.enabled;
     expect(after).toBe(!before);
     // Restore
-    useAdminStore.getState().setFlag('admin_dashboard', true);
+    await act(async () => {
+      useAdminStore.getState().setFlag('admin_dashboard', true);
+    });
   });
 
   it('shows notice about localStorage', async () => {
@@ -182,7 +186,7 @@ describe('AdminChangelogPage', () => {
 
   it('renders the latest version entry', async () => {
     await renderChangelog();
-    expect(screen.getAllByText(/v0\.7\.0\b/).length).toBeGreaterThan(0);
+    expect(screen.getAllByText(/v0\.7\.1\b/).length).toBeGreaterThan(0);
   });
 
   it('shows "Atual" badge on newest entry', async () => {
