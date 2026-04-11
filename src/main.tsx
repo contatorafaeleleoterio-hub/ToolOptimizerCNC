@@ -13,6 +13,9 @@ import './index.css';
 installErrorTracker();
 
 const ArchitecturePage = lazy(() => import('./pages/architecture-page'));
+const FavoritesPage = lazy(() =>
+  import('./pages/favorites-page').then((m) => ({ default: m.FavoritesPage }))
+);
 
 // Admin area — lazy loaded so it doesn't impact main bundle
 const AdminLayout = lazy(() =>
@@ -42,6 +45,14 @@ createRoot(document.getElementById('root')!).render(
         <Route path="/mobile" element={<MobilePage />} />
         <Route path="/history" element={<HistoryPage />} />
         <Route path="/settings" element={<SettingsPage />} />
+        <Route
+          path="/favoritos"
+          element={
+            <Suspense fallback={<div className="min-h-screen bg-background-dark" />}>
+              <FavoritesPage />
+            </Suspense>
+          }
+        />
         <Route
           path="/architecture"
           element={

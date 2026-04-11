@@ -15,7 +15,7 @@ export function SidebarFooter() {
     <div className="border-t border-white/10 bg-surface-dark/80 backdrop-blur-md pt-2 pb-1 px-2 space-y-1">
       {/* Favoritos */}
       <button
-        onClick={() => navigate('/history?filter=favoritos')}
+        onClick={() => navigate('/favoritos')}
         className="w-full flex items-center gap-2 px-3 py-1.5 rounded-lg text-sm text-gray-400 hover:text-yellow-400 hover:bg-white/5 transition-colors group"
       >
         <span className="material-symbols-outlined text-[18px] group-hover:text-yellow-400">star</span>

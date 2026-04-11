@@ -91,10 +91,10 @@ describe('SidebarFooter', () => {
     expect(histBtn.textContent).toContain('1');
   });
 
-  it('clicking Favoritos navigates to /history?filter=favoritos', () => {
+  it('clicking Favoritos navigates to /favoritos', () => {
     renderFooter();
     fireEvent.click(screen.getByText('Favoritos'));
-    expect(mockNavigate).toHaveBeenCalledWith('/history?filter=favoritos');
+    expect(mockNavigate).toHaveBeenCalledWith('/favoritos');
   });
 
   it('clicking Histórico navigates to /history', () => {
