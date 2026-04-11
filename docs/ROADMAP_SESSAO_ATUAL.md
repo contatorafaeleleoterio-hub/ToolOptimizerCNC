@@ -17,11 +17,11 @@
 
 > **Leia estes dois arquivos NESTA ORDEM antes de escrever qualquer código:**
 > 1. `docs/plans/ATUALIZACAO_DASH_APROVADO/CONTEXTO-PROXIMA-SESSAO.md` — fila completa dos 10 itens, ordem, pts
-> 2. `docs/plans/ATUALIZACAO_DASH_APROVADO/ITEM-12-PAGINA-FAVORITOS.md` — spec do próximo item
+> 2. `docs/plans/ATUALIZACAO_DASH_APROVADO/` — spec do próximo item (ITEM-5.2)
 
-**Implementar: ITEM-12 — Página de Favoritos (`/favoritos`)**
-- ITEM-11 ✅ concluído (`b369fec`) — Zona Verde Dinâmica no SGB (idealRange + opacity + borda verde)
-- ITEM-12 cria página `/favoritos` com lista dos favoritos salvos (depende de ITEM-10 ✅)
+**Implementar: ITEM-5.2 — Simulação Estilo Cassino (último item aprovado)**
+- ITEM-12 ✅ concluído (`46a6f22`) — Página de Favoritos `/favoritos` (20 testes)
+- ITEM-5.2 é o último item da fila aprovada — ler spec antes de iniciar
 - **NÃO** iniciar nada de Segurança Cibernética — ver nota abaixo
 
 ---
@@ -39,10 +39,10 @@
 |------|-------|
 | **Branch** | `main` |
 | **Versão** | `0.10.1` |
-| **Testes** | **1009 passando** (57 arquivos) — 0 falhas |
+| **Testes** | **1038 passando** (59 arquivos) — 0 falhas |
 | **TypeScript** | **zero erros** |
-| **Build** | **limpo** — JS 106.73KB gzip |
-| **Remote** | `origin/main` sincronizado ✅ — commit `98a2ac1` |
+| **Build** | **limpo** — JS ~107KB gzip |
+| **Remote** | `origin/main` — último commit local `46a6f22` (push pendente) |
 | **Worker** | ✅ LIVE — `https://tooloptimizercnc.contatorafaeleleoterio.workers.dev` |
 | **Custom Domains** | ✅ `tooloptimizercnc.com.br` + `app.tooloptimizercnc.com.br` |
 | **GitHub Actions** | ✅ deploy automático ao push para main |
