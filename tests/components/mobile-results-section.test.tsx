@@ -1,4 +1,4 @@
-import { render, screen } from '@testing-library/react';
+import { render, screen, fireEvent } from '@testing-library/react';
 import { describe, it, expect, beforeEach } from 'vitest';
 import { BrowserRouter } from 'react-router-dom';
 import { MobileResultsSection } from '@/components/mobile/mobile-results-section';
@@ -17,9 +17,14 @@ describe('MobileResultsSection', () => {
     useMachiningStore.getState().reset();
   });
 
-  it('renders ToolSummaryViewer (data-testid=tool-summary)', () => {
+  it('renders tool row (data-testid=tool-summary)', () => {
     renderSection();
     expect(screen.getByTestId('tool-summary')).toBeInTheDocument();
+  });
+
+  it('renders edit tool button in tool row', () => {
+    renderSection();
+    expect(screen.getByLabelText('Editar ferramenta')).toBeInTheDocument();
   });
 
   it('shows placeholder when resultado is null', () => {
@@ -27,10 +32,20 @@ describe('MobileResultsSection', () => {
     expect(screen.getByText(/Configure os parâmetros/)).toBeInTheDocument();
   });
 
-  it('does not render SafetyBadge before simulation', () => {
+  it('renders lcd with aguardando message when resultado is null', () => {
     renderSection();
-    expect(screen.queryByText('SEGURO')).not.toBeInTheDocument();
-    expect(screen.queryByText('ALERTA')).not.toBeInTheDocument();
+    expect(screen.getByText(/AGUARDANDO SIMULAÇÃO/)).toBeInTheDocument();
+  });
+
+  it('renders header with operação label', () => {
+    renderSection();
+    expect(screen.getByText('Desbaste')).toBeInTheDocument();
+  });
+
+  it('renders SafetyBadge in header even before simulation (default verde)', () => {
+    // Header is always visible — badge shows default 'verde' state before simulation
+    renderSection();
+    expect(screen.getByText('SEGURO')).toBeInTheDocument();
   });
 
   describe('after calcular()', () => {
@@ -51,29 +66,32 @@ describe('MobileResultsSection', () => {
       expect(screen.getByText('SEGURO')).toBeInTheDocument();
     });
 
-    it('shows metric labels: Rotação, Avanço, Potência, Vc Real', () => {
-      renderSection();
-      expect(screen.getAllByText('Rotação').length).toBeGreaterThanOrEqual(1);
-      expect(screen.getAllByText('Avanço').length).toBeGreaterThanOrEqual(1);
-      expect(screen.getAllByText('Potência').length).toBeGreaterThanOrEqual(1);
-      expect(screen.getAllByText('Vc Real').length).toBeGreaterThanOrEqual(1);
-    });
-
     it('shows BigNumber labels for RPM and Feed', () => {
       renderSection();
       expect(screen.getAllByText('Rotação (RPM)').length).toBeGreaterThanOrEqual(1);
       expect(screen.getAllByText('Avanço (mm/min)').length).toBeGreaterThanOrEqual(1);
     });
 
-    it('renders ProgressCard labels', () => {
+    it('renders input params Vc fz ap ae (zona 5)', () => {
+      renderSection();
+      expect(screen.getByText('Vc (Vel. Corte)')).toBeInTheDocument();
+      expect(screen.getByText('fz (Av. Dente)')).toBeInTheDocument();
+      expect(screen.getByText('ap (Prof. Axial)')).toBeInTheDocument();
+      expect(screen.getByText('ae (Eng. Radial)')).toBeInTheDocument();
+    });
+
+    it('renders zona 6 with potência torque vc real mrr', () => {
       renderSection();
       expect(screen.getByText('Potência Est.')).toBeInTheDocument();
+      expect(screen.getAllByText('Torque').length).toBeGreaterThanOrEqual(1);
+      expect(screen.getByText('Vc Real')).toBeInTheDocument();
       expect(screen.getByText('MRR')).toBeInTheDocument();
     });
 
-    it('renders Torque progress card (parity with desktop)', () => {
+    it('renders zona 6 with L/D and CTF', () => {
       renderSection();
-      expect(screen.getAllByText('Torque').length).toBeGreaterThanOrEqual(1);
+      expect(screen.getByText('L/D')).toBeInTheDocument();
+      expect(screen.getByText('CTF')).toBeInTheDocument();
     });
 
     it('renders 3 gauges (parity with desktop)', () => {
@@ -96,6 +114,12 @@ describe('MobileResultsSection', () => {
     it('renders educational formula cards section', () => {
       renderSection();
       expect(screen.getByText('Entenda os Cálculos')).toBeInTheDocument();
+    });
+
+    it('edit button click does not throw (no matching saved tool → no-op)', () => {
+      renderSection();
+      const editBtn = screen.getByLabelText('Editar ferramenta');
+      expect(() => fireEvent.click(editBtn)).not.toThrow();
     });
   });
 });
