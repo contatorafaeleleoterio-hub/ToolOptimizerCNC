@@ -17,12 +17,11 @@
 
 > **Leia estes dois arquivos NESTA ORDEM antes de escrever qualquer código:**
 > 1. `docs/plans/ATUALIZACAO_DASH_APROVADO/CONTEXTO-PROXIMA-SESSAO.md` — fila completa dos 10 itens, ordem, pts
-> 2. `docs/plans/ATUALIZACAO_DASH_APROVADO/ITEM-10-FAVORITOS-STORE.md` — spec do próximo item
+> 2. `docs/plans/ATUALIZACAO_DASH_APROVADO/ITEM-11-ZONA-VERDE-SGB.md` — spec do próximo item
 
-**Implementar: ITEM-10 — Sistema de Favoritos (store + botão + edição inline)**
-- ITEM-3.2 ✅ concluído (`f8882b1`) — Botão info + Popover parâmetros
-- ITEM-4.1 ✅ concluído (`776a15c`) — Visor Mobile réplica desktop (7 zonas)
-- ITEM-10 é o próximo na fila aprovada
+**Implementar: ITEM-11 — Zona Verde Dinâmica no SGB**
+- ITEM-10 ✅ concluído (`98a2ac1`) — Sistema de Favoritos (store + snapshot + edição)
+- ITEM-11 usa `getByCombo` do favorites-store para zona verde dinâmica no SGB
 - **NÃO** iniciar nada de Segurança Cibernética — ver nota abaixo
 
 ---
@@ -40,10 +39,10 @@
 |------|-------|
 | **Branch** | `main` |
 | **Versão** | `0.10.1` |
-| **Testes** | **966 passando** (55 arquivos) — 0 falhas |
+| **Testes** | **1009 passando** (57 arquivos) — 0 falhas |
 | **TypeScript** | **zero erros** |
 | **Build** | **limpo** — JS 106.73KB gzip |
-| **Remote** | `origin/main` sincronizado ✅ — commit `f8882b1` |
+| **Remote** | `origin/main` sincronizado ✅ — commit `98a2ac1` |
 | **Worker** | ✅ LIVE — `https://tooloptimizercnc.contatorafaeleleoterio.workers.dev` |
 | **Custom Domains** | ✅ `tooloptimizercnc.com.br` + `app.tooloptimizercnc.com.br` |
 | **GitHub Actions** | ✅ deploy automático ao push para main |
@@ -316,7 +315,7 @@ Quando uma nova implementação for planejada durante a sessão:
 
 ---
 
-*Última atualização: 11/04/2026 — ITEM-4.1 concluído (`776a15c`): Visor Mobile réplica desktop (7 zonas: header LCD Tool-Row RPM/Avanço input-params dados-calc gauges fórmulas). 999 testes, v0.10.1 em produção. **PRÓXIMA SESSÃO Cloud Code:** ITEM-10 — Sistema de Favoritos (store + botão + edição inline) (ler `CONTEXTO-PROXIMA-SESSAO.md` + `ITEM-10-FAVORITOS-STORE.md`). Segurança Cibernética ⏸️ PAUSADA — não sugerir.*
+*Última atualização: 11/04/2026 — ITEM-10 concluído (`98a2ac1`): Sistema de Favoritos — FavoritoCompleto interface + useFavoritesStore (FIFO 50, persist fenix_favorites_v1) + botão ★ migrado + FavoriteEditModal + sidebar contagem. 1009 testes, v0.10.1 em produção. **PRÓXIMA SESSÃO Cloud Code:** ITEM-11 — Zona Verde Dinâmica no SGB (usa getByCombo do favorites-store). Segurança Cibernética ⏸️ PAUSADA — não sugerir.*
 
 ### Atualizacao de Encerramento - 28/03/2026 (sessao longa)
 
