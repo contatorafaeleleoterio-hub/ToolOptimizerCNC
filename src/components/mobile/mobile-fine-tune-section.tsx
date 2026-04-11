@@ -1,12 +1,30 @@
-import { useRef, useCallback, useState, useEffect } from 'react';
+import { useRef, useCallback, useState, useEffect, useMemo } from 'react';
 import { useMachiningStore } from '@/store';
+import { useFavoritesStore } from '@/store/favorites-store';
 import { MATERIAIS } from '@/data';
 import { calcularSliderBounds } from '@/engine';
-import type { ParametrosUsinagem } from '@/types';
+import type { ParametrosUsinagem, SliderBounds, FavoritoCompleto } from '@/types';
 import { SectionTitle } from '../ui-helpers';
 import { SegmentedGradientBar } from '../segmented-gradient-bar';
 import { getSliderRgb } from '../slider-tokens';
 import { ParamExplanation } from '../param-explanation';
+
+/** Compute ideal zone [0-1] for a parameter based on the most recent favorite. */
+function computeIdealRange(
+  paramKey: 'vc' | 'fz' | 'ae' | 'ap',
+  favorito: FavoritoCompleto | undefined,
+  bounds: SliderBounds,
+): { start: number; end: number } | undefined {
+  if (!favorito) return undefined;
+  const val = favorito.parametros[paramKey];
+  const { min, max } = bounds[paramKey];
+  const range = max - min;
+  if (range <= 0) return undefined;
+  return {
+    start: Math.max(0.05, (val * 0.9 - min) / range),
+    end:   Math.min(0.95, (val * 1.1 - min) / range),
+  };
+}
 
 /** Fine-tune value input with raw/blur pattern — allows free typing */
 function FineTuneValueInput({ display, step, min, max, color, label, unit, onChange }: {
@@ -240,6 +258,20 @@ export function MobileFineTuneSection() {
   // Calcular bounds dinâmicos baseados no contexto atual
   const bounds = calcularSliderBounds(material ?? null, ferramenta, tipoOperacao);
 
+  // Lookup most recent favorite for current combo — MUST select stable array (anti-infinite-loop rule)
+  const favorites = useFavoritesStore((s) => s.favorites);
+  const ferramentaTipo = ferramenta.tipo;
+  const favorito = useMemo(
+    () => favorites
+      .filter((f) =>
+        f.materialId === materialId &&
+        f.tipoOperacao === tipoOperacao &&
+        f.ferramenta.tipo === ferramentaTipo,
+      )
+      .sort((a, b) => b.timestamp.localeCompare(a.timestamp))[0],
+    [favorites, materialId, tipoOperacao, ferramentaTipo],
+  );
+
   // Clamp automático: quando bounds mudam, corrigir valores fora do novo range
   const isFirstRender = useRef(true);
   useEffect(() => {
@@ -274,6 +306,8 @@ export function MobileFineTuneSection() {
             const val = parametros[key];
             const display = key === 'fz' || key === 'ap' ? val.toFixed(2) : key === 'ae' ? val.toFixed(1) : val.toFixed(0);
 
+            const idealRangeProp = computeIdealRange(key, favorito, bounds);
+
             return (
               <div key={key} className="flex flex-col gap-1">
                 <div className="flex justify-between items-center">
@@ -289,7 +323,7 @@ export function MobileFineTuneSection() {
                 </div>
 
                 {/* Parameter health bar — above slider */}
-                <SegmentedGradientBar paramKey={key} segments={30} />
+                <SegmentedGradientBar paramKey={key} segments={30} idealRange={idealRangeProp} />
 
                 <div className="flex items-center gap-2">
                   <button className={BTN_CLS} aria-label={`Decrease ${label}`}

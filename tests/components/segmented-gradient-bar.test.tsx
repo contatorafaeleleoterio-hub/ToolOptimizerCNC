@@ -133,4 +133,82 @@ describe('SegmentedGradientBar', () => {
     render(<SegmentedGradientBar paramKey="ap" />);
     expect(screen.getAllByText('Leve').length).toBeGreaterThanOrEqual(1);
   });
+
+  // ── idealRange — Zona Verde Dinâmica (ITEM-11) ────────────────────────────
+
+  it('renders normally without idealRange (regression)', () => {
+    const { container } = render(<SegmentedGradientBar paramKey="vc" />);
+    const segs = container.querySelectorAll('[style*="flex: 1"]');
+    expect(segs.length).toBe(50);
+  });
+
+  it('accepts idealRange prop without throwing', () => {
+    expect(() =>
+      render(<SegmentedGradientBar paramKey="vc" idealRange={{ start: 0.3, end: 0.7 }} />)
+    ).not.toThrow();
+  });
+
+  it('segments inside idealRange have full opacity (1)', () => {
+    // idealRange covers entire bar → all 50 segments in zone → opacity 1
+    const { container } = render(
+      <SegmentedGradientBar paramKey="vc" idealRange={{ start: 0.0, end: 1.0 }} />
+    );
+    const segs = Array.from(container.querySelectorAll('[style*="flex: 1"]')) as HTMLElement[];
+    const fullyOpaque = segs.filter((el) => el.style.opacity === '1');
+    expect(fullyOpaque.length).toBe(50);
+  });
+
+  it('segments outside idealRange have dimmed opacity (0.65)', () => {
+    // idealRange covers second half only → first half is dimmed
+    const { container } = render(
+      <SegmentedGradientBar paramKey="vc" idealRange={{ start: 0.5, end: 1.0 }} />
+    );
+    const segs = Array.from(container.querySelectorAll('[style*="flex: 1"]')) as HTMLElement[];
+    // Segment 0 (segPct = 0/50 = 0) is outside zone → 0.65
+    expect(segs[0].style.opacity).toBe('0.65');
+  });
+
+  it('without idealRange, active segments keep opacity 1 (no dimming)', () => {
+    // cursor at 50% → segments to the left of cursor are active
+    useMachiningStore.getState().setParametros({ vc: 150 }); // push vc toward max
+    const { container } = render(<SegmentedGradientBar paramKey="vc" />);
+    const segs = Array.from(container.querySelectorAll('[style*="flex: 1"]')) as HTMLElement[];
+    // At least some active segments should have opacity 1
+    const fullyOpaque = segs.filter((el) => el.style.opacity === '1');
+    expect(fullyOpaque.length).toBeGreaterThan(0);
+  });
+
+  it('works with 50 segments (desktop) and idealRange', () => {
+    const { container } = render(
+      <SegmentedGradientBar paramKey="vc" segments={50} idealRange={{ start: 0.4, end: 0.6 }} />
+    );
+    const segs = container.querySelectorAll('[style*="flex: 1"]');
+    expect(segs.length).toBe(50);
+  });
+
+  it('works with 30 segments (mobile) and idealRange', () => {
+    const { container } = render(
+      <SegmentedGradientBar paramKey="vc" segments={30} idealRange={{ start: 0.4, end: 0.6 }} />
+    );
+    const segs = container.querySelectorAll('[style*="flex: 1"]');
+    expect(segs.length).toBe(30);
+  });
+
+  it('zone overlay at 40% by default, moves to idealRange.start when provided', () => {
+    // Static position (no idealRange)
+    const { container: c1 } = render(<SegmentedGradientBar paramKey="vc" />);
+    const overlay1 = c1.querySelector('[data-testid="zone-overlay"]') as HTMLElement;
+    expect(overlay1.style.left).toBe('40%');
+    expect(overlay1.style.width).toBe('20%');
+  });
+
+  it('zone overlay shifts to dynamic position when idealRange provided', () => {
+    // Use exact binary fractions: start=0.25, end=0.75 → left=25%, width=50%
+    const { container } = render(
+      <SegmentedGradientBar paramKey="vc" idealRange={{ start: 0.25, end: 0.75 }} />
+    );
+    const overlay = container.querySelector('[data-testid="zone-overlay"]') as HTMLElement;
+    expect(overlay.style.left).toBe('25%');
+    expect(overlay.style.width).toBe('50%');
+  });
 });

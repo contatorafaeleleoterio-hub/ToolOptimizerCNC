@@ -51,23 +51,30 @@ interface SegBarProps {
   badge?: string | null;
   readout?: ReactNode;
   segments?: number;
+  /** Dynamic ideal zone from favorites. [0-1] fractional position in the bar. */
+  idealRange?: { start: number; end: number };
 }
 
-function SegBar({ paramKey, position, zone, zoneLabel, leftLabel, rightLabel, badge, readout, segments = DEFAULT_SEGMENTS }: SegBarProps) {
+function SegBar({ paramKey, position, zone, zoneLabel, leftLabel, rightLabel, badge, readout, segments = DEFAULT_SEGMENTS, idealRange }: SegBarProps) {
   const rgb = ZONE_RGB[zone] ?? '46,204,113';
   const cursorPct = Math.min(100, Math.max(0, position * 100));
   // How many segments are "active" (to the left of cursor)
   const activeCount = Math.round((cursorPct / 100) * segments);
 
+  // Zone overlay position: dynamic when idealRange provided, fixed 40%-60% otherwise
+  const zoneLeft = idealRange ? `${idealRange.start * 100}%` : '40%';
+  const zoneWidth = idealRange ? `${(idealRange.end - idealRange.start) * 100}%` : '20%';
+
   return (
     <div data-testid={`health-bar-${paramKey}`} className="flex flex-col gap-0.5">
       <div className="relative" style={{ height: '28px' }}>
-        {/* Ideal zone highlight (segments 20–29 = 40%–60%) */}
+        {/* Ideal zone highlight — dynamic when idealRange provided, fixed 40%–60% otherwise */}
         <div
+          data-testid="zone-overlay"
           className="absolute"
           style={{
-            left: '40%',
-            width: '20%',
+            left: zoneLeft,
+            width: zoneWidth,
             top: 0,
             bottom: 0,
             background: 'rgba(0,230,118,0.03)',
@@ -91,6 +98,17 @@ function SegBar({ paramKey, position, zone, zoneLabel, leftLabel, rightLabel, ba
         >
           {Array.from({ length: segments }, (_, i) => {
             const active = i < activeCount;
+            const segPct = i / segments;
+            const isInIdealZone = idealRange !== undefined &&
+              segPct >= idealRange.start &&
+              segPct <= idealRange.end;
+
+            // When idealRange provided: in-zone = full opacity, out-of-zone = dimmed.
+            // When no idealRange: preserve existing active/inactive distinction.
+            const opacity = idealRange !== undefined
+              ? (isInIdealZone ? 1.0 : 0.65)
+              : (active ? 1 : 0.3);
+
             return (
               <div
                 key={i}
@@ -98,8 +116,9 @@ function SegBar({ paramKey, position, zone, zoneLabel, leftLabel, rightLabel, ba
                   flex: 1,
                   borderRadius: '2px',
                   background: active ? segmentColor(i, segments) : 'rgba(255,255,255,0.1)',
-                  opacity: active ? 1 : 0.3,
+                  opacity,
                   boxShadow: active ? segmentGlow(i, segments) : 'none',
+                  borderTop: isInIdealZone ? '2px solid rgba(0,230,118,0.7)' : '2px solid transparent',
                 }}
               />
             );
@@ -185,10 +204,12 @@ interface SegmentedGradientBarProps {
   paramKey: 'vc' | 'fz' | 'ae' | 'ap';
   /** Number of segments to render. Default 50 (desktop). Use 30 for mobile. */
   segments?: number;
+  /** Dynamic ideal zone from favorites store. [0-1] fractional position. */
+  idealRange?: { start: number; end: number };
 }
 
 /** Segmented gradient health indicator. Replaces ParameterHealthBar visually. */
-export function SegmentedGradientBar({ paramKey, segments = DEFAULT_SEGMENTS }: SegmentedGradientBarProps) {
+export function SegmentedGradientBar({ paramKey, segments = DEFAULT_SEGMENTS, idealRange }: SegmentedGradientBarProps) {
   const resultado    = useMachiningStore((s) => s.resultado);
   const parametros   = useMachiningStore((s) => s.parametros);
   const ferramenta   = useMachiningStore((s) => s.ferramenta);
@@ -202,7 +223,7 @@ export function SegmentedGradientBar({ paramKey, segments = DEFAULT_SEGMENTS }: 
     const r      = computeVcByValue(parametros.vc, bounds.vc.recomendado, bounds.vc.max);
     return (
       <SegBar paramKey="vc" position={r.position} zone={r.zone} zoneLabel={r.zoneLabel}
-        leftLabel="Baixo" rightLabel="Desgaste" segments={segments} />
+        leftLabel="Baixo" rightLabel="Desgaste" segments={segments} idealRange={idealRange} />
     );
   }
 
@@ -211,7 +232,7 @@ export function SegmentedGradientBar({ paramKey, segments = DEFAULT_SEGMENTS }: 
     const r = computeFzByValue(resultado.fzEfetivo, bounds.fz.recomendado, bounds.fz.max, resultado.seguranca.ctf);
     return (
       <SegBar paramKey="fz" position={r.position} zone={r.zone} zoneLabel={r.zoneLabel}
-        leftLabel="Atrito" rightLabel="Vibração" badge={r.ctfBadge} segments={segments} />
+        leftLabel="Atrito" rightLabel="Vibração" badge={r.ctfBadge} segments={segments} idealRange={idealRange} />
     );
   }
 
@@ -219,7 +240,7 @@ export function SegmentedGradientBar({ paramKey, segments = DEFAULT_SEGMENTS }: 
     const r = computeAeByValue(parametros.ae, bounds.ae.recomendado, bounds.ae.max, ferramenta.diametro);
     return (
       <SegBar paramKey="ae" position={r.position} zone={r.zone} zoneLabel={r.zoneLabel}
-        leftLabel="CTF Alto" rightLabel="Excessivo" segments={segments}
+        leftLabel="CTF Alto" rightLabel="Excessivo" segments={segments} idealRange={idealRange}
         readout={
           <span data-testid="ae-ratio-display" className="text-[8px] text-gray-500 font-mono">
             {r.aeDRatioDisplay}
@@ -233,7 +254,7 @@ export function SegmentedGradientBar({ paramKey, segments = DEFAULT_SEGMENTS }: 
   const r = computeApByValue(parametros.ap, bounds.ap.recomendado, bounds.ap.max, ferramenta.diametro, ferramenta.balanco);
   return (
     <SegBar paramKey="ap" position={r.position} zone={r.zone} zoneLabel={r.zoneLabel}
-      leftLabel="Leve" rightLabel="Deflexão" segments={segments}
+      leftLabel="Leve" rightLabel="Deflexão" segments={segments} idealRange={idealRange}
       readout={
         <span data-testid="ap-ld-display" className={`text-[8px] font-mono font-semibold ${r.ldColorClass}`}>
           {r.ldDisplay}
