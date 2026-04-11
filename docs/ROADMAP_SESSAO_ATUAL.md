@@ -17,13 +17,12 @@
 
 > **Leia estes dois arquivos NESTA ORDEM antes de escrever qualquer código:**
 > 1. `docs/plans/ATUALIZACAO_DASH_APROVADO/CONTEXTO-PROXIMA-SESSAO.md` — fila completa dos 10 itens, ordem, pts
-> 2. `docs/plans/ATUALIZACAO_DASH_APROVADO/ITEM-7-BOTAO-EXPLICACAO-POPOVER.md` — spec completa do próximo item
+> 2. `docs/plans/ATUALIZACAO_DASH_APROVADO/ITEM-10-FAVORITOS-STORE.md` — spec do próximo item
 
-**Implementar: ITEM-3.2 — Botão info + Popover parâmetros**
-- ITEM-2.1 ✅ concluído (`e21d4bc`) — Fator de Correção slider com botões [-][+] e display %
-- ITEM-3.1 ✅ concluído (`7f7032f`) — SGB acima do slider (desktop + mobile)
-- ITEM-3.2 ✅ concluído (`f8882b1`) — Botão info + Popover parâmetros (hover desktop / click mobile)
-- ITEM-4.1 é o próximo na fila aprovada
+**Implementar: ITEM-10 — Sistema de Favoritos (store + botão + edição inline)**
+- ITEM-3.2 ✅ concluído (`f8882b1`) — Botão info + Popover parâmetros
+- ITEM-4.1 ✅ concluído (`776a15c`) — Visor Mobile réplica desktop (7 zonas)
+- ITEM-10 é o próximo na fila aprovada
 - **NÃO** iniciar nada de Segurança Cibernética — ver nota abaixo
 
 ---
@@ -317,7 +316,7 @@ Quando uma nova implementação for planejada durante a sessão:
 
 ---
 
-*Última atualização: 08/04/2026 — ITEM-3.2 concluído (`f8882b1`): Botão info + Popover parâmetros (hover desktop / click mobile). feat(admin) `217c09f`: analytics credentials from env vars. fix(a11y) `6da57b7`: history-page keyboard accessible. 966 testes, v0.10.1 em produção. **PRÓXIMA SESSÃO Cloud Code:** ITEM-4.1 — Visor Mobile (réplica desktop) (ler `CONTEXTO-PROXIMA-SESSAO.md` + `ITEM-8-VISOR-MOBILE-REPLICA.md`). Segurança Cibernética ⏸️ PAUSADA — não sugerir.*
+*Última atualização: 11/04/2026 — ITEM-4.1 concluído (`776a15c`): Visor Mobile réplica desktop (7 zonas: header LCD Tool-Row RPM/Avanço input-params dados-calc gauges fórmulas). 999 testes, v0.10.1 em produção. **PRÓXIMA SESSÃO Cloud Code:** ITEM-10 — Sistema de Favoritos (store + botão + edição inline) (ler `CONTEXTO-PROXIMA-SESSAO.md` + `ITEM-10-FAVORITOS-STORE.md`). Segurança Cibernética ⏸️ PAUSADA — não sugerir.*
 
 ### Atualizacao de Encerramento - 28/03/2026 (sessao longa)
 
