@@ -17,11 +17,11 @@
 
 > **Leia estes dois arquivos NESTA ORDEM antes de escrever qualquer código:**
 > 1. `docs/plans/ATUALIZACAO_DASH_APROVADO/CONTEXTO-PROXIMA-SESSAO.md` — fila completa dos 10 itens, ordem, pts
-> 2. `docs/plans/ATUALIZACAO_DASH_APROVADO/ITEM-11-ZONA-VERDE-SGB.md` — spec do próximo item
+> 2. `docs/plans/ATUALIZACAO_DASH_APROVADO/ITEM-12-PAGINA-FAVORITOS.md` — spec do próximo item
 
-**Implementar: ITEM-11 — Zona Verde Dinâmica no SGB**
-- ITEM-10 ✅ concluído (`98a2ac1`) — Sistema de Favoritos (store + snapshot + edição)
-- ITEM-11 usa `getByCombo` do favorites-store para zona verde dinâmica no SGB
+**Implementar: ITEM-12 — Página de Favoritos (`/favoritos`)**
+- ITEM-11 ✅ concluído (`b369fec`) — Zona Verde Dinâmica no SGB (idealRange + opacity + borda verde)
+- ITEM-12 cria página `/favoritos` com lista dos favoritos salvos (depende de ITEM-10 ✅)
 - **NÃO** iniciar nada de Segurança Cibernética — ver nota abaixo
 
 ---
@@ -315,7 +315,7 @@ Quando uma nova implementação for planejada durante a sessão:
 
 ---
 
-*Última atualização: 11/04/2026 — ITEM-10 concluído (`98a2ac1`): Sistema de Favoritos — FavoritoCompleto interface + useFavoritesStore (FIFO 50, persist fenix_favorites_v1) + botão ★ migrado + FavoriteEditModal + sidebar contagem. 1009 testes, v0.10.1 em produção. **PRÓXIMA SESSÃO Cloud Code:** ITEM-11 — Zona Verde Dinâmica no SGB (usa getByCombo do favorites-store). Segurança Cibernética ⏸️ PAUSADA — não sugerir.*
+*Última atualização: 11/04/2026 — ITEM-11 concluído (`b369fec`): Zona Verde Dinâmica no SGB — prop `idealRange` opcional, visual opacity 1.0/0.65 + borda verde, overlay dinâmico, helper computeIdealRange, useFavoritesStore lookup com useMemo (anti-loop), integrado em fine-tune-panel e mobile. 1017 testes, v0.10.1 em produção. **PRÓXIMA SESSÃO Cloud Code:** ITEM-12 — Página de Favoritos (`/favoritos`). Segurança Cibernética ⏸️ PAUSADA — não sugerir.*
 
 ### Atualizacao de Encerramento - 28/03/2026 (sessao longa)
 

@@ -1,8 +1,8 @@
 # Contexto — Próxima Sessão
 
-**Última atualização:** 08/04/2026 — ITEM-3.2 implementado (`f8882b1`)
-**Implementados:** ~~1.1~~ ~~1.2~~ ~~2.1~~ ~~3.1~~ ~~3.2~~ → **ITEM-4.1 é o próximo**
-**Próxima sessão:** Implementar ITEM-4.1 — Visor Mobile (réplica desktop) → `ITEM-8-VISOR-MOBILE-REPLICA.md`
+**Última atualização:** 11/04/2026 — ITEM-11 implementado (`b369fec`)
+**Implementados:** ~~1.1~~ ~~1.2~~ ~~2.1~~ ~~3.1~~ ~~3.2~~ ~~4.1~~ ~~10~~ ~~11~~ → **ITEM-12 é o próximo**
+**Próxima sessão:** Implementar ITEM-12 — Página de Favoritos (`/favoritos`) → `ITEM-12-PAGINA-FAVORITOS.md`
 
 ---
 
@@ -30,7 +30,7 @@ As decisões abaixo são as **únicas válidas para implementação**. Substitue
 | 12 | 5.1 — Explicações Educacionais | ❌ REPROVADO | — | — | — | — |
 | 13 | 5.2 — Simulação Estilo Cassino | ✅ APROVADO | ✅ | ✅ | 24 pts | `ITEM-9-SIMULACAO-ESTILO-CASSINO.md` |
 | 14 | 10 — Sistema de Favoritos (store + botão + edição) | ✅ APROVADO | ✅ | ✅ | 14 pts | `ITEM-10-FAVORITOS-STORE.md` |
-| 15 | 11 — Zona Verde Dinâmica no SGB | ✅ APROVADO | ✅ | ✅ | 10 pts | `ITEM-11-ZONA-VERDE-DINAMICA-SGB.md` |
+| 15 | 11 — Zona Verde Dinâmica no SGB | ✅ CONCLUÍDO (`b369fec`) | ✅ | ✅ | 10 pts | `ITEM-11-ZONA-VERDE-DINAMICA-SGB.md` |
 | 16 | 12 — Página de Favoritos | ✅ APROVADO | ✅ | ✅ | 15 pts | `ITEM-12-PAGINA-FAVORITOS.md` |
 
 > **Total aprovado:** 10 itens = **119 pontos** (~10-12 sessões estimadas)
