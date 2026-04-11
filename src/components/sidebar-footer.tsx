@@ -1,13 +1,14 @@
 import { useNavigate } from 'react-router-dom';
 import { useHistoryStore } from '@/store';
+import { useFavoritesStore } from '@/store';
 
 const APP_VERSION = __APP_VERSION__;
 
 export function SidebarFooter() {
   const navigate = useNavigate();
-  const favoriteCount = useHistoryStore((s) =>
-    s.entries.filter((e) => e.favorited).length
-  );
+  // Favorites count from dedicated store (separate from history flags)
+  const favorites = useFavoritesStore((s) => s.favorites);
+  const favoriteCount = favorites.length;
   const historyCount = useHistoryStore((s) => s.entries.length);
 
   return (

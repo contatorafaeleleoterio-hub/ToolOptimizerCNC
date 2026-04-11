@@ -244,3 +244,22 @@ export interface ValidatedSimulation {
   ferramenta: Pick<SavedTool, 'tipo' | 'diametro' | 'raioQuina' | 'numeroArestas' | 'balanco'>;
   createdAt: string;          // ISO 8601
 }
+
+/**
+ * Complete favorites snapshot — full result state at the moment of favoriting.
+ * Stored in a separate store (useFavoritesStore) from history.
+ * Editable: parametros + userNote; resultado is recalculated on edit.
+ */
+export interface FavoritoCompleto {
+  id: string;                      // crypto.randomUUID()
+  timestamp: string;               // ISO 8601
+  materialId: number;              // for future lookup
+  materialNome: string;            // snapshot — avoids lookup on display
+  tipoOperacao: TipoUsinagem;
+  ferramenta: Ferramenta;          // full snapshot
+  parametros: ParametrosUsinagem;  // snapshot
+  resultado: ResultadoUsinagem;    // full snapshot
+  safetyFactor: number;
+  editedAt: string | null;         // null by default, ISO 8601 when edited
+  userNote: string;                // '' by default, editable
+}

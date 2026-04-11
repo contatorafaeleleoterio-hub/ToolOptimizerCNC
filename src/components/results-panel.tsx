@@ -1,7 +1,10 @@
+import React from 'react';
 import { useMachiningStore } from '@/store';
 import { useHistoryStore } from '@/store';
+import { useFavoritesStore } from '@/store';
 import { TipoUsinagem } from '@/types/index';
 import type { ResultadoUsinagem, Ferramenta } from '@/types/index';
+import { FavoriteEditModal } from './modals/favorite-edit-modal';
 import { HalfMoonGauge } from './half-moon-gauge';
 import { FormulaCard, Fraction } from './formula-card';
 import { BidirectionalSlider } from './bidirectional-slider';
@@ -86,13 +89,24 @@ export function ResultsPanel() {
   const setManualFeedPercent = useMachiningStore((s) => s.setManualFeedPercent);
 
   const historyEntries = useHistoryStore((s) => s.entries);
-  const toggleFavorite = useHistoryStore((s) => s.toggleFavorite);
+
+  // Favorites store — separate from history
+  const favoritesAddFavorite = useFavoritesStore((s) => s.addFavorite);
+  const favoritesRemoveFavorite = useFavoritesStore((s) => s.removeFavorite);
+  const favoritesIsFavorited = useFavoritesStore((s) => s.isFavorited);
+  const favoritesGetByCombo = useFavoritesStore((s) => s.getByCombo);
+
+  const [showEditModal, setShowEditModal] = React.useState(false);
 
   const { triggerPulse, safetyLevel } = useSimulationAnimation();
   const resultado = storeResultado ?? EMPTY_RESULTADO;
 
   const latestEntry = historyEntries[0];
-  const isFavorited = latestEntry?.favorited ?? false;
+
+  // Favorites: compare by combo (materialId + tipoOperacao + ferramenta.tipo)
+  const isFavorited = storeResultado !== null
+    ? favoritesIsFavorited(materialId, tipoOperacao, ferramenta.tipo)
+    : false;
 
   // Derived from store
   const { rpm, avanco, potenciaMotor, mrr, vcReal, seguranca } = resultado;
@@ -159,21 +173,47 @@ export function ResultsPanel() {
           )}
         </div>
         {/* Favorite button */}
-        {storeResultado !== null && latestEntry && (
-          <button
-            aria-label={isFavorited ? 'Remover dos favoritos' : 'Favoritar simulação'}
-            onClick={() => toggleFavorite(latestEntry.id)}
-            className="flex items-center p-1.5 rounded-lg bg-black/30 border border-white/10 hover:bg-white/5 transition-all active:scale-95 shrink-0"
-          >
-            <span
-              className="material-symbols-outlined text-lg transition-all"
-              style={{
-                fontVariationSettings: isFavorited ? "'FILL' 1" : "'FILL' 0",
-                color: isFavorited ? '#facc15' : 'rgba(255,255,255,0.4)',
-                filter: isFavorited ? 'drop-shadow(0 0 6px rgba(250,204,21,0.5))' : undefined,
+        {storeResultado !== null && (
+          <div className="flex items-center gap-1 shrink-0">
+            <button
+              aria-label={isFavorited ? 'Remover dos favoritos' : 'Favoritar simulação'}
+              onClick={() => {
+                if (isFavorited) {
+                  const existing = favoritesGetByCombo(materialId, tipoOperacao, ferramenta.tipo);
+                  if (existing) favoritesRemoveFavorite(existing.id);
+                } else {
+                  favoritesAddFavorite({
+                    materialId,
+                    materialNome: material?.nome ?? '—',
+                    tipoOperacao,
+                    ferramenta,
+                    parametros,
+                    resultado: storeResultado,
+                    safetyFactor,
+                  });
+                }
               }}
-            >star</span>
-          </button>
+              className="flex items-center p-1.5 rounded-lg bg-black/30 border border-white/10 hover:bg-white/5 transition-all active:scale-95"
+            >
+              <span
+                className="material-symbols-outlined text-lg transition-all"
+                style={{
+                  fontVariationSettings: isFavorited ? "'FILL' 1" : "'FILL' 0",
+                  color: isFavorited ? '#facc15' : 'rgba(255,255,255,0.4)',
+                  filter: isFavorited ? 'drop-shadow(0 0 6px rgba(250,204,21,0.5))' : undefined,
+                }}
+              >star</span>
+            </button>
+            {isFavorited && (
+              <button
+                aria-label="Editar favorito"
+                onClick={() => setShowEditModal(true)}
+                className="flex items-center p-1.5 rounded-lg bg-black/30 border border-white/10 hover:bg-white/5 transition-all active:scale-95"
+              >
+                <span className="material-symbols-outlined text-lg text-white/40 hover:text-white/70 transition-colors">edit</span>
+              </button>
+            )}
+          </div>
         )}
       </div>
 
@@ -469,6 +509,17 @@ export function ResultsPanel() {
           />
         </div>
       </div>
+
+      {/* Favorite edit modal */}
+      {showEditModal && (() => {
+        const existing = favoritesGetByCombo(materialId, tipoOperacao, ferramenta.tipo);
+        return existing ? (
+          <FavoriteEditModal
+            favorite={existing}
+            onClose={() => setShowEditModal(false)}
+          />
+        ) : null;
+      })()}
     </div>
   );
 }
