@@ -1,5 +1,4 @@
-import { useMemo } from 'react';
-import { useSimulationAnimation } from '@/hooks/use-simulation-animation';
+import { useMemo, useState, useEffect, useRef } from 'react';
 
 // ─── Types ────────────────────────────────────────────────────────────────────
 
@@ -13,12 +12,15 @@ interface HalfMoonGaugeProps {
   badge?: string;
   /** 'md' = desktop (240×120), 'sm' = mobile (160×80). Default: 'md'. */
   size?: 'sm' | 'md';
+  /** When true, animates needle+bars from 0→value via rAF with easeOutBack on value change. */
+  animateOnMount?: boolean;
 }
 
 // ─── Constants ────────────────────────────────────────────────────────────────
 
 const TOTAL_BARS = 41;
 const MAX_PCT    = 150;
+const ANIM_MS    = 800;
 
 // Arc: -90° to +90° (180° total), step = 180/40 = 4.5° per bar
 const ARC_START_DEG = -90;
@@ -44,6 +46,12 @@ function barGlow(idx: number): string {
   return `0 0 8px ${color}66`;
 }
 
+// easeOutBack: slight overshoot then settles — validated formula from story spec
+function easeOutBack(t: number): number {
+  const s = t - 1;
+  return 1 + s * s * (2.70158 * s + 1.70158);
+}
+
 // ─── Size lookup ─────────────────────────────────────────────────────────────
 
 const SIZES = {
@@ -59,14 +67,46 @@ export function HalfMoonGauge({
   label = 'Indicador',
   badge,
   size = 'md',
+  animateOnMount = false,
 }: HalfMoonGaugeProps) {
-  const { gaugeAnimating } = useSimulationAnimation();
-  const sz          = SIZES[size];
-  const pct         = Math.min((value / maxValue) * 100, MAX_PCT);
-  const activeCount = Math.round((pct / MAX_PCT) * TOTAL_BARS);
+  const sz = SIZES[size];
+  const targetPct = Math.min(maxValue > 0 ? (value / maxValue) * 100 : 0, MAX_PCT);
 
-  // Needle angle: -90° at 0%, +90° at MAX_PCT
-  const needleAngle = ARC_START_DEG + (pct / MAX_PCT) * 180;
+  const [displayPct, setDisplayPct] = useState(() => (animateOnMount ? 0 : targetPct));
+  const rafRef = useRef<number | null>(null);
+
+  useEffect(() => {
+    if (!animateOnMount || value <= 0) {
+      setDisplayPct(targetPct);
+      return;
+    }
+
+    if (rafRef.current !== null) cancelAnimationFrame(rafRef.current);
+    const startTime = performance.now();
+
+    const animate = (now: number) => {
+      const t = Math.min((now - startTime) / ANIM_MS, 1);
+      // Allow easeOutBack overshoot (values slightly above targetPct), clamp 0 floor
+      setDisplayPct(Math.max(0, easeOutBack(t) * targetPct));
+      if (t < 1) {
+        rafRef.current = requestAnimationFrame(animate);
+      } else {
+        setDisplayPct(targetPct); // settle exactly at target
+        rafRef.current = null;
+      }
+    };
+    rafRef.current = requestAnimationFrame(animate);
+
+    return () => {
+      if (rafRef.current !== null) {
+        cancelAnimationFrame(rafRef.current);
+        rafRef.current = null;
+      }
+    };
+  }, [value, maxValue, animateOnMount, targetPct]);
+
+  const activeCount = Math.round((displayPct / MAX_PCT) * TOTAL_BARS);
+  const needleAngle = ARC_START_DEG + (displayPct / MAX_PCT) * 180;
 
   const bars = useMemo(
     () =>
@@ -165,17 +205,15 @@ export function HalfMoonGauge({
       </div>
 
       {/* Value display */}
-      <div
-        className={`flex flex-col items-center mt-4 transition-all duration-450 ${gaugeAnimating ? 'scale-110' : ''}`}
-      >
+      <div className="flex flex-col items-center mt-4">
         {badge ? (
           <div className="flex flex-col items-center gap-1">
-            <span className="text-3xl font-bold text-white font-mono">{Math.round(pct)}</span>
+            <span className="text-3xl font-bold text-white font-mono">{Math.round(displayPct)}</span>
             <span className="text-xs text-gray-400 text-center max-w-24 leading-tight">{badge}</span>
           </div>
         ) : (
           <div className="flex items-baseline gap-0.5">
-            <span className="text-5xl font-bold text-white font-mono">{Math.round(pct)}</span>
+            <span className="text-5xl font-bold text-white font-mono">{Math.round(displayPct)}</span>
             <span className="text-xl text-gray-500">%</span>
           </div>
         )}

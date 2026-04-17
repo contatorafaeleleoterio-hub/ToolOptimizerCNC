@@ -395,6 +395,7 @@ export function ResultsPanel() {
           maxValue={limites.maxAvanco}
           label="Eficiência de Avanço"
           palette="avanco"
+          animateOnMount
         />
         <HalfMoonGauge
           value={mrrPct}
@@ -402,6 +403,7 @@ export function ResultsPanel() {
           label="Produtividade MRR"
           palette="mrr"
           badge={storeResultado ? `${mrr.toFixed(1)} cm³/min` : undefined}
+          animateOnMount
         />
         <HalfMoonGauge
           value={resultado.healthScore}
@@ -409,6 +411,7 @@ export function ResultsPanel() {
           label="Saúde da Ferramenta"
           palette="health"
           badge={storeResultado && resultado.healthScore === 0 ? 'BLOQUEADO' : undefined}
+          animateOnMount
         />
       </div>
 

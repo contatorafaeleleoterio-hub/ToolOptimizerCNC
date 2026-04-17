@@ -58,9 +58,11 @@ export function MobilePage() {
 
       {/* ─── Tab content (flex-1, scrollable) ─── */}
       <main className="flex-1 overflow-y-auto">
-        {activeTab === 'config'  && <MobileConfigSection />}
-        {activeTab === 'results' && <MobileResultsSection />}
-        {activeTab === 'adjust'  && <MobileAdjustSection />}
+        <div key={activeTab} style={{ animation: 'tabSlideIn 0.15s ease-out' }}>
+          {activeTab === 'config'  && <MobileConfigSection />}
+          {activeTab === 'results' && <MobileResultsSection />}
+          {activeTab === 'adjust'  && <MobileAdjustSection />}
+        </div>
       </main>
 
       {/* ─── Bottom: Simulate button + Disclaimer (config tab only) + Tab bar ─── */}

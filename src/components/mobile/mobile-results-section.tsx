@@ -223,12 +223,14 @@ export function MobileResultsSection() {
             {/* ═══ ZONA 4 — RPM + Avanço ═══ */}
             <BigNumber label="Rotação (RPM)" value={fmt(rpm)} unit="RPM" pct={rpmPct}
               color="primary" glow="rgba(0,217,255,0.4)" barGlow="rgba(0,217,255,1)" icon="speed"
+              numericValue={rpm} animateOnReveal
               useBidirectionalSlider
               baseValue={baseRPM}
               currentPercent={manualOverrides.rpmPercent ?? 0}
               onPercentChange={setManualRPMPercent} />
             <BigNumber label="Avanço (mm/min)" value={fmt(avanco)} unit="mm/min" pct={feedPct}
               color="secondary" glow="rgba(57,255,20,0.4)" barGlow="rgba(57,255,20,1)" icon="moving"
+              numericValue={avanco} animateOnReveal
               useBidirectionalSlider
               baseValue={baseFeed}
               currentPercent={manualOverrides.feedPercent ?? 0}
