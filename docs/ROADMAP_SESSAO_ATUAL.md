@@ -15,20 +15,32 @@
 
 ## ⚡ PRÓXIMA AÇÃO OBRIGATÓRIA (Cloud Code)
 
-> **Leia estes dois arquivos NESTA ORDEM antes de escrever qualquer código:**
-> 1. `docs/plans/ATUALIZACAO_DASH_APROVADO/CONTEXTO-PROXIMA-SESSAO.md` — fila completa dos 10 itens, ordem, pts
-> 2. `docs/plans/ATUALIZACAO_DASH_APROVADO/` — spec do próximo item (ITEM-5.2)
+> **Plano de continuação:** `docs/plans/PLANO-CONTINUACAO-TIPOGRAFIA-E-CASSINO.md`
+> **Leia este plano antes de qualquer ação — contém divisão anti-estouro de sessão.**
 
-**Implementar: ITEM-5.2 — Simulação Estilo Cassino (último item aprovado)**
-- ITEM-12 ✅ concluído (`46a6f22`) — Página de Favoritos `/favoritos` (20 testes)
-- ITEM-5.2 é o último item da fila aprovada — ler spec antes de iniciar
-- **NÃO** iniciar nada de Segurança Cibernética — ver nota abaixo
+### SESSÃO 1A (próxima) — Commit da Proposta #1 (tipografia pendente)
+**Arquivos modificados e não-commitados:**
+- `src/components/results-panel.tsx`
+- `src/components/segmented-gradient-bar.tsx`
+- `src/components/parameter-health-bar.tsx`
+- `src/components/bidirectional-slider.tsx`
+
+**Ações:**
+1. `npx vitest run tests/` — confirmar 1038 passando
+2. Commitar: `fix(ui): normalize font sizes for desktop readability`
+3. Apresentar Proposta B (Grid 4/8) ao Rafael para aprovação
+
+**⚠️ IMPORTANTE — usar sempre:** `npx vitest run tests/` (NÃO `npm test` que roda .aiox-core/)
+
+### Depois da Sessão 1A:
+- **Propostas C e D** (Zona 6 grid 3×2 + Timing cassino -36%) — cada uma em sessão separada com aprovação prévia
+- **ITEM-5.2** — Simulação Estilo Cassino — 3 sub-sessões (2A/2B/2C) detalhadas no plano acima
 
 ---
 
 ## PROXIMAS 2 SESSOES (SEPARADAS)
 
-1. Sessao Cloud Code: implementar **ITEM-3.2** (Popover info params) — ler docs acima.
+1. Sessao Cloud Code: **Sessão 1A** — commitar tipografia pendente + Propostas B/C/D + ITEM-5.2
 2. Sessao Codex: trabalhar somente no Admin Dashboard (`/admin`).
 
 ---
@@ -315,7 +327,7 @@ Quando uma nova implementação for planejada durante a sessão:
 
 ---
 
-*Última atualização: 11/04/2026 — ITEM-11 concluído (`b369fec`): Zona Verde Dinâmica no SGB — prop `idealRange` opcional, visual opacity 1.0/0.65 + borda verde, overlay dinâmico, helper computeIdealRange, useFavoritesStore lookup com useMemo (anti-loop), integrado em fine-tune-panel e mobile. 1017 testes, v0.10.1 em produção. **PRÓXIMA SESSÃO Cloud Code:** ITEM-12 — Página de Favoritos (`/favoritos`). Segurança Cibernética ⏸️ PAUSADA — não sugerir.*
+*Última atualização: 12/04/2026 — Sessão de planejamento @aiox-master: Proposta #1 (normalização tipográfica) implementada mas não commitada (sessão anterior estourou contexto). Plano de continuação criado em `docs/plans/PLANO-CONTINUACAO-TIPOGRAFIA-E-CASSINO.md` com 6 sub-sessões anti-estouro: 1A (commit tipografia), 1B (Grid 4/8), 1C (Zona6+Timing), 2A/2B/2C (ITEM-5.2 Cassino). 1038 testes, v0.10.1 em produção. Segurança Cibernética ⏸️ PAUSADA — não sugerir.*
 
 ### Atualizacao de Encerramento - 28/03/2026 (sessao longa)
 

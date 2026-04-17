@@ -94,5 +94,29 @@
       "Bash(find /c/Users/USUARIO/Desktop/INICIO_TOOLOPTIMIZERCNC -name *worker* -o -name *wrangler*)",
       "Bash(grep -r \"telegram\\\\|bot\\\\|webhook\\\\|máquina virtual\\\\|requisição.*mobile\" C:/Users/USUARIO/Desktop/INICIO_TOOLOPTIMIZERCNC --include=*.md --include=*.txt)"
     ]
+  },
+  "hooks": {
+    "PreCompact": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "node \"C:\\\\Users\\\\USUARIO\\\\Desktop\\\\INICIO_TOOLOPTIMIZERCNC\\\\.claude\\\\hooks\\\\precompact-session-digest.cjs\"",
+            "timeout": 10
+          }
+        ]
+      }
+    ],
+    "UserPromptSubmit": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "node \"C:\\\\Users\\\\USUARIO\\\\Desktop\\\\INICIO_TOOLOPTIMIZERCNC\\\\.claude\\\\hooks\\\\synapse-engine.cjs\"",
+            "timeout": 10
+          }
+        ]
+      }
+    ]
   }
 }
