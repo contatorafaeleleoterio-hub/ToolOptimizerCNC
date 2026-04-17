@@ -54,7 +54,7 @@ function FineTuneValueInput({ display, step, min, max, color, label, unit, onCha
         className={`w-16 bg-transparent border-none text-right font-mono text-lg font-bold text-${color} outline-none [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none`}
         style={{ filter: `drop-shadow(0 0 6px rgba(${rgb},0.4))` }}
         aria-label={`${label} value`} />
-      <span className="text-[9px] text-gray-500 font-mono">{unit}</span>
+      <span className="text-2xs text-gray-500 font-mono">{unit}</span>
     </div>
   );
 }

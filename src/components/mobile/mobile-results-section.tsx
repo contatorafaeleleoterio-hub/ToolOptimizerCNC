@@ -167,7 +167,7 @@ export function MobileResultsSection() {
           <span className="truncate">{lcdAlertLine.text}</span>
         </div>
         {lcdInfoText && (
-          <div className="font-mono text-[9px] uppercase tracking-wide text-white/25 border-t border-white/5 pt-1">
+          <div className="font-mono text-[10px] uppercase tracking-wide text-white/25 border-t border-white/5 pt-1">
             {lcdInfoText}
           </div>
         )}
