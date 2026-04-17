@@ -72,6 +72,39 @@ body {
   to { stroke-dashoffset: 0; }
 }
 
+/* Cassino simulation keyframes */
+@keyframes btnIdleGlow {
+  0%, 100% { box-shadow: 0 0 8px rgba(0, 217, 255, 0.3), 0 0 20px rgba(0, 217, 255, 0.1); }
+  50% { box-shadow: 0 0 16px rgba(0, 217, 255, 0.6), 0 0 40px rgba(0, 217, 255, 0.2); }
+}
+
+@keyframes jackpotFlash {
+  0% { box-shadow: none; }
+  20% { box-shadow: 0 0 20px rgba(0, 217, 255, 0.8), 0 0 40px rgba(0, 217, 255, 0.4); }
+  50% { box-shadow: 0 0 30px rgba(57, 255, 20, 0.7), 0 0 60px rgba(57, 255, 20, 0.3); }
+  80% { box-shadow: 0 0 20px rgba(0, 217, 255, 0.5), 0 0 40px rgba(0, 217, 255, 0.2); }
+  100% { box-shadow: none; }
+}
+
+@keyframes ambientPulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.7; }
+}
+
+@keyframes sliderShake {
+  0%, 100% { transform: translateX(0); }
+  20% { transform: translateX(-3px); }
+  40% { transform: translateX(3px); }
+  60% { transform: translateX(-2px); }
+  80% { transform: translateX(2px); }
+}
+
+@keyframes spinIcon {
+  0% { transform: rotate(0deg) scale(1); }
+  50% { transform: rotate(180deg) scale(1.1); }
+  100% { transform: rotate(360deg) scale(1); }
+}
+
 ::-webkit-scrollbar { width: 6px; }
 ::-webkit-scrollbar-track { background: #0F1419; }
 ::-webkit-scrollbar-thumb { background: #333; border-radius: 4px; }

@@ -212,7 +212,7 @@ export function ConfigPanel() {
     setTimeout(() => setShowSavedBadge(false), 2000);
   };
 
-  const { isCalculating, runSimulation } = useSimulationAnimation();
+  const { isCalculating, calcProgress, runSimulation } = useSimulationAnimation();
   const { track } = usePlausible();
 
   const material = MATERIAIS.find((m) => m.id === materialId);
@@ -240,19 +240,41 @@ export function ConfigPanel() {
       {/* Sticky Simular + Reset bar */}
       <div className="sticky top-0 z-10 bg-background-dark/90 backdrop-blur-md pt-0 pb-2">
         <div className="flex gap-3">
-          <button onClick={handleSimulate} disabled={isCalculating}
-            className="flex-1 py-2 px-4 rounded-xl bg-gradient-to-r from-cyan-600 to-cyan-500 text-white font-bold tracking-wide shadow-neon-cyan hover:brightness-110 transition-all active:scale-[0.98] flex items-center justify-center gap-2 text-base uppercase disabled:opacity-70 disabled:cursor-not-allowed">
-            {isCalculating ? (
-              <>
-                <span className="material-symbols-outlined text-lg animate-[spinner_0.9s_linear_infinite]">refresh</span>
-                Calculando...
-              </>
-            ) : (
-              <>
-                <span className="material-symbols-outlined text-lg">play_arrow</span>
-                Simular
-              </>
+          <button
+            onClick={handleSimulate}
+            disabled={isCalculating}
+            className="relative flex-1 py-2 px-4 rounded-xl bg-gradient-to-r from-cyan-600 to-cyan-500 text-white font-bold tracking-wide shadow-neon-cyan hover:brightness-110 transition-all active:scale-[0.98] flex items-center justify-center gap-2 text-base uppercase disabled:opacity-70 disabled:cursor-not-allowed overflow-hidden"
+            style={!isCalculating ? { animation: 'btnIdleGlow 3s ease-in-out infinite' } : undefined}
+          >
+            {/* Progress bar fill */}
+            {isCalculating && (
+              <span
+                className="absolute inset-0 rounded-xl origin-left transition-none"
+                style={{
+                  background: 'linear-gradient(90deg, rgba(0,217,255,0.35) 0%, rgba(57,255,20,0.25) 100%)',
+                  transform: `scaleX(${calcProgress / 100})`,
+                  transition: calcProgress > 0 ? 'transform 0.08s linear' : 'none',
+                }}
+              />
             )}
+            <span className="relative flex items-center gap-2">
+              {isCalculating ? (
+                <>
+                  <span
+                    className="material-symbols-outlined text-lg"
+                    style={{ animation: 'spinIcon 0.9s linear infinite' }}
+                  >
+                    casino
+                  </span>
+                  CALCULANDO {calcProgress}%
+                </>
+              ) : (
+                <>
+                  <span className="material-symbols-outlined text-lg">play_arrow</span>
+                  Simular
+                </>
+              )}
+            </span>
           </button>
           <button onClick={reset}
             className="w-12 rounded-xl bg-white/5 border border-white/10 text-gray-400 hover:bg-white/10 hover:text-white transition-all flex items-center justify-center active:scale-[0.98]">
