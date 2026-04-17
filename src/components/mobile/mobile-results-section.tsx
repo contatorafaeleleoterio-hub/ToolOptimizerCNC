@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { useMachiningStore } from '@/store';
 import { useHistoryStore } from '@/store';
+import { useSimulationAnimation } from '@/hooks/use-simulation-animation';
 import { TipoUsinagem } from '@/types/index';
 import type { Ferramenta, SavedTool } from '@/types/index';
 import { FormulaCard, Fraction } from '../formula-card';
@@ -57,6 +58,10 @@ export function MobileResultsSection() {
 
   const historyEntries = useHistoryStore((s) => s.entries);
   const toggleFavorite = useHistoryStore((s) => s.toggleFavorite);
+
+  const { isRevealing } = useSimulationAnimation();
+  const flash = (delayMs: number) =>
+    isRevealing ? { animation: `jackpotFlash 550ms ease-out ${delayMs}ms both` } : undefined;
 
   const [editingTool, setEditingTool] = useState<SavedTool | null>(null);
 
@@ -221,20 +226,24 @@ export function MobileResultsSection() {
           <div className="flex flex-col gap-3 animate-[fadeInUp_0.35s_ease-out]">
 
             {/* ═══ ZONA 4 — RPM + Avanço ═══ */}
-            <BigNumber label="Rotação (RPM)" value={fmt(rpm)} unit="RPM" pct={rpmPct}
-              color="primary" glow="rgba(0,217,255,0.4)" barGlow="rgba(0,217,255,1)" icon="speed"
-              numericValue={rpm} animateOnReveal
-              useBidirectionalSlider
-              baseValue={baseRPM}
-              currentPercent={manualOverrides.rpmPercent ?? 0}
-              onPercentChange={setManualRPMPercent} />
-            <BigNumber label="Avanço (mm/min)" value={fmt(avanco)} unit="mm/min" pct={feedPct}
-              color="secondary" glow="rgba(57,255,20,0.4)" barGlow="rgba(57,255,20,1)" icon="moving"
-              numericValue={avanco} animateOnReveal
-              useBidirectionalSlider
-              baseValue={baseFeed}
-              currentPercent={manualOverrides.feedPercent ?? 0}
-              onPercentChange={setManualFeedPercent} />
+            <div style={flash(0)}>
+              <BigNumber label="Rotação (RPM)" value={fmt(rpm)} unit="RPM" pct={rpmPct}
+                color="primary" glow="rgba(0,217,255,0.4)" barGlow="rgba(0,217,255,1)" icon="speed"
+                numericValue={rpm} animateOnReveal
+                useBidirectionalSlider
+                baseValue={baseRPM}
+                currentPercent={manualOverrides.rpmPercent ?? 0}
+                onPercentChange={setManualRPMPercent} />
+            </div>
+            <div style={flash(50)}>
+              <BigNumber label="Avanço (mm/min)" value={fmt(avanco)} unit="mm/min" pct={feedPct}
+                color="secondary" glow="rgba(57,255,20,0.4)" barGlow="rgba(57,255,20,1)" icon="moving"
+                numericValue={avanco} animateOnReveal
+                useBidirectionalSlider
+                baseValue={baseFeed}
+                currentPercent={manualOverrides.feedPercent ?? 0}
+                onPercentChange={setManualFeedPercent} />
+            </div>
 
             {/* ═══ ZONA 5 — Input Params (2×2) ═══ */}
             <div className="grid grid-cols-2 gap-1.5">

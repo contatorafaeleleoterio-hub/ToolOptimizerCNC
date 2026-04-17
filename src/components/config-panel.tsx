@@ -212,7 +212,7 @@ export function ConfigPanel() {
     setTimeout(() => setShowSavedBadge(false), 2000);
   };
 
-  const { isCalculating, calcProgress, runSimulation } = useSimulationAnimation();
+  const { isCalculating, calcProgress, isRevealing, runSimulation } = useSimulationAnimation();
   const { track } = usePlausible();
 
   const material = MATERIAIS.find((m) => m.id === materialId);
@@ -448,7 +448,9 @@ export function ConfigPanel() {
           title="Ajuste Fino"
           summary={summaryAjuste}
         >
-          <FineTunePanel embedded />
+          <div style={(isCalculating || isRevealing) ? { pointerEvents: 'none', opacity: 0.5 } : undefined}>
+            <FineTunePanel embedded />
+          </div>
         </CollapsibleSection>
 
         {/* Seção 4: Segurança — Fator de Correção slider */}

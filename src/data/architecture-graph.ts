@@ -500,7 +500,7 @@ export const ARCHITECTURE_GRAPH: ArchGraph = {
   edges: [...LEVEL1_EDGES, ...LEVEL2_EDGES],
   groups: GROUPS,
   metadata: {
-    version: '0.10.1',
+    version: '0.11.0',
     totalFiles: Object.keys(FILE_LINES).length,
     totalLines,
     lastUpdated: '2026-04-06',

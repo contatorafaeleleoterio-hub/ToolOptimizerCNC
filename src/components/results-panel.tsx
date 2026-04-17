@@ -98,8 +98,12 @@ export function ResultsPanel() {
 
   const [showEditModal, setShowEditModal] = React.useState(false);
 
-  const { triggerPulse, safetyLevel } = useSimulationAnimation();
+  const { triggerPulse, safetyLevel, isRevealing } = useSimulationAnimation();
   const resultado = storeResultado ?? EMPTY_RESULTADO;
+
+  // jackpotFlash helper: animation style with per-card delay
+  const flash = (delayMs: number) =>
+    isRevealing ? { animation: `jackpotFlash 550ms ease-out ${delayMs}ms both` } : undefined;
 
   const latestEntry = historyEntries[0];
 
@@ -161,8 +165,9 @@ export function ResultsPanel() {
             {OPERACAO_LABELS[tipoOperacao]}
           </span>
         </div>
-        {/* Safety badge inline */}
-        <div className={`flex items-center gap-1.5 px-2.5 py-1 rounded-lg border text-xs font-bold uppercase tracking-wide shrink-0 ${SEG_BG[nivel]}`}>
+        {/* Safety badge inline — jackpotFlash with 600ms delay (AC-9) */}
+        <div className={`flex items-center gap-1.5 px-2.5 py-1 rounded-lg border text-xs font-bold uppercase tracking-wide shrink-0 ${SEG_BG[nivel]}`}
+          style={flash(600)}>
           <span className={`material-symbols-outlined text-sm ${SEG_COLORS[nivel]}`}
             style={{ fontVariationSettings: "'FILL' 1, 'wght' 400" }}>
             {SEG_ICONS[nivel]}
@@ -271,8 +276,9 @@ export function ResultsPanel() {
 
       {/* ═══ ZONA 4 — RPM + Avanço (compact cards) ═══ */}
       <div className="grid grid-cols-2 gap-2">
-        {/* RPM Card */}
-        <div className="bg-surface-dark backdrop-blur-xl border border-white/5 rounded-xl px-3 pt-3 pb-2 shadow-glass flex flex-col gap-1">
+        {/* RPM Card — jackpotFlash delay 0ms (AC-8) */}
+        <div className="bg-surface-dark backdrop-blur-xl border border-white/5 rounded-xl px-3 pt-3 pb-2 shadow-glass flex flex-col gap-1"
+          style={flash(0)}>
           <div className="flex justify-between items-center">
             <span className="text-xs font-bold uppercase tracking-widest text-white/50">Rotação (RPM)</span>
             <span className="material-symbols-outlined text-xl text-primary opacity-60">speed</span>
@@ -295,8 +301,9 @@ export function ResultsPanel() {
           />
         </div>
 
-        {/* Avanço Card */}
-        <div className="bg-surface-dark backdrop-blur-xl border border-white/5 rounded-xl px-3 pt-3 pb-2 shadow-glass flex flex-col gap-1">
+        {/* Avanço Card — jackpotFlash delay 50ms (AC-8) */}
+        <div className="bg-surface-dark backdrop-blur-xl border border-white/5 rounded-xl px-3 pt-3 pb-2 shadow-glass flex flex-col gap-1"
+          style={flash(50)}>
           <div className="flex justify-between items-center">
             <span className="text-xs font-bold uppercase tracking-widest text-white/50">Avanço (mm/min)</span>
             <span className="material-symbols-outlined text-xl text-secondary opacity-60">moving</span>
@@ -390,29 +397,35 @@ export function ResultsPanel() {
 
       {/* ═══ ZONA 7 — HalfMoon Gauges ═══ */}
       <div className={`grid grid-cols-3 gap-2 ${pulseClass}`}>
-        <HalfMoonGauge
-          value={avanco}
-          maxValue={limites.maxAvanco}
-          label="Eficiência de Avanço"
-          palette="avanco"
-          animateOnMount
-        />
-        <HalfMoonGauge
-          value={mrrPct}
-          maxValue={100}
-          label="Produtividade MRR"
-          palette="mrr"
-          badge={storeResultado ? `${mrr.toFixed(1)} cm³/min` : undefined}
-          animateOnMount
-        />
-        <HalfMoonGauge
-          value={resultado.healthScore}
-          maxValue={100}
-          label="Saúde da Ferramenta"
-          palette="health"
-          badge={storeResultado && resultado.healthScore === 0 ? 'BLOQUEADO' : undefined}
-          animateOnMount
-        />
+        <div style={flash(100)}>
+          <HalfMoonGauge
+            value={avanco}
+            maxValue={limites.maxAvanco}
+            label="Eficiência de Avanço"
+            palette="avanco"
+            animateOnMount
+          />
+        </div>
+        <div style={flash(150)}>
+          <HalfMoonGauge
+            value={mrrPct}
+            maxValue={100}
+            label="Produtividade MRR"
+            palette="mrr"
+            badge={storeResultado ? `${mrr.toFixed(1)} cm³/min` : undefined}
+            animateOnMount
+          />
+        </div>
+        <div style={flash(200)}>
+          <HalfMoonGauge
+            value={resultado.healthScore}
+            maxValue={100}
+            label="Saúde da Ferramenta"
+            palette="health"
+            badge={storeResultado && resultado.healthScore === 0 ? 'BLOQUEADO' : undefined}
+            animateOnMount
+          />
+        </div>
       </div>
 
       {/* ═══ ZONA 8 — Fórmulas Educacionais (scrollável) ═══ */}

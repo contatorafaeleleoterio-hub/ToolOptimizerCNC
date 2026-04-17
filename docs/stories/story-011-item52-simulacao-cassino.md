@@ -1,7 +1,7 @@
 ---
 id: story-011
 title: "ITEM-5.2: Simulação Estilo Cassino — Animação Cinematográfica em 4 Fases"
-status: Ready
+status: Done
 created: 2026-04-17
 author: "@sm (River)"
 epic: "Grupo A — Dashboard Principal"
@@ -198,13 +198,16 @@ describe('ConfigPanel — botão Simular cassino', () => {
 > Preenchido pelo @dev durante implementação
 
 - [x] `src/hooks/use-simulation-animation.ts` — modificado (Sessão 2A)
-- [x] `src/components/config-panel.tsx` — modificado (Sessão 2A)
+- [x] `src/components/config-panel.tsx` — modificado (Sessão 2A + 2C — isRevealing + FineTunePanel disable)
 - [x] `src/pages/mobile-page.tsx` — modificado (Sessão 2B — tab slide-in transition)
 - [x] `src/components/half-moon-gauge.tsx` — modificado (Sessão 2B — animateOnMount + rAF easeOutBack)
 - [x] `src/components/shared-result-parts.tsx` — modificado (Sessão 2B — BigNumber/ProgressCard animated counters)
+- [x] `src/components/results-panel.tsx` — modificado (Sessão 2C — jackpotFlash cascata Zonas 1/4/7)
+- [x] `src/components/mobile/mobile-results-section.tsx` — modificado (Sessão 2C — jackpotFlash BigNumbers mobile)
+- [x] `src/data/architecture-graph.ts` — modificado (Sessão 2C — versão 0.11.0)
 - [x] `src/index.css` — modificado (Sessão 2A)
-- [x] `tests/hooks/use-simulation-animation.test.ts` — criado (Sessão 2A)
-- [ ] `tests/config-panel.test.tsx` — modificado
+- [x] `tests/hooks/use-simulation-animation.test.ts` — modificado (Sessão 2C — 6 novos testes, total 8)
+- [x] `tests/components/config-panel.test.tsx` — modificado (Sessão 2C — 4 testes cassino)
 
 ---
 
@@ -217,3 +220,4 @@ describe('ConfigPanel — botão Simular cassino', () => {
 | 2026-04-17 | @po (Pax) | Validação 10/10 — GO ✅ — Status atualizado: Draft → Ready |
 | 2026-04-17 | @dev (Dex) | Sessão 2A concluída — commit `4de2578` — hook 6 estados + 5 keyframes + botão desktop |
 | 2026-04-17 | @dev (Dex) | Sessão 2B concluída — HalfMoonGauge animateOnMount+rAF, BigNumber/ProgressCard counters, tabSlideIn |
+| 2026-04-17 | @dev (Dex) | Sessão 2C concluída — jackpotFlash cascata (Zonas 1/4/7 desktop + mobile), FineTunePanel disable, 12 testes, release v0.11.0 |

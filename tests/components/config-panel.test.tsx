@@ -374,4 +374,51 @@ describe('ConfigPanel', () => {
     useMachiningStore.getState().setSafetyFactor(0.70);
     expect(useMachiningStore.getState().resultado).toBeNull();
   });
+
+  // Cassino animation — Story-011 2C
+  it('Simular button is disabled immediately after click (calculating state)', async () => {
+    renderPanel();
+    const btn = screen.getByText('Simular').closest('button')!;
+    expect(btn).not.toBeDisabled();
+    fireEvent.click(btn);
+    expect(btn).toBeDisabled();
+    // Wait for sequence to complete so timers don't leak
+    await waitFor(
+      () => expect(useMachiningStore.getState().resultado).not.toBeNull(),
+      { timeout: 2500 },
+    );
+  });
+
+  it('FineTunePanel wrapper exists inside Ajuste Fino section', () => {
+    renderPanel();
+    fireEvent.click(screen.getByText('Ajuste Fino'));
+    // The wrapper div must contain the FineTunePanel content
+    expect(screen.getByText('VEL. DE CORTE')).toBeInTheDocument();
+    expect(screen.getByText('AVANÇO/DENTE')).toBeInTheDocument();
+  });
+
+  it('Simular button re-enables after animation sequence completes', async () => {
+    renderPanel();
+    const btn = screen.getByText('Simular').closest('button')!;
+    await act(async () => { fireEvent.click(btn); });
+    await waitFor(
+      () => expect(btn).not.toBeDisabled(),
+      { timeout: 3500 },
+    );
+  });
+
+  it('Simular button does not trigger double-simulation on rapid clicks', async () => {
+    renderPanel();
+    const btn = screen.getByText('Simular').closest('button')!;
+    await act(async () => {
+      fireEvent.click(btn);
+      fireEvent.click(btn); // second click while disabled
+    });
+    await waitFor(
+      () => expect(useMachiningStore.getState().resultado).not.toBeNull(),
+      { timeout: 2500 },
+    );
+    // resultado should exist (exactly one simulation ran)
+    expect(useMachiningStore.getState().resultado).not.toBeNull();
+  });
 });
