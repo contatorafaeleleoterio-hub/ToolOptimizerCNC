@@ -15,32 +15,32 @@
 
 ## ⚡ PRÓXIMA AÇÃO OBRIGATÓRIA (Cloud Code)
 
-> **Plano de continuação:** `docs/plans/PLANO-CONTINUACAO-TIPOGRAFIA-E-CASSINO.md`
-> **Leia este plano antes de qualquer ação — contém divisão anti-estouro de sessão.**
+> **Story-011 em andamento:** `docs/stories/story-011-item52-simulacao-cassino.md` — Sessão 2A ✅ concluída
+> **Redesign Mobile Sessão 1:** ✅ concluída — tab navigation + MiniResultBar + AdjustSection
 
-### SESSÃO 1A (próxima) — Commit da Proposta #1 (tipografia pendente)
-**Arquivos modificados e não-commitados:**
-- `src/components/results-panel.tsx`
-- `src/components/segmented-gradient-bar.tsx`
-- `src/components/parameter-health-bar.tsx`
-- `src/components/bidirectional-slider.tsx`
+### SESSÃO 2B (próxima) — ITEM-5.2 Cassino + Mobile Polimento
+**~8 pontos | 2 frentes**
 
-**Ações:**
-1. `npx vitest run tests/` — confirmar 1038 passando
-2. Commitar: `fix(ui): normalize font sizes for desktop readability`
-3. Apresentar Proposta B (Grid 4/8) ao Rafael para aprovação
+**Frente A — Story-011 Cassino 2B:**
+1. `src/pages/mobile-page.tsx` — botão Simular mobile já tem progress bar (via `MobileSimulateButton`) ✅
+2. `src/components/half-moon-gauge.tsx` — prop `animateOnMount?: boolean` + rAF + easeOutBack
+3. `src/components/shared-result-parts.tsx` — contadores BigNumber/ProgressCard animados
+
+**Frente B — Mobile Redesign Sessão 2 (polimento):**
+1. Flash nos `MiniResultBar` quando `gaugeAnimating === true` (scale 1→1.04→1, 300ms)
+2. Transição de aba: `translateX(-4px)→0 + fadeIn` 150ms ao trocar aba
+3. Estado vazio na aba Ajustar quando `resultado === null` já implementado ✅
 
 **⚠️ IMPORTANTE — usar sempre:** `npx vitest run tests/` (NÃO `npm test` que roda .aiox-core/)
 
-### Depois da Sessão 1A:
-- **Propostas C e D** (Zona 6 grid 3×2 + Timing cassino -36%) — cada uma em sessão separada com aprovação prévia
-- **ITEM-5.2** — Simulação Estilo Cassino — 3 sub-sessões (2A/2B/2C) detalhadas no plano acima
+### Sessões seguintes:
+- **2C** — jackpotFlash cascata + SafetyBadge + 12 testes + release v0.11.0
 
 ---
 
 ## PROXIMAS 2 SESSOES (SEPARADAS)
 
-1. Sessao Cloud Code: **Sessão 1A** — commitar tipografia pendente + Propostas B/C/D + ITEM-5.2
+1. Sessao Cloud Code: **Sessão 2B** — Cassino Fase B + Mobile Polimento
 2. Sessao Codex: trabalhar somente no Admin Dashboard (`/admin`).
 
 ---
@@ -51,10 +51,10 @@
 |------|-------|
 | **Branch** | `main` |
 | **Versão** | `0.10.1` |
-| **Testes** | **1038 passando** (59 arquivos) — 0 falhas |
+| **Testes** | **1040 passando** (60 arquivos) — 0 falhas |
 | **TypeScript** | **zero erros** |
 | **Build** | **limpo** — JS ~107KB gzip |
-| **Remote** | `origin/main` — último commit local `46a6f22` (push pendente) |
+| **Remote** | `origin/main` — último commit `4fa161a` (pushed) |
 | **Worker** | ✅ LIVE — `https://tooloptimizercnc.contatorafaeleleoterio.workers.dev` |
 | **Custom Domains** | ✅ `tooloptimizercnc.com.br` + `app.tooloptimizercnc.com.br` |
 | **GitHub Actions** | ✅ deploy automático ao push para main |
@@ -327,7 +327,7 @@ Quando uma nova implementação for planejada durante a sessão:
 
 ---
 
-*Última atualização: 12/04/2026 — Sessão de planejamento @aiox-master: Proposta #1 (normalização tipográfica) implementada mas não commitada (sessão anterior estourou contexto). Plano de continuação criado em `docs/plans/PLANO-CONTINUACAO-TIPOGRAFIA-E-CASSINO.md` com 6 sub-sessões anti-estouro: 1A (commit tipografia), 1B (Grid 4/8), 1C (Zona6+Timing), 2A/2B/2C (ITEM-5.2 Cassino). 1038 testes, v0.10.1 em produção. Segurança Cibernética ⏸️ PAUSADA — não sugerir.*
+*Última atualização: 17/04/2026 — Sessão GESTOR: Proposta #1 tipografia ✅ commitada (`356f461`+`a777810`). Propostas B/C/D ❌ DESCARTADAS por Rafael. Story-011 criada por @sm e validada por @po (10/10 — Ready). Próxima: Sessão 2A — ITEM-5.2 Cassino. 1038 testes, v0.10.1 em produção. Segurança Cibernética ⏸️ PAUSADA — não sugerir.*
 
 ### Atualizacao de Encerramento - 28/03/2026 (sessao longa)
 
