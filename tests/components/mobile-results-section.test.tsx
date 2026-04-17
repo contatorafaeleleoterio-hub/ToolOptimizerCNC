@@ -94,11 +94,13 @@ describe('MobileResultsSection', () => {
       expect(screen.getByText('CTF')).toBeInTheDocument();
     });
 
-    it('renders 3 gauges (parity with desktop)', () => {
+    it('renders zona 7 data in calculated grid (gauges migrated to MobileAdjustSection)', () => {
+      // Zona 7 (HalfMoonGauges) was moved to MobileAdjustSection.
+      // Verify the zone-6 grid still renders key data (MRR, L/D, CTF).
       renderSection();
-      expect(screen.getByText('Eficiência de Avanço')).toBeInTheDocument();
-      expect(screen.getByText('Produtividade MRR')).toBeInTheDocument();
-      expect(screen.getByText('Saúde da Ferramenta')).toBeInTheDocument();
+      expect(screen.getByText('MRR')).toBeInTheDocument();
+      expect(screen.getByText('L/D')).toBeInTheDocument();
+      expect(screen.getByText('CTF')).toBeInTheDocument();
     });
 
     it('renders Favoritar button after simular()', () => {

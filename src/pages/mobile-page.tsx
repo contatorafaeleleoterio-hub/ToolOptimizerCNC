@@ -1,54 +1,50 @@
-import { useEffect } from 'react';
+import { useEffect, useState, useRef } from 'react';
 import { useMachiningStore } from '@/store';
-import { useSimulationAnimation } from '@/hooks/use-simulation-animation';
 import { MobileHeader } from '@/components/mobile/mobile-header';
 import { MobileConfigSection } from '@/components/mobile/mobile-config-section';
 import { MobileResultsSection } from '@/components/mobile/mobile-results-section';
-import { MobileFineTuneSection } from '@/components/mobile/mobile-fine-tune-section';
+import { MobileAdjustSection } from '@/components/mobile/mobile-adjust-section';
+import { MobileSimulateButton } from '@/components/mobile/mobile-simulate-button';
+import { MobileTabBar, type Tab } from '@/components/mobile/mobile-tab-bar';
 import { Disclaimer } from '@/components/disclaimer';
 import { usePageTitle } from '@/hooks/use-page-title';
 import { SeoHead } from '@/components/seo-head';
 
-function MobileStickyActions() {
-  const { simular, reset } = useMachiningStore();
-  const { isCalculating, runSimulation } = useSimulationAnimation();
-
-  return (
-    <div className="sticky top-[52px] z-20 bg-background-dark/95 backdrop-blur-md px-4 py-2 border-b border-white/5 shadow-glass">
-      <div className="flex gap-3">
-        <button onClick={() => runSimulation(simular)} disabled={isCalculating}
-          className="flex-1 min-h-[48px] py-3 px-4 rounded-xl bg-gradient-to-r from-cyan-600 to-cyan-500 text-white font-bold tracking-wide shadow-neon-cyan active:scale-[0.97] transition-all flex items-center justify-center gap-2 text-sm uppercase disabled:opacity-70 disabled:cursor-not-allowed">
-          {isCalculating ? (
-            <>
-              <span className="material-symbols-outlined text-lg animate-[spinner_0.9s_linear_infinite]">refresh</span>
-              Calculando...
-            </>
-          ) : (
-            <>
-              <span className="material-symbols-outlined text-lg">play_arrow</span>
-              Simular
-            </>
-          )}
-        </button>
-        <button onClick={reset}
-          className="w-14 min-h-[48px] rounded-xl bg-white/5 border border-white/10 text-gray-400 active:bg-white/10 transition-all flex items-center justify-center">
-          <span className="material-symbols-outlined text-xl">restart_alt</span>
-        </button>
-      </div>
-    </div>
-  );
-}
-
 export function MobilePage() {
   usePageTitle('ToolOptimizer CNC Mobile');
+
+  const [activeTab, setActiveTab] = useState<Tab>('config');
+  const [hasNewResult, setHasNewResult] = useState(false);
+
+  // Detect new simulation by watching resultado timestamp in store
+  const resultado = useMachiningStore((s) => s.resultado);
+  const prevResultadoRef = useRef(resultado);
+
   useEffect(() => {
     document.body.classList.add('mobile-active');
     return () => { document.body.classList.remove('mobile-active'); };
   }, []);
 
+  // Auto-switch to Resultados when a new simulation completes
+  useEffect(() => {
+    if (resultado !== null && resultado !== prevResultadoRef.current) {
+      prevResultadoRef.current = resultado;
+      setHasNewResult(true);
+      setActiveTab('results');
+    }
+    if (resultado === null) {
+      prevResultadoRef.current = null;
+    }
+  }, [resultado]);
+
+  const handleTabChange = (tab: Tab) => {
+    setActiveTab(tab);
+    if (tab === 'results') setHasNewResult(false);
+  };
+
   return (
-    <div className="flex flex-col min-h-screen bg-background-dark">
-      {/* Ambient gradient orbs — glassmorphism requires a colored background */}
+    <div className="flex flex-col h-screen bg-background-dark overflow-hidden">
+      {/* Ambient gradient orbs */}
       <div className="pointer-events-none fixed inset-0 overflow-hidden -z-10" aria-hidden>
         <div className="absolute top-0 left-1/4 w-72 h-72 rounded-full bg-cyan-500/5 blur-3xl" />
         <div className="absolute top-1/2 right-0 w-56 h-56 rounded-full bg-purple-500/5 blur-3xl" />
@@ -56,14 +52,23 @@ export function MobilePage() {
       </div>
 
       <SeoHead title="ToolOptimizer CNC Mobile" />
+
+      {/* ─── Header (sticky top) ─── */}
       <MobileHeader />
-      <MobileStickyActions />
-      <main className="flex-1 flex flex-col gap-6 py-4 pb-8">
-        <MobileConfigSection />
-        <MobileResultsSection />
-        <MobileFineTuneSection />
+
+      {/* ─── Tab content (flex-1, scrollable) ─── */}
+      <main className="flex-1 overflow-y-auto">
+        {activeTab === 'config'  && <MobileConfigSection />}
+        {activeTab === 'results' && <MobileResultsSection />}
+        {activeTab === 'adjust'  && <MobileAdjustSection />}
       </main>
-      <Disclaimer />
+
+      {/* ─── Bottom: Simulate button + Disclaimer (config tab only) + Tab bar ─── */}
+      <div className="shrink-0">
+        {activeTab === 'config' && <Disclaimer />}
+        <MobileSimulateButton onSimulationStart={() => setHasNewResult(false)} />
+        <MobileTabBar active={activeTab} onChange={handleTabChange} hasNewResult={hasNewResult} />
+      </div>
     </div>
   );
 }

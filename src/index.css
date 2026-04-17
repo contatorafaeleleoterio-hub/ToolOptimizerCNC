@@ -105,6 +105,12 @@ body {
   100% { transform: rotate(360deg) scale(1); }
 }
 
+@keyframes miniGaugeFlash {
+  0%   { transform: scale(1); }
+  50%  { transform: scale(1.04); }
+  100% { transform: scale(1); }
+}
+
 ::-webkit-scrollbar { width: 6px; }
 ::-webkit-scrollbar-track { background: #0F1419; }
 ::-webkit-scrollbar-thumb { background: #333; border-radius: 4px; }

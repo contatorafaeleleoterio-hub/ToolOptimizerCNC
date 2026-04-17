@@ -3,7 +3,6 @@ import { useMachiningStore } from '@/store';
 import { useHistoryStore } from '@/store';
 import { TipoUsinagem } from '@/types/index';
 import type { Ferramenta, SavedTool } from '@/types/index';
-import { HalfMoonGauge } from '../half-moon-gauge';
 import { FormulaCard, Fraction } from '../formula-card';
 import { ToolEditModal } from '../modals/tool-edit-modal';
 import { getMaterialById } from '@/data';
@@ -12,14 +11,6 @@ import {
   SEG_COLORS, SEG_ICONS, SEG_LABELS, SEG_BG,
   BigNumber, WarningsSection,
 } from '../shared-result-parts';
-import { useSimulationAnimation } from '@/hooks/use-simulation-animation';
-
-// MRR benchmarks by operation type (cm³/min) — same as desktop
-const MRR_BENCHMARKS: Record<TipoUsinagem, number> = {
-  [TipoUsinagem.DESBASTE]: 50,
-  [TipoUsinagem.SEMI_ACABAMENTO]: 20,
-  [TipoUsinagem.ACABAMENTO]: 5,
-};
 
 const OPERACAO_LABELS: Record<TipoUsinagem, string> = {
   [TipoUsinagem.DESBASTE]: 'Desbaste',
@@ -67,7 +58,6 @@ export function MobileResultsSection() {
   const historyEntries = useHistoryStore((s) => s.entries);
   const toggleFavorite = useHistoryStore((s) => s.toggleFavorite);
 
-  const { triggerPulse, safetyLevel } = useSimulationAnimation();
   const [editingTool, setEditingTool] = useState<SavedTool | null>(null);
 
   const latestEntry = historyEntries[0];
@@ -85,14 +75,7 @@ export function MobileResultsSection() {
   const ctf = resultado?.seguranca.ctf ?? 1;
   const ldColor = getLdColor(razaoLD);
 
-  const mrrBenchmark = MRR_BENCHMARKS[tipoOperacao] ?? MRR_BENCHMARKS[TipoUsinagem.DESBASTE];
-  const mrrPct = resultado && mrrBenchmark > 0 ? (resultado.mrr / mrrBenchmark) * 100 : 0;
 
-  const pulseClass = triggerPulse && safetyLevel === 'verde'
-    ? 'animate-[subtlePulse_0.9s_ease-in-out]'
-    : triggerPulse && (safetyLevel === 'vermelho' || safetyLevel === 'bloqueado')
-    ? 'animate-[subtlePulse_0.45s_ease-in-out_2]'
-    : '';
 
   // LCD alert line
   const lcdAlertLine = (() => {
@@ -311,21 +294,6 @@ export function MobileResultsSection() {
               <div className="bg-black/30 border border-white/5 rounded-lg px-2.5 py-1.5 flex items-center justify-between">
                 <span className="text-[9px] text-white/35 uppercase tracking-wide">CTF</span>
                 <span className="font-mono text-xs font-bold text-primary">{ctf.toFixed(2)}</span>
-              </div>
-            </div>
-
-            {/* ═══ ZONA 7 — HalfMoon Gauges (scroll horizontal) ═══ */}
-            <div className={`flex gap-3 overflow-x-auto snap-x snap-mandatory pb-2 -mx-1 px-1 scrollbar-thin ${pulseClass}`}>
-              <div className="snap-center shrink-0 w-[calc(100%-2rem)]">
-                <HalfMoonGauge value={avanco} maxValue={limites.maxAvanco} label="Eficiência de Avanço" size="sm" />
-              </div>
-              <div className="snap-center shrink-0 w-[calc(100%-2rem)]">
-                <HalfMoonGauge value={mrrPct} maxValue={100} label="Produtividade MRR" size="sm"
-                  badge={`${mrr.toFixed(1)} cm³/min`} />
-              </div>
-              <div className="snap-center shrink-0 w-[calc(100%-2rem)]">
-                <HalfMoonGauge value={resultado.healthScore} maxValue={100} label="Saúde da Ferramenta" size="sm"
-                  badge={resultado.healthScore === 0 ? 'BLOQUEADO' : undefined} />
               </div>
             </div>
 

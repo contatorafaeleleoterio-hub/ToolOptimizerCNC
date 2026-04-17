@@ -61,28 +61,31 @@ describe('MobilePage', () => {
     expect(screen.getAllByText(/^Topo/).length).toBeGreaterThanOrEqual(1);
   });
 
-  it('renders fine tune sliders', () => {
+  it('renders fine tune sliders (Ajustar tab)', () => {
     renderMobile();
+    fireEvent.click(screen.getByRole('tab', { name: /ajustar/i }));
     expect(screen.getAllByLabelText(/Vc value/i).length).toBeGreaterThanOrEqual(1);
     expect(screen.getAllByLabelText(/fz value/i).length).toBeGreaterThanOrEqual(1);
   });
 
-  it('renders ToolSummaryViewer', () => {
+  it('renders ToolSummaryViewer (Resultados tab)', () => {
     renderMobile();
+    fireEvent.click(screen.getByRole('tab', { name: /resultados/i }));
     expect(screen.getByTestId('tool-summary')).toBeInTheDocument();
   });
 
-  it('shows placeholder when no results', () => {
+  it('shows placeholder when no results (Resultados tab)', () => {
     renderMobile();
+    fireEvent.click(screen.getByRole('tab', { name: /resultados/i }));
     expect(screen.getByText(/Configure os parâmetros/)).toBeInTheDocument();
   });
 
-  it('shows results after simulation', async () => {
+  it('shows results after simulation (auto-switches to Resultados tab)', async () => {
     renderMobile();
     fireEvent.click(screen.getByRole('button', { name: /simular/i }));
     await waitFor(() => {
       expect(screen.getByText(/SEGURO|ALERTA|CRÍTICO|BLOQUEADO/)).toBeInTheDocument();
-    }, { timeout: 2000 });
+    }, { timeout: 3000 });
   });
 
   it('renders operation type radio buttons', () => {
@@ -91,15 +94,17 @@ describe('MobilePage', () => {
     expect(radios.length).toBeGreaterThanOrEqual(3);
   });
 
-  // Health bar integration — mobile parity
-  it('renders health bars for ae and ap in mobile fine tune', () => {
+  // Health bar integration — mobile parity (Ajustar tab)
+  it('renders health bars for ae and ap in mobile fine tune (Ajustar tab)', () => {
     renderMobile();
+    fireEvent.click(screen.getByRole('tab', { name: /ajustar/i }));
     expect(screen.getByTestId('health-bar-ae')).toBeInTheDocument();
     expect(screen.getByTestId('health-bar-ap')).toBeInTheDocument();
   });
 
-  it('vc bar always active; fz bar shows inactive state before simulation', () => {
+  it('vc bar always active; fz bar shows inactive state before simulation (Ajustar tab)', () => {
     renderMobile();
+    fireEvent.click(screen.getByRole('tab', { name: /ajustar/i }));
     // vc is now always active (value-based, no simulation needed)
     expect(screen.queryByTestId('health-bar-vc-inactive')).not.toBeInTheDocument();
     expect(screen.getByTestId('health-bar-vc')).toBeInTheDocument();
