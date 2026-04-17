@@ -52,7 +52,7 @@
 | **Testes** | **1040 passando** (60 arquivos) — 0 falhas |
 | **TypeScript** | **zero erros** |
 | **Build** | **limpo** — JS ~107KB gzip |
-| **Remote** | `origin/main` — último commit `4fa161a` (pushed) |
+| **Remote** | `origin/main` — último commit `bedee07` (não pushed ainda) |
 | **Worker** | ✅ LIVE — `https://tooloptimizercnc.contatorafaeleleoterio.workers.dev` |
 | **Custom Domains** | ✅ `tooloptimizercnc.com.br` + `app.tooloptimizercnc.com.br` |
 | **GitHub Actions** | ✅ deploy automático ao push para main |

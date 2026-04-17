@@ -1,8 +1,8 @@
 # Backlog de Implementação — ToolOptimizer CNC
 
-> **Última atualização:** 26/03/2026
-> **Versão atual:** v0.9.4
-> **Total de planos pendentes:** 2 (Segurança v0.5.5 + Redesign Visual Dashboard v0.10.0)
+> **Última atualização:** 17/04/2026
+> **Versão atual:** v0.10.1 → v0.11.0 (após Story-011 2C)
+> **Total de planos pendentes:** 2 (Segurança v0.5.5 ⏸️ pausada + Story-011 2C pending)
 
 Esta lista define a ordem de implementação dos planos criados e ainda não executados.
 A ordem garante estabilidade progressiva: bugs corrigidos antes de features, features antes de polish.
@@ -22,9 +22,11 @@ A ordem garante estabilidade progressiva: bugs corrigidos antes de features, fea
 | 5 | [Segurança Cibernética](#5-segurança-cibernética) | 🔒 Security | v0.5.5 | 6 arquivos + config manual | ⬜ Pendente |
 | 6 | [Reestruturação Documental](#6-reestruturação-documental) | 🏗️ Infra | v0.6.0 | ~150 arquivos docs | ✅ Concluído (4 fases) |
 | 7 | [Admin Dashboard](#7-admin-dashboard) | ✨ Feature | v0.7.0 | 9 páginas, 3 stores, ~30 arquivos | ✅ Concluído (`ab5eb8f`) |
-| 8 | [Redesign Dashboard Principal](#8-redesign-dashboard-principal) | 🎨 Redesign | v0.8.0 | ~10 arquivos + testes, 8 fases | ⬜ Pendente |
+| 8 | [Redesign Dashboard Principal](#8-redesign-dashboard-principal) | 🎨 Redesign | v0.8.0 | ~10 arquivos + testes, 8 fases | ✅ Concluído (`78d6a0e`) |
 | 9 | [Implementações Dashboard v0.9](#9-implementações-dashboard-v09) | 🎨 Feature+Redesign | v0.9.4 | 7 itens — 7/7 concluídos | ✅ Concluído (`9b61427`) |
-| 10 | [Redesign Visual Dashboard](#10-redesign-visual-dashboard) | 🎨 Design Audit | v0.10.0 | 3 sessões, 2 entregáveis | ⬜ Pendente |
+| 10 | [Redesign Visual Dashboard](#10-redesign-visual-dashboard) | 🎨 Design Audit | v0.10.0 | 6 sessões | ✅ Concluído (`64890cc`) |
+| 11 | [Implementações Dashboard v0.10.1](#11-implementações-dashboard-v0101) | 🎨 Feature | v0.10.1 | 10 itens — todos concluídos | ✅ Concluído (10/10) |
+| 12 | [Story-011 ITEM-5.2 Cassino](#12-story-011-cassino) | 🎬 Animation | v0.11.0 | 3 sub-sessões | ⬜ 2A ✅ 2B ✅ 2C pendente |
 
 ---
 

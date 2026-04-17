@@ -68,6 +68,33 @@ npx tsc --noEmit
 
 ## Ultimas 3 Sessoes
 
+### Sessão 17/04 — Story-011 2B: Cassino Fase B + Mobile Polimento
+
+- **Commit:** `c49d0d5` feat(ui): cassino simulation phase B — gauge rAF + animated counters + tab transition
+- **Escopo:** Cloud Code — 5 arquivos modificados
+- **O que foi feito:**
+  - `half-moon-gauge.tsx`: prop `animateOnMount` + rAF easeOutBack 800ms (barras + agulha animam 0→valor)
+  - `shared-result-parts.tsx`: BigNumber e ProgressCard com contadores rAF 0→numericValue + ProgressCard idem
+  - `results-panel.tsx`: `animateOnMount` ativado nos 3 HalfMoonGauge do desktop
+  - `mobile-results-section.tsx`: `numericValue` + `animateOnReveal` nos BigNumbers de RPM e Avanço
+  - `mobile-page.tsx`: transição de aba `tabSlideIn` CSS 150ms (translateX -4px→0 + fadeIn)
+  - `index.css`: `@keyframes tabSlideIn` adicionado
+- **Testes:** 1040 passando (60 arquivos), 0 falhas, TS zero erros, build limpo
+- **Status:** MiniResultBar flash já estava implementado na S1 ✅; botão mobile já estava na 2A ✅
+
+### Sessão 17/04 — Story-011 2A + Mobile Redesign S1
+
+- **Commits:** `4de2578` (Cassino 2A) + `4fa161a` (Mobile S1)
+- **Cassino 2A:** hook reescrito 6 estados + 5 keyframes CSS (btnIdleGlow, jackpotFlash, ambientPulse, sliderShake, spinIcon) + botão Simular desktop com progress bar + ícone casino
+- **Mobile Redesign S1:** Bottom Tab Navigation (3 abas) + MobileSimulateButton (cassino idêntico ao desktop) + MiniResultBar (3 gauges compactos ~40px) + MobileAdjustSection com sticky mini-gauges + auto-switch para aba Resultados
+
+### Sessão 17/04 — GESTOR G-0 + Story-011 criação e validação
+
+- **Commits:** `e5be897` (settings/gitignore) + `a777810` (tipografia) + `356f461` (tipografia)
+- **GESTOR instalado:** sessão G-0 concluída — Launch Track inicializado
+- **Story-011:** criada por @sm (River) a partir de `ITEM-9-SIMULACAO-ESTILO-CASSINO.md`, validada @po (10/10 GO)
+- **Tipografia:** normalização tipográfica commitada (propostas B/C/D descartadas por Rafael)
+
 ### Sessão 05/04 — Design + Tokenização: Results Panel (ITEM-1.1)
 - **Escopo:** Cloud Code — design visual do painel de resultados
 - **Entregável:** Protótipo HTML aprovado `PROTOTIPO_PAINEL_CNC_v2.html`
@@ -115,13 +142,18 @@ npx tsc --noEmit
 
 ## ⚡ CONTINUAR AQUI — Próxima Sessão (implementação)
 
-> **ITEM-3.1 concluído** (`7f7032f`). **Próximo: ITEM-3.2 (Popover info params) — 8 pts (~1 sessão).**
+> **Story-011 2B concluída** (`c49d0d5`). **Próximo: Sessão 2C — jackpotFlash cascata + SafetyBadge glow + 12 testes + release v0.11.0.**
 
-### 🎯 ITEM-3.2 — BOTÃO INFO + POPOVER PARÂMETROS
+### 🎯 Story-011 Sessão 2C — CASSINO FASE C + RELEASE
 
-**O que é:** Substituir o botão `↓` (expandir drawer) por botão `ℹ️ O QUE É [PARAM]?` visível + popover contextual.
+**O que é:** Fase final da animação cassino.
+- jackpotFlash em cascata nos cards de resultado (50ms/card) em t=1750ms
+- SafetyBadge com glow reveal em t=+600ms após isRevealing
+- Sliders com pointer-events:none durante Fases 2-3
+- 12 testes unitários completos (hook + config-panel)
+- Release v0.11.0
 
-**Especificação completa:** `docs/plans/ATUALIZACAO_DASH_APROVADO/ITEM-7-BOTAO-EXPLICACAO-POPOVER.md`
+**Referência:** `docs/stories/story-011-item52-simulacao-cassino.md` — Sessão 2C scope
 
 #### Resumo Executivo
 - **Novo componente:** `src/components/param-explanation.tsx` — botão + popover reutilizável

@@ -252,7 +252,7 @@
   <div class="h-right">
     <span class="badge bv">v0.10.1</span>
     <span class="badge bl">● LIVE</span>
-    <span class="badge bd">30/03/2026</span>
+    <span class="badge bd">17/04/2026</span>
   </div>
 </header>
 
@@ -268,7 +268,7 @@
       </div>
       <div class="hero-nums">
         <div class="hnum">
-          <div class="hnum-val c-green">956</div>
+          <div class="hnum-val c-green">1040</div>
           <div class="hnum-lbl">Testes ✓</div>
         </div>
         <div class="hnum">
@@ -284,7 +284,7 @@
     <div class="journey">
       <div class="j-labels">
         <span>🏁 Início</span>
-        <span>🎯 <strong>v0.10.1 — Aqui agora</strong></span>
+        <span>🎯 <strong>v0.10.1 → v0.11.0 — Aqui agora</strong></span>
         <span>🏆 v1.0.0</span>
       </div>
       <div class="j-bar"><div class="j-fill" id="jbar" style="width:0%"></div></div>
@@ -293,8 +293,9 @@
         <span class="jtag jtag-done">✅ Deploy + Domínio</span>
         <span class="jtag jtag-done">✅ Admin Painel</span>
         <span class="jtag jtag-done">✅ Redesign v0.10</span>
-        <span class="jtag jtag-current">⚡ Dashboard Ajustes</span>
-        <span class="jtag jtag-current">⚡ Favoritos</span>
+        <span class="jtag jtag-done">✅ Dashboard Ajustes</span>
+        <span class="jtag jtag-done">✅ Favoritos</span>
+        <span class="jtag jtag-current">⚡ Cassino 2C</span>
         <span class="jtag jtag-future">○ Pré-lançamento</span>
         <span class="jtag jtag-future">○ PRO v1.0</span>
       </div>
@@ -304,7 +305,7 @@
   <!-- TABS -->
   <div class="tabs">
     <button class="tb td on" onclick="tab('done',this)">
-      ✅ O que já fizemos <span class="cnt">17</span>
+      ✅ O que já fizemos <span class="cnt">22</span>
     </button>
     <button class="tb tn" onclick="tab('next',this)">
       ⚡ Próximas sessões <span class="cnt">8</span>
@@ -775,6 +776,79 @@
         </div></div>
       </div>
 
+      <!-- 20 -->
+      <div class="card" data-t="feature" onclick="tog(this)">
+        <div class="card-hd">
+          <div class="cicon">📱</div>
+          <div class="cmeta">
+            <div class="ctitle">Mobile Redesign — Tab Navigation + MiniResultBar</div>
+            <div class="csub">Bottom tab navigation + gauges compactos em tempo real</div>
+          </div>
+        </div>
+        <div class="card-ft">
+          <div class="tags"><span class="tag t-done">Concluído</span><span class="tag t-ver">v0.10.1</span></div>
+          <span class="chevron">›</span>
+        </div>
+        <div class="card-det"><div class="card-body">
+          <p class="det-title">O que foi feito</p>
+          <ul class="dlist">
+            <li>Bottom Tab Navigation: 3 abas (Configurar / Resultados / Ajustar)</li>
+            <li>MobileSimulateButton: sticky acima do tab bar com progress bar integrada</li>
+            <li>MiniResultBar: 3 gauges compactos (~40px) — Avanço, MRR, Saúde</li>
+            <li>MobileAdjustSection: mini-gauges sticky no topo + fine-tune sliders abaixo</li>
+            <li>Auto-switch para aba Resultados ao completar simulação</li>
+          </ul>
+        </div></div>
+      </div>
+
+      <!-- 21 -->
+      <div class="card" data-t="design" onclick="tog(this)">
+        <div class="card-hd">
+          <div class="cicon">🎰</div>
+          <div class="cmeta">
+            <div class="ctitle">Cassino 2A — Hook + CSS + Botão Desktop</div>
+            <div class="csub">Sequência cinematográfica em 4 fases (2650ms total)</div>
+          </div>
+        </div>
+        <div class="card-ft">
+          <div class="tags"><span class="tag t-done">Concluído</span><span class="tag t-ver">v0.10.1</span></div>
+          <span class="chevron">›</span>
+        </div>
+        <div class="card-det"><div class="card-body">
+          <p class="det-title">O que foi feito</p>
+          <ul class="dlist">
+            <li>useSimulationAnimation reescrito: 6 estados (isCalculating, calcProgress, isRevealing, gaugeTarget, gaugeAnimating, triggerPulse)</li>
+            <li>Timeline: idle→igniting (0ms)→calculating (80ms)→revealing (1750ms)→idle (2650ms)</li>
+            <li>5 keyframes CSS: btnIdleGlow, jackpotFlash, ambientPulse, sliderShake, spinIcon</li>
+            <li>Botão Simular desktop: progress bar interna + ícone casino girando + CALCULANDO N%</li>
+          </ul>
+        </div></div>
+      </div>
+
+      <!-- 22 -->
+      <div class="card" data-t="design" onclick="tog(this)">
+        <div class="card-hd">
+          <div class="cicon">🎰</div>
+          <div class="cmeta">
+            <div class="ctitle">Cassino 2B — Gauge rAF + Contadores Animados</div>
+            <div class="csub">HalfMoonGauge easeOutBack + BigNumber 0→valor via rAF</div>
+          </div>
+        </div>
+        <div class="card-ft">
+          <div class="tags"><span class="tag t-done">Concluído</span><span class="tag t-ver">v0.10.1</span></div>
+          <span class="chevron">›</span>
+        </div>
+        <div class="card-det"><div class="card-body">
+          <p class="det-title">O que foi feito</p>
+          <ul class="dlist">
+            <li>HalfMoonGauge: prop animateOnMount + rAF easeOutBack 800ms (barras e agulha animam 0→valor)</li>
+            <li>BigNumber: contador rAF 0→numericValue via easeOutBack — RPM e Avanço no mobile</li>
+            <li>ProgressCard: mesmo padrão de animação para futuras instâncias</li>
+            <li>Tab transition: @keyframes tabSlideIn — translateX(-4px)→0 + fadeIn 150ms</li>
+          </ul>
+        </div></div>
+      </div>
+
     </div><!-- /grid done -->
   </div>
 
@@ -1160,7 +1234,7 @@
 
   <!-- FOOTER -->
   <div class="footer">
-    <p>Atualizado em <strong>08/04/2026</strong> · Versão <strong>v0.10.1</strong> · <a href="https://tooloptimizercnc.com.br" target="_blank">tooloptimizercnc.com.br</a></p>
+    <p>Atualizado em <strong>17/04/2026</strong> · Versão <strong>v0.10.1</strong> · <a href="https://tooloptimizercnc.com.br" target="_blank">tooloptimizercnc.com.br</a></p>
     <p style="margin-top:5px">ToolOptimizer CNC — Calculadora de Parâmetros de Corte para Operadores Brasileiros</p>
   </div>
 
