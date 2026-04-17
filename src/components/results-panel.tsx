@@ -153,23 +153,23 @@ export function ResultsPanel() {
       <div className="flex items-center gap-2 px-3 py-1.5 bg-[#0f1419] border border-white/10 rounded-lg">
         {/* Meta: timestamp · material · operação */}
         <div className="flex items-center gap-2 flex-1 min-w-0">
-          <span className="font-mono text-[11px] text-white/40 shrink-0">{timestamp}</span>
+          <span className="font-mono text-xs text-white/40 shrink-0">{timestamp}</span>
           <span className="w-1.5 h-1.5 rounded-full bg-white/20 shrink-0" />
           <span className="text-xs font-semibold text-white truncate">{materialNome}</span>
           <span className="w-1.5 h-1.5 rounded-full bg-white/20 shrink-0" />
-          <span className="text-[11px] font-semibold text-white/70 bg-white/8 px-2 py-0.5 rounded uppercase shrink-0">
+          <span className="text-xs font-semibold text-white/70 bg-white/8 px-2 py-0.5 rounded uppercase shrink-0">
             {OPERACAO_LABELS[tipoOperacao]}
           </span>
         </div>
         {/* Safety badge inline */}
-        <div className={`flex items-center gap-1.5 px-2.5 py-1 rounded-lg border text-[11px] font-bold uppercase tracking-wide shrink-0 ${SEG_BG[nivel]}`}>
+        <div className={`flex items-center gap-1.5 px-2.5 py-1 rounded-lg border text-xs font-bold uppercase tracking-wide shrink-0 ${SEG_BG[nivel]}`}>
           <span className={`material-symbols-outlined text-sm ${SEG_COLORS[nivel]}`}
             style={{ fontVariationSettings: "'FILL' 1, 'wght' 400" }}>
             {SEG_ICONS[nivel]}
           </span>
           <span className={SEG_COLORS[nivel]}>{SEG_LABELS[nivel]}</span>
           {avisos.length > 0 && (
-            <span className="text-[9px] opacity-70">({avisos.length})</span>
+            <span className="text-xs opacity-70">({avisos.length})</span>
           )}
         </div>
         {/* Favorite button */}
@@ -221,11 +221,11 @@ export function ResultsPanel() {
       <div className="bg-[#05070a] border border-[rgba(0,229,255,0.12)] rounded-lg px-3 py-2 flex flex-col gap-1">
         {storeResultado === null ? (
           <>
-            <div className="flex items-center gap-2 font-mono text-[11px] uppercase tracking-wide text-white/40">
+            <div className="flex items-center gap-2 font-mono text-xs uppercase tracking-wide text-white/40">
               <span className="material-symbols-outlined text-sm text-white/20">hourglass_empty</span>
               <span>AGUARDANDO SIMULAÇÃO — CONFIGURE PARÂMETROS E CLIQUE EM SIMULAR</span>
             </div>
-            <div className="flex items-center gap-2 font-mono text-[10px] uppercase tracking-wide text-white/20 border-t border-white/5 pt-1">
+            <div className="flex items-center gap-2 font-mono text-xs uppercase tracking-wide text-white/20 border-t border-white/5 pt-1">
               <span className="material-symbols-outlined text-sm text-white/15">settings_suggest</span>
               <span>SELECIONE MATERIAL, FERRAMENTA E OPERAÇÃO NO PAINEL ESQUERDO</span>
             </div>
@@ -233,7 +233,7 @@ export function ResultsPanel() {
         ) : (
           <>
             {lcdAlertLine && (
-              <div className="flex items-center gap-2 font-mono text-[11px] uppercase tracking-wide"
+              <div className="flex items-center gap-2 font-mono text-xs uppercase tracking-wide"
                 style={{ color: lcdAlertLine.color, textShadow: `0 0 5px ${lcdAlertLine.color}4d` }}>
                 <span className="material-symbols-outlined text-sm shrink-0"
                   style={{ color: lcdAlertLine.color }}>
@@ -243,14 +243,14 @@ export function ResultsPanel() {
               </div>
             )}
             {lcdActionText && (
-              <div className="flex items-center gap-2 font-mono text-[11px] uppercase tracking-wide text-primary"
+              <div className="flex items-center gap-2 font-mono text-xs uppercase tracking-wide text-primary"
                 style={{ textShadow: '0 0 5px rgba(0,229,255,0.3)' }}>
                 <span className="material-symbols-outlined text-sm shrink-0 text-primary">arrow_forward</span>
                 <span className="truncate">AÇÃO: {lcdActionText}</span>
               </div>
             )}
             {lcdInfoText && (
-              <div className="flex items-center gap-2 font-mono text-[10px] uppercase tracking-wide text-white/30 border-t border-white/5 pt-1">
+              <div className="flex items-center gap-2 font-mono text-xs uppercase tracking-wide text-white/30 border-t border-white/5 pt-1">
                 <span className="material-symbols-outlined text-sm text-white/20">info</span>
                 <span>{lcdInfoText}</span>
               </div>
@@ -265,7 +265,7 @@ export function ResultsPanel() {
         className="flex items-center gap-2 px-3 py-2 bg-[rgba(30,35,45,0.6)] border border-white/5 rounded-lg"
       >
         <span className="material-symbols-outlined text-primary text-xl shrink-0">precision_manufacturing</span>
-        <span className="text-[10px] text-white/40 uppercase tracking-widest shrink-0">Ferramenta:</span>
+        <span className="text-xs text-white/40 uppercase tracking-widest shrink-0">Ferramenta:</span>
         <span className="font-mono text-sm font-bold text-white truncate">{formatToolSpec(ferramenta)}</span>
       </div>
 
@@ -274,7 +274,7 @@ export function ResultsPanel() {
         {/* RPM Card */}
         <div className="bg-surface-dark backdrop-blur-xl border border-white/5 rounded-xl px-3 pt-3 pb-2 shadow-glass flex flex-col gap-1">
           <div className="flex justify-between items-center">
-            <span className="text-[10px] font-bold uppercase tracking-widest text-white/50">Rotação (RPM)</span>
+            <span className="text-xs font-bold uppercase tracking-widest text-white/50">Rotação (RPM)</span>
             <span className="material-symbols-outlined text-xl text-primary opacity-60">speed</span>
           </div>
           <div className="flex items-baseline gap-1.5">
@@ -282,7 +282,7 @@ export function ResultsPanel() {
               style={{ fontSize: '2rem', filter: 'drop-shadow(0 0 10px rgba(0,217,255,0.5))' }}>
               {fmt(rpm)}
             </span>
-            <span className="font-mono text-[11px] text-white/30">rev/min</span>
+            <span className="font-mono text-xs text-white/30">rev/min</span>
           </div>
           <BidirectionalSlider
             compact
@@ -298,7 +298,7 @@ export function ResultsPanel() {
         {/* Avanço Card */}
         <div className="bg-surface-dark backdrop-blur-xl border border-white/5 rounded-xl px-3 pt-3 pb-2 shadow-glass flex flex-col gap-1">
           <div className="flex justify-between items-center">
-            <span className="text-[10px] font-bold uppercase tracking-widest text-white/50">Avanço (mm/min)</span>
+            <span className="text-xs font-bold uppercase tracking-widest text-white/50">Avanço (mm/min)</span>
             <span className="material-symbols-outlined text-xl text-secondary opacity-60">moving</span>
           </div>
           <div className="flex items-baseline gap-1.5">
@@ -306,7 +306,7 @@ export function ResultsPanel() {
               style={{ fontSize: '2rem', filter: 'drop-shadow(0 0 10px rgba(57,255,20,0.5))' }}>
               {fmt(avanco)}
             </span>
-            <span className="font-mono text-[11px] text-white/30">mm/min</span>
+            <span className="font-mono text-xs text-white/30">mm/min</span>
           </div>
           <BidirectionalSlider
             compact
@@ -330,10 +330,10 @@ export function ResultsPanel() {
         ] as const).map(({ label, value, unit }) => (
           <div key={label}
             className="bg-[rgba(30,35,45,0.6)] border border-white/5 rounded-lg px-2.5 py-2 flex flex-col gap-0.5">
-            <span className="text-[10px] text-white/40 uppercase tracking-wide leading-none">{label}</span>
+            <span className="text-xs text-white/40 uppercase tracking-wide leading-none">{label}</span>
             <div className="flex items-baseline gap-1">
               <span className="font-mono text-lg font-bold text-white leading-tight">{value}</span>
-              <span className="text-[10px] text-white/30">{unit}</span>
+              <span className="text-xs text-white/30">{unit}</span>
             </div>
           </div>
         ))}
@@ -343,39 +343,39 @@ export function ResultsPanel() {
       <div className="flex items-center px-3 py-1.5 bg-black/30 border border-white/5 rounded-lg">
         {/* Potência Est. */}
         <div className="flex-1 flex items-center justify-between px-1">
-          <span className="text-[9px] text-white/35 uppercase tracking-wide">Potência Est.</span>
+          <span className="text-xs text-white/35 uppercase tracking-wide">Potência Est.</span>
           <span className="font-mono text-xs font-bold text-white/85">
-            {potenciaMotor.toFixed(2)}<span className="text-[9px] opacity-40 ml-0.5">kW</span>
+            {potenciaMotor.toFixed(2)}<span className="text-xs opacity-40 ml-0.5">kW</span>
           </span>
         </div>
         <div className="w-px h-4 bg-white/8 shrink-0" />
         {/* Torque */}
         <div className="flex-1 flex items-center justify-between px-1">
-          <span className="text-[9px] text-white/35 uppercase tracking-wide">Torque</span>
+          <span className="text-xs text-white/35 uppercase tracking-wide">Torque</span>
           <span className="font-mono text-xs font-bold text-white/85">
-            {resultado.torque.toFixed(2)}<span className="text-[9px] opacity-40 ml-0.5">Nm</span>
+            {resultado.torque.toFixed(2)}<span className="text-xs opacity-40 ml-0.5">Nm</span>
           </span>
         </div>
         <div className="w-px h-4 bg-white/8 shrink-0" />
         {/* Vc Real */}
         <div className="flex-1 flex items-center justify-between px-1">
-          <span className="text-[9px] text-white/35 uppercase tracking-wide">Vc Real</span>
+          <span className="text-xs text-white/35 uppercase tracking-wide">Vc Real</span>
           <span className="font-mono text-xs font-bold text-white/85">
-            {vcReal.toFixed(0)}<span className="text-[9px] opacity-40 ml-0.5">m/min</span>
+            {vcReal.toFixed(0)}<span className="text-xs opacity-40 ml-0.5">m/min</span>
           </span>
         </div>
         <div className="w-px h-4 bg-white/8 shrink-0" />
         {/* MRR */}
         <div className="flex-1 flex items-center justify-between px-1">
-          <span className="text-[9px] text-white/35 uppercase tracking-wide">MRR</span>
+          <span className="text-xs text-white/35 uppercase tracking-wide">MRR</span>
           <span className="font-mono text-xs font-bold text-white/85">
-            {mrr.toFixed(1)}<span className="text-[9px] opacity-40 ml-0.5">cm³</span>
+            {mrr.toFixed(1)}<span className="text-xs opacity-40 ml-0.5">cm³</span>
           </span>
         </div>
         <div className="w-px h-4 bg-white/8 shrink-0" />
         {/* L/D — color coded */}
         <div className="flex-1 flex items-center justify-between px-1">
-          <span className="text-[9px] uppercase tracking-wide" style={{ color: ldColor + '99' }}>L/D</span>
+          <span className="text-xs uppercase tracking-wide" style={{ color: ldColor + '99' }}>L/D</span>
           <span className="font-mono text-xs font-bold" style={{ color: ldColor }}>
             {razaoLD.toFixed(1)}
           </span>
@@ -383,7 +383,7 @@ export function ResultsPanel() {
         <div className="w-px h-4 bg-white/8 shrink-0" />
         {/* CTF */}
         <div className="flex-1 flex items-center justify-between px-1">
-          <span className="text-[9px] text-white/35 uppercase tracking-wide">CTF</span>
+          <span className="text-xs text-white/35 uppercase tracking-wide">CTF</span>
           <span className="font-mono text-xs font-bold text-primary">{ctf.toFixed(2)}</span>
         </div>
       </div>

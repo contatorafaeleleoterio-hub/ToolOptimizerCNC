@@ -189,21 +189,21 @@ function UnidirectionalBar({
       </div>
       {/* Labels row */}
       <div className="flex justify-between items-center">
-        <span className="text-[8px] text-gray-700">{leftLabel}</span>
-        <span className="text-[8px] font-semibold" style={{ color: `rgba(${rgb},1)` }}>
+        <span className="text-[10px] text-gray-700">{leftLabel}</span>
+        <span className="text-[10px] font-semibold" style={{ color: `rgba(${rgb},1)` }}>
           {zoneLabel}
         </span>
         {badge && (
           <span
             data-testid="ctf-badge"
-            className="text-[8px] font-bold px-1 rounded"
+            className="text-[10px] font-bold px-1 rounded"
             style={{ background: 'rgba(243,156,18,0.15)', color: 'rgba(243,156,18,0.9)' }}
           >
             {badge}
           </span>
         )}
         {readout}
-        <span className="text-[8px] text-gray-700">{rightLabel}</span>
+        <span className="text-[10px] text-gray-700">{rightLabel}</span>
       </div>
     </div>
   );
@@ -230,7 +230,7 @@ function InactiveBar({ paramKey }: { paramKey: string }) {
           }}
         />
       </div>
-      <span className="text-[8px] text-gray-700 italic text-center leading-none">Simular para ativar</span>
+      <span className="text-[10px] text-gray-700 italic text-center leading-none">Simular para ativar</span>
     </div>
   );
 }
@@ -307,7 +307,7 @@ export function ParameterHealthBar({ paramKey }: ParameterHealthBarProps) {
         readout={
           <span
             data-testid="ae-ratio-display"
-            className="text-[8px] text-gray-500 font-mono"
+            className="text-[10px] text-gray-500 font-mono"
           >
             {aeResult.aeDRatioDisplay}
           </span>
@@ -334,7 +334,7 @@ export function ParameterHealthBar({ paramKey }: ParameterHealthBarProps) {
       readout={
         <span
           data-testid="ap-ld-display"
-          className={`text-[8px] font-mono font-semibold ${apResult.ldColorClass}`}
+          className={`text-[10px] font-mono font-semibold ${apResult.ldColorClass}`}
         >
           {apResult.ldDisplay}
         </span>

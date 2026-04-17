@@ -145,21 +145,21 @@ function SegBar({ paramKey, position, zone, zoneLabel, leftLabel, rightLabel, ba
 
       {/* Labels row */}
       <div className="flex justify-between items-center">
-        <span className="text-[8px] text-gray-700">{leftLabel}</span>
-        <span className="text-[8px] font-semibold" style={{ color: `rgba(${rgb},1)` }}>
+        <span className="text-[10px] text-gray-700">{leftLabel}</span>
+        <span className="text-[10px] font-semibold" style={{ color: `rgba(${rgb},1)` }}>
           {zoneLabel}
         </span>
         {badge && (
           <span
             data-testid="ctf-badge"
-            className="text-[8px] font-bold px-1 rounded"
+            className="text-[10px] font-bold px-1 rounded"
             style={{ background: 'rgba(243,156,18,0.15)', color: 'rgba(243,156,18,0.9)' }}
           >
             {badge}
           </span>
         )}
         {readout}
-        <span className="text-[8px] text-gray-700">{rightLabel}</span>
+        <span className="text-[10px] text-gray-700">{rightLabel}</span>
       </div>
     </div>
   );
@@ -193,7 +193,7 @@ function InactiveSeg({ paramKey, segments = DEFAULT_SEGMENTS }: { paramKey: stri
           ))}
         </div>
       </div>
-      <span className="text-[8px] text-gray-700 italic text-center leading-none">Simular para ativar</span>
+      <span className="text-[10px] text-gray-700 italic text-center leading-none">Simular para ativar</span>
     </div>
   );
 }
@@ -242,7 +242,7 @@ export function SegmentedGradientBar({ paramKey, segments = DEFAULT_SEGMENTS, id
       <SegBar paramKey="ae" position={r.position} zone={r.zone} zoneLabel={r.zoneLabel}
         leftLabel="CTF Alto" rightLabel="Excessivo" segments={segments} idealRange={idealRange}
         readout={
-          <span data-testid="ae-ratio-display" className="text-[8px] text-gray-500 font-mono">
+          <span data-testid="ae-ratio-display" className="text-[10px] text-gray-500 font-mono">
             {r.aeDRatioDisplay}
           </span>
         }
@@ -256,7 +256,7 @@ export function SegmentedGradientBar({ paramKey, segments = DEFAULT_SEGMENTS, id
     <SegBar paramKey="ap" position={r.position} zone={r.zone} zoneLabel={r.zoneLabel}
       leftLabel="Leve" rightLabel="Deflexão" segments={segments} idealRange={idealRange}
       readout={
-        <span data-testid="ap-ld-display" className={`text-[8px] font-mono font-semibold ${r.ldColorClass}`}>
+        <span data-testid="ap-ld-display" className={`text-[10px] font-mono font-semibold ${r.ldColorClass}`}>
           {r.ldDisplay}
         </span>
       }
