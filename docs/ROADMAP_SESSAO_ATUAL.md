@@ -18,23 +18,21 @@
 > **Story-011 em andamento:** `docs/stories/story-011-item52-simulacao-cassino.md` — Sessão 2A ✅ concluída
 > **Redesign Mobile Sessão 1:** ✅ concluída — tab navigation + MiniResultBar + AdjustSection
 
-### SESSÃO 2B (próxima) — ITEM-5.2 Cassino + Mobile Polimento
-**~8 pontos | 2 frentes**
+### SESSÃO 2B — ✅ CONCLUÍDA (`c49d0d5`)
 
 **Frente A — Story-011 Cassino 2B:**
-1. `src/pages/mobile-page.tsx` — botão Simular mobile já tem progress bar (via `MobileSimulateButton`) ✅
-2. `src/components/half-moon-gauge.tsx` — prop `animateOnMount?: boolean` + rAF + easeOutBack
-3. `src/components/shared-result-parts.tsx` — contadores BigNumber/ProgressCard animados
+1. `src/pages/mobile-page.tsx` — botão Simular mobile já tinha progress bar ✅
+2. `src/components/half-moon-gauge.tsx` — `animateOnMount` + rAF + easeOutBack ✅
+3. `src/components/shared-result-parts.tsx` — BigNumber/ProgressCard counters animados ✅
 
-**Frente B — Mobile Redesign Sessão 2 (polimento):**
-1. Flash nos `MiniResultBar` quando `gaugeAnimating === true` (scale 1→1.04→1, 300ms)
-2. Transição de aba: `translateX(-4px)→0 + fadeIn` 150ms ao trocar aba
-3. Estado vazio na aba Ajustar quando `resultado === null` já implementado ✅
+**Frente B — Mobile Redesign Sessão 2:**
+1. Flash nos `MiniResultBar` — já implementado na Sessão 1 ✅
+2. Transição de aba: `tabSlideIn` 150ms ✅
+3. Estado vazio na aba Ajustar — já implementado ✅
+
+### SESSÃO 2C (próxima) — jackpotFlash cascata + SafetyBadge + 12 testes + release v0.11.0
 
 **⚠️ IMPORTANTE — usar sempre:** `npx vitest run tests/` (NÃO `npm test` que roda .aiox-core/)
-
-### Sessões seguintes:
-- **2C** — jackpotFlash cascata + SafetyBadge + 12 testes + release v0.11.0
 
 ---
 
@@ -327,7 +325,7 @@ Quando uma nova implementação for planejada durante a sessão:
 
 ---
 
-*Última atualização: 17/04/2026 — Sessão GESTOR: Proposta #1 tipografia ✅ commitada (`356f461`+`a777810`). Propostas B/C/D ❌ DESCARTADAS por Rafael. Story-011 criada por @sm e validada por @po (10/10 — Ready). Próxima: Sessão 2A — ITEM-5.2 Cassino. 1038 testes, v0.10.1 em produção. Segurança Cibernética ⏸️ PAUSADA — não sugerir.*
+*Última atualização: 17/04/2026 — Sessão 2B ✅ commitada (`c49d0d5`). HalfMoonGauge animateOnMount+rAF, BigNumber/ProgressCard counters animados, tabSlideIn 150ms. 1040 testes, TypeScript zero erros. Próxima: Sessão 2C — jackpotFlash cascata + SafetyBadge + 12 testes + release v0.11.0.*
 
 ### Atualizacao de Encerramento - 28/03/2026 (sessao longa)
 
