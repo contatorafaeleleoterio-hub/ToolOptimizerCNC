@@ -44,6 +44,20 @@ export function StyledSlider({ value, min, max, step, color, label, recomendado,
     window.addEventListener('mouseup', onUp);
   }, [onChange, getValueFromX]);
 
+  const handleTouchStart = useCallback((e: React.TouchEvent) => {
+    setPressed(true);
+    onChange(getValueFromX(e.touches[0].clientX));
+  }, [onChange, getValueFromX]);
+
+  const handleTouchMove = useCallback((e: React.TouchEvent) => {
+    if (e.cancelable) e.preventDefault();
+    onChange(getValueFromX(e.touches[0].clientX));
+  }, [onChange, getValueFromX]);
+
+  const handleTouchEnd = useCallback(() => {
+    setPressed(false);
+  }, []);
+
   const handleDecrement = () => onChange(Math.max(min, +(value - step).toFixed(4)));
   const handleIncrement = () => onChange(Math.min(max, +(value + step).toFixed(4)));
 
@@ -58,8 +72,11 @@ export function StyledSlider({ value, min, max, step, color, label, recomendado,
 
         <div
           ref={trackRef}
-          className="relative h-10 flex-1 mx-[18px] flex items-center cursor-pointer select-none"
+          className="relative h-10 flex-1 mx-[18px] flex items-center cursor-pointer select-none touch-none"
           onMouseDown={handleMouseDown}
+          onTouchStart={handleTouchStart}
+          onTouchMove={handleTouchMove}
+          onTouchEnd={handleTouchEnd}
           role="slider"
           aria-label={`${label} slider`}
           aria-valuenow={value}

@@ -1,18 +1,9 @@
 // Compact horizontal gauge bar for the "Ajustar" tab.
-// Replaces HalfMoonGauge (160×80px) with a ~40px tall bar strip.
+// Replaces segments with a continuous gradient line for a distinct mobile experience.
 
 const SEG_RED    = '#FF4D4D';
 const SEG_ORANGE = '#FFA500';
 const SEG_GREEN  = '#00E676';
-
-function segmentColor(idx: number, total: number): string {
-  const pct = idx / total;
-  if (pct < 0.14) return SEG_RED;
-  if (pct < 0.40) return SEG_ORANGE;
-  if (pct < 0.60) return SEG_GREEN;
-  if (pct < 0.86) return SEG_ORANGE;
-  return SEG_RED;
-}
 
 interface MiniResultBarProps {
   label: string;
@@ -20,7 +11,6 @@ interface MiniResultBarProps {
   maxValue: number;
   unit: string;
   badge?: string;
-  segments?: number;
   animating?: boolean;
 }
 
@@ -30,12 +20,11 @@ export function MiniResultBar({
   maxValue,
   unit,
   badge,
-  segments = 20,
   animating = false,
 }: MiniResultBarProps) {
+  // Scale 0–120% range.
   const ratio = maxValue > 0 ? Math.min(value / maxValue, 1.2) : 0;
-  const cursorPct = Math.min(ratio / 1.2, 1) * 100; // scale 0–120% → 0–100% display
-  const activeSeg = Math.round(ratio * segments);
+  const cursorPct = Math.min(ratio / 1.2, 1) * 100; 
 
   const displayValue = badge ?? (
     value >= 1000
@@ -45,9 +34,18 @@ export function MiniResultBar({
       : value.toFixed(1)
   );
 
+  // Gradient stops matching the safety zones: 14% R, 26% O, 20% G, 26% O, 14% R
+  const gradient = `linear-gradient(to right, 
+    ${SEG_RED} 0%, ${SEG_RED} 14%, 
+    ${SEG_ORANGE} 14%, ${SEG_ORANGE} 40%, 
+    ${SEG_GREEN} 40%, ${SEG_GREEN} 60%, 
+    ${SEG_ORANGE} 60%, ${SEG_ORANGE} 86%, 
+    ${SEG_RED} 86%, ${SEG_RED} 100%
+  )`;
+
   return (
     <div
-      className="flex flex-col gap-1"
+      className="flex flex-col gap-1.5"
       style={animating ? { animation: 'miniGaugeFlash 0.3s ease-out' } : undefined}
     >
       {/* Label row */}
@@ -59,31 +57,37 @@ export function MiniResultBar({
         </span>
       </div>
 
-      {/* Segment bar */}
-      <div className="flex gap-[2px] items-end h-[14px]">
-        {Array.from({ length: segments }).map((_, i) => {
-          const isActive = i < activeSeg;
-          const color = segmentColor(i, segments);
-          return (
-            <div
-              key={i}
-              className="flex-1 rounded-[1px] transition-opacity duration-150"
-              style={{
-                height: isActive ? '14px' : '8px',
-                background: isActive ? color : 'rgba(255,255,255,0.06)',
-                boxShadow: isActive ? `0 0 4px ${color}55` : undefined,
-              }}
-            />
-          );
-        })}
+      {/* Continuous Gradient Track */}
+      <div className="relative h-[4px] w-full bg-white/5 rounded-full overflow-hidden">
+        {/* Background track opacity dimmed */}
+        <div 
+          className="absolute inset-0 opacity-20"
+          style={{ background: gradient }}
+        />
+        
+        {/* Filled part (optional, or just use the cursor) */}
+        <div 
+          className="absolute inset-y-0 left-0 transition-all duration-100"
+          style={{ 
+            width: `${cursorPct}%`, 
+            background: gradient,
+            boxShadow: `0 0 10px rgba(255,255,255,0.1)`
+          }}
+        />
       </div>
 
-      {/* Cursor line */}
-      <div className="relative h-[2px] bg-white/5 rounded-full">
+      {/* Cursor & Scale Info */}
+      <div className="relative h-[2px]">
+        {/* The active cursor point */}
         <div
-          className="absolute top-0 h-full w-[3px] bg-white rounded-full shadow-[0_0_4px_rgba(255,255,255,0.8)]"
-          style={{ left: `calc(${cursorPct}% - 1.5px)` }}
+          className="absolute top-[-8px] h-[10px] w-[3px] bg-white rounded-full transition-all duration-100 z-10"
+          style={{ 
+            left: `calc(${cursorPct}% - 1.5px)`,
+            boxShadow: '0 0 8px rgba(255,255,255,0.8), 0 0 2px black'
+          }}
         />
+        {/* Baseline */}
+        <div className="absolute top-0 w-full h-[1px] bg-white/10" />
       </div>
     </div>
   );

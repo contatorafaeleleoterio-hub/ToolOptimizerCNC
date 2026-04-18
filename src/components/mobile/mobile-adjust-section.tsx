@@ -87,7 +87,7 @@ export function MobileAdjustSection() {
       </div>
 
       {/* ─── Fine-Tune sliders ─── */}
-      <div className="flex-1 overflow-y-auto">
+      <div className="flex-1 overflow-y-auto pb-32">
         <MobileFineTuneSection />
       </div>
     </div>

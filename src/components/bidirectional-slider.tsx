@@ -54,7 +54,7 @@ export function BidirectionalSlider({
   // Convert currentPercent (-150 to +150) to slider position (0% to 100%)
   const progressPercent = ((currentPercent + 150) / 300) * 100;
 
-  // Get percent from mouse X position on track
+  // Get percent from mouse/touch X position on track
   const getPercentFromX = useCallback((clientX: number) => {
     const track = trackRef.current;
     if (!track) return currentPercent;
@@ -77,6 +77,21 @@ export function BidirectionalSlider({
     window.addEventListener('mousemove', onMove);
     window.addEventListener('mouseup', onUp);
   }, [onChange, getPercentFromX]);
+
+  const handleTouchStart = useCallback((e: React.TouchEvent) => {
+    setPressed(true);
+    onChange(getPercentFromX(e.touches[0].clientX));
+  }, [onChange, getPercentFromX]);
+
+  const handleTouchMove = useCallback((e: React.TouchEvent) => {
+    // Prevent scrolling while adjusting
+    if (e.cancelable) e.preventDefault();
+    onChange(getPercentFromX(e.touches[0].clientX));
+  }, [onChange, getPercentFromX]);
+
+  const handleTouchEnd = useCallback(() => {
+    setPressed(false);
+  }, []);
 
   const handleKeyDown = (e: React.KeyboardEvent) => {
     if (e.key === 'ArrowRight') onChange(clampPercent(currentPercent + 10));
@@ -111,8 +126,11 @@ export function BidirectionalSlider({
 
           <div
             ref={trackRef}
-            className="relative h-8 flex-1 mx-[12px] flex items-center cursor-pointer select-none"
+            className="relative h-8 flex-1 mx-[12px] flex items-center cursor-pointer select-none touch-none"
             onMouseDown={handleMouseDown}
+            onTouchStart={handleTouchStart}
+            onTouchMove={handleTouchMove}
+            onTouchEnd={handleTouchEnd}
             role="slider"
             aria-label={`${label} slider`}
             aria-valuenow={currentPercent}
@@ -225,8 +243,11 @@ export function BidirectionalSlider({
         {/* Custom div-based slider track */}
         <div
           ref={trackRef}
-          className="relative h-10 flex-1 mx-[18px] flex items-center cursor-pointer select-none"
+          className="relative h-10 flex-1 mx-[18px] flex items-center cursor-pointer select-none touch-none"
           onMouseDown={handleMouseDown}
+          onTouchStart={handleTouchStart}
+          onTouchMove={handleTouchMove}
+          onTouchEnd={handleTouchEnd}
           role="slider"
           aria-label={`${label} slider`}
           aria-valuenow={currentPercent}

@@ -101,7 +101,7 @@ export function MobileResultsSection() {
   ) ?? null;
 
   return (
-    <section className="flex flex-col gap-3 px-4 pb-4">
+    <section className="flex flex-col gap-3 px-4 pb-32">
 
       {/* ═══ ZONA 1 — Console Header Bar ═══ */}
       <div className="flex items-center gap-2 px-2.5 py-1.5 bg-[#0f1419] border border-white/10 rounded-lg">
