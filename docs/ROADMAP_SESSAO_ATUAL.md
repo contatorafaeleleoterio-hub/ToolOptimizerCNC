@@ -15,22 +15,16 @@
 
 ## ⚡ PRÓXIMA AÇÃO OBRIGATÓRIA (Cloud Code)
 
-> **Story-011 em andamento:** `docs/stories/story-011-item52-simulacao-cassino.md` — Sessão 2A ✅ concluída
-> **Redesign Mobile Sessão 1:** ✅ concluída — tab navigation + MiniResultBar + AdjustSection
+> **Story-011 CONCLUÍDA** — v0.11.0 released ✅ commit `b2183bd`
+> **Próxima:** G-1 Pesquisa de Mercado (LAUNCH-TRACK.md não existe — Regra 3 do GESTOR)
 
-### SESSÃO 2B — ✅ CONCLUÍDA (`c49d0d5`)
+### SESSÃO 2C — ✅ CONCLUÍDA (`b2183bd`) — v0.11.0
 
-**Frente A — Story-011 Cassino 2B:**
-1. `src/pages/mobile-page.tsx` — botão Simular mobile já tinha progress bar ✅
-2. `src/components/half-moon-gauge.tsx` — `animateOnMount` + rAF + easeOutBack ✅
-3. `src/components/shared-result-parts.tsx` — BigNumber/ProgressCard counters animados ✅
-
-**Frente B — Mobile Redesign Sessão 2:**
-1. Flash nos `MiniResultBar` — já implementado na Sessão 1 ✅
-2. Transição de aba: `tabSlideIn` 150ms ✅
-3. Estado vazio na aba Ajustar — já implementado ✅
-
-### SESSÃO 2C (próxima) — jackpotFlash cascata + SafetyBadge + 12 testes + release v0.11.0
+- jackpotFlash cascata: Safety (+600ms), RPM (0ms), Avanço (50ms), 3 gauges (100-200ms)
+- jackpotFlash mobile: BigNumber RPM (0ms) + Avanço (50ms)
+- FineTunePanel: pointer-events:none + opacity 0.5 durante isCalculating||isRevealing
+- 12 novos testes: 6 hook (fases, guard, timing) + 4 config-panel (cassino)
+- Versão bumped: 0.10.1 → 0.11.0
 
 **⚠️ IMPORTANTE — usar sempre:** `npx vitest run tests/` (NÃO `npm test` que roda .aiox-core/)
 
@@ -48,11 +42,11 @@
 | Item | Valor |
 |------|-------|
 | **Branch** | `main` |
-| **Versão** | `0.10.1` |
-| **Testes** | **1040 passando** (60 arquivos) — 0 falhas |
+| **Versão** | `0.11.0` |
+| **Testes** | **1052 passando** (62 arquivos) — 0 falhas |
 | **TypeScript** | **zero erros** |
-| **Build** | **limpo** — JS ~107KB gzip |
-| **Remote** | `origin/main` — último commit `bedee07` (não pushed ainda) |
+| **Build** | **limpo** — JS ~178KB gzip |
+| **Remote** | `origin/main` — último commit `b2183bd` (pushed ✅) |
 | **Worker** | ✅ LIVE — `https://tooloptimizercnc.contatorafaeleleoterio.workers.dev` |
 | **Custom Domains** | ✅ `tooloptimizercnc.com.br` + `app.tooloptimizercnc.com.br` |
 | **GitHub Actions** | ✅ deploy automático ao push para main |

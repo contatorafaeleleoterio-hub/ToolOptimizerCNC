@@ -66,7 +66,28 @@ npx tsc --noEmit
 
 ---
 
+## CONTINUAR AQUI — Próxima sessão
+
+**G-1 Pesquisa de Mercado** — LAUNCH-TRACK.md não existe → `/gestor` para iniciar.
+
+---
+
 ## Ultimas 3 Sessoes
+
+### Sessão 17/04 — Story-011 2C: jackpotFlash + testes + v0.11.0
+
+- **Commit:** `b2183bd` feat(ui): cassino simulation phase C — jackpot reveal + full test suite + v0.11.0
+- **Escopo:** Cloud Code — 8 arquivos modificados
+- **O que foi feito:**
+  - `results-panel.tsx`: jackpotFlash cascata — Safety (600ms), RPM (0ms), Avanço (50ms), 3 HalfMoonGauge (100/150/200ms)
+  - `config-panel.tsx`: `isRevealing` + FineTunePanel wrapper pointer-events:none+opacity 0.5 durante animação
+  - `mobile-results-section.tsx`: jackpotFlash nos containers BigNumber RPM (0ms) + Avanço (50ms)
+  - `data/architecture-graph.ts`: versão 0.10.1 → 0.11.0
+  - `tests/hooks/use-simulation-animation.test.ts`: 6 novos testes (total 8) — fases, timing, guard, gaugeTarget
+  - `tests/components/config-panel.test.tsx`: 4 novos testes — botão disable/re-enable, FineTunePanel presente, double-click guard
+  - `package.json` + `architecture-graph.ts`: versão 0.11.0
+- **Testes:** 1052 passando (62 arquivos), 0 falhas, TS zero erros, build limpo
+- **Story-011:** status → Done ✅, todos os ACs atendidos
 
 ### Sessão 17/04 — Story-011 2B: Cassino Fase B + Mobile Polimento
 
