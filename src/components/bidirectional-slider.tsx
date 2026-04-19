@@ -18,6 +18,7 @@
 
 import { useState, useRef, useCallback } from 'react';
 import { getSliderRgb } from './slider-tokens';
+import { haptics } from '@/utils/haptics';
 
 interface BidirectionalSliderProps {
   baseValue: number;
@@ -98,8 +99,14 @@ export function BidirectionalSlider({
     if (e.key === 'ArrowLeft') onChange(clampPercent(currentPercent - 10));
   };
 
-  const handleIncrement = () => onChange(clampPercent(currentPercent + 10));
-  const handleDecrement = () => onChange(clampPercent(currentPercent - 10));
+  const handleIncrement = () => {
+    onChange(clampPercent(currentPercent + 10));
+    haptics.impactLight();
+  };
+  const handleDecrement = () => {
+    onChange(clampPercent(currentPercent - 10));
+    haptics.impactLight();
+  };
 
   // Filled track style: bidirectional fill from center or edge
   const filledTrackStyle = (() => {

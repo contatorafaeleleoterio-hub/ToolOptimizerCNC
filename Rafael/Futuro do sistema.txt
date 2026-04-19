@@ -1,0 +1,42 @@
+o sistema sera lançodo no mercado apenas para cálculos de parâmetros para fresas de metal duro, 
+em seguinda temos um lista para ferramentas de corte mais usadas na indústria que são
+-broca de aço rápido
+-broca de alto avanço de metal duro
+-Cabeçotes com pastilha
+-Broca canhao
+-Broca espada
+-macho maquina de aco rápido
+-macho maquina metal duro
+-Brocas incertadas
+-Pente de rosca
+-Turbina
+-chanfrador
+-Mandrilhador
+
+Ainda falta algumas ferramentas mas essas são as mapeadas ate o momento
+pensando de modo a construir um ecossistema para que uma solução desse suporte para a outra
+Dentro da indústria um gap é a falta de compartilhamento e busca de dads processos e paramentros já validados por outros usuários
+dando mais eficiência e aproveitamendas ferramentas bem como a produtividade
+Função proposta:
+-Criar um hambiente para compartilhar resultados das simulações validadas, ou seja e um lugar onde vai ter uma pagina onde o
+ resultado de paramentros testado pode ser exposto e compartilhado o que funcionou
+
+-Rede socoal para o mercado de fresadores apenas, então você pode colocar seu perfil e imagem, e informações
+profissionais, ou seja linguagens que conhece, o quanto sabe de programaçãp, de forma com que empresários podem 
+entra e ver os contatos disponíveis no perfil já tendo uma previa do fresaador e suas habilidades
+
+-painel de trigonometria para cálculos de ângulos
+-um painel de acesso rápido para dividir um valor po 2 de forma instantania
+-algum tipo de localizador de códigos g, para alterar ou substituir verificar e editas valores
+-sistema para o comprador de ferramenta - ainda preciso estudar a possibilidade
+-Checkliste anti erro
+-checkliste revisão da maquina
+-conversode de códigos, lista de códigos conhecidos
+-resolução de problemas
+-gestão das maquinas
+-Area de cursos e orientações para iniciantes
+-área gestão de processos de usinagem
+-Area para conferir imagem dimençoes e detalhes da ferramenta deveido a erros de informação
+
+ 
+

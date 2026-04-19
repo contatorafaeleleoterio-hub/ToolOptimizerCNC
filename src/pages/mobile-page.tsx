@@ -15,6 +15,18 @@ export function MobilePage() {
 
   const [activeTab, setActiveTab] = useState<Tab>('config');
   const [hasNewResult, setHasNewResult] = useState(false);
+  const [isOffline, setIsOffline] = useState(!navigator.onLine);
+
+  useEffect(() => {
+    const handleOnline = () => setIsOffline(false);
+    const handleOffline = () => setIsOffline(true);
+    window.addEventListener('online', handleOnline);
+    window.addEventListener('offline', handleOffline);
+    return () => {
+      window.removeEventListener('online', handleOnline);
+      window.removeEventListener('offline', handleOffline);
+    };
+  }, []);
 
   // Detect new simulation by watching resultado timestamp in store
   const resultado = useMachiningStore((s) => s.resultado);
@@ -52,6 +64,14 @@ export function MobilePage() {
       </div>
 
       <SeoHead title="ToolOptimizer CNC Mobile" />
+
+      {/* Offline Banner */}
+      {isOffline && (
+        <div className="bg-seg-amarelo/20 border-b border-seg-amarelo/30 px-4 py-1.5 flex items-center justify-center gap-2 animate-in slide-in-from-top duration-300">
+          <span className="material-symbols-outlined text-seg-amarelo text-sm">cloud_off</span>
+          <span className="text-[10px] font-bold text-seg-amarelo uppercase tracking-widest">Modo Offline Ativo</span>
+        </div>
+      )}
 
       {/* ─── Header (sticky top) ─── */}
       <MobileHeader />

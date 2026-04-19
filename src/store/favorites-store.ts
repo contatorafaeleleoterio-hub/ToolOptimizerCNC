@@ -5,9 +5,10 @@
  */
 
 import { create } from 'zustand';
-import { persist } from 'zustand/middleware';
+import { persist, createJSONStorage } from 'zustand/middleware';
 import type { FavoritoCompleto, ParametrosUsinagem, ResultadoUsinagem, Ferramenta } from '@/types/index';
 import { TipoUsinagem } from '@/types/index';
+import { zustandStorageAdapter } from '@/shared/storage-service';
 
 const FAVORITES_MAX = 50;
 
@@ -99,6 +100,7 @@ export const useFavoritesStore = create<FavoritesState & FavoritesActions>()(
     {
       name: 'fenix_favorites_v1',
       version: 1,
+      storage: createJSONStorage(() => zustandStorageAdapter),
     },
   ),
 );

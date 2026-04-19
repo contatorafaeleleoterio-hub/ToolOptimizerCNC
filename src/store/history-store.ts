@@ -4,9 +4,10 @@
  */
 
 import { create } from 'zustand';
-import { persist } from 'zustand/middleware';
+import { persist, createJSONStorage } from 'zustand/middleware';
 import type { HistoricoCalculo, FeedbackOperador } from '@/types/index';
 import { TipoUsinagem, HISTORICO_MAX_ENTRIES } from '@/types/index';
+import { zustandStorageAdapter } from '@/shared/storage-service';
 
 interface HistoryFilters {
   materialNome: string;
@@ -149,6 +150,7 @@ export const useHistoryStore = create<HistoryState & HistoryActions>()(
     {
       name: 'tooloptimizer-cnc-history',
       version: 2,
+      storage: createJSONStorage(() => zustandStorageAdapter),
     },
   ),
 );

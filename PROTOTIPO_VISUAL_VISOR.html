@@ -1,0 +1,264 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Protótipo Visual - Novo Visor ToolOptimizer</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700&family=JetBrains+Mono:wght@400;700&family=Material+Symbols+Outlined" rel="stylesheet">
+    <style>
+        :root {
+            --bg: #0F1419;
+            --surface: rgba(22, 27, 34, 0.8);
+            --card: rgba(45, 55, 70, 0.9);
+            --primary: #00D9FF;
+            --secondary: #39FF14;
+            --text: #E5E7EB;
+            --text-muted: rgba(255, 255, 255, 0.5);
+            --border: rgba(255, 255, 255, 0.15);
+        }
+
+        body {
+            background-color: var(--bg);
+            color: var(--text);
+            font-family: 'Inter', sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            margin: 0;
+        }
+
+        .visor-container {
+            width: 700px;
+            background: var(--surface);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            border-radius: 24px;
+            overflow: hidden;
+            box-shadow: 0 20px 50px rgba(0,0,0,0.5);
+        }
+
+        /* TICKER */
+        .ticker {
+            height: 36px;
+            background: rgba(0,0,0,0.6);
+            border-bottom: 1px solid rgba(0, 217, 255, 0.3);
+            display: flex;
+            align-items: center;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .ticker-text {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 13px;
+            color: var(--primary);
+            white-space: nowrap;
+            text-transform: uppercase;
+            letter-spacing: 0.12em;
+            animation: marquee 15s linear infinite;
+            padding-left: 100%;
+        }
+
+        @keyframes marquee {
+            0% { transform: translateX(0); }
+            100% { transform: translateX(-100%); }
+        }
+
+        .content {
+            padding: 20px;
+            display: flex;
+            flex-col: column;
+            gap: 12px;
+        }
+
+        /* HEADER */
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 8px 12px;
+            background: rgba(255,255,255,0.03);
+            border-radius: 12px;
+            border: 1px solid rgba(255,255,255,0.08);
+            margin-bottom: 12px;
+        }
+
+        .header-info {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 11px;
+            color: var(--text-muted);
+        }
+
+        .badge {
+            background: rgba(46, 204, 113, 0.1);
+            color: #2ecc71;
+            padding: 4px 12px;
+            border-radius: 8px;
+            font-size: 11px;
+            font-weight: bold;
+            border: 1px solid rgba(46, 204, 113, 0.3);
+        }
+
+        /* GRID SYSTEM */
+        .row {
+            display: grid;
+            gap: 12px;
+            margin-bottom: 12px;
+        }
+
+        .box {
+            background: var(--card);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            padding: 12px;
+        }
+
+        .label {
+            font-size: 10px;
+            text-transform: uppercase;
+            font-weight: bold;
+            color: var(--text-muted);
+            margin-bottom: 4px;
+            letter-spacing: 0.05em;
+        }
+
+        .value {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 18px;
+        }
+
+        /* L1 - FERRAMENTA */
+        .l1 { grid-template-columns: 1fr; }
+        .l1 .value { font-size: 22px; color: #FFF; }
+
+        /* L2 - BIG NUMBERS */
+        .l2 { grid-template-columns: 1fr 1fr; }
+        .big-box {
+            padding: 24px;
+            position: relative;
+            overflow: hidden;
+        }
+        .aha-moment {
+            box-shadow: 0 0 25px rgba(0, 217, 255, 0.2);
+            border-color: rgba(0, 217, 255, 0.4);
+        }
+        .big-value {
+            font-size: 48px;
+            font-weight: bold;
+            display: block;
+            margin-top: 8px;
+            text-shadow: 0 0 20px rgba(0, 217, 255, 0.4);
+        }
+
+        /* L3 - INPUTS */
+        .l3 { grid-template-columns: repeat(4, 1fr); }
+        .l3 .value { font-size: 16px; color: rgba(255,255,255,0.9); }
+
+        /* L4 - GAUGES */
+        .l4 { grid-template-columns: 0.8fr repeat(3, 1fr); }
+        .gauge-placeholder {
+            height: 60px;
+            border: 1px dashed var(--text-muted);
+            border-radius: 40px 40px 0 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 9px;
+            color: var(--text-muted);
+        }
+
+        /* L5 - SECUNDARIOS */
+        .l5 { grid-template-columns: 1fr 1fr 1fr 0.6fr 0.6fr; }
+        .l5 .value { font-size: 14px; }
+
+        .unit {
+            font-size: 10px;
+            color: var(--text-muted);
+            margin-left: 4px;
+        }
+
+    </style>
+</head>
+<body>
+
+    <div class="visor-container">
+        <!-- TICKER -->
+        <div class="ticker">
+            <div class="ticker-text">
+                BEM-VINDO AO FÊNIX ◆ CALCULADORA CNC PROFISSIONAL ◆ VAMOS CONFIGURAR SUA PRIMEIRA USINAGEM ◆ TUDO PRONTO ◆ CLIQUE EM CALCULAR PARÂMETROS
+            </div>
+        </div>
+
+        <div class="content">
+            <!-- HEADER -->
+            <div class="header">
+                <div class="header-info">03/04/2026 · AÇO 1045 · DESBASTE</div>
+                <div style="display: flex; gap: 8px; align-items: center;">
+                    <div class="badge">SEGURO</div>
+                    <span class="material-symbols-outlined" style="color: var(--text-muted); font-size: 18px;">star</span>
+                </div>
+            </div>
+
+            <!-- LINHA 1 -->
+            <div class="row l1">
+                <div class="box">
+                    <div class="label">Ferramenta</div>
+                    <div class="value">Toroidal Ø10 R1 H20 F4</div>
+                </div>
+            </div>
+
+            <!-- LINHA 2 (AHA MOMENT) -->
+            <div class="row l2">
+                <div class="box big-box aha-moment">
+                    <div class="label" style="color: var(--primary)">Rotação (RPM)</div>
+                    <div class="big-value">3.183</div>
+                    <div class="label" style="margin-top: 10px;">RPM</div>
+                </div>
+                <div class="box big-box aha-moment">
+                    <div class="label" style="color: var(--secondary)">Avanço (mm/min)</div>
+                    <div class="big-value">636</div>
+                    <div class="label" style="margin-top: 10px;">mm/min</div>
+                </div>
+            </div>
+
+            <!-- LINHA 3 -->
+            <div class="row l3">
+                <div class="box"><div class="label">Vc</div><div class="value">100<span class="unit">m/min</span></div></div>
+                <div class="box"><div class="label">fz</div><div class="value">0.050<span class="unit">mm/z</span></div></div>
+                <div class="box"><div class="label">ap</div><div class="value">2.00<span class="unit">mm</span></div></div>
+                <div class="box"><div class="label">ae</div><div class="value">5.0<span class="unit">mm</span></div></div>
+            </div>
+
+            <!-- LINHA 4 -->
+            <div class="row l4">
+                <div class="box">
+                    <div class="label">Fator Corr.</div>
+                    <div class="value" style="font-size: 16px; margin-top: 15px;">80%</div>
+                </div>
+                <div class="box">
+                    <div class="label" style="text-align: center;">Efic. Avanço</div>
+                    <div class="gauge-placeholder">GAUGE MEIA-LUA</div>
+                </div>
+                <div class="box">
+                    <div class="label" style="text-align: center;">Prod. MRR</div>
+                    <div class="gauge-placeholder">GAUGE MEIA-LUA</div>
+                </div>
+                <div class="box">
+                    <div class="label" style="text-align: center;">Saúde Ferram.</div>
+                    <div class="gauge-placeholder">GAUGE MEIA-LUA</div>
+                </div>
+            </div>
+
+            <!-- LINHA 5 -->
+            <div class="row l5">
+                <div class="box"><div class="label">Potência</div><div class="value">2.45<span class="unit">kW</span></div></div>
+                <div class="box"><div class="label">Torque</div><div class="value">7.35<span class="unit">Nm</span></div></div>
+                <div class="box"><div class="label">Vc Real</div><div class="value">100<span class="unit">m/min</span></div></div>
+                <div class="box"><div class="label">L/D</div><div class="value" style="color: #2ecc71; font-weight: bold;">2.0</div></div>
+                <div class="box"><div class="label">CTF</div><div class="value">1.00</div></div>
+            </div>
+        </div>
+    </div>
+
+</body>
+</html>

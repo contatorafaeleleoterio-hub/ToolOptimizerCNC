@@ -1,3 +1,5 @@
+import { haptics } from '@/utils/haptics';
+
 type Tab = 'config' | 'results' | 'adjust';
 
 const TABS: { id: Tab; label: string; icon: string }[] = [
@@ -13,6 +15,11 @@ interface MobileTabBarProps {
 }
 
 export function MobileTabBar({ active, onChange, hasNewResult = false }: MobileTabBarProps) {
+  const handleTabChange = (id: Tab) => {
+    onChange(id);
+    haptics.impactLight();
+  };
+
   return (
     <nav
       className="flex bg-[rgba(10,14,20,0.97)] border-t border-white/8 backdrop-blur-xl"
@@ -27,7 +34,7 @@ export function MobileTabBar({ active, onChange, hasNewResult = false }: MobileT
             key={tab.id}
             role="tab"
             aria-selected={isActive}
-            onClick={() => onChange(tab.id)}
+            onClick={() => handleTabChange(tab.id)}
             className="relative flex-1 flex flex-col items-center justify-center gap-0.5 py-3 min-h-[56px] transition-all active:scale-95"
           >
             <div className="relative">

@@ -6,6 +6,7 @@ import type { SavedTool } from '@/types';
 import { SectionTitle, FieldGroup, NumInput } from '../ui-helpers';
 import { ToolEditModal } from '@/components/modals/tool-edit-modal';
 import { StyledSlider } from '@/components/styled-slider';
+import { haptics } from '@/utils/haptics';
 
 /**
  * Mobile-friendly number input with raw/blur pattern.
@@ -79,9 +80,12 @@ function AccordionSection({
     <div className="bg-[rgba(30,38,50,0.95)] backdrop-blur-sm rounded-xl border border-white/12">
       <button
         type="button"
-        onClick={() => setOpen((o) => !o)}
+        onClick={() => {
+          setOpen((o) => !o);
+          haptics.impactLight();
+        }}
         aria-expanded={open}
-        className="w-full flex items-center justify-between px-4 py-3 gap-3 text-left"
+        className="w-full flex items-center justify-between px-4 py-3 gap-3 text-left min-h-[56px]"
       >
         <div className="flex items-center gap-3 min-w-0">
           <SectionTitle color={color} label={label} />
@@ -151,8 +155,11 @@ function MobileSavedToolsList({ savedTools, activeDiametro, onLoad, onEdit, onRe
                     }`}
                   >
                     <button
-                      className="flex-1 flex items-center gap-1.5 text-left min-h-[36px] min-w-0"
-                      onClick={() => onLoad(tool.id)}
+                      className="flex-1 flex items-center gap-1.5 text-left min-h-[48px] min-w-0"
+                      onClick={() => {
+                        onLoad(tool.id);
+                        haptics.impactMedium();
+                      }}
                       aria-label={`Carregar ${tool.nome}`}
                     >
                       <span className={`font-mono text-xs truncate ${isActive ? 'text-primary' : 'text-gray-300'}`}>
@@ -166,17 +173,23 @@ function MobileSavedToolsList({ savedTools, activeDiametro, onLoad, onEdit, onRe
                     <div className="flex items-center gap-1 ml-1">
                       <button
                         aria-label={`Editar ${tool.nome}`}
-                        onClick={() => onEdit(tool)}
-                        className="p-1.5 min-h-[36px] min-w-[36px] flex items-center justify-center text-gray-500 active:text-primary transition-colors"
+                        onClick={() => {
+                          onEdit(tool);
+                          haptics.impactLight();
+                        }}
+                        className="p-1.5 min-h-[44px] min-w-[44px] flex items-center justify-center text-gray-500 active:text-primary transition-colors"
                       >
-                        <span className="material-symbols-outlined" style={{ fontSize: '16px' }}>edit</span>
+                        <span className="material-symbols-outlined" style={{ fontSize: '18px' }}>edit</span>
                       </button>
                       <button
                         aria-label={`Remover ${tool.nome}`}
-                        onClick={() => onRemove(tool.id)}
-                        className="p-1.5 min-h-[36px] min-w-[36px] flex items-center justify-center text-gray-500 active:text-red-400 transition-colors"
+                        onClick={() => {
+                          onRemove(tool.id);
+                          haptics.notification();
+                        }}
+                        className="p-1.5 min-h-[44px] min-w-[44px] flex items-center justify-center text-gray-500 active:text-red-400 transition-colors"
                       >
-                        <span className="material-symbols-outlined" style={{ fontSize: '16px' }}>delete</span>
+                        <span className="material-symbols-outlined" style={{ fontSize: '18px' }}>delete</span>
                       </button>
                     </div>
                   </div>
@@ -211,6 +224,7 @@ export function MobileConfigSection() {
     );
     if (jaExiste) return;
     addSavedTool({ tipo, diametro, raioQuina, numeroArestas, balanco });
+    haptics.notification();
     setShowSavedBadge(true);
     setTimeout(() => setShowSavedBadge(false), 2000);
   };
@@ -230,7 +244,11 @@ export function MobileConfigSection() {
       <AccordionSection color="bg-primary" label="Configuração Base" summary={summaryBase} defaultOpen>
         <div className="space-y-4 mt-1">
           <FieldGroup label="Material da Peça">
-            <select value={materialId} onChange={(e) => setMaterial(Number(e.target.value))}
+            <select value={materialId} 
+              onChange={(e) => {
+                setMaterial(Number(e.target.value));
+                haptics.impactMedium();
+              }}
               className="w-full min-h-[48px] bg-black/40 border border-white/12 rounded-lg py-3 pl-3 pr-10 text-sm text-gray-200 focus:ring-1 focus:ring-primary outline-none appearance-none select-chevron">
               {MATERIAIS.map((m) => (
                 <option key={m.id} value={m.id}>{m.nome}{m.status === 'estimado' ? ' ⚠' : ''}</option>
@@ -250,8 +268,12 @@ export function MobileConfigSection() {
             <div className="grid grid-cols-3 gap-2">
               {Object.values(TipoUsinagem).map((t) => (
                 <label key={t} className="cursor-pointer group">
-                  <input type="radio" name="mobile_tipo_usinagem" className="peer sr-only" checked={tipoOperacao === t} onChange={() => setTipoOperacao(t)} />
-                  <div className="min-h-[44px] flex items-center justify-center rounded-lg bg-black/40 border border-white/5 text-gray-400 peer-checked:bg-primary/10 peer-checked:border-primary peer-checked:text-primary transition-all text-center text-xs font-medium">
+                  <input type="radio" name="mobile_tipo_usinagem" className="peer sr-only" checked={tipoOperacao === t} 
+                    onChange={() => {
+                      setTipoOperacao(t);
+                      haptics.impactMedium();
+                    }} />
+                  <div className="min-h-[48px] flex items-center justify-center rounded-lg bg-black/40 border border-white/5 text-gray-400 peer-checked:bg-primary/10 peer-checked:border-primary peer-checked:text-primary transition-all text-center text-xs font-medium">
                     {OPERACAO_LABELS[t]}
                   </div>
                 </label>
@@ -280,7 +302,7 @@ export function MobileConfigSection() {
             <button
               aria-label="Salvar ferramenta"
               onClick={handleSaveTool}
-              className="mt-2 w-full flex items-center justify-center gap-1.5 min-h-[44px] rounded-lg bg-white/5 border border-white/12 active:bg-white/10 transition-colors text-xs text-gray-400"
+              className="mt-2 w-full flex items-center justify-center gap-1.5 min-h-[48px] rounded-lg bg-white/5 border border-white/12 active:bg-white/10 transition-colors text-xs text-gray-400"
             >
               <span className="material-symbols-outlined text-sm">save</span>
               Salvar ferramenta atual
@@ -304,8 +326,12 @@ export function MobileConfigSection() {
           <FieldGroup label="Tipo">
             <div className="grid grid-cols-3 gap-2">
               {FERRAMENTAS_PADRAO.map((f) => (
-                <button key={f.tipo} onClick={() => setFerramenta({ tipo: f.tipo, numeroArestas: f.zPadrao })}
-                  className={`min-h-[44px] py-2 rounded-lg border text-xs transition-colors ${ferramenta.tipo === f.tipo ? MOBILE_BTN_ACTIVE : MOBILE_BTN_IDLE}`}>
+                <button key={f.tipo} 
+                  onClick={() => {
+                    setFerramenta({ tipo: f.tipo, numeroArestas: f.zPadrao });
+                    haptics.impactLight();
+                  }}
+                  className={`min-h-[48px] py-2 rounded-lg border text-xs transition-colors ${ferramenta.tipo === f.tipo ? MOBILE_BTN_ACTIVE : MOBILE_BTN_IDLE}`}>
                   {f.descricao.split(' ')[0]}
                 </button>
               ))}
@@ -331,8 +357,12 @@ export function MobileConfigSection() {
           <FieldGroup label="Arestas (Z)">
             <div className="grid grid-cols-4 gap-2">
               {ARESTAS_OPTIONS.map((z) => (
-                <button key={z} onClick={() => setFerramenta({ numeroArestas: z })}
-                  className={`min-h-[44px] py-2 rounded-lg border text-xs font-mono transition-colors ${ferramenta.numeroArestas === z ? MOBILE_BTN_ACTIVE : MOBILE_BTN_IDLE}`}>
+                <button key={z} 
+                  onClick={() => {
+                    setFerramenta({ numeroArestas: z });
+                    haptics.impactLight();
+                  }}
+                  className={`min-h-[48px] py-2 rounded-lg border text-xs font-mono transition-colors ${ferramenta.numeroArestas === z ? MOBILE_BTN_ACTIVE : MOBILE_BTN_IDLE}`}>
                   {z}Z
                 </button>
               ))}
@@ -362,8 +392,11 @@ export function MobileConfigSection() {
       <AccordionSection color="bg-seg-verde" label="Fator de Correção" summary={summarySafety}>
         <div className="flex items-center gap-2 mt-1">
           <button
-            onClick={() => setSafetyFactor(Math.round(Math.max(0.50, safetyFactor - 0.05) * 100) / 100)}
-            className="w-8 h-8 flex items-center justify-center rounded-md bg-black/40 border border-white/10 text-gray-400 text-base font-bold shrink-0"
+            onClick={() => {
+              setSafetyFactor(Math.round(Math.max(0.50, safetyFactor - 0.05) * 100) / 100);
+              haptics.impactLight();
+            }}
+            className="w-12 h-12 flex items-center justify-center rounded-md bg-black/40 border border-white/10 text-gray-400 text-base font-bold shrink-0"
             aria-label="Reduzir fator de correção"
           >−</button>
           <div className="flex-1">
@@ -374,12 +407,18 @@ export function MobileConfigSection() {
               step={0.05}
               color="primary"
               label="Fator de Correção"
-              onChange={(v) => setSafetyFactor(v)}
+              onChange={(v) => {
+                setSafetyFactor(v);
+                haptics.impactLight();
+              }}
             />
           </div>
           <button
-            onClick={() => setSafetyFactor(Math.round(Math.min(1.00, safetyFactor + 0.05) * 100) / 100)}
-            className="w-8 h-8 flex items-center justify-center rounded-md bg-black/40 border border-white/10 text-gray-400 text-base font-bold shrink-0"
+            onClick={() => {
+              setSafetyFactor(Math.round(Math.min(1.00, safetyFactor + 0.05) * 100) / 100);
+              haptics.impactLight();
+            }}
+            className="w-12 h-12 flex items-center justify-center rounded-md bg-black/40 border border-white/10 text-gray-400 text-base font-bold shrink-0"
             aria-label="Aumentar fator de correção"
           >+</button>
           <span className="text-sm font-mono text-white w-12 text-right shrink-0">

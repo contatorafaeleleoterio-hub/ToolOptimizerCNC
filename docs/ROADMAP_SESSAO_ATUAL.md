@@ -16,7 +16,17 @@
 ## ⚡ PRÓXIMA AÇÃO OBRIGATÓRIA (Cloud Code)
 
 > **Story-011 CONCLUÍDA** — v0.11.0 released ✅ commit `b2183bd`
-> **Próxima:** G-1 Pesquisa de Mercado (LAUNCH-TRACK.md não existe — Regra 3 do GESTOR)
+> **Próxima:** **SESSION APP-2** — Build Android cloud via GitHub Actions (zero senha, zero instalação local)
+> Plano completo: `docs/PROTOCOLO_CONVERSAO_APP/APP2_PLANO.md`
+>
+> **Ações da APP-2:**
+> 1. Criar `.github/workflows/build-android.yml` (workflow debug APK)
+> 2. Commit + push → primeira build na nuvem (~6 min)
+> 3. Baixar artifact `tooloptimizercnc-debug-<sha>.apk` → instalar no celular
+> 4. Validar (calculadora, histórico, favoritos) → criar `APP2_STATUS.md`
+>
+> **APP-1 ✅ concluída** (commit `0ae47a2` — Capacitor + pasta `android/`)
+> **G-1 Pesquisa de Mercado** fica para depois das sessões APP-2/3/4 (publicação Play Store).
 
 ### SESSÃO 2C — ✅ CONCLUÍDA (`b2183bd`) — v0.11.0
 

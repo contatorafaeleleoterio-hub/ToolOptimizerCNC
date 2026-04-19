@@ -12,6 +12,8 @@ import {
   SEG_COLORS, SEG_ICONS, SEG_LABELS, SEG_BG,
   BigNumber, WarningsSection,
 } from '../shared-result-parts';
+import { haptics } from '@/utils/haptics';
+import { HmiVisor } from './hmi-visor';
 
 const OPERACAO_LABELS: Record<TipoUsinagem, string> = {
   [TipoUsinagem.DESBASTE]: 'Desbaste',
@@ -64,6 +66,13 @@ export function MobileResultsSection() {
     isRevealing ? { animation: `jackpotFlash 550ms ease-out ${delayMs}ms both` } : undefined;
 
   const [editingTool, setEditingTool] = useState<SavedTool | null>(null);
+  const [viewMode, setViewMode] = useState<'educational' | 'hmi'>('hmi');
+
+  const toggleViewMode = () => {
+    const next = viewMode === 'educational' ? 'hmi' : 'educational';
+    setViewMode(next);
+    haptics.impactMedium();
+  };
 
   const latestEntry = historyEntries[0];
   const isFavorited = latestEntry?.favorited ?? false;
@@ -114,6 +123,22 @@ export function MobileResultsSection() {
             {OPERACAO_LABELS[tipoOperacao]}
           </span>
         </div>
+
+        {/* View Mode Toggle */}
+        <button
+          onClick={toggleViewMode}
+          className={`flex items-center gap-1 px-2 py-0.5 rounded-md border text-[9px] font-bold uppercase tracking-wider transition-all active:scale-95 ${
+            viewMode === 'hmi' 
+              ? 'bg-primary/20 border-primary/40 text-primary' 
+              : 'bg-white/5 border-white/10 text-white/40'
+          }`}
+        >
+          <span className="material-symbols-outlined text-xs">
+            {viewMode === 'hmi' ? 'precision_manufacturing' : 'school'}
+          </span>
+          {viewMode === 'hmi' ? 'HMI' : 'EDUC.'}
+        </button>
+
         {/* Safety badge inline */}
         <div className={`flex items-center gap-1 px-2 py-0.5 rounded-md border text-[10px] font-bold uppercase tracking-wide shrink-0 ${SEG_BG[nivel]}`}>
           <span
@@ -218,6 +243,10 @@ export function MobileResultsSection() {
 
       {/* ═══ ZONAS 4-8 — só com resultado ═══ */}
       {resultado && (() => {
+        if (viewMode === 'hmi') {
+          return <HmiVisor />;
+        }
+
         const { rpm, avanco, potenciaMotor, mrr, vcReal } = resultado;
         const rpmPct = Math.min((rpm / limites.maxRPM) * 100, 100);
         const feedPct = Math.min((avanco / limites.maxAvanco) * 100, 100);

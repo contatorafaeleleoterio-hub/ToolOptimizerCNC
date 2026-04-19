@@ -3,7 +3,7 @@
  */
 
 import { create } from 'zustand';
-import { subscribeWithSelector, persist } from 'zustand/middleware';
+import { subscribeWithSelector, persist, createJSONStorage } from 'zustand/middleware';
 import type {
   Ferramenta, LimitesMaquina, ParametrosUsinagem, ResultadoUsinagem,
   StatusSeguranca, SafetyRules, Preferences, CustomMaterial,
@@ -25,6 +25,7 @@ import { useUsageStore } from '@/admin/store/usage-store';
 import {
   calculateHealthScore, getVcZone, getFzZone, getAeZone, getApZone,
 } from '@/utils/health-score';
+import { zustandStorageAdapter } from '@/shared/storage-service';
 
 const DEFAULT_FERRAMENTA: Ferramenta = {
   tipo: 'toroidal',
@@ -321,7 +322,7 @@ export const useMachiningStore = create<MachiningState & MachiningActions>()(
 
         resetToDefaults: () => {
           set({ ...INITIAL_STATE });
-          localStorage.removeItem('tooloptimizer-cnc-settings');
+          storageService.removeItem('tooloptimizer-cnc-settings');
         },
 
         calcular: () => {
@@ -535,6 +536,7 @@ export const useMachiningStore = create<MachiningState & MachiningActions>()(
           }
           return persistedState;
         },
+        storage: createJSONStorage(() => zustandStorageAdapter),
         partialize: (state) => ({
           limitesMaquina: state.limitesMaquina,
           safetyFactor: state.safetyFactor,

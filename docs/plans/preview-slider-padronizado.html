@@ -1,0 +1,446 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<title>Preview — Slider Padronizado</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    background: #0F1419;
+    color: white;
+    font-family: 'JetBrains Mono', 'Courier New', monospace;
+    padding: 40px;
+    display: flex;
+    flex-direction: column;
+    gap: 40px;
+  }
+  h2 {
+    font-size: 11px;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    color: rgba(255,255,255,0.4);
+    margin-bottom: 16px;
+  }
+
+  /* Card */
+  .card {
+    background: rgba(15,20,30,0.8);
+    border: 1px solid rgba(255,255,255,0.05);
+    border-radius: 12px;
+    padding: 16px;
+    backdrop-filter: blur(20px);
+    max-width: 480px;
+  }
+
+  /* Value header row */
+  .slider-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    margin-bottom: 12px;
+  }
+  .slider-header-left {
+    display: flex;
+    align-items: baseline;
+    gap: 8px;
+  }
+  .slider-label {
+    font-size: 13px;
+    font-weight: 700;
+  }
+  .slider-label.cyan { color: #00D9FF; }
+  .slider-label.green { color: #39FF14; }
+  .slider-pct {
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 1px;
+  }
+  .slider-pct.positive { color: #39FF14; }
+  .slider-pct.zero { color: rgba(255,255,255,0.3); }
+  .slider-value {
+    display: flex;
+    align-items: baseline;
+    gap: 4px;
+  }
+  .slider-num {
+    font-size: 22px;
+    font-weight: 700;
+  }
+  .slider-num.cyan { color: #00D9FF; filter: drop-shadow(0 0 8px rgba(0,217,255,0.4)); }
+  .slider-num.green { color: #39FF14; filter: drop-shadow(0 0 8px rgba(57,255,20,0.4)); }
+  .slider-unit {
+    font-size: 11px;
+    color: rgba(255,255,255,0.35);
+  }
+
+  /* Slider row */
+  .slider-row {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 6px;
+  }
+
+  /* Buttons */
+  .btn {
+    width: 24px;
+    height: 24px;
+    border-radius: 4px;
+    background: rgba(0,0,0,0.4);
+    border: 1px solid rgba(255,255,255,0.1);
+    color: rgba(255,255,255,0.5);
+    font-size: 13px;
+    font-weight: 700;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+  }
+
+  /* Track area */
+  .track-area {
+    position: relative;
+    height: 40px;
+    flex: 1;
+    margin: 0 18px;
+    display: flex;
+    align-items: center;
+  }
+
+  /* Track background */
+  .track-bg {
+    position: absolute;
+    left: 0; right: 0;
+    height: 6px;
+    background: rgba(0,0,0,0.4);
+    border-radius: 999px;
+  }
+
+  /* Filled track */
+  .track-fill {
+    position: absolute;
+    height: 6px;
+    border-radius: 999px;
+  }
+  .track-fill.cyan {
+    background: #00D9FF;
+    box-shadow: 0 0 8px rgba(0,217,255,0.6);
+  }
+  .track-fill.green {
+    background: #39FF14;
+    box-shadow: 0 0 8px rgba(57,255,20,0.6);
+  }
+
+  /* Tick marks */
+  .ticks {
+    position: absolute;
+    left: 0; right: 0; top: 0; bottom: 0;
+    display: flex;
+    justify-content: space-between;
+    padding: 0 4px;
+    align-items: center;
+    pointer-events: none;
+  }
+  .tick {
+    width: 1px;
+    background: rgba(255,255,255,0.10);
+  }
+  .tick.major {
+    background: rgba(255,255,255,0.20);
+  }
+  .tick.center {
+    width: 2px;
+    background: rgba(255,255,255,0.40);
+  }
+  .tick.small { height: 8px; }
+  .tick.medium { height: 12px; }
+  .tick.large { height: 16px; }
+
+  /* Thumb */
+  .thumb {
+    position: absolute;
+    width: 28px;
+    height: 28px;
+    border-radius: 50%;
+    border: 2px solid;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: rgba(15,20,25,0.9);
+    transform: translateX(-50%);
+  }
+  .thumb.cyan {
+    border-color: #00D9FF;
+    box-shadow: 0 0 10px rgba(0,217,255,0.4);
+  }
+  .thumb.green {
+    border-color: #39FF14;
+    box-shadow: 0 0 10px rgba(57,255,20,0.4);
+  }
+  .thumb-dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+  }
+  .thumb-dot.cyan {
+    background: #00D9FF;
+    box-shadow: 0 0 6px rgba(0,217,255,0.8);
+  }
+  .thumb-dot.green {
+    background: #39FF14;
+    box-shadow: 0 0 6px rgba(57,255,20,0.8);
+  }
+
+  /* Tick labels */
+  .tick-labels {
+    position: relative;
+    height: 12px;
+    padding: 0 40px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  .tick-labels span {
+    font-size: 11px;
+    color: rgba(255,255,255,0.25);
+  }
+  .tick-labels .center-label {
+    color: rgba(255,255,255,0.4);
+  }
+
+  /* Divider */
+  .divider {
+    height: 1px;
+    background: rgba(255,255,255,0.05);
+    margin: 8px 0;
+  }
+
+  /* Grid para os 2 cards lado a lado */
+  .grid-2 {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+    max-width: 960px;
+  }
+</style>
+</head>
+<body>
+
+<div>
+  <h2>Preview — Slider RPM e Avanço padronizados (modo full)</h2>
+  <p style="font-size:11px; color:rgba(255,255,255,0.3); margin-bottom:24px; font-family:sans-serif;">
+    Sem interação. Visual apenas. Thumb 28px, 31 ticks, botões −/+.
+  </p>
+
+  <div class="grid-2">
+
+    <!-- Card RPM -->
+    <div class="card">
+      <!-- Header com label + percent + value -->
+      <div class="slider-header">
+        <div class="slider-header-left">
+          <span class="slider-label cyan">Rotação (RPM)</span>
+          <span class="slider-pct positive">+87%</span>
+        </div>
+        <div class="slider-value">
+          <span class="slider-num cyan">9.921</span>
+          <span class="slider-unit">rev/min</span>
+        </div>
+      </div>
+
+      <!-- Slider -->
+      <div class="slider-row">
+        <div class="btn">−</div>
+
+        <!-- Gerar 31 ticks via inline SVG para precisão visual -->
+        <div class="track-area">
+          <div class="track-bg"></div>
+
+          <!-- Fill: +87% → posição (87+150)/300 = 79% → left 50%, width 29% -->
+          <div class="track-fill cyan" style="left:50%; width:29%;"></div>
+
+          <!-- Ticks: 31 ticks de -150% a +150% em passos de 10% -->
+          <div class="ticks">
+            <!-- i=-150,-140,...,-60,-50 (major at -150,-100,-50) -->
+            <div class="tick large major" style="height:16px"></div>  <!-- -150 major -->
+            <div class="tick small" style="height:8px"></div>          <!-- -140 -->
+            <div class="tick small" style="height:8px"></div>          <!-- -130 -->
+            <div class="tick small" style="height:8px"></div>          <!-- -120 -->
+            <div class="tick small" style="height:8px"></div>          <!-- -110 -->
+            <div class="tick medium major" style="height:12px; background:rgba(255,255,255,0.20)"></div> <!-- -100 major -->
+            <div class="tick small" style="height:8px"></div>          <!-- -90 -->
+            <div class="tick small" style="height:8px"></div>          <!-- -80 -->
+            <div class="tick small" style="height:8px"></div>          <!-- -70 -->
+            <div class="tick small" style="height:8px"></div>          <!-- -60 -->
+            <div class="tick medium major" style="height:12px; background:rgba(255,255,255,0.20)"></div> <!-- -50 major -->
+            <div class="tick small" style="height:8px"></div>          <!-- -40 -->
+            <div class="tick small" style="height:8px"></div>          <!-- -30 -->
+            <div class="tick small" style="height:8px"></div>          <!-- -20 -->
+            <div class="tick small" style="height:8px"></div>          <!-- -10 -->
+            <!-- CENTER 0% -->
+            <div class="tick center large" style="height:16px; width:2px; background:rgba(255,255,255,0.40)"></div>
+            <div class="tick small" style="height:8px"></div>          <!-- +10 -->
+            <div class="tick small" style="height:8px"></div>          <!-- +20 -->
+            <div class="tick small" style="height:8px"></div>          <!-- +30 -->
+            <div class="tick small" style="height:8px"></div>          <!-- +40 -->
+            <div class="tick medium major" style="height:12px; background:rgba(255,255,255,0.20)"></div> <!-- +50 major -->
+            <div class="tick small" style="height:8px"></div>          <!-- +60 -->
+            <div class="tick small" style="height:8px"></div>          <!-- +70 -->
+            <div class="tick small" style="height:8px"></div>          <!-- +80 -->
+            <div class="tick small" style="height:8px"></div>          <!-- +90 -->
+            <div class="tick medium major" style="height:12px; background:rgba(255,255,255,0.20)"></div> <!-- +100 major -->
+            <div class="tick small" style="height:8px"></div>          <!-- +110 -->
+            <div class="tick small" style="height:8px"></div>          <!-- +120 -->
+            <div class="tick small" style="height:8px"></div>          <!-- +130 -->
+            <div class="tick small" style="height:8px"></div>          <!-- +140 -->
+            <div class="tick large major" style="height:16px; background:rgba(255,255,255,0.20)"></div>  <!-- +150 major -->
+          </div>
+
+          <!-- Thumb: +87% → position 79.3% -->
+          <div class="thumb cyan" style="left: 79.3%;">
+            <div class="thumb-dot cyan"></div>
+          </div>
+        </div>
+
+        <div class="btn">+</div>
+      </div>
+
+      <!-- Tick labels -->
+      <div class="tick-labels">
+        <span>-150%</span>
+        <span class="center-label">0%</span>
+        <span>+150%</span>
+      </div>
+    </div>
+
+    <!-- Card Avanço -->
+    <div class="card">
+      <!-- Header com label + percent + value -->
+      <div class="slider-header">
+        <div class="slider-header-left">
+          <span class="slider-label green">Avanço (mm/min)</span>
+          <span class="slider-pct zero">0%</span>
+        </div>
+        <div class="slider-value">
+          <span class="slider-num green">3.968</span>
+          <span class="slider-unit">mm/min</span>
+        </div>
+      </div>
+
+      <!-- Slider -->
+      <div class="slider-row">
+        <div class="btn">−</div>
+
+        <div class="track-area">
+          <div class="track-bg"></div>
+          <!-- Fill: 0% → nenhum fill -->
+
+          <!-- Ticks -->
+          <div class="ticks">
+            <div class="tick large major" style="height:16px"></div>
+            <div class="tick small" style="height:8px"></div>
+            <div class="tick small" style="height:8px"></div>
+            <div class="tick small" style="height:8px"></div>
+            <div class="tick small" style="height:8px"></div>
+            <div class="tick medium major" style="height:12px; background:rgba(255,255,255,0.20)"></div>
+            <div class="tick small" style="height:8px"></div>
+            <div class="tick small" style="height:8px"></div>
+            <div class="tick small" style="height:8px"></div>
+            <div class="tick small" style="height:8px"></div>
+            <div class="tick medium major" style="height:12px; background:rgba(255,255,255,0.20)"></div>
+            <div class="tick small" style="height:8px"></div>
+            <div class="tick small" style="height:8px"></div>
+            <div class="tick small" style="height:8px"></div>
+            <div class="tick small" style="height:8px"></div>
+            <div class="tick center large" style="height:16px; width:2px; background:rgba(255,255,255,0.40)"></div>
+            <div class="tick small" style="height:8px"></div>
+            <div class="tick small" style="height:8px"></div>
+            <div class="tick small" style="height:8px"></div>
+            <div class="tick small" style="height:8px"></div>
+            <div class="tick medium major" style="height:12px; background:rgba(255,255,255,0.20)"></div>
+            <div class="tick small" style="height:8px"></div>
+            <div class="tick small" style="height:8px"></div>
+            <div class="tick small" style="height:8px"></div>
+            <div class="tick small" style="height:8px"></div>
+            <div class="tick medium major" style="height:12px; background:rgba(255,255,255,0.20)"></div>
+            <div class="tick small" style="height:8px"></div>
+            <div class="tick small" style="height:8px"></div>
+            <div class="tick small" style="height:8px"></div>
+            <div class="tick small" style="height:8px"></div>
+            <div class="tick large major" style="height:16px; background:rgba(255,255,255,0.20)"></div>
+          </div>
+
+          <!-- Thumb: 0% → position 50% -->
+          <div class="thumb green" style="left: 50%;">
+            <div class="thumb-dot green"></div>
+          </div>
+        </div>
+
+        <div class="btn">+</div>
+      </div>
+
+      <!-- Tick labels -->
+      <div class="tick-labels">
+        <span>-150%</span>
+        <span class="center-label">0%</span>
+        <span>+150%</span>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- Ajuste Fino — para comparação -->
+  <div style="margin-top: 40px;">
+    <h2>Para comparação — Ajuste Fino (StyledSlider — design já existente e não alterado)</h2>
+    <div style="max-width: 480px; margin-top: 16px;">
+      <div class="card">
+        <div class="slider-header">
+          <div class="slider-header-left">
+            <span class="slider-label cyan" style="font-size:16px">Vc</span>
+            <span style="font-size:12px; color:rgba(255,255,255,0.4); text-transform:uppercase; letter-spacing:1px">VEL. DE CORTE</span>
+          </div>
+          <div class="slider-value">
+            <span class="slider-num cyan">180</span>
+            <span class="slider-unit">M/MIN</span>
+          </div>
+        </div>
+
+        <!-- SegmentedGradientBar placeholder -->
+        <div style="height:8px; border-radius:999px; background:linear-gradient(to right, #e74c3c 0%, #f39c12 40%, #2ecc71 70%, #f39c12 90%, #e74c3c 100%); margin-bottom:8px; opacity:0.8;"></div>
+
+        <!-- StyledSlider: 5 ticks, unidirectional fill -->
+        <div class="slider-row">
+          <div class="btn">−</div>
+          <div class="track-area">
+            <div class="track-bg"></div>
+            <!-- fill from left: 180 in range ~80-300 → (180-80)/(300-80)=45% -->
+            <div class="track-fill cyan" style="left:0; width:45%;"></div>
+            <!-- 5 ticks: 0%, 25%, 50%, 75%, 100% -->
+            <div class="ticks" style="padding: 0 4px;">
+              <div class="tick large" style="height:16px; background:rgba(255,255,255,0.20)"></div>
+              <div class="tick medium" style="height:12px; background:rgba(255,255,255,0.15)"></div>
+              <div class="tick medium" style="height:12px; background:rgba(255,255,255,0.15)"></div>
+              <div class="tick medium" style="height:12px; background:rgba(255,255,255,0.15)"></div>
+              <div class="tick large" style="height:16px; background:rgba(255,255,255,0.20)"></div>
+            </div>
+            <!-- Recommended marker -->
+            <div style="position:absolute; left:55%; height:100%; display:flex; align-items:center;">
+              <div style="width:2px; height:20px; background:rgba(0,217,255,0.5); border-radius:1px;"></div>
+            </div>
+            <!-- Thumb at 45% -->
+            <div class="thumb cyan" style="left: 45%;">
+              <div class="thumb-dot cyan"></div>
+            </div>
+          </div>
+          <div class="btn">+</div>
+        </div>
+
+        <div style="text-align:right; font-size:10px; color:rgba(255,255,255,0.3); margin-top:4px;">▲ Rec.</div>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+</body>
+</html>

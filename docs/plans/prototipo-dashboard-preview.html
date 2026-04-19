@@ -1,0 +1,1230 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>ToolOptimizer CNC — Preview Dashboard v0.11</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet"/>
+<style>
+/* ─── TOKENS ─────────────────────────────────────────────────────── */
+:root {
+  --cyan:   #00D9FF;
+  --green:  #39FF14;
+  --bg:     #0F1419;
+  --bg2:    #141B24;
+  --bg3:    #1A2333;
+  --border: #1E2D3D;
+  --ok:     #2ecc71;
+  --warn:   #f39c12;
+  --danger: #e74c3c;
+  --text:   #E2E8F0;
+  --muted:  rgba(226,232,240,0.35);
+  --mono:   'JetBrains Mono', 'Courier New', monospace;
+}
+* { margin:0; padding:0; box-sizing:border-box; }
+body {
+  background: var(--bg);
+  color: var(--text);
+  font-family: 'Segoe UI', system-ui, sans-serif;
+  min-height: 100vh;
+  min-width: 1360px;
+  overflow-x: auto;
+}
+
+/* ─── ANIMATIONS ──────────────────────────────────────────────────── */
+@keyframes idleBorderPulse {
+  0%,100% { box-shadow: 0 0 0 1px rgba(0,217,255,.3), 0 0 12px rgba(0,217,255,.1); }
+  50%     { box-shadow: 0 0 0 2px rgba(0,217,255,.7), 0 0 28px rgba(0,217,255,.3); }
+}
+@keyframes sliderShake {
+  0%,100% { transform: translateX(0); }
+  20%     { transform: translateX(-3px); }
+  40%     { transform: translateX(3px); }
+  60%     { transform: translateX(-2px); }
+  80%     { transform: translateX(2px); }
+}
+@keyframes gaugeIgnite {
+  0%   { filter: drop-shadow(0 0 0px rgba(0,217,255,0)); }
+  30%  { filter: drop-shadow(0 0 12px rgba(0,217,255,.9)); }
+  100% { filter: drop-shadow(0 0 4px rgba(0,217,255,.3)); }
+}
+@keyframes jackpotFlash {
+  0%   { box-shadow: none; }
+  20%  { box-shadow: 0 0 40px rgba(0,217,255,.8), 0 0 80px rgba(57,255,20,.4); }
+  50%  { box-shadow: 0 0 20px rgba(57,255,20,.6), 0 0 40px rgba(0,217,255,.3); }
+  100% { box-shadow: none; }
+}
+@keyframes spinIcon   { from { transform:rotate(0deg); } to { transform:rotate(360deg); } }
+@keyframes safetyReveal {
+  0%   { opacity:0; transform:scale(.85); }
+  60%  { transform:scale(1.06); }
+  100% { opacity:1; transform:scale(1); }
+}
+@keyframes valueReveal {
+  0%   { opacity:0; transform:scale(.8); }
+  70%  { transform:scale(1.08); }
+  100% { opacity:1; transform:scale(1); }
+}
+
+/* ─── APP LAYOUT ─────────────────────────────────────────────────── */
+.app {
+  max-width: 1600px;
+  margin: 0 auto;
+  padding: 14px 24px 32px;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  position: relative;
+  z-index: 1;
+}
+
+/* ─── AMBIENT ─────────────────────────────────────────────────────── */
+.ambient {
+  position: fixed; inset: 0;
+  background: radial-gradient(ellipse 70% 40% at 50% 60%, rgba(0,217,255,0) 0%, transparent 70%);
+  pointer-events: none; z-index: 0;
+  transition: background .6s;
+}
+body.simulating .ambient {
+  background: radial-gradient(ellipse 70% 40% at 50% 60%, rgba(0,217,255,.07) 0%, transparent 70%);
+}
+
+/* ─── HEADER ─────────────────────────────────────────────────────── */
+.app-header {
+  display: flex; align-items: center; gap: 10px;
+  padding-bottom: 12px;
+  border-bottom: 1px solid var(--border);
+}
+.app-logo {
+  font-size: 20px; font-weight: 800; letter-spacing: -.5px;
+  color: var(--cyan);
+  text-shadow: 0 0 16px rgba(0,217,255,.4);
+}
+.app-logo span { color: var(--text); }
+.app-badge {
+  font-family: var(--mono); font-size: 10px;
+  background: rgba(0,217,255,.1); border: 1px solid rgba(0,217,255,.3);
+  color: var(--cyan); padding: 2px 8px; border-radius: 4px; letter-spacing: 1px;
+}
+.app-badge.green {
+  background: rgba(57,255,20,.08); border-color: rgba(57,255,20,.3); color: var(--green);
+}
+.app-state {
+  margin-left: auto; font-family: var(--mono); font-size: 11px;
+  color: var(--muted); letter-spacing: 1px; transition: color .3s;
+}
+body.simulating .app-state { color: var(--cyan); }
+body.revealed   .app-state { color: var(--ok); }
+
+/* ─── DASHBOARD GRID ─────────────────────────────────────────────── */
+.dashboard {
+  display: grid;
+  grid-template-columns: 3fr 9fr; /* default: Proposta B OFF */
+  gap: 14px;
+  align-items: start;
+  transition: grid-template-columns .4s ease;
+}
+.dashboard.grid-48 { grid-template-columns: 4fr 8fr; }
+
+/* ─── CARD BASE ──────────────────────────────────────────────────── */
+.card {
+  background: var(--bg2); border: 1px solid var(--border);
+  border-radius: 12px; padding: 14px 16px;
+  position: relative; overflow: hidden;
+}
+.card-title {
+  font-family: var(--mono); font-size: 10px; color: var(--muted);
+  letter-spacing: 1.5px; text-transform: uppercase; margin-bottom: 10px;
+}
+
+/* ─── CONFIG PANEL ───────────────────────────────────────────────── */
+.config-panel { display: flex; flex-direction: column; gap: 10px; }
+
+.material-select {
+  width: 100%; background: var(--bg3); border: 1px solid var(--border);
+  border-radius: 8px; color: var(--text); font-family: var(--mono);
+  font-size: 12px; padding: 8px 10px; cursor: pointer;
+  appearance: none;
+}
+.material-select:focus { outline: none; border-color: var(--cyan); }
+
+.tool-info {
+  background: var(--bg3); border: 1px solid var(--border);
+  border-radius: 8px; padding: 10px;
+  display: flex; align-items: center; gap: 10px;
+}
+.tool-icon {
+  width: 28px; height: 28px; background: rgba(0,217,255,.1);
+  border: 1px solid rgba(0,217,255,.3); border-radius: 6px;
+  display: flex; align-items: center; justify-content: center; font-size: 14px;
+  flex-shrink: 0;
+}
+.tool-name { font-family: var(--mono); font-size: 11px; color: var(--cyan); }
+.tool-spec { font-family: var(--mono); font-size: 10px; color: var(--muted); }
+
+/* ─── SLIDERS (config) ───────────────────────────────────────────── */
+.slider-row { display: flex; flex-direction: column; gap: 4px; }
+.slider-header { display: flex; justify-content: space-between; align-items: baseline; }
+.slider-label { font-family: var(--mono); font-size: 12px; color: var(--muted); } /* ← Proposta #1 */
+.slider-value { font-family: var(--mono); font-size: 12px; color: var(--cyan); }   /* ← Proposta #1 */
+.slider-unit  { font-family: var(--mono); font-size: 12px; color: var(--muted); margin-left: 2px; } /* ← Proposta #1 */
+
+/* Mini SGB acima dos sliders */
+.mini-sgb {
+  height: 4px; border-radius: 2px;
+  background: linear-gradient(90deg,
+    rgba(231,76,60,.35) 0%, rgba(243,156,18,.5) 22%,
+    rgba(46,204,113,.8) 40%, var(--ok) 50%,
+    rgba(46,204,113,.8) 60%, rgba(243,156,18,.5) 78%,
+    rgba(231,76,60,.35) 100%);
+  position: relative; margin-bottom: 2px;
+}
+.mini-sgb-dot {
+  position: absolute; top: -3px; width: 2px; height: 10px;
+  background: var(--cyan); border-radius: 1px;
+  box-shadow: 0 0 6px rgba(0,217,255,.8);
+}
+.mini-sgb-labels {
+  display: flex; justify-content: space-between;
+  font-family: var(--mono); font-size: 10px; color: var(--muted); /* ← Proposta #1: era 8px */
+  margin-bottom: 3px;
+}
+.mini-sgb-zone {
+  font-family: var(--mono); font-size: 10px; color: var(--ok); /* ← Proposta #1: era 8px */
+  text-align: center; margin-bottom: 2px;
+}
+
+/* Fake slider track */
+.fake-slider {
+  height: 4px; background: var(--bg3); border-radius: 2px;
+  position: relative; cursor: pointer; margin: 0 18px;
+}
+.fake-slider-fill {
+  height: 100%; border-radius: 2px;
+  background: linear-gradient(90deg, var(--cyan), rgba(0,217,255,.4));
+}
+.fake-slider-thumb {
+  position: absolute; top: 50%;
+  width: 14px; height: 14px;
+  background: var(--cyan); border-radius: 50%;
+  box-shadow: 0 0 8px rgba(0,217,255,.8);
+  transform: translateY(-50%) translateX(-50%);
+  cursor: grab;
+}
+.fake-slider.locked .fake-slider-fill { opacity: .3; }
+.fake-slider.locked .fake-slider-thumb { background: var(--muted); box-shadow: none; }
+
+.slider-ticks {
+  display: flex; justify-content: space-between;
+  padding: 0 18px; margin-top: 2px;
+}
+.slider-tick { font-family: var(--mono); font-size: 10px; color: var(--muted); } /* ← Proposta #1: era 9px */
+
+/* Safety row */
+.safety-row { margin-top: 6px; padding-top: 10px; border-top: 1px solid var(--border); }
+
+/* ─── SIMULAR BUTTON ─────────────────────────────────────────────── */
+.btn-simular {
+  width: 100%; padding: 14px 16px;
+  background: rgba(0,217,255,.12); border: 1px solid rgba(0,217,255,.4);
+  border-radius: 10px; color: var(--cyan);
+  font-family: var(--mono); font-size: 14px; font-weight: 700;
+  letter-spacing: 1.5px; cursor: pointer;
+  position: relative; overflow: hidden;
+  animation: idleBorderPulse 2.5s ease-in-out infinite;
+  transition: transform .1s;
+}
+.btn-simular:hover:not(.calculating) { transform: scale(1.01); }
+.btn-simular:active { transform: scale(.98); }
+.btn-simular.calculating { animation: none; border-color: var(--cyan); cursor: not-allowed; }
+.btn-progress {
+  position: absolute; inset: 0; height: 100%; width: 0%;
+  background: linear-gradient(90deg, rgba(0,217,255,.25), rgba(57,255,20,.2));
+  border-radius: 10px; transition: none; pointer-events: none;
+}
+.btn-inner {
+  position: relative; z-index: 1;
+  display: flex; align-items: center; justify-content: center; gap: 8px;
+}
+.btn-icon.spinning { animation: spinIcon .35s linear infinite; }
+
+/* ─── RESULTS PANEL ──────────────────────────────────────────────── */
+.results-panel { display: flex; flex-direction: column; gap: 10px; }
+
+/* Zone 1: Console Header */
+.zone1 {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 10px 14px; background: var(--bg2);
+  border: 1px solid var(--border); border-radius: 10px;
+}
+.zone1-title {
+  font-family: var(--mono); font-size: 11px; color: var(--muted);
+  letter-spacing: 2px; text-transform: uppercase;
+}
+.safety-badge {
+  display: flex; align-items: center; gap: 6px;
+  padding: 4px 12px; border-radius: 20px;
+  border: 1px solid rgba(255,255,255,.1);
+  background: rgba(255,255,255,.04);
+  opacity: 0; transition: opacity .3s;
+}
+.safety-badge.visible { opacity: 1; animation: safetyReveal .5s ease-out; }
+.safety-badge.ok   { border-color: rgba(46,204,113,.4);  background: rgba(46,204,113,.08); }
+.safety-badge.warn { border-color: rgba(243,156,18,.4);  background: rgba(243,156,18,.08); }
+.safety-badge.danger { border-color: rgba(231,76,60,.4); background: rgba(231,76,60,.08); }
+.safety-dot { width: 6px; height: 6px; border-radius: 50%; background: var(--muted); }
+.safety-badge.ok   .safety-dot  { background: var(--ok);    box-shadow: 0 0 6px var(--ok); }
+.safety-badge.warn .safety-dot  { background: var(--warn);  box-shadow: 0 0 6px var(--warn); }
+.safety-badge.danger .safety-dot { background: var(--danger); box-shadow: 0 0 6px var(--danger); }
+.safety-text {
+  font-family: var(--mono); font-size: 12px; font-weight: 600; /* ← Proposta #1 */
+  color: var(--muted);
+}
+.safety-badge.ok   .safety-text  { color: var(--ok); }
+.safety-badge.warn .safety-text  { color: var(--warn); }
+.safety-badge.danger .safety-text { color: var(--danger); }
+
+/* Zone 2: LCD */
+.zone2 {
+  background: var(--bg3); border: 1px solid var(--border);
+  border-left: 3px solid transparent; border-radius: 8px;
+  padding: 10px 14px; display: flex; flex-direction: column; gap: 3px;
+  min-height: 66px; transition: border-left-color .3s;
+}
+.zone2.warn-state { border-left-color: var(--warn); }
+.zone2.ok-state   { border-left-color: var(--ok); }
+.zone2.danger-state { border-left-color: var(--danger); }
+.lcd-line { font-family: var(--mono); font-size: 12px; line-height: 1.5; color: var(--muted); } /* ← Proposta #1 */
+.lcd-line.alert  { color: var(--warn); }
+.lcd-line.action { color: var(--cyan); }
+.lcd-line.info   { color: rgba(226,232,240,.5); }
+
+/* Zone 3: Tool Row */
+.zone3 {
+  display: flex; align-items: center; gap: 10px;
+  padding: 8px 12px; background: var(--bg2);
+  border: 1px solid var(--border); border-radius: 8px;
+}
+.z3-icon {
+  width: 24px; height: 24px; background: rgba(0,217,255,.1);
+  border: 1px solid rgba(0,217,255,.25); border-radius: 5px;
+  display: flex; align-items: center; justify-content: center; font-size: 12px;
+  flex-shrink: 0;
+}
+.z3-name { font-family: var(--mono); font-size: 12px; color: var(--cyan); font-weight: 600; } /* ← Proposta #1 */
+.z3-sep  { color: var(--border); }
+.z3-spec { font-family: var(--mono); font-size: 12px; color: var(--muted); }                   /* ← Proposta #1 */
+.z3-time { margin-left: auto; font-family: var(--mono); font-size: 12px; color: var(--muted); } /* ← Proposta #1 */
+
+/* Zone 4: RPM + Avanço */
+.zone4 { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+.zone4-item {
+  background: var(--bg2); border: 1px solid var(--border);
+  border-radius: 8px; padding: 10px 12px;
+}
+.z4-header { display: flex; align-items: baseline; justify-content: space-between; margin-bottom: 8px; }
+.z4-label { font-family: var(--mono); font-size: 12px; color: var(--muted); text-transform: uppercase; letter-spacing: 1px; } /* ← Proposta #1 */
+.z4-value { font-family: var(--mono); font-size: 24px; font-weight: 700; color: var(--text); }
+.z4-unit  { font-family: var(--mono); font-size: 12px; color: var(--muted); margin-left: 4px; } /* ← Proposta #1 */
+.z4-value.empty { opacity: .3; }
+.z4-value.ok   { color: var(--ok); }
+
+/* Compact bidirectional slider */
+.bidir-track {
+  height: 4px; background: var(--bg3); border-radius: 2px;
+  position: relative; margin: 6px 12px;
+}
+.bidir-center {
+  position: absolute; top: -4px; left: 50%; transform: translateX(-50%);
+  width: 2px; height: 12px; background: rgba(226,232,240,.15); border-radius: 1px;
+}
+.bidir-thumb {
+  position: absolute; top: 50%;
+  width: 20px; height: 20px;
+  background: var(--bg2); border: 2px solid var(--cyan); border-radius: 50%;
+  transform: translateY(-50%) translateX(-50%);
+  box-shadow: 0 0 8px rgba(0,217,255,.5); cursor: grab;
+  transition: left .3s ease-out, opacity .3s;
+}
+.bidir-ticks {
+  display: flex; justify-content: space-between;
+  padding: 0 12px; margin-top: 2px;
+}
+.bidir-tick { font-family: var(--mono); font-size: 10px; color: var(--muted); } /* ← Proposta #1: era 9px */
+
+/* Zone 5: Input Params */
+.zone5 { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; }
+.zone5-item {
+  background: var(--bg2); border: 1px solid var(--border);
+  border-radius: 8px; padding: 10px 12px;
+}
+.z5-sgb {
+  height: 4px; border-radius: 2px; position: relative; margin-bottom: 2px;
+  background: linear-gradient(90deg,
+    rgba(231,76,60,.3) 0%, rgba(243,156,18,.5) 20%,
+    rgba(46,204,113,.8) 40%, var(--ok) 50%,
+    rgba(46,204,113,.8) 60%, rgba(243,156,18,.5) 80%,
+    rgba(231,76,60,.3) 100%);
+}
+.z5-sgb-dot {
+  position: absolute; top: -3px; width: 3px; height: 10px;
+  background: var(--cyan); border-radius: 1px;
+  box-shadow: 0 0 6px rgba(0,217,255,.8);
+}
+.z5-sgb-labels {
+  display: flex; justify-content: space-between;
+  font-family: var(--mono); font-size: 10px; color: var(--muted); /* ← Proposta #1: era 8px */
+  margin-bottom: 3px;
+}
+.z5-sgb-zone {
+  font-family: var(--mono); font-size: 10px; text-align: center; /* ← Proposta #1: era 8px */
+  color: var(--ok); margin-bottom: 4px; min-height: 14px;
+}
+.z5-row { display: flex; align-items: baseline; justify-content: space-between; }
+.z5-label { font-family: var(--mono); font-size: 12px; color: var(--muted); } /* ← Proposta #1 */
+.z5-value { font-family: var(--mono); font-size: 18px; font-weight: 700; color: var(--text); }
+.z5-value.empty { opacity: .25; color: var(--muted); }
+.z5-value.ok    { color: var(--ok); }
+.z5-unit  { font-family: var(--mono); font-size: 12px; color: var(--muted); margin-left: 3px; } /* ← Proposta #1 */
+
+/* Zone 6: Metrics */
+.zone6 {
+  background: var(--bg2); border: 1px solid var(--border);
+  border-radius: 8px; padding: 10px 14px;
+}
+
+/* Inline mode */
+.z6-inline { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+.z6-divider { width: 1px; height: 14px; background: var(--border); flex-shrink: 0; }
+.z6-metric { display: flex; align-items: baseline; gap: 4px; }
+.z6-label { font-family: var(--mono); font-size: 12px; color: var(--muted); }              /* ← Proposta #1 */
+.z6-val   { font-family: var(--mono); font-size: 12px; font-weight: 600; color: var(--text); } /* ← Proposta #1 */
+.z6-val.empty  { opacity: .3; }
+.z6-val.ok     { color: var(--ok); }
+.z6-val.warn   { color: var(--warn); }
+.z6-unit-inline { font-family: var(--mono); font-size: 12px; color: var(--muted); } /* ← Proposta #1 */
+.z6-dot {
+  width: 6px; height: 6px; border-radius: 50%;
+  background: var(--ok); box-shadow: 0 0 5px var(--ok);
+  display: inline-block; margin-left: 3px; vertical-align: middle;
+}
+
+/* Grid 3×2 mode (Proposta C) */
+.z6-grid { display: none; grid-template-columns: repeat(3,1fr); gap: 6px; }
+.zone6.grid-mode .z6-inline { display: none; }
+.zone6.grid-mode .z6-grid   { display: grid; }
+.z6-cell {
+  padding: 8px 10px; display: flex; flex-direction: column; gap: 2px;
+  background: var(--bg3); border-radius: 6px;
+  border: 1px solid var(--border);
+}
+.z6-cell-label { font-family: var(--mono); font-size: 10px; color: var(--muted); letter-spacing: 1px; text-transform: uppercase; } /* ← Proposta #1 */
+.z6-cell-value { font-family: var(--mono); font-size: 17px; font-weight: 700; color: var(--text); line-height: 1; }
+.z6-cell-value.empty { opacity: .2; }
+.z6-cell-value.ok   { color: var(--ok); }
+.z6-cell-value.warn { color: var(--warn); }
+.z6-cell-unit { font-family: var(--mono); font-size: 10px; color: var(--muted); }  /* ← Proposta #1 */
+.z6-ld-dot {
+  display: inline-block; width: 6px; height: 6px; border-radius: 50%;
+  background: var(--ok); box-shadow: 0 0 5px var(--ok);
+  margin-left: 4px; vertical-align: middle;
+}
+
+/* Zone 7: Gauges */
+.zone7 { display: grid; grid-template-columns: repeat(3,1fr); gap: 10px; }
+.gauge-card {
+  background: var(--bg2); border: 1px solid var(--border);
+  border-radius: 8px; padding: 12px;
+  display: flex; flex-direction: column; align-items: center; gap: 6px;
+}
+.gauge-svg { width: 130px; height: 65px; overflow: visible; }
+.gauge-svg.ignite { animation: gaugeIgnite .6s ease-out; }
+.gauge-needle {
+  transform-origin: 80px 80px;
+  transition: transform 1.3s cubic-bezier(0.34,1.56,0.64,1);
+}
+.gauge-val { font-family: var(--mono); font-size: 20px; font-weight: 700; color: var(--cyan); }
+.gauge-val.empty  { color: var(--muted); opacity: .4; }
+.gauge-val.ok     { color: var(--ok); }
+.gauge-val.warn   { color: var(--warn); }
+.gauge-lbl  { font-family: var(--mono); font-size: 10px; color: var(--muted); text-transform: uppercase; letter-spacing: 1px; }
+.gauge-unit { font-family: var(--mono); font-size: 10px; color: var(--muted); }
+
+/* ─── SLOT MACHINE ───────────────────────────────────────────────── */
+.slot-wrap  { display: inline-block; overflow: hidden; height: 1.2em; vertical-align: bottom; }
+.slot-reel  { display: flex; flex-direction: column; transition: none; }
+.slot-digit { height: 1.2em; line-height: 1.2em; text-align: center; }
+
+/* ─── VALUE REVEALED ─────────────────────────────────────────────── */
+.value-revealed { animation: valueReveal .4s ease-out; }
+.jackpot        { animation: jackpotFlash .7s ease-out; }
+
+/* ─── PROPOSAL TOGGLES ───────────────────────────────────────────── */
+.controls {
+  position: fixed; bottom: 24px; right: 24px;
+  display: flex; flex-direction: column; gap: 6px;
+  z-index: 100;
+}
+.controls-title {
+  font-family: var(--mono); font-size: 10px; color: var(--muted);
+  letter-spacing: 1.5px; text-align: center; text-transform: uppercase;
+  padding: 6px 12px 2px;
+  background: var(--bg2); border: 1px solid var(--border);
+  border-radius: 8px 8px 0 0; border-bottom: none;
+}
+.ctrl-btn {
+  display: flex; align-items: center; gap: 8px;
+  padding: 8px 14px; background: var(--bg2);
+  border: 1px solid var(--border); border-radius: 0;
+  color: var(--muted); font-family: var(--mono); font-size: 11px;
+  letter-spacing: .5px; cursor: pointer; transition: all .2s; white-space: nowrap;
+}
+.ctrl-btn:last-child { border-radius: 0 0 8px 8px; }
+.ctrl-btn:hover { border-color: rgba(0,217,255,.3); color: var(--text); }
+.ctrl-btn.active { border-color: var(--cyan); color: var(--cyan); background: rgba(0,217,255,.08); }
+.ctrl-dot { width: 8px; height: 8px; border-radius: 50%; background: var(--muted); flex-shrink: 0; }
+.ctrl-btn.active .ctrl-dot { background: var(--cyan); box-shadow: 0 0 6px var(--cyan); }
+.ctrl-info {
+  font-family: var(--mono); font-size: 10px; color: var(--muted);
+  background: var(--bg2); border: 1px solid var(--border);
+  padding: 4px 12px; border-radius: 6px; text-align: center;
+  border-top: none;
+  letter-spacing: .5px;
+}
+</style>
+</head>
+<body>
+
+<div class="ambient"></div>
+
+<div class="app">
+
+  <!-- ─── HEADER ─── -->
+  <header class="app-header">
+    <div class="app-logo">Tool<span>Optimizer</span> CNC</div>
+    <div class="app-badge">v0.11-preview</div>
+    <div class="app-badge green">PROTÓTIPO VISUAL</div>
+    <div class="app-state" id="appState">PRONTO PARA SIMULAÇÃO</div>
+  </header>
+
+  <!-- ─── DASHBOARD ─── -->
+  <div class="dashboard" id="dashboard">
+
+    <!-- ══════════════════════════════════════
+         CONFIG PANEL
+    ══════════════════════════════════════ -->
+    <div class="config-panel">
+
+      <!-- Material -->
+      <div class="card">
+        <div class="card-title">Material da Peça</div>
+        <select class="material-select">
+          <option>Aço Inoxidável 304</option>
+          <option>Alumínio 6061</option>
+          <option>Aço Carbono 1045</option>
+          <option>Titânio Ti-6Al-4V</option>
+          <option>Ferro Fundido GG25</option>
+        </select>
+        <div style="margin-top:8px;display:flex;gap:6px;align-items:center">
+          <span style="font-family:var(--mono);font-size:10px;color:var(--muted)">Vc recomendado:</span>
+          <span style="font-family:var(--mono);font-size:10px;color:var(--cyan)">120–180 m/min</span>
+        </div>
+      </div>
+
+      <!-- Ferramenta -->
+      <div class="card">
+        <div class="card-title">Ferramenta Ativa</div>
+        <div class="tool-info">
+          <div class="tool-icon">⌀</div>
+          <div>
+            <div class="tool-name">INOX_D16_Z4_H65</div>
+            <div class="tool-spec">⌀16mm · 4 flutes · H65mm · 45° hélix</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Parâmetros -->
+      <div class="card">
+        <div class="card-title">Parâmetros de Corte</div>
+        <div style="display:flex;flex-direction:column;gap:12px">
+
+          <!-- Vc -->
+          <div class="slider-row">
+            <div class="mini-sgb-labels"><span>Min</span><span>Zona Ideal</span><span>Max</span></div>
+            <div class="mini-sgb"><div class="mini-sgb-dot" style="left:48%"></div></div>
+            <div class="mini-sgb-zone">▲ Zona Ideal</div>
+            <div class="slider-header">
+              <span class="slider-label">Vc (Vel. Corte)</span>
+              <span><span class="slider-value">149.8</span><span class="slider-unit">m/min</span></span>
+            </div>
+            <div class="fake-slider" id="cfgVc">
+              <div class="fake-slider-fill" style="width:48%"></div>
+              <div class="fake-slider-thumb" style="left:48%"></div>
+            </div>
+            <div class="slider-ticks">
+              <span class="slider-tick">80</span>
+              <span class="slider-tick">130</span>
+              <span class="slider-tick">180</span>
+            </div>
+          </div>
+
+          <!-- fz -->
+          <div class="slider-row">
+            <div class="mini-sgb-labels"><span>Baixo</span><span>Ótimo</span><span>Alto</span></div>
+            <div class="mini-sgb"><div class="mini-sgb-dot" style="left:44%"></div></div>
+            <div class="mini-sgb-zone">▲ Zona Ideal</div>
+            <div class="slider-header">
+              <span class="slider-label">fz (Av. por dente)</span>
+              <span><span class="slider-value">0.100</span><span class="slider-unit">mm/z</span></span>
+            </div>
+            <div class="fake-slider" id="cfgFz">
+              <div class="fake-slider-fill" style="width:44%"></div>
+              <div class="fake-slider-thumb" style="left:44%"></div>
+            </div>
+            <div class="slider-ticks">
+              <span class="slider-tick">0.05</span>
+              <span class="slider-tick">0.12</span>
+              <span class="slider-tick">0.20</span>
+            </div>
+          </div>
+
+          <!-- ae -->
+          <div class="slider-row">
+            <div class="slider-header">
+              <span class="slider-label">ae (Prof. radial)</span>
+              <span><span class="slider-value">6.4</span><span class="slider-unit">mm</span></span>
+            </div>
+            <div class="fake-slider" id="cfgAe">
+              <div class="fake-slider-fill" style="width:40%"></div>
+              <div class="fake-slider-thumb" style="left:40%"></div>
+            </div>
+            <div class="slider-ticks">
+              <span class="slider-tick">1</span>
+              <span class="slider-tick">8</span>
+              <span class="slider-tick">16</span>
+            </div>
+          </div>
+
+          <!-- ap -->
+          <div class="slider-row">
+            <div class="slider-header">
+              <span class="slider-label">ap (Prof. axial)</span>
+              <span><span class="slider-value">8.0</span><span class="slider-unit">mm</span></span>
+            </div>
+            <div class="fake-slider" id="cfgAp">
+              <div class="fake-slider-fill" style="width:53%"></div>
+              <div class="fake-slider-thumb" style="left:53%"></div>
+            </div>
+            <div class="slider-ticks">
+              <span class="slider-tick">0.5</span>
+              <span class="slider-tick">12</span>
+              <span class="slider-tick">25</span>
+            </div>
+          </div>
+
+          <!-- Safety factor -->
+          <div class="safety-row">
+            <div class="slider-header" style="margin-bottom:6px">
+              <span class="slider-label">Fator de Segurança</span>
+              <span class="slider-value">75%</span>
+            </div>
+            <div class="fake-slider" id="cfgSafety">
+              <div class="fake-slider-fill" style="width:50%"></div>
+              <div class="fake-slider-thumb" style="left:50%"></div>
+            </div>
+            <div class="slider-ticks">
+              <span class="slider-tick">70%</span>
+              <span class="slider-tick">75%</span>
+              <span class="slider-tick">80%</span>
+            </div>
+          </div>
+
+        </div>
+      </div>
+
+      <!-- SIMULAR BUTTON -->
+      <button class="btn-simular" id="btnSimular" onclick="startSimulation()">
+        <div class="btn-progress" id="btnProgress"></div>
+        <div class="btn-inner">
+          <span class="btn-icon" id="btnIcon">▶</span>
+          <span id="btnText">SIMULAR</span>
+        </div>
+      </button>
+
+    </div>
+    <!-- ══ END CONFIG PANEL ══ -->
+
+    <!-- ══════════════════════════════════════
+         RESULTS PANEL
+    ══════════════════════════════════════ -->
+    <div class="results-panel">
+
+      <!-- Zone 1: Console Header -->
+      <div class="zone1">
+        <div class="zone1-title">Resultado da Simulação</div>
+        <div class="safety-badge" id="safetyBadge">
+          <div class="safety-dot" id="safetyDot"></div>
+          <span class="safety-text" id="safetyText">AGUARDANDO</span>
+        </div>
+      </div>
+
+      <!-- Zone 2: LCD Display -->
+      <div class="zone2" id="zone2">
+        <div class="lcd-line info" id="lcdL1">— Aguardando simulação —</div>
+        <div class="lcd-line" id="lcdL2" style="visibility:hidden">·</div>
+        <div class="lcd-line" id="lcdL3" style="visibility:hidden">·</div>
+      </div>
+
+      <!-- Zone 3: Tool Row -->
+      <div class="zone3">
+        <div class="z3-icon">⌀</div>
+        <div class="z3-name">INOX_D16_Z4_H65</div>
+        <div class="z3-sep">|</div>
+        <div class="z3-spec">⌀16mm · 4 flutes · H65mm · Inoxidável</div>
+        <div class="z3-time" id="z3time">—</div>
+      </div>
+
+      <!-- Zone 4: RPM + Avanço -->
+      <div class="zone4">
+
+        <div class="zone4-item">
+          <div class="z4-header">
+            <span class="z4-label">RPM</span>
+            <div>
+              <span class="z4-value empty" id="z4rpm">—</span>
+              <span class="z4-unit" id="z4rpmU"></span>
+            </div>
+          </div>
+          <div class="bidir-track" id="bsRpm">
+            <div class="bidir-center"></div>
+            <div class="bidir-thumb" style="left:50%;opacity:.3" id="bsRpmThumb"></div>
+          </div>
+          <div class="bidir-ticks">
+            <span class="bidir-tick">-150%</span>
+            <span class="bidir-tick">0</span>
+            <span class="bidir-tick">+150%</span>
+          </div>
+        </div>
+
+        <div class="zone4-item">
+          <div class="z4-header">
+            <span class="z4-label">Avanço</span>
+            <div>
+              <span class="z4-value empty" id="z4feed">—</span>
+              <span class="z4-unit" id="z4feedU"></span>
+            </div>
+          </div>
+          <div class="bidir-track" id="bsFeed">
+            <div class="bidir-center"></div>
+            <div class="bidir-thumb" style="left:50%;opacity:.3" id="bsFeedThumb"></div>
+          </div>
+          <div class="bidir-ticks">
+            <span class="bidir-tick">-150%</span>
+            <span class="bidir-tick">0</span>
+            <span class="bidir-tick">+150%</span>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- Zone 5: Input Params (4 colunas) -->
+      <div class="zone5">
+
+        <!-- Vc -->
+        <div class="zone5-item">
+          <div class="z5-sgb-labels"><span>Mín</span><span>Ideal</span><span>Máx</span></div>
+          <div class="z5-sgb"><div class="z5-sgb-dot" id="d5vc" style="left:48%;display:none"></div></div>
+          <div class="z5-sgb-zone" id="z5zVc">—</div>
+          <div class="z5-row">
+            <span class="z5-label">Vc Real</span>
+            <div><span class="z5-value empty" id="z5vc">—</span><span class="z5-unit">m/min</span></div>
+          </div>
+        </div>
+
+        <!-- fz -->
+        <div class="zone5-item">
+          <div class="z5-sgb-labels"><span>Baixo</span><span>Ideal</span><span>Alto</span></div>
+          <div class="z5-sgb"><div class="z5-sgb-dot" id="d5fz" style="left:44%;display:none"></div></div>
+          <div class="z5-sgb-zone" id="z5zFz">—</div>
+          <div class="z5-row">
+            <span class="z5-label">fz / dente</span>
+            <div><span class="z5-value empty" id="z5fz">—</span><span class="z5-unit">mm/z</span></div>
+          </div>
+        </div>
+
+        <!-- ae -->
+        <div class="zone5-item">
+          <div class="z5-sgb-labels"><span>Baixo</span><span>Ideal</span><span>Alto</span></div>
+          <div class="z5-sgb"><div class="z5-sgb-dot" id="d5ae" style="left:40%;display:none"></div></div>
+          <div class="z5-sgb-zone" id="z5zAe">—</div>
+          <div class="z5-row">
+            <span class="z5-label">ae radial</span>
+            <div><span class="z5-value empty" id="z5ae">—</span><span class="z5-unit">mm</span></div>
+          </div>
+        </div>
+
+        <!-- ap -->
+        <div class="zone5-item">
+          <div class="z5-sgb-labels"><span>Baixo</span><span>Ideal</span><span>Alto</span></div>
+          <div class="z5-sgb"><div class="z5-sgb-dot" id="d5ap" style="left:53%;display:none"></div></div>
+          <div class="z5-sgb-zone" id="z5zAp">—</div>
+          <div class="z5-row">
+            <span class="z5-label">ap axial</span>
+            <div><span class="z5-value empty" id="z5ap">—</span><span class="z5-unit">mm</span></div>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- Zone 6: Metrics (dual layout) -->
+      <div class="zone6" id="zone6">
+
+        <!-- INLINE (default) -->
+        <div class="z6-inline">
+          <div class="z6-metric">
+            <span class="z6-label">Potência Est.</span>
+            <span class="z6-val empty" id="z6p">—</span>
+            <span class="z6-unit-inline">kW</span>
+          </div>
+          <div class="z6-divider"></div>
+          <div class="z6-metric">
+            <span class="z6-label">Torque</span>
+            <span class="z6-val empty" id="z6t">—</span>
+            <span class="z6-unit-inline">Nm</span>
+          </div>
+          <div class="z6-divider"></div>
+          <div class="z6-metric">
+            <span class="z6-label">Vc Real</span>
+            <span class="z6-val empty" id="z6v">—</span>
+            <span class="z6-unit-inline">m/min</span>
+          </div>
+          <div class="z6-divider"></div>
+          <div class="z6-metric">
+            <span class="z6-label">MRR</span>
+            <span class="z6-val empty" id="z6m">—</span>
+            <span class="z6-unit-inline">cm³/min</span>
+          </div>
+          <div class="z6-divider"></div>
+          <div class="z6-metric">
+            <span class="z6-label">L/D</span>
+            <span class="z6-val empty" id="z6l">—</span>
+            <span class="z6-dot" id="z6lDot" style="display:none"></span>
+          </div>
+          <div class="z6-divider"></div>
+          <div class="z6-metric">
+            <span class="z6-label">CTF</span>
+            <span class="z6-val empty" id="z6c">—</span>
+          </div>
+        </div>
+
+        <!-- GRID 3×2 (Proposta C) -->
+        <div class="z6-grid">
+          <div class="z6-cell">
+            <div class="z6-cell-label">Potência Est.</div>
+            <div class="z6-cell-value empty" id="z6gp">—</div>
+            <div class="z6-cell-unit">kW</div>
+          </div>
+          <div class="z6-cell">
+            <div class="z6-cell-label">Torque</div>
+            <div class="z6-cell-value empty" id="z6gt">—</div>
+            <div class="z6-cell-unit">Nm</div>
+          </div>
+          <div class="z6-cell">
+            <div class="z6-cell-label">Vc Real</div>
+            <div class="z6-cell-value empty" id="z6gv">—</div>
+            <div class="z6-cell-unit">m/min</div>
+          </div>
+          <div class="z6-cell">
+            <div class="z6-cell-label">MRR</div>
+            <div class="z6-cell-value empty" id="z6gm">—</div>
+            <div class="z6-cell-unit">cm³/min</div>
+          </div>
+          <div class="z6-cell">
+            <div class="z6-cell-label">L/D</div>
+            <div class="z6-cell-value empty ok" id="z6gl">—<span class="z6-ld-dot" id="z6glDot" style="display:none"></span></div>
+            <div class="z6-cell-unit">ratio</div>
+          </div>
+          <div class="z6-cell">
+            <div class="z6-cell-label">CTF</div>
+            <div class="z6-cell-value empty" id="z6gc">—</div>
+            <div class="z6-cell-unit">fator</div>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- Zone 7: Gauges -->
+      <div class="zone7">
+
+        <div class="gauge-card">
+          <svg class="gauge-svg" id="gSvg1" viewBox="30 30 100 55">
+            <g id="gT1"></g>
+            <path d="M 10 80 A 70 70 0 0 1 150 80" fill="none" stroke="#1A2333" stroke-width="8" stroke-linecap="round"/>
+            <defs>
+              <linearGradient id="gGr1" x1="0%" y1="0%" x2="100%" y2="0%">
+                <stop offset="0%"   stop-color="#2ecc71"/>
+                <stop offset="60%"  stop-color="#00D9FF"/>
+                <stop offset="100%" stop-color="#f39c12"/>
+              </linearGradient>
+            </defs>
+            <path id="gA1" d="" fill="none" stroke="url(#gGr1)" stroke-width="8" stroke-linecap="round"/>
+            <line id="gN1" x1="80" y1="80" x2="80" y2="18" stroke="rgba(226,232,240,.8)" stroke-width="2" stroke-linecap="round" class="gauge-needle" style="transform:rotate(-90deg)"/>
+            <circle cx="80" cy="80" r="5" fill="var(--bg3)" stroke="var(--border)" stroke-width="1.5"/>
+          </svg>
+          <div class="gauge-val empty" id="gV1">—</div>
+          <div class="gauge-lbl">RPM</div>
+          <div class="gauge-unit">rev/min</div>
+        </div>
+
+        <div class="gauge-card">
+          <svg class="gauge-svg" id="gSvg2" viewBox="30 30 100 55">
+            <g id="gT2"></g>
+            <path d="M 10 80 A 70 70 0 0 1 150 80" fill="none" stroke="#1A2333" stroke-width="8" stroke-linecap="round"/>
+            <defs>
+              <linearGradient id="gGr2" x1="0%" y1="0%" x2="100%" y2="0%">
+                <stop offset="0%"   stop-color="#2ecc71"/>
+                <stop offset="65%"  stop-color="#f39c12"/>
+                <stop offset="100%" stop-color="#e74c3c"/>
+              </linearGradient>
+            </defs>
+            <path id="gA2" d="" fill="none" stroke="url(#gGr2)" stroke-width="8" stroke-linecap="round"/>
+            <line id="gN2" x1="80" y1="80" x2="80" y2="18" stroke="rgba(226,232,240,.8)" stroke-width="2" stroke-linecap="round" class="gauge-needle" style="transform:rotate(-90deg)"/>
+            <circle cx="80" cy="80" r="5" fill="var(--bg3)" stroke="var(--border)" stroke-width="1.5"/>
+          </svg>
+          <div class="gauge-val empty" id="gV2">—</div>
+          <div class="gauge-lbl">Potência</div>
+          <div class="gauge-unit">kW</div>
+        </div>
+
+        <div class="gauge-card">
+          <svg class="gauge-svg" id="gSvg3" viewBox="30 30 100 55">
+            <g id="gT3"></g>
+            <path d="M 10 80 A 70 70 0 0 1 150 80" fill="none" stroke="#1A2333" stroke-width="8" stroke-linecap="round"/>
+            <defs>
+              <linearGradient id="gGr3" x1="0%" y1="0%" x2="100%" y2="0%">
+                <stop offset="0%"   stop-color="#1a3a5c"/>
+                <stop offset="50%"  stop-color="#00D9FF"/>
+                <stop offset="100%" stop-color="#39FF14"/>
+              </linearGradient>
+            </defs>
+            <path id="gA3" d="" fill="none" stroke="url(#gGr3)" stroke-width="8" stroke-linecap="round"/>
+            <line id="gN3" x1="80" y1="80" x2="80" y2="18" stroke="rgba(226,232,240,.8)" stroke-width="2" stroke-linecap="round" class="gauge-needle" style="transform:rotate(-90deg)"/>
+            <circle cx="80" cy="80" r="5" fill="var(--bg3)" stroke="var(--border)" stroke-width="1.5"/>
+          </svg>
+          <div class="gauge-val empty" id="gV3">—</div>
+          <div class="gauge-lbl">MRR</div>
+          <div class="gauge-unit">cm³/min</div>
+        </div>
+
+      </div>
+      <!-- end zone7 -->
+
+    </div>
+    <!-- ══ END RESULTS PANEL ══ -->
+
+  </div>
+  <!-- end dashboard -->
+
+</div>
+<!-- end app -->
+
+<!-- ─── TOGGLE CONTROLS ─── -->
+<div class="controls">
+  <div class="controls-title">Propostas Visuais</div>
+  <button class="ctrl-btn" id="btnB" onclick="toggleB()">
+    <div class="ctrl-dot" id="dotB"></div>
+    Proposta B — Grid 4/8
+  </button>
+  <button class="ctrl-btn" id="btnC" onclick="toggleC()">
+    <div class="ctrl-dot" id="dotC"></div>
+    Proposta C — Zona 6 Grid
+  </button>
+  <div class="ctrl-info" id="ctrlInfo">3/9 · Zona6 inline</div>
+</div>
+
+<script>
+/* ─── TOGGLES ──────────────────────────────────────────── */
+let propB = false, propC = false;
+
+function updateInfo() {
+  const grid  = propB ? '4/8' : '3/9';
+  const z6    = propC ? 'Zona6 3×2' : 'Zona6 inline';
+  document.getElementById('ctrlInfo').textContent = `${grid} · ${z6}`;
+}
+
+function toggleB() {
+  propB = !propB;
+  document.getElementById('dashboard').classList.toggle('grid-48', propB);
+  document.getElementById('btnB').classList.toggle('active', propB);
+  updateInfo();
+}
+function toggleC() {
+  propC = !propC;
+  document.getElementById('zone6').classList.toggle('grid-mode', propC);
+  document.getElementById('btnC').classList.toggle('active', propC);
+  updateInfo();
+}
+
+/* ─── GAUGE HELPERS ────────────────────────────────────── */
+function arcPath(ratio) {
+  if (ratio <= 0) return '';
+  const r=70, cx=80, cy=80;
+  const sa = Math.PI, ea = sa + Math.min(ratio,1)*Math.PI;
+  const x1=cx+r*Math.cos(sa), y1=cy+r*Math.sin(sa);
+  const x2=cx+r*Math.cos(ea), y2=cy+r*Math.sin(ea);
+  return `M ${x1} ${y1} A ${r} ${r} 0 ${ratio>.5?1:0} 1 ${x2} ${y2}`;
+}
+function needleAngle(r) { return -180 + Math.min(r,1)*180; }
+
+function animateGauge(i, target) {
+  const needle = document.getElementById('gN'+i);
+  const arc    = document.getElementById('gA'+i);
+  const dur = 1350, start = performance.now();
+  function frame(now) {
+    const t = Math.min((now-start)/dur, 1);
+    const ease = t<1 ? 1 - Math.pow(1-t,3)*Math.cos(t*Math.PI*2.5)*.3 : 1;
+    arc.setAttribute('d', arcPath(target*ease));
+    if (t<1) requestAnimationFrame(frame);
+  }
+  requestAnimationFrame(frame);
+  needle.style.transform = `rotate(${needleAngle(target)}deg)`;
+}
+
+let gSpinInt = null;
+function startGaugeSpin() {
+  gSpinInt = setInterval(()=>{
+    [1,2,3].forEach(i=>{
+      const r=Math.random()*.85;
+      document.getElementById('gA'+i).setAttribute('d', arcPath(r));
+      const n=document.getElementById('gN'+i);
+      n.style.transition='transform .15s ease-out';
+      n.style.transform=`rotate(${needleAngle(r)}deg)`;
+    });
+  }, 150);
+}
+function stopGaugeSpin() {
+  if (gSpinInt) { clearInterval(gSpinInt); gSpinInt=null; }
+  [1,2,3].forEach(i=>{
+    document.getElementById('gN'+i).style.transition='transform 1.3s cubic-bezier(0.34,1.56,0.64,1)';
+  });
+}
+
+function igniteGauges() {
+  ['gSvg1','gSvg2','gSvg3'].forEach(id=>{
+    const svg=document.getElementById(id);
+    svg.classList.remove('ignite');
+    void svg.offsetWidth;
+    svg.classList.add('ignite');
+    setTimeout(()=>svg.classList.remove('ignite'), 700);
+  });
+}
+
+/* Build tick marks */
+function buildTicks(gId) {
+  const g=document.getElementById(gId); if (!g) return;
+  const cx=80,cy=80,r=70;
+  for (let i=0;i<=8;i++) {
+    const a=Math.PI+(i/8)*Math.PI;
+    const maj=i%4===0||i===8;
+    const r1=r-(maj?10:5), r2=r-(maj?17:10);
+    const ln=document.createElementNS('http://www.w3.org/2000/svg','line');
+    ln.setAttribute('x1',cx+r1*Math.cos(a)); ln.setAttribute('y1',cy+r1*Math.sin(a));
+    ln.setAttribute('x2',cx+r2*Math.cos(a)); ln.setAttribute('y2',cy+r2*Math.sin(a));
+    ln.setAttribute('stroke',maj?'#2A3D52':'#1E2D3D');
+    ln.setAttribute('stroke-width',maj?'2':'1');
+    ln.setAttribute('stroke-linecap','round');
+    g.appendChild(ln);
+  }
+}
+buildTicks('gT1'); buildTicks('gT2'); buildTicks('gT3');
+
+/* ─── SLOT MACHINE ─────────────────────────────────────── */
+const DIGS='0123456789', slots={};
+function startSlot(id, sp=80) {
+  const el=document.getElementById(id); if (!el) return;
+  el.innerHTML='';
+  const reels=[];
+  for(let i=0;i<4;i++){
+    const w=document.createElement('span'); w.className='slot-wrap';
+    const r=document.createElement('span'); r.className='slot-reel';
+    for(let d=0;d<10;d++){
+      const s=document.createElement('span'); s.className='slot-digit';
+      s.textContent=DIGS[d]; r.appendChild(s);
+    }
+    w.appendChild(r); el.appendChild(w); reels.push(r);
+  }
+  let pos=reels.map(()=>0);
+  slots[id]=setInterval(()=>{
+    reels.forEach((r,i)=>{ pos[i]=(pos[i]+1)%10; r.style.transform=`translateY(-${pos[i]*1.2}em)`; });
+  }, sp);
+}
+function stopSlot(id, val, cls) {
+  if (slots[id]){ clearInterval(slots[id]); delete slots[id]; }
+  const el=document.getElementById(id); if (!el) return;
+  el.className=el.className.replace(/\s*(empty|ok|warn|danger|value-revealed)\s*/g,' ').trim();
+  el.innerHTML=val;
+  if (cls) el.classList.add(cls);
+  el.classList.add('value-revealed');
+}
+
+/* ─── SHAKE SLIDERS ────────────────────────────────────── */
+function shakeSliders() {
+  ['cfgVc','cfgFz','cfgAe','cfgAp','cfgSafety'].forEach(id=>{
+    const el=document.getElementById(id); if (!el) return;
+    el.classList.add('locked');
+    const t=el.querySelector('.fake-slider-thumb');
+    if(t){ t.style.animation='sliderShake .2s ease-in-out'; setTimeout(()=>t.style.animation='', 250); }
+  });
+}
+function unlockSliders() {
+  ['cfgVc','cfgFz','cfgAe','cfgAp','cfgSafety'].forEach(id=>{
+    const el=document.getElementById(id); if (el) el.classList.remove('locked');
+  });
+}
+
+/* ─── BUTTON PROGRESS ──────────────────────────────────── */
+let pctTimer=null;
+function startProgress() {
+  const bar=document.getElementById('btnProgress');
+  const txt=document.getElementById('btnText');
+  const ico=document.getElementById('btnIcon');
+  bar.style.width='0%'; bar.style.transition='none';
+  ico.textContent='⟳'; ico.classList.add('spinning');
+  let pct=0;
+  pctTimer=setInterval(()=>{
+    if(pct<92){ pct+=Math.random()*8; if(pct>92)pct=92; bar.style.width=pct+'%'; txt.textContent=`CALCULANDO ${Math.round(pct)}%`; }
+  }, 120);
+}
+function finishProgress() {
+  if(pctTimer){ clearInterval(pctTimer); pctTimer=null; }
+  const bar=document.getElementById('btnProgress');
+  const txt=document.getElementById('btnText');
+  const ico=document.getElementById('btnIcon');
+  bar.style.transition='width .3s ease-out'; bar.style.width='100%';
+  txt.textContent='✓ COMPLETO'; ico.textContent='✓'; ico.classList.remove('spinning');
+  setTimeout(()=>{
+    bar.style.width='0%'; bar.style.transition='none';
+    txt.textContent='SIMULAR NOVAMENTE'; ico.textContent='▶';
+  }, 2200);
+}
+
+/* ─── REVEAL RESULTS ───────────────────────────────────── */
+function revealResults() {
+  /* Zone 4 */
+  stopSlot('z4rpm', '4775', 'ok');
+  stopSlot('z4feed','1528', 'ok');
+  document.getElementById('z4rpmU').textContent='rpm';
+  document.getElementById('z4feedU').textContent='mm/min';
+  document.getElementById('bsRpmThumb').style.opacity='1';
+  document.getElementById('bsFeedThumb').style.opacity='1';
+
+  /* Zone 5 dots */
+  ['d5vc','d5fz','d5ae','d5ap'].forEach(id=>document.getElementById(id).style.display='');
+  stopSlot('z5vc','149.8','ok'); document.getElementById('z5zVc').textContent='▲ Zona Ideal';
+  stopSlot('z5fz','0.100','ok'); document.getElementById('z5zFz').textContent='▲ Zona Ideal';
+  stopSlot('z5ae','6.4',  'ok'); document.getElementById('z5zAe').textContent='▲ Zona OK';
+  stopSlot('z5ap','8.0',  'ok'); document.getElementById('z5zAp').textContent='▲ Zona Ideal';
+
+  /* Zone 6 inline */
+  stopSlot('z6p','4.2','warn');  stopSlot('z6t','38','ok');
+  stopSlot('z6v','149.8','ok');  stopSlot('z6m','137.5','ok');
+  stopSlot('z6l','2.5','ok');    stopSlot('z6c','1.08','');
+  document.getElementById('z6lDot').style.display='';
+
+  /* Zone 6 grid */
+  stopSlot('z6gp','4.2','warn'); stopSlot('z6gt','38','ok');
+  stopSlot('z6gv','149.8','ok'); stopSlot('z6gm','137.5','ok');
+  stopSlot('z6gl','2.5','ok');   stopSlot('z6gc','1.08','');
+  document.getElementById('z6glDot').style.display='';
+
+  /* Gauges */
+  animateGauge(1, .40); animateGauge(2, .28); animateGauge(3, .65);
+  setTimeout(()=>{
+    const g1=document.getElementById('gV1');  g1.textContent='4775'; g1.classList.remove('empty'); g1.classList.add('ok','value-revealed');
+    const g2=document.getElementById('gV2');  g2.textContent='4.2';  g2.classList.remove('empty'); g2.classList.add('warn','value-revealed');
+    const g3=document.getElementById('gV3');  g3.textContent='137.5';g3.classList.remove('empty'); g3.classList.add('ok','value-revealed');
+  }, 900);
+}
+
+/* ─── MAIN STATE MACHINE ───────────────────────────────── */
+let isRunning=false, simCount=0;
+
+function startSimulation() {
+  if (isRunning) return;
+  isRunning=true; simCount++;
+  const btn=document.getElementById('btnSimular');
+  const appState=document.getElementById('appState');
+
+  /* ── FASE 1: IGNIÇÃO (0–200ms) ─── */
+  btn.classList.add('calculating');
+  document.body.classList.add('simulating');
+  appState.textContent='FASE 1 — IGNIÇÃO';
+  shakeSliders(); igniteGauges();
+
+  /* Start slot machines on all values */
+  ['z4rpm','z4feed','z5vc','z5fz','z5ae','z5ap',
+   'z6p','z6t','z6v','z6m','z6l','z6c',
+   'z6gp','z6gt','z6gv','z6gm','z6gl','z6gc'].forEach(id=>startSlot(id,90));
+
+  /* LCD phase 1 */
+  const l1=document.getElementById('lcdL1');
+  l1.className='lcd-line action'; l1.textContent='⟶ Iniciando cálculo de parâmetros...';
+  document.getElementById('lcdL2').style.visibility='';
+  document.getElementById('lcdL3').style.visibility='';
+
+  /* ── FASE 2: CALCULANDO (200ms–1500ms) ─── */
+  setTimeout(()=>{
+    appState.textContent='CALCULANDO...';
+    startProgress(); startGaugeSpin();
+  }, 200);
+
+  /* ── FASE 3: REVELAÇÃO (1500ms–2300ms) ─── */
+  setTimeout(()=>{
+    stopGaugeSpin(); appState.textContent='REVELANDO RESULTADOS';
+    finishProgress(); revealResults();
+
+    /* Jackpot flash on zone4 */
+    setTimeout(()=>{
+      const z4=document.querySelector('.zone4');
+      z4.classList.add('jackpot');
+      setTimeout(()=>z4.classList.remove('jackpot'), 800);
+    }, 400);
+
+    /* LCD final */
+    setTimeout(()=>{
+      document.getElementById('zone2').classList.add('warn-state');
+      const l1=document.getElementById('lcdL1'); l1.className='lcd-line alert'; l1.textContent='⚠ ATENÇÃO: ae/D = 40% — próximo do limite de vibração';
+      const l2=document.getElementById('lcdL2'); l2.className='lcd-line action'; l2.textContent='⟶ Reduzir ae em ~10% para margem de segurança';
+      const l3=document.getElementById('lcdL3'); l3.className='lcd-line info'; l3.textContent='L/D 2.5 · CTF 1.08 · Potência 28% cap. · RPM 40% cap.';
+    }, 200);
+
+    /* Safety badge reveal */
+    setTimeout(()=>{
+      const badge=document.getElementById('safetyBadge');
+      badge.classList.add('visible','warn');
+      document.getElementById('safetyText').textContent='ATENÇÃO — VERIFICAR PARÂMETROS';
+      document.body.classList.remove('simulating');
+      document.body.classList.add('revealed');
+      appState.textContent='RESULTADO CALCULADO';
+    }, 700);
+
+    /* Timestamp */
+    setTimeout(()=>{
+      const now=new Date();
+      document.getElementById('z3time').textContent=`${now.getHours().toString().padStart(2,'0')}:${now.getMinutes().toString().padStart(2,'0')}:${now.getSeconds().toString().padStart(2,'0')}`;
+    }, 500);
+
+  }, 1500);
+
+  /* ── RESET (4200ms) ─── */
+  setTimeout(()=>{
+    btn.classList.remove('calculating');
+    unlockSliders(); isRunning=false;
+    document.body.classList.remove('revealed');
+    appState.textContent='PRONTO PARA NOVA SIMULAÇÃO';
+  }, 4200);
+}
+</script>
+</body>
+</html>

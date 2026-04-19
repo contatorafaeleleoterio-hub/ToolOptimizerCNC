@@ -1,0 +1,250 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gauge Industrial Simétrico CNC - Premium UI</title>
+    <style>
+        body {
+            background-color: #0c0d0f; /* Fundo Dark Industrial */
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            font-family: -apple-system, system-ui, sans-serif;
+        }
+
+        .card {
+            background: #14161a; /* Fundo do Card Dark */
+            padding: 40px;
+            border-radius: 28px;
+            box-shadow: 0 30px 60px rgba(0,0,0,0.6);
+            width: 400px;
+            border: 1px solid #23272e;
+            text-align: center;
+        }
+
+        .metric-title {
+            color: #fff;
+            font-size: 16px;
+            font-weight: 600;
+            margin-bottom: 30px;
+        }
+
+        .gauge-container {
+            position: relative;
+            width: 300px; /* Diâmetro */
+            height: 150px; /* Meia-Lua */
+            margin: 0 auto;
+        }
+
+        /* Os segmentos do Gauge serão gerados via JS */
+        .gauge-segment {
+            position: absolute;
+            bottom: 0;
+            left: 50%;
+            height: 150px; /* Diâmetro total para o arco */
+            transform-origin: center bottom; /* Rotaciona a partir do centro inferior */
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            opacity: 0.1; /* Inicia como vazio */
+            transition: all 0.3s cubic-bezier(0.25, 0.1, 0.25, 1);
+        }
+
+        /* Barrinha visível dentro do segmento */
+        .gauge-segment::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            width: 6px; /* Largura da barrinha */
+            height: 25px; /* Comprimento da barrinha */
+            border-radius: 100px;
+            background-color: #313742; /* Cor padrão (vazio) */
+            transition: all 0.3s ease;
+        }
+
+        /* Destaque Central (Verde) - Barrinhas mais longas */
+        .is-ideal .gauge-segment::after {
+            height: 30px;
+        }
+
+        /* Cores da Lógica Simétrica e Efeitos (Preenchido) */
+        .gauge-segment.filled { opacity: 1; }
+        .color-red .gauge-segment::after { background-color: #FF4D4D; box-shadow: 0 0 10px rgba(255, 77, 77, 0.4); }
+        .color-orange .gauge-segment::after { background-color: #FFA500; box-shadow: 0 0 10px rgba(255, 165, 0, 0.4); }
+        .color-green .gauge-segment::after { background-color: #00E676; box-shadow: 0 0 15px rgba(0, 230, 118, 0.5); }
+
+        /* Indicador (Ponteiro) - Baseado no estilo tátil que criei */
+        .indicator-pin {
+            position: absolute;
+            bottom: -5px; /* Posição do pivô */
+            left: 50%;
+            width: 3px;
+            height: 110px; /* Comprimento do ponteiro */
+            background: #ffffff;
+            border-radius: 10px;
+            box-shadow: 0 0 12px rgba(255,255,255,0.7), 0 0 2px black;
+            transform-origin: center bottom; /* Gira a partir da base */
+            transition: transform 0.4s cubic-bezier(0.18, 0.89, 0.32, 1.28); /* Animação tátil */
+            transform: translate(-50%, -50%) rotate(0deg); /* Inicia na esquerda */
+            z-index: 10;
+        }
+
+        /* Base do Ponteiro (o círculo no pivô) */
+        .indicator-pin::after {
+            content: '';
+            position: absolute;
+            bottom: -5px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 14px;
+            height: 14px;
+            border-radius: 100px;
+            background: #ffffff;
+            border: 2px solid #14161a;
+            box-shadow: 0 0 5px rgba(255,255,255,0.5);
+        }
+
+        /* Títulos e Valores */
+        .value-display {
+            color: #fff;
+            font-size: 32px;
+            font-weight: 700;
+            margin-top: 20px;
+            margin-bottom: 5px;
+        }
+
+        .status-badge {
+            display: inline-block;
+            padding: 4px 12px;
+            border-radius: 100px;
+            font-size: 11px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 30px;
+            transition: all 0.3s ease;
+        }
+
+        .controls {
+            margin-top: 10px;
+            color: #666;
+            font-size: 14px;
+        }
+
+        input[type=range] {
+            width: 100%;
+            cursor: pointer;
+            accent-color: #fff;
+        }
+    </style>
+</head>
+<body>
+
+<div class="card">
+    <div class="metric-title">Velocidade CNC (S)</div>
+    
+    <div class="gauge-container" id="gauge-container">
+        </div>
+
+    <div class="value-display" id="current-value">50%</div>
+    <div id="status-badge" class="status-badge">Analisando...</div>
+
+    <div class="controls">
+        <input type="range" id="input-range" min="0" max="100" value="50">
+    </div>
+</div>
+
+<script>
+    const segmentsCount = 41; // Número de barrinhas (deve ser ímpar para ter centro)
+    const idealStart = 40; // Onde começa a zona verde
+    const idealEnd = 60;   // Onde termina a zona verde
+    const gaugeContainer = document.getElementById('gauge-container');
+    const rangeInput = document.getElementById('input-range');
+    const currentValueDisplay = document.getElementById('current-value');
+    const statusBadge = document.getElementById('status-badge');
+
+    // Cria os segmentos (barrinhas em arco)
+    for (let i = 0; i < segmentsCount; i++) {
+        // Wrapper para cada barrinha (o segmento invisível que rotaciona)
+        const segmentWrapper = document.createElement('div');
+        segmentWrapper.className = 'gauge-segment-wrapper'; // Nova classe para as cores
+        
+        // O elemento visual que rotaciona
+        const div = document.createElement('div');
+        div.className = 'gauge-segment';
+        
+        // Define o ângulo de cada barrinha (arco de -90 a 90 graus)
+        const angle = -90 + (i / (segmentsCount - 1)) * 180;
+        div.style.transform = `translateX(-50%) rotate(${angle}deg)`;
+        
+        segmentWrapper.appendChild(div);
+        gaugeContainer.appendChild(segmentWrapper);
+    }
+
+    const segmentWrappers = document.querySelectorAll('.gauge-segment-wrapper');
+    const segments = document.querySelectorAll('.gauge-segment');
+
+    // Cria o Indicador (Ponteiro)
+    const indicator = document.createElement('div');
+    indicator.className = 'indicator-pin';
+    gaugeContainer.appendChild(indicator);
+
+    function update(val) {
+        currentValueDisplay.innerText = `${val}%`;
+        const percentage = val / 100;
+        
+        // Rotaciona o ponteiro (arco de -90 a 90 graus)
+        const indicatorAngle = -90 + (percentage * 180);
+        indicator.style.transform = `translate(-50%, -50%) rotate(${indicatorAngle}deg)`;
+
+        // Lógica de Status Text e Badge
+        if (val >= idealStart && val <= idealEnd) {
+            statusBadge.innerText = "Parâmetro Ideal";
+            statusBadge.style.color = "#00E676";
+            statusBadge.style.backgroundColor = "rgba(0, 230, 118, 0.1)";
+        } else if (val < 20 || val > 80) {
+            statusBadge.innerText = "Crítico: Ajustar";
+            statusBadge.style.color = "#FF4D4D";
+            statusBadge.style.backgroundColor = "rgba(255, 77, 77, 0.1)";
+        } else {
+            statusBadge.innerText = "Atenção (Margem)";
+            statusBadge.style.color = "#FFA500";
+            statusBadge.style.backgroundColor = "rgba(255, 165, 0, 0.1)";
+        }
+
+        segmentWrappers.forEach((wrapper, i) => {
+            const seg = wrapper.querySelector('.gauge-segment');
+            const pos = (i / (segmentsCount - 1)) * 100;
+            const isFilled = i / (segmentsCount - 1) <= percentage;
+
+            seg.className = 'gauge-segment'; // Reset classes
+            wrapper.className = 'gauge-segment-wrapper'; // Reset classes do wrapper
+            
+            // Destaque visual: Barrinhas mais altas no centro (Verde)
+            if (pos >= idealStart && pos <= idealEnd) {
+                wrapper.classList.add('is-ideal');
+            }
+
+            if (isFilled) {
+                seg.classList.add('filled');
+                // Lógica de cores simétrica aplicado à barrinha
+                if (pos >= idealStart && pos <= idealEnd) {
+                    wrapper.classList.add('color-green');
+                } else if (pos < 20 || pos > 80) {
+                    wrapper.classList.add('color-red');
+                } else {
+                    wrapper.classList.add('color-orange');
+                }
+            }
+        });
+    }
+
+    rangeInput.addEventListener('input', (e) => update(e.target.value));
+    update(50); // Valor inicial no centro (Verde)
+</script>
+
+</body>
+</html>

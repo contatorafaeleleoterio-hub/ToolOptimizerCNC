@@ -5,7 +5,7 @@ import App from './App';
 import { SettingsPage } from './pages/settings-page';
 import { HistoryPage } from './pages/history-page';
 import { MobilePage } from './pages/mobile-page';
-import { ViewportRedirect } from './components/viewport-redirect';
+import { ViewportGuard } from './components/viewport-guard';
 import { installErrorTracker } from './admin/hooks/use-error-tracker';
 import './index.css';
 
@@ -39,7 +39,7 @@ const basename = baseUrl.endsWith('/') ? baseUrl.slice(0, -1) : baseUrl;
 createRoot(document.getElementById('root')!).render(
   <StrictMode>
     <BrowserRouter basename={basename || '/'}>
-      <ViewportRedirect />
+      <ViewportGuard />
       <Routes>
         <Route path="/" element={<App />} />
         <Route path="/mobile" element={<MobilePage />} />

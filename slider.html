@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Indicador de Alvo Central - Premium UI</title>
+    <style>
+        body {
+            background-color: #0d0d0d;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+        }
+
+        .card {
+            background: #161616;
+            padding: 50px 40px;
+            border-radius: 28px;
+            box-shadow: 0 30px 60px rgba(0,0,0,0.6);
+            width: 550px;
+            border: 1px solid #252525;
+            text-align: center;
+        }
+
+        .status-badge {
+            display: inline-block;
+            padding: 6px 16px;
+            border-radius: 100px;
+            font-size: 12px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 20px;
+            transition: all 0.3s ease;
+        }
+
+        .container {
+            position: relative;
+            display: flex;
+            gap: 3px;
+            align-items: center;
+            height: 24px;
+            width: 100%;
+            margin: 20px 0;
+        }
+
+        .segment {
+            flex: 1;
+            height: 70%;
+            border-radius: 100px;
+            background-color: rgba(255, 255, 255, 0.05);
+            transition: all 0.4s cubic-bezier(0.25, 0.8, 0.25, 1);
+            transform: scaleY(0.85);
+        }
+
+        /* Indicador Central (O Pin) */
+        .indicator {
+            position: absolute;
+            top: 50%;
+            height: 40px;
+            width: 4px;
+            background: #ffffff;
+            border-radius: 10px;
+            box-shadow: 0 0 20px rgba(255,255,255,0.6), 0 0 4px rgba(0,0,0,1);
+            transform: translate(-50%, -50%);
+            transition: left 0.5s cubic-bezier(0.18, 0.89, 0.32, 1.28);
+            z-index: 10;
+        }
+
+        /* Marcadores das Zonas */
+        .ideal-zone-marker {
+            position: absolute;
+            height: 180%;
+            background: rgba(0, 230, 118, 0.03);
+            border-left: 1px solid rgba(255,255,255,0.08);
+            border-right: 1px solid rgba(255,255,255,0.08);
+            z-index: 0;
+            pointer-events: none;
+        }
+
+        /* Cores da Lógica Simétrica */
+        .color-red { background-color: #FF4D4D !important; box-shadow: 0 0 10px rgba(255, 77, 77, 0.4); }
+        .color-orange { background-color: #FFA500 !important; box-shadow: 0 0 10px rgba(255, 165, 0, 0.4); }
+        .color-green { background-color: #00E676 !important; box-shadow: 0 0 15px rgba(0, 230, 118, 0.5); height: 100% !important; transform: scaleY(1) !important; }
+
+        .controls {
+            margin-top: 40px;
+            color: #666;
+            font-size: 14px;
+        }
+
+        input[type=range] {
+            width: 100%;
+            margin-top: 15px;
+            cursor: pointer;
+            accent-color: #fff;
+        }
+
+        .labels {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 10px;
+            color: #444;
+            font-size: 11px;
+            font-weight: 700;
+        }
+    </style>
+</head>
+<body>
+
+<div class="card">
+    <div id="status-badge" class="status-badge">Analisando...</div>
+    
+    <div class="container" id="bar-container">
+        <div class="ideal-zone-marker" id="ideal-zone"></div>
+    </div>
+
+    <div class="labels">
+        <span>MUITO BAIXO</span>
+        <span style="color: #00E676;">IDEAL</span>
+        <span>MUITO ALTO</span>
+    </div>
+
+    <div class="controls">
+        <input type="range" id="input-range" min="0" max="100" value="50">
+    </div>
+</div>
+
+<script>
+    const segmentsCount = 50;
+    const idealStart = 40;
+    const idealEnd = 60;
+    const container = document.getElementById('bar-container');
+    const rangeInput = document.getElementById('input-range');
+    const statusBadge = document.getElementById('status-badge');
+    const idealZone = document.getElementById('ideal-zone');
+
+    // Posiciona a zona ideal no fundo
+    idealZone.style.left = `${idealStart}%`;
+    idealZone.style.width = `${idealEnd - idealStart}%`;
+
+    // Cria os segmentos
+    for (let i = 0; i < segmentsCount; i++) {
+        const div = document.createElement('div');
+        div.className = 'segment';
+        container.appendChild(div);
+    }
+
+    const segments = document.querySelectorAll('.segment');
+    const indicator = document.createElement('div');
+    indicator.className = 'indicator';
+    container.appendChild(indicator);
+
+    function update(val) {
+        const percentage = val / 100;
+        indicator.style.left = `${val}%`;
+
+        // Lógica de Status Text
+        if (val >= idealStart && val <= idealEnd) {
+            statusBadge.innerText = "Nível Ideal";
+            statusBadge.style.color = "#00E676";
+            statusBadge.style.backgroundColor = "rgba(0, 230, 118, 0.1)";
+        } else if (val < 20 || val > 80) {
+            statusBadge.innerText = "Crítico";
+            statusBadge.style.color = "#FF4D4D";
+            statusBadge.style.backgroundColor = "rgba(255, 77, 77, 0.1)";
+        } else {
+            statusBadge.innerText = "Atenção";
+            statusBadge.style.color = "#FFA500";
+            statusBadge.style.backgroundColor = "rgba(255, 165, 0, 0.1)";
+        }
+
+        segments.forEach((seg, i) => {
+            const pos = (i / (segmentsCount - 1)) * 100;
+            const isFilled = i / (segmentsCount - 1) <= percentage;
+
+            seg.className = 'segment'; // Reset
+            
+            if (isFilled) {
+                // Lógica de cores simétrica
+                if (pos >= idealStart && pos <= idealEnd) {
+                    seg.classList.add('color-green');
+                } else if (pos < 20 || pos > 80) {
+                    seg.classList.add('color-red');
+                } else {
+                    seg.classList.add('color-orange');
+                }
+            }
+        });
+    }
+
+    rangeInput.addEventListener('input', (e) => update(e.target.value));
+    update(50); // Valor inicial no centro (Verde)
+</script>
+
+</body>
+</html>

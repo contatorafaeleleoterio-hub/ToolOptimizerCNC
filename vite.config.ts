@@ -1,6 +1,7 @@
 import { defineConfig } from 'vite';
 import react from '@vitejs/plugin-react';
 import tailwindcss from '@tailwindcss/vite';
+import { VitePWA } from 'vite-plugin-pwa';
 import path from 'path';
 import pkg from './package.json' with { type: 'json' };
 
@@ -9,7 +10,77 @@ import { adminSyncPlugin } from './src/admin/vite-plugin-admin-sync';
 
 export default defineConfig({
   base: process.env.VITE_BASE_URL || '/',
-  plugins: [tailwindcss(), react(), cloudflare(), adminSyncPlugin()],
+  plugins: [
+    tailwindcss(), 
+    react(), 
+    cloudflare(), 
+    adminSyncPlugin(),
+    VitePWA({
+      registerType: 'autoUpdate',
+      injectRegister: 'auto',
+      includeAssets: ['favicon.ico', 'apple-touch-icon.png', 'mask-icon.svg', 'Logo_ToolOptimizer.png'],
+      manifest: {
+        name: 'ToolOptimizer CNC',
+        short_name: 'ToolOptimizer',
+        description: 'Calculadora de Parâmetros de Corte Industrial',
+        theme_color: '#0F1419',
+        background_color: '#0F1419',
+        display: 'standalone',
+        orientation: 'portrait',
+        icons: [
+          {
+            src: 'pwa-192x192.png',
+            sizes: '192x192',
+            type: 'image/png'
+          },
+          {
+            src: 'pwa-512x512.png',
+            sizes: '512x512',
+            type: 'image/png'
+          },
+          {
+            src: 'pwa-512x512.png',
+            sizes: '512x512',
+            type: 'image/png',
+            purpose: 'any maskable'
+          }
+        ]
+      },
+      workbox: {
+        globPatterns: ['**/*.{js,css,html,ico,png,svg,woff,woff2}'],
+        runtimeCaching: [
+          {
+            urlPattern: /^https:\/\/fonts\.googleapis\.com\/.*/i,
+            handler: 'CacheFirst',
+            options: {
+              cacheName: 'google-fonts-cache',
+              expiration: {
+                maxEntries: 10,
+                maxAgeSeconds: 60 * 60 * 24 * 365 // <== 365 days
+              },
+              cacheableResponse: {
+                statuses: [0, 200]
+              }
+            }
+          },
+          {
+            urlPattern: /^https:\/\/fonts\.gstatic\.com\/.*/i,
+            handler: 'CacheFirst',
+            options: {
+              cacheName: 'gstatic-fonts-cache',
+              expiration: {
+                maxEntries: 10,
+                maxAgeSeconds: 60 * 60 * 24 * 365 // <== 365 days
+              },
+              cacheableResponse: {
+                statuses: [0, 200]
+              }
+            }
+          }
+        ]
+      }
+    })
+  ],
   define: {
     __APP_VERSION__: JSON.stringify(pkg.version),
   },
@@ -23,9 +94,6 @@ export default defineConfig({
   },
   server: {
     watch: {
-      // Prevent admin-requests.json writes from triggering HMR reloads.
-      // Without this, the sync effect in AdminTasksPage would create an
-      // infinite loop: write → Vite reloads → effect runs → write → ...
       ignored: ['**/docs/admin-requests.json'],
     },
   },
