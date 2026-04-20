@@ -18,6 +18,7 @@ import {
   calculatePower, calculateTorque, validateLDRatio, validateInputs, validateMachineLimits,
   calcularSliderBounds,
 } from '@/engine/index';
+import { storageService } from '@/shared/storage-service';
 import { getMaterialById } from '@/data/index';
 import { getRecommendedParams } from '@/engine/recommendations';
 import { useHistoryStore } from './history-store';
