@@ -77,40 +77,33 @@ Status: ✅ CONCLUÍDO
 ---
 
 ## SESSION APP-3 — Store Listing + Landing Page Android
-Status: ⏳ EM ANDAMENTO (parcialmente concluída — ver itens abaixo)
+Data: 21/04/2026
+Status: ✅ CONCLUÍDO
 
-### ✅ Concluído (commit `e3a02aa`)
+### O que foi feito:
 - Privacy Policy `/privacidade` — rota React + página LGPD-compliant
 - Feature graphic SVG 1024×500 em `public/feature-graphic.svg`
 - `docs/APP3_STORE_LISTING.md` — descrição curta (46 chars) + longa PT-BR + categoria + classificação
+- Landing Page Android (`landing/index.html`) atualizada com botões de download e badges
+- Removido `#app-landing` do `index.html` principal para carregar o app diretamente
 
-### ⏳ Pendente — Landing Page Android (plano aprovado, não executado)
-
-**Plano completo:** `.claude/plans/agora-voce-so-deve-sorted-spark.md`
-
-Arquivos a modificar:
-1. `landing/index.html` — 4 cirurgias:
-   - Hero: trocar "Sobre o projeto" por "📱 Baixar para Android" + badge "Em breve na Play Store"
-   - Feature card: "Desktop + Web" → "Web + Android + Desktop"
-   - CTA Final: adicionar botão Android secundário ao lado do primário
-   - Footer: adicionar links "Privacidade" + "Sobre o projeto"
-2. `index.html` (app entry): remover bloco `#app-landing` (linhas 137–220) — o app deve carregar direto; a landing é o ponto de entrada correto
 
 **Regra:** `[URL_APK]` nos CTAs fica como placeholder até APP-4 (GitHub Release com APK assinado).
 
 ---
 
 ## SESSION APP-4 — Release + Hospedagem APK + Play Store
-Status: ⏳ Aguarda APP-3
+Status: ⏳ [EM PROGRESSO]
 Absorve: S9, S10, S11 do ROTEIRO_EXECUCAO
 
 **O que será feito:**
-- **[S9]** GitHub Release com APK permanente + substituir `[URL_APK]` no site
-- Gerar keystore de assinatura (release signing)
-- Build `assembleRelease` com APK assinado
-- Criar listing no Google Play Console + submeter para revisão (~3-7 dias)
-- **[S10]** Atualizar docs pós-launch
-- **[S11]** Backlog priorizado (rodar em Claude Haiku — economia de tokens)
+- [x] **[S9]** GitHub Release com APK permanente + substituir `[URL_APK]` no site
+    - URL: `https://github.com/contatorafaeleleoterio-hub/ToolOptimizerCNC/releases/tag/v1.0.0-alpha`
+- [ ] Gerar keystore de assinatura (release signing) - *Pendente para S10/S11*
+- [ ] Build `assembleRelease` com APK assinado
+- [ ] Criar listing no Google Play Console + submeter para revisão (~3-7 dias)
+- [ ] **[S10]** Atualizar docs pós-launch
+- [ ] **[S11]** Backlog priorizado (rodar em Claude Haiku — economia de tokens)
 
 ---
 
@@ -123,3 +116,4 @@ Absorve: S9, S10, S11 do ROTEIRO_EXECUCAO
 | `503ccb8` | fix(ci): upgrade Java 17→21 (capacitor.build.gradle) | ✅ |
 | `83314bc` | fix(ci): upgrade Node 20→22 (Capacitor CLI req) | ✅ |
 | `5917f39` | fix(mobile): safe-area padding + slider overflow onto SGB | ✅ |
+| `release` | v1.0.0-alpha (Android MVP Debug) | ✅ |

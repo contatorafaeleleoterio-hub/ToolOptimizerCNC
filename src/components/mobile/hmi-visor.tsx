@@ -1,7 +1,7 @@
 import { useMachiningStore } from '@/store';
-import { fmt, SEG_COLORS, SEG_ICONS, SEG_LABELS, SEG_BG } from '../shared-result-parts';
+import { fmt, SEG_COLORS, SEG_ICONS, SEG_LABELS, SEG_BG } from '@/components/shared-result-parts';
 import { haptics } from '@/utils/haptics';
-import { BidirectionalSlider } from '../bidirectional-slider';
+import { BidirectionalSlider } from '@/components/bidirectional-slider';
 
 export function HmiVisor() {
   const resultado = useMachiningStore((s) => s.resultado);

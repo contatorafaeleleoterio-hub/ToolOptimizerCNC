@@ -4,16 +4,16 @@ import { useHistoryStore } from '@/store';
 import { useSimulationAnimation } from '@/hooks/use-simulation-animation';
 import { TipoUsinagem } from '@/types/index';
 import type { Ferramenta, SavedTool } from '@/types/index';
-import { FormulaCard, Fraction } from '../formula-card';
-import { ToolEditModal } from '../modals/tool-edit-modal';
+import { FormulaCard, Fraction } from '@/components/formula-card';
+import { ToolEditModal } from '@/components/modals/tool-edit-modal';
 import { getMaterialById } from '@/data';
 import {
   fmt,
   SEG_COLORS, SEG_ICONS, SEG_LABELS, SEG_BG,
   BigNumber, WarningsSection,
-} from '../shared-result-parts';
+} from '@/components/shared-result-parts';
 import { haptics } from '@/utils/haptics';
-import { HmiVisor } from './hmi-visor';
+import { HmiVisor } from '@/components/mobile/hmi-visor';
 
 const OPERACAO_LABELS: Record<TipoUsinagem, string> = {
   [TipoUsinagem.DESBASTE]: 'Desbaste',
@@ -106,7 +106,12 @@ export function MobileResultsSection() {
 
   // Find matching saved tool for edit button
   const matchingSavedTool = savedTools.find(
-    (t) => t.tipo === ferramenta.tipo && t.diametro === ferramenta.diametro
+    (t) =>
+      t.tipo === ferramenta.tipo &&
+      t.diametro === ferramenta.diametro &&
+      t.numeroArestas === ferramenta.numeroArestas &&
+      t.balanco === ferramenta.balanco &&
+      (t.tipo !== 'toroidal' || t.raioQuina === ferramenta.raioQuina)
   ) ?? null;
 
   return (
