@@ -55,7 +55,7 @@ export function MobilePage() {
   };
 
   return (
-    <div className="flex flex-col h-screen bg-background-dark overflow-hidden">
+    <div className="flex flex-col bg-background-dark overflow-hidden" style={{ height: '100dvh', paddingTop: 'env(safe-area-inset-top)', paddingBottom: 'env(safe-area-inset-bottom)' }}>
       {/* Ambient gradient orbs */}
       <div className="pointer-events-none fixed inset-0 overflow-hidden -z-10" aria-hidden>
         <div className="absolute top-0 left-1/4 w-72 h-72 rounded-full bg-cyan-500/5 blur-3xl" />

@@ -169,7 +169,7 @@ function TouchSlider({ value, min, max, step, color, onChange, label, recomendad
   return (
     <div
       ref={trackRef}
-      className="relative h-12 mx-[18px] flex items-center cursor-pointer select-none"
+      className="relative h-16 mx-[18px] flex items-center cursor-pointer select-none"
       role="slider"
       aria-label={`${label} slider`}
       aria-valuenow={value}
@@ -322,8 +322,10 @@ export function MobileFineTuneSection() {
                   />
                 </div>
 
-                {/* Parameter health bar — above slider */}
-                <SegmentedGradientBar paramKey={key} segments={30} idealRange={idealRangeProp} />
+                {/* Parameter health bar — above slider (z-10 prevents thumb overflow bleeding in) */}
+                <div className="relative z-10">
+                  <SegmentedGradientBar paramKey={key} segments={30} idealRange={idealRangeProp} />
+                </div>
 
                 <div className="flex items-center gap-2">
                   <button className={BTN_CLS} aria-label={`Decrease ${label}`}
