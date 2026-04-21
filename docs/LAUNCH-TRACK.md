@@ -76,18 +76,27 @@ Status: ✅ CONCLUÍDO
 
 ---
 
-## SESSION APP-3 — Store Listing + Página de Vendas
-Status: ⏳ PRÓXIMA
-Absorve: S4, S5, S8 do ROTEIRO_EXECUCAO
+## SESSION APP-3 — Store Listing + Landing Page Android
+Status: ⏳ EM ANDAMENTO (parcialmente concluída — ver itens abaixo)
 
-**O que será feito:**
-- Screenshots 1080×1920 de todas as telas principais
-- Ícone 512×512 PNG + feature graphic 1024×500
-- Descrição curta (80 chars max): "Calcule parâmetros CNC em menos de 2 segundos"
-- Descrição longa (PT-BR): proposta de valor completa para operadores CNC
-- Privacy Policy: página estática no site
-- Categoria: Ferramentas | Público: EVERYONE
-- **[S8]** Bloco "Usar Web / Baixar APK" no `index.html` com aviso "Em breve na Play Store"
+### ✅ Concluído (commit `e3a02aa`)
+- Privacy Policy `/privacidade` — rota React + página LGPD-compliant
+- Feature graphic SVG 1024×500 em `public/feature-graphic.svg`
+- `docs/APP3_STORE_LISTING.md` — descrição curta (46 chars) + longa PT-BR + categoria + classificação
+
+### ⏳ Pendente — Landing Page Android (plano aprovado, não executado)
+
+**Plano completo:** `.claude/plans/agora-voce-so-deve-sorted-spark.md`
+
+Arquivos a modificar:
+1. `landing/index.html` — 4 cirurgias:
+   - Hero: trocar "Sobre o projeto" por "📱 Baixar para Android" + badge "Em breve na Play Store"
+   - Feature card: "Desktop + Web" → "Web + Android + Desktop"
+   - CTA Final: adicionar botão Android secundário ao lado do primário
+   - Footer: adicionar links "Privacidade" + "Sobre o projeto"
+2. `index.html` (app entry): remover bloco `#app-landing` (linhas 137–220) — o app deve carregar direto; a landing é o ponto de entrada correto
+
+**Regra:** `[URL_APK]` nos CTAs fica como placeholder até APP-4 (GitHub Release com APK assinado).
 
 ---
 

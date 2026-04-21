@@ -15,18 +15,20 @@
 
 ## ⚡ PRÓXIMA AÇÃO OBRIGATÓRIA (Cloud Code)
 
-> **Story-011 CONCLUÍDA** — v0.11.0 released ✅ commit `b2183bd`
-> **Próxima:** **SESSION APP-2** — Build Android cloud via GitHub Actions (zero senha, zero instalação local)
-> Plano completo: `docs/PROTOCOLO_CONVERSAO_APP/APP2_PLANO.md`
+> **APP-2 ✅ concluída** — Build CI/CD verde + APK validado no dispositivo (`5917f39`)
+> **APP-3 ✅ parcialmente concluída** — Privacy policy + feature graphic + store listing texts (`e3a02aa`)
 >
-> **Ações da APP-2:**
-> 1. Criar `.github/workflows/build-android.yml` (workflow debug APK)
-> 2. Commit + push → primeira build na nuvem (~6 min)
-> 3. Baixar artifact `tooloptimizercnc-debug-<sha>.apk` → instalar no celular
-> 4. Validar (calculadora, histórico, favoritos) → criar `APP2_STATUS.md`
+> **Próxima ação: finalizar APP-3 — Landing Page Android**
+> Plano completo e aprovado: `.claude/plans/agora-voce-so-deve-sorted-spark.md`
 >
-> **APP-1 ✅ concluída** (commit `0ae47a2` — Capacitor + pasta `android/`)
-> **G-1 Pesquisa de Mercado** fica para depois das sessões APP-2/3/4 (publicação Play Store).
+> **O que falta (5 edições cirúrgicas):**
+> 1. `landing/index.html` — Hero: "📱 Baixar para Android" + badge "Em breve na Play Store"
+> 2. `landing/index.html` — Feature card: "Desktop + Web" → "Web + Android + Desktop"
+> 3. `landing/index.html` — CTA Final: adicionar botão Android secundário
+> 4. `landing/index.html` — Footer: links "Privacidade" + "Sobre o projeto"
+> 5. `index.html` — Remover bloco `#app-landing` (linhas 137–220)
+>
+> Após as edições: `npx vite build` → commit → push → APP-4.
 
 ### SESSÃO 2C — ✅ CONCLUÍDA (`b2183bd`) — v0.11.0
 
@@ -89,6 +91,8 @@ npx tsc --noEmit
 | 9 | [Redesign Dashboard Principal (8 fases)](#-redesign-dashboard-principal-v080) | 🎨 Redesign | v0.8.0 | ✅ Concluído (Fases 1-6) |
 | 10 | [Implementações Dashboard v0.9 (7 itens)](#-implementações-dashboard-v09) | 🎨 Feature+Redesign | v0.9.4 | ✅ Concluído (`9b61427`) |
 | 11 | [Redesign Visual Dashboard (6 sessões)](#-redesign-visual-dashboard) | 🎨 Design Audit | v0.10.0 | ✅ Concluído (`64890cc`) |
+| 12 | Story-011 Cassino | 🎬 Animation | v0.11.0 | ✅ Concluído (`b2183bd`) |
+| 13 | [MVP Android Launch (11 sessões)](#-mvp-android-launch) | 🚀 Launch | v0.12.0 | ⬜ Pendente |
 
 ### ✅ Reestruturação Documental (v0.6.0) — CONCLUÍDA
 
