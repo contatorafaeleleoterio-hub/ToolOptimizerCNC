@@ -6,6 +6,7 @@ import { SettingsPage } from './pages/settings-page';
 import { HistoryPage } from './pages/history-page';
 import { MobilePage } from './pages/mobile-page';
 import { ViewportGuard } from './components/viewport-guard';
+import { PrivacyPolicyPage } from './pages/privacy-policy-page';
 import { installErrorTracker } from './admin/hooks/use-error-tracker';
 import './index.css';
 
@@ -43,6 +44,7 @@ createRoot(document.getElementById('root')!).render(
       <Routes>
         <Route path="/" element={<App />} />
         <Route path="/mobile" element={<MobilePage />} />
+        <Route path="/privacidade" element={<PrivacyPolicyPage />} />
         <Route path="/history" element={<HistoryPage />} />
         <Route path="/settings" element={<SettingsPage />} />
         <Route
