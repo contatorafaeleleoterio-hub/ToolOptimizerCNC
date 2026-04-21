@@ -76,8 +76,9 @@ Status: ✅ CONCLUÍDO
 
 ---
 
-## SESSION APP-3 — Store Listing
+## SESSION APP-3 — Store Listing + Página de Vendas
 Status: ⏳ PRÓXIMA
+Absorve: S4, S5, S8 do ROTEIRO_EXECUCAO
 
 **O que será feito:**
 - Screenshots 1080×1920 de todas as telas principais
@@ -86,17 +87,21 @@ Status: ⏳ PRÓXIMA
 - Descrição longa (PT-BR): proposta de valor completa para operadores CNC
 - Privacy Policy: página estática no site
 - Categoria: Ferramentas | Público: EVERYONE
+- **[S8]** Bloco "Usar Web / Baixar APK" no `index.html` com aviso "Em breve na Play Store"
 
 ---
 
-## SESSION APP-4 — Keystore Release + Submissão Play Store
+## SESSION APP-4 — Release + Hospedagem APK + Play Store
 Status: ⏳ Aguarda APP-3
+Absorve: S9, S10, S11 do ROTEIRO_EXECUCAO
 
 **O que será feito:**
+- **[S9]** GitHub Release com APK permanente + substituir `[URL_APK]` no site
 - Gerar keystore de assinatura (release signing)
 - Build `assembleRelease` com APK assinado
-- Criar listing no Google Play Console
-- Submeter para revisão (~3-7 dias úteis)
+- Criar listing no Google Play Console + submeter para revisão (~3-7 dias)
+- **[S10]** Atualizar docs pós-launch
+- **[S11]** Backlog priorizado (rodar em Claude Haiku — economia de tokens)
 
 ---
 
