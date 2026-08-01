@@ -1,0 +1,576 @@
+<title>ToolOptimizer CNC — Mockup Redesign 80/20</title>
+<style>
+@font-face{
+  font-family:'JBM';
+  src:local('JetBrains Mono');
+}
+:root{
+  --bg:#0F1419;
+  --bg-panel:#161C24;
+  --bg-panel-2:#1B222B;
+  --border:#2A323D;
+  --cyan:#00D9FF;
+  --green:#39FF14;
+  --verde:#2ecc71;
+  --amarelo:#f39c12;
+  --vermelho:#e74c3c;
+  --text:#E7EDF3;
+  --text-60:rgba(231,237,243,.6);
+  --text-30:rgba(231,237,243,.3);
+}
+*{box-sizing:border-box;}
+body{
+  margin:0;
+  background:var(--bg);
+  color:var(--text);
+  font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;
+  -webkit-font-smoothing:antialiased;
+}
+.mono{font-family:'Consolas','JetBrains Mono',monospace;font-variant-numeric:tabular-nums;}
+
+/* ---------- annotation strip ---------- */
+.annot{
+  max-width:1400px;margin:0 auto;padding:28px 32px 0;
+}
+.annot h1{
+  font-size:22px;margin:0 0 4px;letter-spacing:.2px;
+}
+.annot p{
+  color:var(--text-60);font-size:13.5px;margin:0 0 18px;max-width:760px;line-height:1.55;
+}
+.annot .tag{
+  display:inline-flex;align-items:center;gap:6px;
+  font-size:11px;letter-spacing:.06em;text-transform:uppercase;
+  color:var(--cyan);border:1px solid rgba(0,217,255,.35);
+  background:rgba(0,217,255,.06);
+  padding:4px 10px;border-radius:100px;margin-right:8px;margin-bottom:8px;
+}
+
+/* ---------- toggle bar ---------- */
+.viewbar{
+  max-width:1400px;margin:0 auto;padding:0 32px 20px;
+  display:flex;gap:10px;align-items:center;flex-wrap:wrap;
+}
+.viewbar button{
+  font-family:inherit;font-size:13px;font-weight:600;
+  background:var(--bg-panel);color:var(--text-60);
+  border:1px solid var(--border);border-radius:8px;
+  padding:8px 14px;cursor:pointer;transition:all .15s ease;
+}
+.viewbar button.active{
+  color:var(--bg);background:var(--cyan);border-color:var(--cyan);
+  box-shadow:0 0 18px rgba(0,217,255,.35);
+}
+.viewbar button:hover:not(.active){border-color:var(--cyan);color:var(--text);}
+.viewbar .sep{color:var(--text-30);font-size:12px;margin:0 4px;}
+
+/* ---------- app frame ---------- */
+.frame{
+  max-width:1400px;margin:0 auto 60px;padding:0 32px;
+}
+.app{
+  border:1px solid var(--border);
+  border-radius:14px;
+  overflow:hidden;
+  background:radial-gradient(1200px 500px at 20% -10%, rgba(0,217,255,.05), transparent 60%), var(--bg);
+}
+
+/* ---------- header / nav ---------- */
+.app-header{
+  display:flex;align-items:center;justify-content:space-between;
+  padding:14px 22px;
+  border-bottom:1px solid var(--border);
+  background:rgba(255,255,255,.015);
+}
+.brand{display:flex;align-items:center;gap:10px;}
+.brand .dot{
+  width:9px;height:9px;border-radius:50%;
+  background:var(--green);box-shadow:0 0 10px var(--green);
+}
+.brand span{font-weight:700;font-size:14.5px;letter-spacing:.2px;}
+.brand small{color:var(--text-30);font-size:11px;margin-left:6px;font-weight:400;}
+
+.nav{display:flex;gap:4px;}
+.nav a{
+  display:flex;align-items:center;gap:7px;
+  font-size:13px;font-weight:600;color:var(--text-60);
+  padding:8px 13px;border-radius:8px;text-decoration:none;
+  border:1px solid transparent;
+}
+.nav a.current{
+  color:var(--cyan);background:rgba(0,217,255,.08);border-color:rgba(0,217,255,.3);
+}
+.nav a:hover:not(.current){color:var(--text);background:rgba(255,255,255,.04);}
+.badge{
+  font-size:10.5px;font-weight:700;background:rgba(255,255,255,.08);
+  color:var(--text-60);border-radius:100px;padding:1px 6px;min-width:16px;text-align:center;
+}
+.nav a.current .badge{background:var(--cyan);color:var(--bg);}
+
+/* ---------- flow numbering ---------- */
+.flow{
+  display:flex;align-items:center;gap:8px;padding:12px 22px 0;
+  font-size:11.5px;color:var(--text-30);letter-spacing:.02em;
+}
+.flow .step{display:flex;align-items:center;gap:6px;}
+.flow .n{
+  width:16px;height:16px;border-radius:50%;
+  border:1px solid var(--text-30);display:flex;align-items:center;justify-content:center;
+  font-size:9.5px;font-weight:700;
+}
+.flow .step.done .n{background:var(--verde);border-color:var(--verde);color:#05130a;}
+.flow .step.done{color:var(--verde);}
+.flow .arrow{color:var(--text-30);}
+
+/* ---------- body grid ---------- */
+.body{
+  display:grid;grid-template-columns:340px 1fr;gap:0;
+  min-height:640px;
+}
+.config{
+  border-right:1px solid var(--border);
+  padding:16px 18px 84px;
+  position:relative;
+}
+.section-title{
+  font-size:11px;text-transform:uppercase;letter-spacing:.08em;
+  color:var(--text-30);margin:18px 0 10px;font-weight:700;
+}
+.section-title:first-child{margin-top:0;}
+
+.field{margin-bottom:12px;}
+.field label{
+  display:block;font-size:12.5px;color:var(--text-60);margin-bottom:6px;font-weight:600;
+}
+select.ctl{
+  width:100%;background:var(--bg-panel-2);border:1px solid var(--border);
+  color:var(--text);border-radius:8px;padding:10px 12px;font-size:13.5px;font-family:inherit;
+}
+.btnrow{display:flex;gap:6px;}
+.btnrow button{
+  flex:1;background:var(--bg-panel-2);border:1px solid var(--border);color:var(--text-60);
+  border-radius:8px;padding:10px 6px;font-size:12.5px;font-weight:600;cursor:pointer;font-family:inherit;
+}
+.btnrow button.sel{
+  color:var(--bg);background:var(--cyan);border-color:var(--cyan);box-shadow:0 0 14px rgba(0,217,255,.3);
+}
+.inline2{display:grid;grid-template-columns:1fr 88px;gap:10px;}
+.zctl{display:flex;align-items:center;gap:6px;}
+.zctl button{
+  width:40px;height:40px;border-radius:8px;background:var(--bg-panel-2);
+  border:1px solid var(--border);color:var(--text);font-size:16px;cursor:pointer;
+}
+.zctl .val{
+  width:100%;text-align:center;font-size:15px;font-weight:700;
+}
+input[type=number].ctl{
+  width:100%;background:var(--bg-panel-2);border:1px solid var(--border);
+  color:var(--text);border-radius:8px;padding:10px 12px;font-size:13.5px;font-family:'Consolas',monospace;
+}
+
+.saved-tool{
+  display:flex;gap:8px;align-items:center;
+  background:var(--bg-panel-2);border:1px solid var(--border);border-radius:8px;
+  padding:8px 10px;margin-bottom:12px;
+}
+.saved-tool select{flex:1;background:transparent;border:none;color:var(--text);font-size:12.5px;font-family:inherit;}
+.saved-tool .icon-btn{
+  width:26px;height:26px;border-radius:6px;border:1px solid var(--border);background:var(--bg-panel);
+  color:var(--text-60);font-size:12px;cursor:pointer;display:flex;align-items:center;justify-content:center;
+}
+
+.toggle-adv{
+  display:flex;align-items:center;justify-content:space-between;
+  background:var(--bg-panel-2);border:1px solid var(--border);border-radius:10px;
+  padding:11px 13px;cursor:pointer;margin-top:20px;user-select:none;
+}
+.toggle-adv .lbl{display:flex;align-items:center;gap:8px;font-size:13px;font-weight:600;color:var(--text);}
+.toggle-adv .chev{color:var(--text-30);transition:transform .2s;font-size:11px;}
+.toggle-adv.open .chev{transform:rotate(180deg);}
+.adv-panel{
+  max-height:0;overflow:hidden;transition:max-height .25s ease;
+}
+.adv-panel.open{max-height:520px;margin-top:10px;}
+.adv-inner{
+  border:1px dashed var(--border);border-radius:10px;padding:12px;
+  display:flex;flex-direction:column;gap:12px;
+}
+.slider-row{}
+.slider-row .top{display:flex;justify-content:space-between;font-size:12px;color:var(--text-60);margin-bottom:5px;}
+.slider-row .top b{color:var(--cyan);font-weight:700;}
+.slider-track{
+  height:6px;border-radius:100px;background:var(--bg);position:relative;border:1px solid var(--border);
+}
+.slider-fill{position:absolute;left:0;top:0;bottom:0;border-radius:100px;background:linear-gradient(90deg,rgba(0,217,255,.2),var(--cyan));}
+.slider-thumb{
+  position:absolute;top:50%;width:14px;height:14px;border-radius:50%;
+  background:var(--cyan);box-shadow:0 0 8px rgba(0,217,255,.7);transform:translate(-50%,-50%);
+}
+
+.sim-btn{
+  position:absolute;left:18px;right:18px;bottom:16px;
+  background:linear-gradient(180deg,#12E0FF,#00B8D9);
+  color:#04141a;border:none;border-radius:10px;
+  padding:14px;font-size:14.5px;font-weight:800;letter-spacing:.02em;
+  cursor:pointer;box-shadow:0 6px 22px rgba(0,217,255,.35);
+}
+
+/* ---------- results ---------- */
+.results{padding:20px 24px 24px;display:flex;flex-direction:column;gap:16px;}
+
+.hero{
+  text-align:center;padding:22px 10px 10px;position:relative;
+}
+.hero .sem{
+  display:inline-flex;align-items:center;gap:7px;
+  font-size:12px;font-weight:700;letter-spacing:.03em;
+  padding:5px 12px;border-radius:100px;margin-bottom:14px;
+}
+.hero .sem.ok{color:var(--verde);background:rgba(46,204,113,.1);border:1px solid rgba(46,204,113,.35);}
+.hero .grid2{display:grid;grid-template-columns:1fr 1fr;gap:0;}
+.hero .num-block .lbl{font-size:12px;color:var(--text-30);text-transform:uppercase;letter-spacing:.08em;margin-bottom:2px;}
+.hero .num{
+  font-size:74px;line-height:1;font-weight:800;
+  text-shadow:0 0 28px currentColor;
+}
+.hero .num.rpm{color:var(--cyan);}
+.hero .num.feed{color:var(--green);}
+.hero .unit{font-size:16px;color:var(--text-60);font-weight:600;margin-left:6px;}
+.hero .divider{width:1px;background:var(--border);}
+
+.hero-slider{margin-top:14px;padding:0 20px;}
+.hero-slider .track{height:5px;border-radius:100px;background:var(--bg);border:1px solid var(--border);position:relative;}
+.hero-slider .center{position:absolute;left:50%;top:-4px;bottom:-4px;width:2px;background:var(--text-30);}
+.hero-slider .fill{position:absolute;left:38%;right:52%;top:0;bottom:0;border-radius:100px;background:var(--cyan);opacity:.5;}
+.hero-slider .thumb{position:absolute;left:38%;top:50%;width:16px;height:16px;border-radius:50%;background:var(--cyan);transform:translate(-50%,-50%);box-shadow:0 0 10px rgba(0,217,255,.7);}
+.hero-slider .pct{text-align:center;font-size:11px;color:var(--text-30);margin-top:6px;}
+
+.lcd{
+  background:#04140f;border:1px solid rgba(57,255,20,.25);border-radius:10px;
+  padding:12px 16px;
+}
+.lcd .line1{color:var(--green);font-size:12.5px;font-weight:700;letter-spacing:.02em;margin-bottom:4px;text-shadow:0 0 8px rgba(57,255,20,.4);}
+.lcd .line2{color:rgba(57,255,20,.7);font-size:12px;}
+
+.gauges{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;}
+.gauge-card{
+  background:var(--bg-panel);border:1px solid var(--border);border-radius:12px;
+  padding:14px;text-align:center;
+}
+.gauge-card .arc{
+  width:84px;height:44px;margin:0 auto 8px;position:relative;overflow:hidden;
+}
+.gauge-card svg{display:block;}
+.gauge-card .g-val{font-size:19px;font-weight:800;margin-top:-2px;}
+.gauge-card .g-lbl{font-size:10.5px;color:var(--text-30);text-transform:uppercase;letter-spacing:.06em;margin-top:2px;}
+
+.chips{display:flex;gap:10px;justify-content:center;flex-wrap:wrap;}
+.chip{
+  display:flex;align-items:center;gap:6px;
+  font-size:12px;font-weight:700;padding:6px 12px;border-radius:100px;
+  background:var(--bg-panel);border:1px solid var(--border);color:var(--text-60);
+}
+.chip b{font-family:'Consolas',monospace;}
+.chip.warn{color:var(--amarelo);border-color:rgba(243,156,18,.35);background:rgba(243,156,18,.07);}
+.chip.sf{color:var(--cyan);border-color:rgba(0,217,255,.3);background:rgba(0,217,255,.06);}
+
+.details-toggle{
+  display:flex;align-items:center;justify-content:space-between;
+  background:var(--bg-panel);border:1px solid var(--border);border-radius:10px;
+  padding:11px 14px;cursor:pointer;font-size:13px;font-weight:600;color:var(--text-60);
+}
+.details-toggle .chev{font-size:11px;color:var(--text-30);}
+.details-body{
+  border:1px dashed var(--border);border-top:none;border-radius:0 0 10px 10px;
+  margin-top:-10px;padding:16px 14px 14px;display:none;
+}
+.details-body.open{display:block;}
+.det-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:14px;}
+.det-cell{background:var(--bg-panel-2);border:1px solid var(--border);border-radius:8px;padding:9px 10px;}
+.det-cell .l{font-size:10px;color:var(--text-30);text-transform:uppercase;letter-spacing:.06em;}
+.det-cell .v{font-family:'Consolas',monospace;font-size:14px;font-weight:700;margin-top:2px;}
+.det-cell .v.manual{color:var(--amarelo);}
+.det-cell .manual-badge{font-size:9px;background:rgba(243,156,18,.15);color:var(--amarelo);padding:1px 5px;border-radius:4px;margin-left:5px;font-family:inherit;font-weight:700;}
+.formula-cards{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;}
+.fcard{background:var(--bg-panel-2);border:1px solid var(--border);border-radius:8px;padding:10px;}
+.fcard .name{font-size:11px;color:var(--text-60);font-weight:700;margin-bottom:4px;}
+.fcard .eq{font-family:'Consolas',monospace;font-size:11.5px;color:var(--text-30);}
+
+/* empty state */
+.empty-hero{text-align:center;padding:50px 10px 46px;}
+.empty-hero .dash{font-size:80px;font-weight:800;color:var(--text-30);line-height:1;}
+.empty-cta{
+  margin-top:18px;display:inline-flex;align-items:center;gap:8px;
+  font-size:13px;color:var(--text-60);background:var(--bg-panel);
+  border:1px solid var(--border);border-radius:100px;padding:8px 16px;
+}
+.empty-cta b{color:var(--cyan);}
+
+.hidden{display:none !important;}
+
+/* before/after note chips row under app */
+.notes{
+  max-width:1400px;margin:14px auto 0;padding:0 32px;
+  display:grid;grid-template-columns:repeat(3,1fr);gap:14px;
+}
+.note{
+  background:var(--bg-panel);border:1px solid var(--border);border-radius:10px;padding:14px 16px;
+}
+.note h3{font-size:12.5px;margin:0 0 6px;color:var(--cyan);text-transform:uppercase;letter-spacing:.05em;}
+.note p{font-size:12.5px;color:var(--text-60);margin:0;line-height:1.5;}
+
+footer.foot{
+  max-width:1400px;margin:34px auto 40px;padding:0 32px;
+  color:var(--text-30);font-size:11.5px;border-top:1px solid var(--border);padding-top:16px;
+}
+
+@media (max-width:900px){
+  .body{grid-template-columns:1fr;}
+  .config{border-right:none;border-bottom:1px solid var(--border);}
+  .det-grid,.formula-cards{grid-template-columns:repeat(2,1fr);}
+}
+</style>
+
+<div class="annot">
+  <h1>Redesign Calculadora 80/20 — mockup para aprovação</h1>
+  <p>Aplica S1 (config enxuto), S2 (results 4 zonas) e S3 (nav + numeração de fluxo) do plano <span class="mono">REDESIGN_DASHBOARD_80-20.md</span>. Estático, sem lógica real — use os controles abaixo para alternar estado vazio/preenchido e o toggle "Ajuste avançado".</p>
+  <span class="tag">−65% elementos (45→~17)</span>
+  <span class="tag">Herói text-6xl+</span>
+  <span class="tag">Sem torque</span>
+  <span class="tag">Estado vazio honesto</span>
+</div>
+
+<div class="viewbar">
+  <button id="btn-empty" class="active" onclick="setState('empty')">Estado vazio</button>
+  <button id="btn-filled" onclick="setState('filled')">Resultado simulado</button>
+  <span class="sep">|</span>
+  <button id="btn-adv" onclick="toggleAdv()">Alternar "Ajuste avançado"</button>
+  <button id="btn-det" onclick="toggleDet()">Alternar "Detalhes e fórmulas"</button>
+</div>
+
+<div class="frame">
+  <div class="app">
+    <div class="app-header">
+      <div class="brand"><span class="dot"></span><span>ToolOptimizer CNC</span><small>v0.11 → MINOR redesign</small></div>
+      <div class="nav">
+        <a href="#" class="current">Calcular</a>
+        <a href="#">Favoritos <span class="badge">4</span></a>
+        <a href="#">Histórico <span class="badge">12</span></a>
+        <a href="#">Config</a>
+      </div>
+    </div>
+
+    <div class="flow">
+      <div class="step done"><span class="n">✓</span>1 Material</div>
+      <span class="arrow">→</span>
+      <div class="step done"><span class="n">✓</span>2 Ferramenta</div>
+      <span class="arrow">→</span>
+      <div class="step" id="flow-sim"><span class="n">3</span>Simular</div>
+    </div>
+
+    <div class="body">
+      <!-- CONFIG -->
+      <div class="config">
+        <div class="section-title">Configuração base</div>
+
+        <div class="field">
+          <label>Material</label>
+          <select class="ctl">
+            <option>Aço 1045 — usinabilidade média</option>
+          </select>
+        </div>
+
+        <div class="field">
+          <label>Operação</label>
+          <div class="btnrow">
+            <button class="sel">Faceamento</button>
+            <button>Perfil</button>
+            <button>Rasgo</button>
+          </div>
+        </div>
+
+        <div class="section-title">Ferramenta</div>
+
+        <div class="saved-tool">
+          <select><option>Usar ferramenta salva ▾</option></select>
+          <button class="icon-btn" title="Editar">✎</button>
+          <button class="icon-btn" title="Remover">✕</button>
+        </div>
+
+        <div class="field">
+          <label>Tipo de fresa</label>
+          <div class="btnrow">
+            <button class="sel">Topo reto</button>
+            <button>Toroidal</button>
+            <button>Esférica</button>
+          </div>
+        </div>
+
+        <div class="field inline2">
+          <div>
+            <label>Diâmetro (mm)</label>
+            <input class="ctl" type="number" value="12.0">
+          </div>
+          <div>
+            <label>Z (dentes)</label>
+            <div class="zctl">
+              <button>−</button>
+              <div class="val">4</div>
+              <button>+</button>
+            </div>
+          </div>
+        </div>
+
+        <div class="field">
+          <label>Balanço (mm)</label>
+          <input class="ctl" type="number" value="30.0">
+        </div>
+
+        <div class="toggle-adv" id="adv-toggle" onclick="toggleAdv()">
+          <div class="lbl">⚙ Ajuste avançado</div>
+          <div class="chev">▾</div>
+        </div>
+        <div class="adv-panel" id="adv-panel">
+          <div class="adv-inner">
+            <div class="slider-row">
+              <div class="top"><span>Vc — velocidade de corte</span><b>+8%</b></div>
+              <div class="slider-track"><div class="slider-fill" style="left:38%;width:12%"></div><div class="slider-thumb" style="left:50%"></div></div>
+            </div>
+            <div class="slider-row">
+              <div class="top"><span>fz — avanço por dente</span><b>0%</b></div>
+              <div class="slider-track"><div class="slider-thumb" style="left:50%"></div></div>
+            </div>
+            <div class="slider-row">
+              <div class="top"><span>ae — engajamento radial</span><b>−5%</b></div>
+              <div class="slider-track"><div class="slider-fill" style="left:44%;width:6%"></div><div class="slider-thumb" style="left:44%"></div></div>
+            </div>
+            <div class="slider-row">
+              <div class="top"><span>ap — profundidade axial</span><b>0%</b></div>
+              <div class="slider-track"><div class="slider-thumb" style="left:50%"></div></div>
+            </div>
+            <div class="slider-row">
+              <div class="top"><span>Segurança</span><b style="color:var(--amarelo)">70%</b></div>
+              <div class="slider-track"><div class="slider-fill" style="left:0;width:70%"></div><div class="slider-thumb" style="left:70%"></div></div>
+            </div>
+          </div>
+        </div>
+
+        <button class="sim-btn" onclick="setState('filled')">▶ Simular</button>
+      </div>
+
+      <!-- RESULTS -->
+      <div class="results">
+
+        <!-- EMPTY STATE -->
+        <div id="state-empty">
+          <div class="empty-hero">
+            <div class="dash">— / —</div>
+            <div class="empty-cta">Configure os parâmetros e clique em <b>Simular</b></div>
+          </div>
+        </div>
+
+        <!-- FILLED STATE -->
+        <div id="state-filled" class="hidden">
+          <div class="hero">
+            <div class="sem ok">● Seguro — dentro dos limites da máquina</div>
+            <div class="grid2">
+              <div class="num-block">
+                <div class="lbl">RPM</div>
+                <div class="num rpm mono">6.480</div>
+              </div>
+              <div class="num-block">
+                <div class="lbl">Avanço</div>
+                <div class="num feed mono">2.070<span class="unit">mm/min</span></div>
+              </div>
+            </div>
+            <div class="hero-slider">
+              <div class="track"><div class="center"></div><div class="fill"></div><div class="thumb"></div></div>
+              <div class="pct">Override manual: −12%</div>
+            </div>
+          </div>
+
+          <div class="lcd">
+            <div class="line1">⚠ AÇÃO: reduza ae em 10% — vibração leve acima de 5.000 RPM</div>
+            <div class="line2">Simulado às 14:32 · Aço 1045 · Topo reto Ø12 Z4</div>
+          </div>
+
+          <div class="gauges">
+            <div class="gauge-card">
+              <div class="arc"><svg width="84" height="44" viewBox="0 0 84 44"><path d="M6 42 A36 36 0 0 1 78 42" fill="none" stroke="#2A323D" stroke-width="7"/><path d="M6 42 A36 36 0 0 1 60 12" fill="none" stroke="#00D9FF" stroke-width="7" stroke-linecap="round"/></svg></div>
+              <div class="g-val mono" style="color:var(--cyan)">78%</div>
+              <div class="g-lbl">Avanço</div>
+            </div>
+            <div class="gauge-card">
+              <div class="arc"><svg width="84" height="44" viewBox="0 0 84 44"><path d="M6 42 A36 36 0 0 1 78 42" fill="none" stroke="#2A323D" stroke-width="7"/><path d="M6 42 A36 36 0 0 1 70 26" fill="none" stroke="#39FF14" stroke-width="7" stroke-linecap="round"/></svg></div>
+              <div class="g-val mono" style="color:var(--green)">54%</div>
+              <div class="g-lbl">MRR</div>
+            </div>
+            <div class="gauge-card">
+              <div class="arc"><svg width="84" height="44" viewBox="0 0 84 44"><path d="M6 42 A36 36 0 0 1 78 42" fill="none" stroke="#2A323D" stroke-width="7"/><path d="M6 42 A36 36 0 0 1 66 15" fill="none" stroke="#f39c12" stroke-width="7" stroke-linecap="round"/></svg></div>
+              <div class="g-val mono" style="color:var(--amarelo)">82%</div>
+              <div class="g-lbl">Saúde</div>
+            </div>
+          </div>
+
+          <div class="chips">
+            <div class="chip warn">L/D <b>4.2</b> — atenção</div>
+            <div class="chip">CTF <b>1.14</b></div>
+            <div class="chip sf">SF 70%</div>
+          </div>
+
+          <div class="details-toggle" id="det-toggle" onclick="toggleDet()">
+            <span>▸ Detalhes e fórmulas</span>
+            <span class="chev">▾</span>
+          </div>
+          <div class="details-body" id="det-body">
+            <div class="det-grid">
+              <div class="det-cell"><div class="l">Vc</div><div class="v mono manual">248 m/min<span class="manual-badge">manual</span></div></div>
+              <div class="det-cell"><div class="l">fz</div><div class="v mono">0.08 mm</div></div>
+              <div class="det-cell"><div class="l">ap</div><div class="v mono">2.5 mm</div></div>
+              <div class="det-cell"><div class="l">ae</div><div class="v mono manual">4.8 mm<span class="manual-badge">manual</span></div></div>
+              <div class="det-cell"><div class="l">Potência</div><div class="v mono">3.2 kW</div></div>
+              <div class="det-cell"><div class="l">Vc real</div><div class="v mono">244 m/min</div></div>
+              <div class="det-cell"><div class="l">MRR</div><div class="v mono">62 cm³/min</div></div>
+              <div class="det-cell"><div class="l">L/D</div><div class="v mono">4.2</div></div>
+            </div>
+            <div class="formula-cards">
+              <div class="fcard"><div class="name">RPM</div><div class="eq">(Vc×1000)/(π×D)</div></div>
+              <div class="fcard"><div class="name">Avanço</div><div class="eq">fz × Z × RPM</div></div>
+              <div class="fcard"><div class="name">MRR</div><div class="eq">ap × ae × F</div></div>
+              <div class="fcard"><div class="name">Potência</div><div class="eq">kc × MRR / 60000η</div></div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="notes">
+  <div class="note"><h3>S1 — Config enxuto</h3><p>5 inputs visíveis (Material, Operação, Ferramenta, Ø+Z, Balanço). 4 sliders de ajuste fino + raio de ponta + segurança movidos para "Ajuste avançado" (fechado por padrão). Ferramenta salva com ações sempre visíveis, sem hover.</p></div>
+  <div class="note"><h3>S2 — Results 4 zonas</h3><p>Herói RPM/Avanço em 74px com glow domina a tela. LCD "AÇÃO:" mantido. 3 gauges + chips L/D, CTF, SF. Torque removido. Estado vazio mostra "—", nunca zero falso.</p></div>
+  <div class="note"><h3>S3 — Navegação</h3><p>Calcular · Favoritos · Histórico · Config no header com contadores. Numeração de fluxo 1→2→3 com ✓ de completude no topo do config.</p></div>
+</div>
+
+<footer class="foot">Mockup estático — sem lógica de cálculo real. Cores e tokens herdados do design system atual (`docs/design/UI_BRANDING.md`). Após aprovação, execução segue S0→S3 do plano.</footer>
+
+<script>
+function setState(s){
+  document.getElementById('state-empty').classList.toggle('hidden', s!=='empty');
+  document.getElementById('state-filled').classList.toggle('hidden', s!=='filled');
+  document.getElementById('btn-empty').classList.toggle('active', s==='empty');
+  document.getElementById('btn-filled').classList.toggle('active', s==='filled');
+  document.getElementById('flow-sim').classList.toggle('done', s==='filled');
+  if(s==='filled'){document.getElementById('flow-sim').querySelector('.n').textContent='✓';}
+  else{document.getElementById('flow-sim').querySelector('.n').textContent='3';}
+}
+function toggleAdv(){
+  document.getElementById('adv-toggle').classList.toggle('open');
+  document.getElementById('adv-panel').classList.toggle('open');
+}
+function toggleDet(){
+  var d=document.getElementById('det-body');
+  if(d){ d.classList.toggle('open'); }
+}
+</script>
