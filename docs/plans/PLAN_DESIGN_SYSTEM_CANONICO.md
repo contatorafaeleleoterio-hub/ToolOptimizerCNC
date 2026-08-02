@@ -3,7 +3,7 @@
 > **Criado:** 02/08/2026
 > **Tipo:** 📄 Documentação / Design Audit — **ZERO alterações em `src/`**
 > **Entregável:** `docs/_canonicos/DESIGN-SYSTEM.html`
-> **Status:** 🔶 Em andamento — sessão 1/4 concluída
+> **Status:** 🔶 Em andamento — sessão 2/4 concluída
 
 ---
 
@@ -135,9 +135,11 @@ O ToolOptimizer não tem fonte única de verdade visual. Os tokens vivem só no 
 |---|--------|--------|-----------------------|--------|
 | 0 | Registro do plano | — | — | ✅ Concluído (02/08/2026) |
 | 1 | Esqueleto + Marca + Cores | Chrome do doc (sidebar, toggle tema, JS copiar/contraste/scrollspy) + **00–02** | 592 linhas | ✅ Concluído (02/08/2026) |
-| 2 | Fundamentos + Componentes I | **03–09** (tipografia, espaçamento, grid, motion, botões, campos, sliders — CSS de slider criado aqui) | ~1010 | ⬜ |
+| 2 | Fundamentos + Componentes I | **03–09** (tipografia, espaçamento, grid, motion, botões, campos, sliders — CSS de slider criado aqui) | ~1010 | ✅ Concluído (02/08/2026) |
 | 3 | Componentes II + III | **10–16** (painéis, visores, feedback, navegação, overlays, mobile, admin) | ~990 | ⬜ |
 | 4 | Regras + verificação | **17–19** + varredura anti-vestígio + validação no navegador | ~310 | ⬜ |
+
+**Sessão 2 — notas de execução (02/08/2026):** arquivo passou de 592 → 1053 linhas (+461). Todos os valores citados (hex/px/ms/classe) confirmados por Grep direto nas fontes antes de escrever — nenhum copiado cego da tabela-resumo de canonizações. Achados relevantes: timings reais de `use-simulation-animation.ts` divergem dos citados em `.claude/CLAUDE.md` (código real: 80/1500/1750/2300/2650ms, não 450/1350/1500ms — documentação do projeto está desatualizada, não corrigida nesta sessão por estar fora de escopo); variante "touch" do slider não é um arquivo próprio (`touch-slider.tsx` não existe) — é o componente `TouchSlider` definido inline em `mobile-fine-tune-section.tsx:98-248`; botão ± tem 5 tamanhos reais (20/24/28/40/48px), não 3 — canonizados 2 (20/24) + 1 proposto (44px touch) + 3 marcados como dívida. Verificação de tags balanceadas (div/table/tr/svg/style/script/main/html) e grep anti-vestígio (zero ocorrências) — ambos limpos.
 
 Cada sessão fecha as tags abertas (`</main></body></html>` reposicionadas via única Edit no fim) — arquivo sempre válido e abrível. Commit ao fim de cada sessão (`docs:`), sem push.
 

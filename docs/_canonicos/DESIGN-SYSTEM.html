@@ -185,6 +185,131 @@
   .usage-item .material-symbols-outlined { font-size: 18px; flex: none; margin-top: 1px; }
   .usage-item.is-do .material-symbols-outlined { color: #6EE7A0; }
   .usage-item.is-dont .material-symbols-outlined { color: #FF9187; }
+
+  /* ===== Seção 03 — Tipografia e ícones ===== */
+  .font-specimen { border: 1px solid var(--dsx-border); border-radius: 14px; padding: 22px 24px; background: var(--dsx-card); margin: 4px 0 18px; }
+  .font-specimen__sample { font-size: 34px; margin: 0 0 10px; color: var(--dsx-text-1); line-height: 1.1; }
+  .font-specimen__sample.mono { font-family: 'JetBrains Mono', monospace; }
+  .font-specimen__meta { display: flex; gap: 16px; flex-wrap: wrap; font-size: 11.5px; color: var(--dsx-text-2); }
+  .font-specimen__meta code { font-family: 'JetBrains Mono', monospace; font-size: 11px; background: rgba(255,255,255,.06); padding: 1px 5px; border-radius: 4px; }
+  .type-grid { display: flex; flex-direction: column; margin: 14px 0 20px; }
+  .type-row { display: flex; align-items: baseline; gap: 16px; padding: 10px 4px; border-bottom: 1px solid var(--dsx-border); flex-wrap: wrap; }
+  .type-row__sample { color: var(--dsx-text-1); white-space: nowrap; font-family: 'Inter', sans-serif; min-width: 150px; }
+  .type-row__sample.mono { font-family: 'JetBrains Mono', monospace; }
+  .type-row__meta { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; margin-left: auto; }
+  .type-row__class { font-family: 'JetBrains Mono', monospace; font-size: 11.5px; color: #5CE9FF; background: rgba(0,217,255,.08); padding: 2px 8px; border-radius: 5px; }
+  .type-row__px { font-family: 'JetBrains Mono', monospace; font-size: 10.5px; color: var(--dsx-text-2); min-width: 30px; text-align: right; }
+  .icon-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(84px, 1fr)); gap: 10px; margin: 16px 0; }
+  .icon-chip { display: flex; flex-direction: column; align-items: center; gap: 7px; padding: 14px 6px; border-radius: 12px; background: var(--dsx-card); border: 1px solid var(--dsx-border); }
+  .icon-chip .material-symbols-outlined { font-size: 22px; color: var(--dsx-primary); }
+  .icon-chip__name { font-size: 9.5px; color: var(--dsx-text-2); font-family: 'JetBrains Mono', monospace; text-align: center; word-break: break-all; }
+
+  /* ===== Seção 04 — Espaçamento, raio, elevação, glow ===== */
+  .token-row { display: flex; align-items: center; gap: 18px; padding: 10px 4px; border-bottom: 1px solid var(--dsx-border); flex-wrap: wrap; }
+  .token-row__vis { flex: none; background: var(--dsx-primary); border-radius: 3px; height: 14px; }
+  .token-row__meta { display: flex; align-items: baseline; gap: 10px; flex-wrap: wrap; margin-left: auto; }
+  .token-row__name { font-size: 12.5px; font-weight: 700; color: var(--dsx-text-1); min-width: 60px; }
+  .token-row__spec { font-family: 'JetBrains Mono', monospace; font-size: 11px; color: var(--dsx-text-2); }
+  .radius-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(104px, 1fr)); gap: 14px; margin: 16px 0; }
+  .radius-card { display: flex; flex-direction: column; align-items: center; gap: 8px; }
+  .radius-card__box { width: 60px; height: 60px; background: linear-gradient(135deg, rgba(0,217,255,.22), rgba(0,217,255,.05)); border: 1px solid rgba(0,217,255,.35); }
+  .radius-card__label { font-size: 10.5px; font-family: 'JetBrains Mono', monospace; color: var(--dsx-text-2); text-align: center; }
+  .elevation-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(210px, 1fr)); gap: 18px; margin: 16px 0 6px; }
+  .elevation-card { height: 88px; border-radius: 16px; background: #161B22; display: flex; align-items: flex-end; padding: 12px 14px; }
+  .elevation-card span { font-size: 10.5px; font-family: 'JetBrains Mono', monospace; color: var(--dsx-text-2); }
+  .glow-row { display: flex; flex-wrap: wrap; gap: 26px; margin: 16px 0 8px; align-items: center; }
+  .glow-item { display: flex; flex-direction: column; align-items: center; gap: 8px; }
+  .glow-dot { width: 24px; height: 24px; border-radius: 50%; }
+
+  /* ===== Seção 05 — Grid ===== */
+  .layout-demo { border: 1px solid var(--dsx-border); border-radius: 14px; padding: 16px; background: #0B0F13; margin: 16px 0; position: relative; overflow: hidden; }
+  .layout-demo__orb { position: absolute; width: 45%; height: 130%; border-radius: 50%; filter: blur(60px); opacity: .5; pointer-events: none; }
+  .layout-demo__grid { position: relative; display: grid; grid-template-columns: repeat(12, 1fr); gap: 10px; }
+  .layout-demo__cell { border-radius: 10px; padding: 26px 10px; text-align: center; font-family: 'JetBrains Mono', monospace; font-size: 11.5px; border: 1px dashed; }
+  .layout-demo__cell--config { grid-column: span 3; background: rgba(0,217,255,.08); border-color: rgba(0,217,255,.35); color: #5CE9FF; }
+  .layout-demo__cell--results { grid-column: span 9; background: rgba(57,255,20,.06); border-color: rgba(57,255,20,.3); color: #9CFF7A; }
+  .header-demo { display: flex; align-items: center; justify-content: space-between; padding: 10px 20px; border-radius: 16px; background: var(--dsx-surface); backdrop-filter: blur(20px); border: 1px solid rgba(255,255,255,.05); box-shadow: 0 8px 32px 0 rgba(0,0,0,.5); margin: 14px 0; }
+  .header-demo__brand { display: flex; align-items: center; gap: 10px; font-size: 13px; color: var(--dsx-text-1); font-weight: 600; }
+
+  /* ===== Seção 06 — Motion ===== */
+  @keyframes tdBtnIdleGlow { 0%, 100% { box-shadow: 0 0 8px rgba(0,217,255,.3), 0 0 20px rgba(0,217,255,.1); } 50% { box-shadow: 0 0 16px rgba(0,217,255,.6), 0 0 40px rgba(0,217,255,.2); } }
+  @keyframes tdSpinIcon { 0% { transform: rotate(0deg) scale(1); } 50% { transform: rotate(180deg) scale(1.1); } 100% { transform: rotate(360deg) scale(1); } }
+  @keyframes tdJackpotFlash { 0% { box-shadow: none; } 20% { box-shadow: 0 0 20px rgba(0,217,255,.8), 0 0 40px rgba(0,217,255,.4); } 50% { box-shadow: 0 0 30px rgba(57,255,20,.7), 0 0 60px rgba(57,255,20,.3); } 80% { box-shadow: 0 0 20px rgba(0,217,255,.5), 0 0 40px rgba(0,217,255,.2); } 100% { box-shadow: none; } }
+  @keyframes tdSubtlePulse { 0%, 100% { transform: scale(1); opacity: 1; } 50% { transform: scale(1.03); opacity: .95; } }
+  @keyframes tdFadeInUp { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+  @keyframes tdTabSlideIn { from { opacity: 0; transform: translateX(-4px); } to { opacity: 1; transform: translateX(0); } }
+  @keyframes tdDashFlow { from { stroke-dashoffset: 24; } to { stroke-dashoffset: 0; } }
+  .motion-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(180px, 1fr)); gap: 14px; margin: 16px 0; }
+  .motion-card { border: 1px solid var(--dsx-border); border-radius: 14px; padding: 18px 14px; background: var(--dsx-card); display: flex; flex-direction: column; align-items: center; gap: 12px; text-align: center; }
+  .motion-card__stage { width: 44px; height: 44px; border-radius: 10px; background: var(--dsx-primary); display: flex; align-items: center; justify-content: center; color: #001318; }
+  .motion-card__name { font-size: 12.5px; font-weight: 700; color: var(--dsx-text-1); }
+  .motion-card__spec { font-family: 'JetBrains Mono', monospace; font-size: 10.5px; color: var(--dsx-text-2); line-height: 1.6; }
+  .orphan-table { width: 100%; border-collapse: collapse; margin: 12px 0 20px; font-size: 12px; }
+  .orphan-table td { padding: 8px 10px; border-bottom: 1px solid var(--dsx-border); vertical-align: top; }
+  .orphan-table code { font-family: 'JetBrains Mono', monospace; font-size: 10.5px; color: var(--dsx-text-2); }
+
+  /* ===== Seção 07 — Botões ===== */
+  .btn-row { display: flex; flex-wrap: wrap; gap: 14px; align-items: center; margin: 16px 0; }
+  .btn-primary { position: relative; display: inline-flex; align-items: center; justify-content: center; gap: 8px; padding: 11px 26px; border-radius: 12px; border: none; cursor: pointer; overflow: hidden; background: linear-gradient(90deg, #0891B2, #06B6D4); color: #fff; font-weight: 700; letter-spacing: .03em; text-transform: uppercase; font-size: 14.5px; font-family: 'Inter', sans-serif; animation: tdBtnIdleGlow 3s ease-in-out infinite; }
+  .btn-primary .material-symbols-outlined { font-size: 18px; }
+  .btn-primary--calc { animation: none; }
+  .btn-primary--calc .material-symbols-outlined { animation: tdSpinIcon .9s linear infinite; }
+  .btn-primary__fill { position: absolute; inset: 0; border-radius: 12px; background: linear-gradient(90deg, rgba(0,217,255,.35), rgba(57,255,20,.25)); }
+  .btn-icon { width: 48px; height: 44px; border-radius: 12px; background: rgba(255,255,255,.05); border: 1px solid rgba(255,255,255,.1); color: #9CA3AF; display: inline-flex; align-items: center; justify-content: center; cursor: pointer; }
+  .btn-toggle-group { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; max-width: 340px; margin: 14px 0; }
+  .btn-toggle { padding: 9px 0; border-radius: 6px; border: 1px solid rgba(255,255,255,.1); background: rgba(0,0,0,.4); color: #9CA3AF; font-size: 14.5px; text-align: center; cursor: pointer; }
+  .btn-toggle.is-active { background: var(--dsx-primary); color: #001318; font-weight: 700; border-color: var(--dsx-primary); box-shadow: 0 0 15px rgba(0,217,255,.4), 0 0 30px rgba(0,217,255,.15); }
+  .btn-pm-row { display: flex; align-items: flex-end; gap: 22px; flex-wrap: wrap; margin: 16px 0 8px; }
+  .btn-pm-item { display: flex; flex-direction: column; align-items: center; gap: 8px; }
+  .btn-pm { border-radius: 5px; background: rgba(0,0,0,.4); border: 1px solid rgba(255,255,255,.1); color: #9CA3AF; font-weight: 700; display: flex; align-items: center; justify-content: center; cursor: pointer; }
+  .btn-pm-item span.lbl { font-size: 10px; font-family: 'JetBrains Mono', monospace; color: var(--dsx-text-2); text-align: center; }
+
+  /* ===== Seção 08 — Campos ===== */
+  .field-demo { display: flex; flex-direction: column; gap: 6px; max-width: 320px; margin: 4px 0; }
+  .field-demo label { font-size: 10.5px; font-weight: 700; color: #6B7280; text-transform: uppercase; letter-spacing: .06em; }
+  .field-demo select, .field-demo input {
+    background: rgba(0,0,0,.4); border: 1px solid rgba(255,255,255,.1); border-radius: 8px;
+    padding: 10px 12px; font-size: 14px; color: #E5E7EB; font-family: 'Inter', sans-serif; width: 100%;
+  }
+  .field-demo input.mono { font-family: 'JetBrains Mono', monospace; }
+  .field-demo select {
+    appearance: none; padding-right: 2.5rem;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' fill='%239ca3af' viewBox='0 0 16 16'%3E%3Cpath d='M4.646 5.646a.5.5 0 0 1 .708 0L8 8.293l2.646-2.647a.5.5 0 0 1 .708.708l-3 3a.5.5 0 0 1-.708 0l-3-3a.5.5 0 0 1 0-.708z'/%3E%3C/svg%3E");
+    background-repeat: no-repeat; background-position: right .75rem center; background-size: 1rem;
+  }
+  .field-demo select:focus, .field-demo input:focus { outline: none; box-shadow: 0 0 0 1px var(--dsx-primary); border-color: var(--dsx-primary); }
+  .field-demo.is-invalid input { border-color: #e74c3c; color: #ff9187; }
+  .field-demo .err { font-size: 10.5px; color: #ff9187; }
+  .field-demo.is-borderonly input:focus { box-shadow: none; }
+  .field-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px,1fr)); gap: 20px; margin: 16px 0; }
+
+  /* ===== Seção 09 — Sliders ===== */
+  .slider-demo { display: flex; align-items: center; gap: 8px; margin: 6px 0; }
+  .slider-demo__btn { width: 24px; height: 24px; border-radius: 4px; background: rgba(0,0,0,.4); border: 1px solid rgba(255,255,255,.1); color: #9CA3AF; font-size: 12px; font-weight: 700; display: flex; align-items: center; justify-content: center; flex: none; }
+  .slider-demo__btn--sm { width: 20px; height: 20px; font-size: 11px; }
+  .slider-demo__track { position: relative; flex: 1; height: 40px; margin: 0 18px; display: flex; align-items: center; }
+  .slider-demo__track--compact { height: 32px; margin: 0 12px; }
+  .slider-demo__track--touch { height: 64px; margin: 0 18px; }
+  .slider-demo__rail { position: absolute; left: 0; right: 0; height: 6px; background: rgba(0,0,0,.4); border-radius: 999px; }
+  .slider-demo__track--compact .slider-demo__rail { height: 4px; }
+  .slider-demo__track--touch .slider-demo__rail { height: 8px; }
+  .slider-demo__fill { position: absolute; left: 0; height: 6px; border-radius: 999px; }
+  .slider-demo__track--compact .slider-demo__fill { height: 4px; }
+  .slider-demo__track--touch .slider-demo__fill { height: 8px; }
+  .slider-demo__thumb { position: absolute; top: 50%; width: 28px; height: 28px; border-radius: 50%; border: 2px solid; display: flex; align-items: center; justify-content: center; transform: translate(-50%,-50%); background: rgba(15,20,25,.9); }
+  .slider-demo__thumb::after { content: ''; width: 8px; height: 8px; border-radius: 50%; background: currentColor; }
+  .slider-demo__thumb--compact { width: 20px; height: 20px; }
+  .slider-demo__thumb--compact::after { width: 6px; height: 6px; }
+  .slider-demo__thumb--touch { width: 36px; height: 36px; }
+  .slider-demo__thumb--touch::after { width: 10px; height: 10px; }
+  .slider-demo__ticks { position: absolute; inset: 0; display: flex; align-items: center; justify-content: space-between; pointer-events: none; }
+  .slider-demo__ticks span { width: 1px; height: 8px; background: rgba(255,255,255,.15); }
+  .slider-demo__ticks span:first-child, .slider-demo__ticks span:last-child { height: 12px; background: rgba(255,255,255,.25); }
+  .slider-demo__ticks span.is-center { height: 14px; width: 2px; background: rgba(255,255,255,.35); }
+  .slider-variant-label { display: flex; align-items: baseline; gap: 10px; margin: 26px 0 10px; }
+  .slider-variant-label b { font-size: 13.5px; color: var(--dsx-text-1); }
+  .slider-variant-label code { font-family: 'JetBrains Mono', monospace; font-size: 11px; color: var(--dsx-text-2); }
+  .slider-labels { display: flex; justify-content: space-between; font-family: 'JetBrains Mono', monospace; font-size: 10.5px; color: #4B5563; padding: 0 10px; margin-top: 2px; }
 </style>
 </head>
 <body>
@@ -202,8 +327,16 @@
     <a class="dsx-sidebar__link" href="#s01"><span class="dsx-sidebar__num">01</span> Logomarca</a>
     <div class="dsx-sidebar__group">Fundamentos</div>
     <a class="dsx-sidebar__link" href="#s02"><span class="dsx-sidebar__num">02</span> Cores e temas</a>
+    <a class="dsx-sidebar__link" href="#s03"><span class="dsx-sidebar__num">03</span> Tipografia</a>
+    <a class="dsx-sidebar__link" href="#s04"><span class="dsx-sidebar__num">04</span> Espaço e raio</a>
+    <a class="dsx-sidebar__link" href="#s05"><span class="dsx-sidebar__num">05</span> Grid</a>
+    <a class="dsx-sidebar__link" href="#s06"><span class="dsx-sidebar__num">06</span> Motion</a>
+    <div class="dsx-sidebar__group">Componentes</div>
+    <a class="dsx-sidebar__link" href="#s07"><span class="dsx-sidebar__num">07</span> Botões</a>
+    <a class="dsx-sidebar__link" href="#s08"><span class="dsx-sidebar__num">08</span> Campos</a>
+    <a class="dsx-sidebar__link" href="#s09"><span class="dsx-sidebar__num">09</span> Sliders</a>
   </div>
-  <div class="dsx-sidebar__foot">Sessão 1/4 · 02/08/2026<br>Base: código em v0.11.0</div>
+  <div class="dsx-sidebar__foot">Sessão 2/4 · 02/08/2026<br>Base: código em v0.11.0</div>
 </nav>
 
 <div class="dsx-main">
@@ -465,6 +598,334 @@
       <h3>Tema claro — proposto</h3>
       <div class="proposto"><span class="pill pill--warn">Proposto</span><span>Não existe no produto — 100% derivado para esta proposta. Hue de marca, acentos, semáforo e gauge ficam invariantes entre temas; o toggle no topo troca apenas o fundo de referência (<code>--dsx-bg</code>) usado no cálculo de contraste abaixo. Tons que resultarem em <span class="pill pill--err" style="vertical-align:2px">FAIL</span> ou <span class="pill pill--warn" style="vertical-align:2px">AA18</span> servem para acento — ícone, borda, fundo com texto escuro por cima — não como texto pequeno direto. Variante "ink" escurecida para uso como texto fica em aberto para decisão futura.</span></div>
       <div class="hint">Use o toggle "Escuro (canônico) / Claro (proposto)" no topo da página: os badges de contraste em Marca, Acentos, Semáforo e Gauge recalculam ao vivo contra o novo fundo.</div>
+    </section>
+
+    <section id="s03" class="dsx-section">
+      <div class="dsx-section__eyebrow"><span class="dsx-section__num">03</span><span class="dsx-section__group">Fundamentos</span></div>
+      <h2>Tipografia e ícones</h2>
+      <p class="lead">2 famílias tipográficas via <code>@theme</code> (<code>src/index.css</code>) + ícones Material Symbols Outlined via Google Fonts. Não existe escala tipográfica formal — apenas 2 tokens de tamanho (<code>--font-size-2xs</code>, <code>--font-size-fine</code>) convivendo com dezenas de valores arbitrários <code>text-[Npx]</code>.</p>
+
+      <h3>Famílias</h3>
+      <div class="font-specimen">
+        <p class="font-specimen__sample">Aa Bb Cc — Parâmetros de Corte</p>
+        <div class="font-specimen__meta">
+          <span><code>--font-display: "Inter", sans-serif</code></span>
+          <span>Pesos: 300 · 400 · 500 · 600 · 700</span>
+          <span>Uso: todo texto de interface — rótulos, botões, corpo</span>
+        </div>
+      </div>
+      <div class="font-specimen">
+        <p class="font-specimen__sample mono">01234 · 6800 RPM · Ø12mm</p>
+        <div class="font-specimen__meta">
+          <span><code>--font-mono: "JetBrains Mono", monospace</code></span>
+          <span>Pesos: 400 · 700</span>
+          <span>Uso: todo valor numérico — princípio 04, seção 00</span>
+        </div>
+      </div>
+      <div class="canon"><span class="pill pill--info">Canon</span><span>Número é dado, texto é rótulo — <code>font-mono</code> em qualquer valor calculado ou medido; <code>Inter</code> em tudo que é linguagem. Fonte: <code>src/index.css:14-15</code>.</span></div>
+
+      <h3>Escala tipográfica</h3>
+      <div class="canon"><span class="pill pill--info">Canon</span><span>8 degraus nomeados — cada um com exatamente uma expressão Tailwind oficial. <code>text-[10px]</code> e <code>text-[11px]</code> arbitrários devem migrar para os tokens <code>text-2xs</code>/<code>text-fine</code> já existentes.</span></div>
+      <div class="type-grid">
+        <div class="type-row"><span class="type-row__sample" style="font-size:9px">Aa 6800 RPM</span><div class="type-row__meta"><code class="type-row__class">text-[9px]</code><span class="pill pill--neutral">arbitrário</span><span class="type-row__px">9px</span></div></div>
+        <div class="type-row"><span class="type-row__sample" style="font-size:10px">Aa 6800 RPM</span><div class="type-row__meta"><code class="type-row__class">text-2xs</code><span class="pill pill--info">22 usos</span><span class="pill pill--err">86 em text-[10px]</span><span class="type-row__px">10px</span></div></div>
+        <div class="type-row"><span class="type-row__sample" style="font-size:11px">Aa 6800 RPM</span><div class="type-row__meta"><code class="type-row__class">text-fine</code><span class="pill pill--info">1 uso</span><span class="pill pill--err">22 em text-[11px]</span><span class="type-row__px">11px</span></div></div>
+        <div class="type-row"><span class="type-row__sample" style="font-size:12px">Aa 6800 RPM</span><div class="type-row__meta"><code class="type-row__class">text-xs</code><span class="pill pill--neutral">Tailwind 0.75rem</span><span class="type-row__px">12px</span></div></div>
+        <div class="type-row"><span class="type-row__sample" style="font-size:14px">Aa 6800 RPM</span><div class="type-row__meta"><code class="type-row__class">text-sm</code><span class="pill pill--neutral">Tailwind 0.875rem</span><span class="type-row__px">14px</span></div></div>
+        <div class="type-row"><span class="type-row__sample" style="font-size:16px">Aa 6800 RPM</span><div class="type-row__meta"><code class="type-row__class">text-base</code><span class="pill pill--neutral">Tailwind 1rem</span><span class="type-row__px">16px</span></div></div>
+        <div class="type-row"><span class="type-row__sample" style="font-size:20px">Aa 6800 RPM</span><div class="type-row__meta"><code class="type-row__class">text-xl</code><span class="pill pill--neutral">Tailwind 1.25rem</span><span class="type-row__px">20px</span></div></div>
+        <div class="type-row"><span class="type-row__sample mono" style="font-size:32px">6800</span><div class="type-row__meta"><code class="type-row__class">style={{fontSize:'2rem'}}</code><span class="pill pill--warn">inline, não classe</span><span class="type-row__px">32px</span></div></div>
+      </div>
+      <div class="divida"><span class="pill pill--err">Dívida</span><span>Fora dos 8 degraus: <code>text-[13px]</code> (<code>collapsible-section.tsx:26</code>) e <code>text-[18px]</code> (<code>settings-page.tsx:499</code>, <code>admin-sidebar.tsx:51</code>, <code>sidebar-footer.tsx</code> ×3) — não mapeiam para nenhum token.</span></div>
+
+      <h3>Ícones — Material Symbols Outlined</h3>
+      <p class="hint" style="margin-top:0">Estilo <code>Outlined</code>, peso 400, preenchimento 0 — fixo no CSS raiz do app e replicado no chrome deste documento. Tamanho por contexto via classe Tailwind ou <code>style={{fontSize}}</code> inline; sem escala própria, herda a tipográfica.</p>
+      <div class="icon-grid">
+        <div class="icon-chip"><span class="material-symbols-outlined">play_arrow</span><span class="icon-chip__name">play_arrow</span></div>
+        <div class="icon-chip"><span class="material-symbols-outlined">casino</span><span class="icon-chip__name">casino</span></div>
+        <div class="icon-chip"><span class="material-symbols-outlined">restart_alt</span><span class="icon-chip__name">restart_alt</span></div>
+        <div class="icon-chip"><span class="material-symbols-outlined">tune</span><span class="icon-chip__name">tune</span></div>
+        <div class="icon-chip"><span class="material-symbols-outlined">speed</span><span class="icon-chip__name">speed</span></div>
+        <div class="icon-chip"><span class="material-symbols-outlined">moving</span><span class="icon-chip__name">moving</span></div>
+        <div class="icon-chip"><span class="material-symbols-outlined">precision_manufacturing</span><span class="icon-chip__name">precision_manufacturing</span></div>
+        <div class="icon-chip"><span class="material-symbols-outlined">warning</span><span class="icon-chip__name">warning</span></div>
+        <div class="icon-chip"><span class="material-symbols-outlined">save</span><span class="icon-chip__name">save</span></div>
+        <div class="icon-chip"><span class="material-symbols-outlined">edit</span><span class="icon-chip__name">edit</span></div>
+        <div class="icon-chip"><span class="material-symbols-outlined">delete</span><span class="icon-chip__name">delete</span></div>
+        <div class="icon-chip"><span class="material-symbols-outlined">settings</span><span class="icon-chip__name">settings</span></div>
+      </div>
+      <div class="hint">Tamanhos reais confirmados: <code>14px</code> inline (ícones de ação em linha, <code>config-panel.tsx:168</code>); <code>text-sm/lg/xl</code> (16/18/20px) em botões; <code>text-6xl</code> (60px) no visor mobile, <code>hmi-visor.tsx:58</code>.</div>
+    </section>
+
+    <section id="s04" class="dsx-section">
+      <div class="dsx-section__eyebrow"><span class="dsx-section__num">04</span><span class="dsx-section__group">Fundamentos</span></div>
+      <h2>Espaçamento, raio, elevação e glow</h2>
+      <p class="lead">Espaçamento e raio vivem só como convenção Tailwind — nenhum dos dois tem token em <code>@theme</code>. Elevação (sombra) tem 4 tokens, 1 nunca usado. Glow (brilho colorido) não é tokenizado — cada componente monta seu próprio <code>rgba()</code>.</p>
+
+      <h3>Espaçamento</h3>
+      <div class="canon"><span class="pill pill--info">Canon</span><span>6 degraus: <code>4 · 8 · 12 · 16 · 24 · 32px</code> — <code>gap-1/2/3/4/6/8</code>. Qualquer <code>gap-2.5</code>, <code>gap-5</code> ou <code>px-2.5</code> fora da escala é dívida.</span></div>
+      <div class="token-row"><div class="token-row__vis" style="width:4px"></div><div class="token-row__meta"><span class="token-row__name">gap-1</span><span class="token-row__spec">4px</span></div></div>
+      <div class="token-row"><div class="token-row__vis" style="width:8px"></div><div class="token-row__meta"><span class="token-row__name">gap-2</span><span class="token-row__spec">8px</span></div></div>
+      <div class="token-row"><div class="token-row__vis" style="width:12px"></div><div class="token-row__meta"><span class="token-row__name">gap-3</span><span class="token-row__spec">12px</span></div></div>
+      <div class="token-row"><div class="token-row__vis" style="width:16px"></div><div class="token-row__meta"><span class="token-row__name">gap-4</span><span class="token-row__spec">16px</span></div></div>
+      <div class="token-row"><div class="token-row__vis" style="width:24px"></div><div class="token-row__meta"><span class="token-row__name">gap-6</span><span class="token-row__spec">24px</span></div></div>
+      <div class="token-row"><div class="token-row__vis" style="width:32px"></div><div class="token-row__meta"><span class="token-row__name">gap-8</span><span class="token-row__spec">32px</span></div></div>
+      <div class="divida"><span class="pill pill--err">Dívida</span><span>Fora da escala: <code>gap-2.5</code> (<code>mobile-adjust-section.tsx:32</code>), <code>gap-5</code> (<code>mobile-fine-tune-section.tsx:303</code>), <code>px-2.5</code>/<code>py-2.5</code> em dezenas de badges e botões (<code>results-panel.tsx</code>, <code>history-page.tsx</code>, páginas admin).</span></div>
+
+      <h3>Alpha — transparência de superfície e borda</h3>
+      <div class="canon"><span class="pill pill--info">Canon</span><span>6 degraus: <code>/5 /10 /20 /30 /50 /70</code>. Borda: <code>white/10</code> padrão, <code>white/5</code> sutil — os únicos 2 que devem aparecer em <code>border-white/*</code>.</span></div>
+      <div class="divida"><span class="pill pill--err">Dívida</span><span>Bordas fora do padrão: <code>border-white/8</code>, <code>border-white/12</code>, <code>border-white/15</code> — confirmadas em <code>config-panel.tsx</code>, <code>mobile-config-section.tsx</code>, <code>mobile-fine-tune-section.tsx</code> e várias páginas admin.</span></div>
+
+      <h3>Raio</h3>
+      <div class="canon"><span class="pill pill--info">Canon</span><span>5 degraus: <code>4 (rounded) · 8 (lg) · 12 (xl) · 16 (2xl) · full</code>.</span></div>
+      <div class="radius-grid">
+        <div class="radius-card"><div class="radius-card__box" style="border-radius:4px"></div><span class="radius-card__label">rounded<br>4px</span></div>
+        <div class="radius-card"><div class="radius-card__box" style="border-radius:8px"></div><span class="radius-card__label">rounded-lg<br>8px</span></div>
+        <div class="radius-card"><div class="radius-card__box" style="border-radius:12px"></div><span class="radius-card__label">rounded-xl<br>12px</span></div>
+        <div class="radius-card"><div class="radius-card__box" style="border-radius:16px"></div><span class="radius-card__label">rounded-2xl<br>16px</span></div>
+        <div class="radius-card"><div class="radius-card__box" style="border-radius:9999px"></div><span class="radius-card__label">rounded-full<br>9999px</span></div>
+      </div>
+      <div class="divida"><span class="pill pill--err">Dívida</span><span><code>rounded-md</code> (6px) e <code>rounded-3xl</code> (24px) — 24 ocorrências em 12 arquivos fora da escala, incluindo os botões ± de <code>config-panel.tsx</code> e o modal de <code>arch-data-flow.tsx:79</code>.</span></div>
+
+      <h3>Elevação — sombras</h3>
+      <p class="hint" style="margin-top:0">4 tokens em <code>@theme</code> (<code>src/index.css:16-19</code>) — 1 nunca referenciado fora da própria definição.</p>
+      <div class="elevation-grid">
+        <div class="elevation-card" style="box-shadow:0 0 15px rgba(0,217,255,.4),0 0 30px rgba(0,217,255,.15)"><span>--shadow-neon-cyan</span></div>
+        <div class="elevation-card" style="box-shadow:0 0 15px rgba(57,255,20,.4),0 0 30px rgba(57,255,20,.15)"><span>--shadow-neon-green</span></div>
+        <div class="elevation-card" style="box-shadow:0 8px 32px 0 rgba(0,0,0,.5)"><span>--shadow-glass</span></div>
+        <div class="elevation-card" style="box-shadow:inset 0 0 20px rgba(255,255,255,.06)"><span>--shadow-inner-glow</span></div>
+      </div>
+      <div class="canon"><span class="pill pill--info">Canon</span><span><code>--shadow-neon-cyan</code> em estados ativos/primários (botão Simular, toggle selecionado); <code>--shadow-glass</code> em headers e painéis; <code>--shadow-inner-glow</code> nos cards de conteúdo (<code>CARD_GLASS</code>, <code>design-tokens.ts:8</code>).</span></div>
+      <div class="divida"><span class="pill pill--err">Dívida</span><span><code>--shadow-neon-green</code> — definido, zero usos no código. Candidato à remoção ou à adoção como estado de sucesso.</span></div>
+
+      <h3>Glow — brilho colorido</h3>
+      <p class="hint" style="margin-top:0">Fora dos 2 tokens neon acima, todo glow é <code>rgba()</code> manual — a cor vem de <code>SLIDER_TOKENS</code> (<code>slider-tokens.ts</code>), não de <code>@theme</code>.</p>
+      <div class="glow-row">
+        <div class="glow-item"><div class="glow-dot" style="background:#00D9FF;box-shadow:0 0 10px rgba(0,217,255,.4)"></div><span class="radius-card__label">primary<br>0,217,255</span></div>
+        <div class="glow-item"><div class="glow-dot" style="background:#39FF14;box-shadow:0 0 10px rgba(57,255,20,.4)"></div><span class="radius-card__label">secondary<br>57,255,20</span></div>
+        <div class="glow-item"><div class="glow-dot" style="background:#A855F7;box-shadow:0 0 10px rgba(168,85,247,.4)"></div><span class="radius-card__label">accent-purple<br>168,85,247</span></div>
+        <div class="glow-item"><div class="glow-dot" style="background:#F97316;box-shadow:0 0 10px rgba(249,115,22,.4)"></div><span class="radius-card__label">accent-orange<br>249,115,22</span></div>
+      </div>
+      <div class="hint">Padrão de glow do thumb de slider: repouso <code>0 0 10px rgba(rgb,.4)</code>, pressionado <code>0 0 20px rgba(rgb,.9), 0 0 8px rgba(rgb,.5)</code> — fonte: <code>styled-slider.tsx:140-142</code>. Demonstração completa na seção 09.</div>
+    </section>
+
+    <section id="s05" class="dsx-section">
+      <div class="dsx-section__eyebrow"><span class="dsx-section__num">05</span><span class="dsx-section__group">Fundamentos</span></div>
+      <h2>Grid e layout</h2>
+      <p class="lead">Layout desktop é uma grade fixa de 12 colunas dividida em 2 seções — não 3, como documentos anteriores descreviam. Este documento substitui essa referência: o código é a fonte de verdade.</p>
+
+      <h3>Grade principal (desktop)</h3>
+      <div class="canon"><span class="pill pill--info">Canon</span><span><code>grid grid-cols-12 gap-3</code> — configuração <code>col-span-3</code>, resultados <code>col-span-9</code>. Sem <code>max-width</code>. Fonte: <code>src/App.tsx:35-44</code>.</span></div>
+      <div class="layout-demo">
+        <div class="layout-demo__orb" style="background:#00D9FF;top:-40%;left:-15%"></div>
+        <div class="layout-demo__orb" style="background:#39FF14;bottom:-40%;right:-15%"></div>
+        <div class="layout-demo__grid">
+          <div class="layout-demo__cell layout-demo__cell--config">col-span-3<br>ConfigPanel</div>
+          <div class="layout-demo__cell layout-demo__cell--results">col-span-9<br>ResultsPanel</div>
+        </div>
+      </div>
+      <div class="hint" style="margin-top:0">Gap entre colunas: <code>gap-3</code> (12px, escala da seção 04). Container raiz: <code>flex flex-col h-screen mx-auto p-3 gap-3 relative</code> — <code>body</code> trava em <code>min-width: 1360px</code> (<code>src/index.css:30</code>), plataforma é desktop-only fora do breakpoint mobile.</div>
+
+      <h3>Header</h3>
+      <div class="header-demo">
+        <div class="header-demo__brand"><span class="material-symbols-outlined" style="color:var(--dsx-primary)">precision_manufacturing</span> ToolOptimizer CNC</div>
+        <div style="display:flex;gap:8px"><span class="pill pill--neutral">Exportar</span><span class="pill pill--neutral">Histórico</span></div>
+      </div>
+      <div class="hint" style="margin-top:0"><code>flex items-center justify-between py-2 px-6 rounded-2xl bg-surface-dark backdrop-blur-xl border border-white/5 shadow-glass</code> — logo a <code>44px</code> de altura. Fonte: <code>src/App.tsx:27-32</code>.</div>
+
+      <h3>Orbs de fundo</h3>
+      <p class="hint" style="margin-top:0">2 gradientes radiais fixos, atrás de todo o conteúdo (<code>-z-10 pointer-events-none</code>), replicados no demo acima. Cada um: <code>w-[50%] h-[50%] rounded-full blur-[150px] opacity-40</code> — <code>bg-primary/10</code> no canto superior-esquerdo, <code>bg-secondary/10</code> no inferior-direito. Fonte: <code>src/App.tsx:20-24</code>.</p>
+
+      <div class="divida"><span class="pill pill--err">Dívida documental</span><span><code>docs/design/UI_DESIGN_SPEC_FINAL.md</code> prescreve 3 colunas (3/6/3) e <code>max-w-[1500px]</code> — nunca implementado. Este documento substitui essa referência como fonte de verdade visual.</span></div>
+      <div class="hint">Mobile não é este grid em breakpoint — é uma árvore de componentes própria (<code>src/pages/mobile-page.tsx</code>, <code>src/components/mobile/*</code>), com tab bar e seções empilhadas. Ver seção 15.</div>
+    </section>
+
+    <section id="s06" class="dsx-section">
+      <div class="dsx-section__eyebrow"><span class="dsx-section__num">06</span><span class="dsx-section__group">Fundamentos</span></div>
+      <h2>Motion e timings</h2>
+      <p class="lead">14 <code>@keyframes</code> em <code>src/index.css</code>, nenhum tokenizado — duração e easing são hard-coded em cada componente que os invoca. 8 têm uso confirmado; 6 são órfãos, com zero referência fora da própria definição.</p>
+      <p class="hint" style="margin-top:0">As demonstrações abaixo rodam em loop só para visualização — no produto real, todas disparam uma vez por evento (clique, troca de aba, fim de cálculo), nunca em repetição.</p>
+
+      <h3>Animações em uso</h3>
+      <div class="motion-grid">
+        <div class="motion-card"><div class="motion-card__stage" style="animation:tdBtnIdleGlow 3s ease-in-out infinite"><span class="material-symbols-outlined">play_arrow</span></div><span class="motion-card__name">btnIdleGlow</span><span class="motion-card__spec">3s ease-in-out infinite<br>Botão Simular em repouso<br>config-panel.tsx:247</span></div>
+        <div class="motion-card"><div class="motion-card__stage"><span class="material-symbols-outlined" style="animation:tdSpinIcon .9s linear infinite">casino</span></div><span class="motion-card__name">spinIcon</span><span class="motion-card__spec">0.9s linear infinite<br>Ícone durante cálculo<br>config-panel.tsx:265</span></div>
+        <div class="motion-card"><div class="motion-card__stage" style="animation:tdJackpotFlash 550ms ease-out infinite"><span class="material-symbols-outlined">precision_manufacturing</span></div><span class="motion-card__name">jackpotFlash</span><span class="motion-card__spec">550ms ease-out + delay escalonado<br>Revelação dos resultados<br>results-panel.tsx:106</span></div>
+        <div class="motion-card"><div class="motion-card__stage" style="animation:tdSubtlePulse .9s ease-in-out infinite"><span class="material-symbols-outlined">speed</span></div><span class="motion-card__name">subtlePulse</span><span class="motion-card__spec">0.9s ease-in-out (ou 0.45s ×2)<br>Feedback de reset<br>results-panel.tsx:124</span></div>
+        <div class="motion-card"><div class="motion-card__stage" style="animation:tdFadeInUp .3s ease-out infinite"><span class="material-symbols-outlined">check</span></div><span class="motion-card__name">fadeInUp</span><span class="motion-card__spec">0.2–0.4s ease-out both<br>Entrada de badges/accordions<br>config-panel.tsx:360</span></div>
+        <div class="motion-card"><div class="motion-card__stage" style="animation:tdTabSlideIn .15s ease-out infinite"><span class="material-symbols-outlined">touch_app</span></div><span class="motion-card__name">tabSlideIn</span><span class="motion-card__spec">0.15s ease-out<br>Troca de aba mobile<br>mobile-page.tsx:81</span></div>
+        <div class="motion-card"><div class="motion-card__stage" style="animation:tdSubtlePulse .3s ease-out infinite"><span class="material-symbols-outlined">moving</span></div><span class="motion-card__name">miniGaugeFlash</span><span class="motion-card__spec">0.3s ease-out<br>Gauge mini mobile<br>mobile-mini-result-bar.tsx:49</span></div>
+        <div class="motion-card"><div class="motion-card__stage" style="background:transparent"><svg width="30" height="30" viewBox="0 0 32 32"><circle cx="16" cy="16" r="12" fill="none" stroke="#00D9FF" stroke-width="2" stroke-dasharray="6 4" style="animation:tdDashFlow 2s linear infinite"/></svg></div><span class="motion-card__name">dashFlow</span><span class="motion-card__spec">2s linear infinite<br>Aresta animada do diagrama<br>arch-edge.tsx:46</span></div>
+      </div>
+
+      <h3>Transições de interação</h3>
+      <p class="lead" style="margin-bottom:8px">Sem duração customizada — hover/active usam o padrão do Tailwind (<code>transition-all/colors/opacity</code> → 150ms, <code>cubic-bezier(0.4,0,0.2,1)</code>, não sobrescrito em <code>@theme</code>). Padrão de toque: <code>active:scale-95</code> ou <code>active:scale-[0.98]</code> em praticamente todo elemento clicável.</p>
+
+      <h3>Keyframes órfãos</h3>
+      <div class="divida"><span class="pill pill--err">Dívida</span><span>6 de 14 keyframes não têm nenhuma referência fora de <code>src/index.css</code> — candidatos à remoção.</span></div>
+      <table class="orphan-table">
+        <tr><td><code>shimmer</code></td><td>opacity 0.5↔1</td><td><span class="pill pill--err">0 usos</span></td></tr>
+        <tr><td><code>spinner</code></td><td>rotate 360deg</td><td><span class="pill pill--err">0 usos</span></td></tr>
+        <tr><td><code>gaugeRoll</code></td><td>rotate 1440deg</td><td><span class="pill pill--err">0 usos</span></td></tr>
+        <tr><td><code>fadeOut</code></td><td>opacity 1→0.3</td><td><span class="pill pill--err">0 usos</span></td></tr>
+        <tr><td><code>ambientPulse</code></td><td>opacity 1↔0.7</td><td><span class="pill pill--err">0 usos</span></td></tr>
+        <tr><td><code>sliderShake</code></td><td>translateX -3px/3px</td><td><span class="pill pill--err">0 usos</span></td></tr>
+      </table>
+      <div class="divida"><span class="pill pill--err">Dívida</span><span>Zero ocorrências de <code>prefers-reduced-motion</code> em todo o código — nenhuma das 8 animações em uso recua para usuários que pedem menos movimento.</span></div>
+    </section>
+
+    <section id="s07" class="dsx-section">
+      <div class="dsx-section__eyebrow"><span class="dsx-section__num">07</span><span class="dsx-section__group">Componentes</span></div>
+      <h2>Botões e ações</h2>
+      <p class="lead">4 famílias de botão: primário (Simular), ícone (reset e ações), grupo de alternância (tipo de operação/ferramenta) e incremento/decremento (±). A última tem 5 tamanhos divergentes no código — nenhum documento fixava isso até agora.</p>
+
+      <h3>Primário — Simular</h3>
+      <div class="btn-row">
+        <button class="btn-primary" type="button"><span class="material-symbols-outlined">play_arrow</span>Simular</button>
+        <button class="btn-primary btn-primary--calc" type="button" style="width:210px">
+          <span class="btn-primary__fill" style="transform:scaleX(.62)"></span>
+          <span style="position:relative;display:inline-flex;align-items:center;gap:8px"><span class="material-symbols-outlined">casino</span>CALCULANDO 62%</span>
+        </button>
+        <button class="btn-icon" type="button" aria-label="Resetar"><span class="material-symbols-outlined">restart_alt</span></button>
+      </div>
+      <div class="canon"><span class="pill pill--info">Canon</span><span><code>rounded-xl</code>, gradiente <code>from-cyan-600 to-cyan-500</code>, <code>shadow-neon-cyan</code>, glow <code>btnIdleGlow</code> em repouso. Durante o cálculo: preenchimento de progresso (<code>scaleX</code>) + ícone <code>casino</code> girando (<code>spinIcon</code>). Fonte: <code>config-panel.tsx:243-278</code>.</span></div>
+      <div class="hint" style="margin-top:0">Botão de reset ao lado: <code>w-12</code> (48px), <code>rounded-xl bg-white/5 border border-white/10</code> — mesma altura do primário por estarem no mesmo <code>flex</code>. Fonte: <code>config-panel.tsx:279-282</code>.</div>
+
+      <h3>Grupo de alternância</h3>
+      <div class="btn-toggle-group">
+        <button class="btn-toggle is-active" type="button">Desbaste</button>
+        <button class="btn-toggle" type="button">Semi-Acab.</button>
+        <button class="btn-toggle" type="button">Acabamento</button>
+      </div>
+      <div class="hint" style="margin-top:0">Inativo: <code>bg-black/40 text-gray-400 border-white/10</code>. Ativo: <code>bg-primary text-black font-bold border-primary shadow-neon-cyan</code>. Mesmo padrão em Tipo de Ferramenta. Fonte: <code>config-panel.tsx:317-326</code>.</div>
+
+      <h3>Botão ± — 5 tamanhos divergentes</h3>
+      <div class="canon"><span class="pill pill--info">Canon</span><span>2 tamanhos consistentes: <b>compacto 20px</b> (slider bidirecional compacto) e <b>padrão 24px</b> (slider desktop e bidirecional completo) — ambos <code>bg-black/40 border-white/10</code>.</span></div>
+      <div class="btn-pm-row">
+        <div class="btn-pm-item"><button class="btn-pm" type="button" style="width:20px;height:20px;font-size:11px">−</button><span class="lbl">sm · 20px<br>bidirectional-slider.tsx</span></div>
+        <div class="btn-pm-item"><button class="btn-pm" type="button" style="width:24px;height:24px;font-size:12px">−</button><span class="lbl">md · 24px<br>styled-slider.tsx</span></div>
+        <div class="btn-pm-item"><button class="btn-pm" type="button" style="width:28px;height:28px;border-radius:6px;background:rgba(0,0,0,.3)">−</button><span class="lbl">28px · rounded-md<br>config-panel.tsx (segurança)</span></div>
+        <div class="btn-pm-item"><button class="btn-pm" type="button" style="width:40px;height:40px;border-radius:8px;background:rgba(0,0,0,.3);border-color:rgba(255,255,255,.12)">−</button><span class="lbl">40px · rounded-lg<br>mobile-fine-tune-section.tsx</span></div>
+        <div class="btn-pm-item"><button class="btn-pm" type="button" style="width:48px;height:48px;border-radius:6px">−</button><span class="lbl">48px · rounded-md<br>mobile-config-section.tsx</span></div>
+        <div class="btn-pm-item"><button class="btn-pm" type="button" style="width:44px;height:44px;border-color:rgba(0,217,255,.6);color:var(--dsx-primary)">−</button><span class="pill pill--warn" style="display:inline-block;margin-top:4px">44px proposto</span></div>
+      </div>
+      <div class="divida"><span class="pill pill--err">Dívida</span><span>3 tamanhos fora do canon: <b>28px</b> <code>rounded-md bg-black/30</code> (segurança, <code>config-panel.tsx:466</code>); <b>40px</b> <code>rounded-lg bg-black/30 border-white/12</code> (ajuste fino mobile, <code>mobile-fine-tune-section.tsx:86</code>); <b>48px</b> <code>rounded-md bg-black/40</code> (diâmetro mobile, <code>mobile-config-section.tsx:399</code>).</span></div>
+      <div class="proposto"><span class="pill pill--warn">Proposto</span><span>Tamanho <b>lg 44px</b> como terceiro degrau oficial "touch" — alinha com o alvo mínimo de toque já usado em botões de ícone (<code>min-h-[44px] min-w-[44px]</code>, ex. <code>settings-page.tsx:304</code>), substituindo os 3 valores divergentes acima.</span></div>
+    </section>
+
+    <section id="s08" class="dsx-section">
+      <div class="dsx-section__eyebrow"><span class="dsx-section__num">08</span><span class="dsx-section__group">Componentes</span></div>
+      <h2>Campos e controles</h2>
+      <p class="lead">Select e input de texto convergem num padrão único; o input numérico livre (diâmetro, raio, altura de fixação) diverge — sem anel de foco, só troca de cor da borda.</p>
+
+      <h3>Select e texto</h3>
+      <div class="field-grid">
+        <div class="field-demo">
+          <label>Material da Peça</label>
+          <select><option>Aço 1045</option><option>Alumínio 6061</option></select>
+        </div>
+        <div class="field-demo">
+          <label>Diâmetro (mm)</label>
+          <input type="text" value="12.0" class="mono">
+        </div>
+      </div>
+      <div class="canon"><span class="pill pill--info">Canon</span><span><code>bg-black/40 border border-white/10 rounded-lg</code>, <code>focus:ring-1 focus:ring-primary</code>. Select usa <code>.select-chevron</code> — SVG embutido via <code>background-image</code>, sem ícone de biblioteca. Fonte: <code>config-panel.tsx:301</code>, <code>src/index.css:167-173</code>.</span></div>
+
+      <h3>Input numérico e erro</h3>
+      <div class="field-grid">
+        <div class="field-demo is-invalid">
+          <label>Diâmetro (mm)</label>
+          <input type="number" value="250" class="mono">
+          <span class="err">Válido: 0.1–200 mm</span>
+        </div>
+        <div class="field-demo is-borderonly">
+          <label>Altura Fixação (mm)</label>
+          <input type="number" value="45" class="mono" style="border-color:var(--dsx-primary)">
+        </div>
+      </div>
+      <div class="divida"><span class="pill pill--err">Dívida</span><span>2 padrões de foco coexistem: a maioria usa <code>focus:ring-1 focus:ring-{cor}</code> (anel colorido); <code>NumberInputRow</code> (diâmetro/raio/altura, <code>config-panel.tsx:69-73</code>) usa só <code>focus:outline-none focus:border-primary</code> — sem anel, apenas a borda muda de cor.</span></div>
+      <div class="proposto"><span class="pill pill--warn">Proposto</span><span>Padronizar em <code>focus-visible:ring-1 focus-visible:ring-primary</code> — o prefixo <code>focus-visible</code> evita o anel em clique de mouse, só em navegação por teclado, mantendo a cor/espessura já canônicas.</span></div>
+
+      <h3>Estado de erro</h3>
+      <p class="hint" style="margin-top:0">Inválido: <code>border-red-500 text-red-400</code> + linha de ajuda com a faixa válida abaixo do campo. Mesma cor em toda validação numérica do app — não usa <code>seg-vermelho</code> do semáforo, que é paleta separada (seção 02).</p>
+
+      <h3>Alvo mínimo de toque</h3>
+      <div class="hint" style="margin-top:0"><code>min-h-[44px]</code> aparece em cerca de 15 arquivos como padrão informal para campos e botões de ícone tocáveis — nunca formalizado como regra, mas já é o valor de fato usado sempre que toque é uma preocupação real (mobile, admin). Ver proposta de tamanho "touch" 44px na seção 07.</div>
+    </section>
+
+    <section id="s09" class="dsx-section">
+      <div class="dsx-section__eyebrow"><span class="dsx-section__num">09</span><span class="dsx-section__group">Componentes</span></div>
+      <h2>Sliders</h2>
+      <p class="lead">4 variantes por contexto — não por escolha estética. Todas compartilham a mesma anatomia (trilho + preenchimento + thumb com anel/ponto/glow) e a mesma fonte de cor (<code>getSliderRgb()</code>, <code>slider-tokens.ts</code>), mudando apenas dimensão e faixa de valor.</p>
+      <div class="canon"><span class="pill pill--info">Canon</span><span>4 variantes oficiais: <b>default</b> (28px, desktop), <b>compact</b> (20px, cards RPM/Avanço), <b>bidirectional</b> (28px, ajuste ±150%), <b>touch</b> (36px, ajuste fino mobile). Cor sempre inline via <code>rgba(rgb,alpha)</code>, nunca classe Tailwind de cor.</span></div>
+
+      <h3>Default — <code>StyledSlider</code></h3>
+      <div class="slider-demo">
+        <button class="slider-demo__btn" type="button">−</button>
+        <div class="slider-demo__track">
+          <div class="slider-demo__rail"></div>
+          <div class="slider-demo__fill" style="width:62%;background:#00D9FF;box-shadow:0 0 8px rgba(0,217,255,.6)"></div>
+          <div class="slider-demo__ticks"><span></span><span></span><span class="is-center"></span><span></span><span></span></div>
+          <div class="slider-demo__thumb" style="left:62%;border-color:#00D9FF;color:#00D9FF"></div>
+        </div>
+        <button class="slider-demo__btn" type="button">+</button>
+      </div>
+      <div class="hint" style="margin-top:0">Thumb <b>28px</b> (<code>w-7 h-7</code>), trilho <code>h-10</code> (40px) com margem <code>mx-[18px]</code>, ponto interno 8px→10px ao pressionar, botões ± <code>w-6 h-6</code> (24px). 5 marcações fixas (0/25/50/75/100%). Fonte: <code>styled-slider.tsx</code>.</div>
+
+      <h3>Compact — <code>BidirectionalSlider compact</code></h3>
+      <div class="slider-demo">
+        <button class="slider-demo__btn slider-demo__btn--sm" type="button">−</button>
+        <div class="slider-demo__track slider-demo__track--compact">
+          <div class="slider-demo__rail"></div>
+          <div class="slider-demo__fill" style="left:50%;width:20%;background:#39FF14;box-shadow:0 0 6px rgba(57,255,20,.6)"></div>
+          <div class="slider-demo__ticks"><span class="is-center" style="margin:0 auto"></span></div>
+          <div class="slider-demo__thumb slider-demo__thumb--compact" style="left:70%;border-color:#39FF14;color:#39FF14"></div>
+        </div>
+        <button class="slider-demo__btn slider-demo__btn--sm" type="button">+</button>
+      </div>
+      <div class="slider-labels" style="max-width:400px"><span>-150%</span><span style="color:#39FF14">+60%</span><span>+150%</span></div>
+      <div class="hint">Thumb <b>20px</b>, trilho <code>h-8</code> (32px), margem <code>mx-[12px]</code>, só o tick central. Usado embutido nos cards de RPM/Avanço do painel de resultados. Fonte: <code>bidirectional-slider.tsx:126-216</code>.</div>
+
+      <h3>Bidirectional — modo completo</h3>
+      <div class="slider-demo">
+        <button class="slider-demo__btn" type="button">−</button>
+        <div class="slider-demo__track">
+          <div class="slider-demo__rail"></div>
+          <div class="slider-demo__fill" style="left:35%;width:15%;background:#e74c3c;box-shadow:0 0 8px rgba(231,76,60,.6)"></div>
+          <div class="slider-demo__ticks"><span></span><span></span><span class="is-center"></span><span></span><span></span></div>
+          <div class="slider-demo__thumb" style="left:35%;border-color:#e74c3c;color:#e74c3c"></div>
+        </div>
+        <button class="slider-demo__btn" type="button">+</button>
+      </div>
+      <div class="slider-labels"><span>-150%</span><span>0%</span><span>+150%</span></div>
+      <div class="hint">Mesma dimensão do default (28px / 40px / <code>mx-[18px]</code>), mas o preenchimento nasce do centro (0%) e cresce para os dois lados — vermelho <code>seg-vermelho</code> abaixo de 0%, verde <code>secondary</code> acima. 31 ticks de -150% a +150%, maiores a cada 50%. Fonte: <code>bidirectional-slider.tsx:218-346</code>.</div>
+
+      <h3>Touch — ajuste fino mobile</h3>
+      <div class="slider-demo">
+        <div class="slider-demo__track slider-demo__track--touch" style="margin:0 18px">
+          <div class="slider-demo__rail"></div>
+          <div class="slider-demo__fill" style="width:48%;background:#A855F7;box-shadow:0 0 8px rgba(168,85,247,.6)"></div>
+          <div class="slider-demo__ticks">
+            <span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span>
+          </div>
+          <div class="slider-demo__thumb slider-demo__thumb--touch" style="left:48%;border-color:transparent;box-shadow:0 0 20px rgba(168,85,247,.6)">
+            <div style="width:28px;height:28px;border-radius:50%;background:#0F1419;border:2px solid #A855F7;display:flex;align-items:center;justify-content:center;box-shadow:0 0 12px rgba(168,85,247,.8)">
+              <div style="width:10px;height:10px;border-radius:50%;background:#A855F7"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="hint" style="margin-top:0">Thumb visível <b>36px</b> (<code>w-9 h-9</code>) contendo um círculo interno de 28px — mas a <b>zona de toque real é invisível e mede 60×60px</b>, maior que o thumb visual, para acerto confiável no dedo. Trilho <code>h-16</code> (64px), margem <code>mx-[18px]</code>, até 20 ticks. Botões ± dessa tela: <b>40px</b> — ver dívida na seção 07. Fonte: <code>mobile-fine-tune-section.tsx:98-248</code>, componente <code>TouchSlider</code> definido inline, não em arquivo próprio.</div>
+
+      <h3>Cor por parâmetro</h3>
+      <p class="hint" style="margin-top:0">4 cores fixas em <code>SLIDER_TOKENS</code> — mesmo mapa usado pelas 4 variantes acima, nenhuma cor livre.</p>
+      <table class="spec-table">
+        <tr><td>Vc — Velocidade de Corte</td><td><code>primary</code> · <code>rgb(0,217,255)</code></td></tr>
+        <tr><td>fz — Avanço por Dente</td><td><code>secondary</code> · <code>rgb(57,255,20)</code></td></tr>
+        <tr><td>ae — Engajamento Radial</td><td><code>accent-purple</code> · <code>rgb(168,85,247)</code></td></tr>
+        <tr><td>ap — Profundidade Axial</td><td><code>accent-orange</code> · <code>rgb(249,115,22)</code></td></tr>
+      </table>
+      <div class="divida"><span class="pill pill--err">Dívida</span><span>4 componentes de slider para 4 variantes é o inventário real — cada um reimplementa drag/touch/teclado do zero, sem hook compartilhado. Unificar a lógica de interação é candidato a refactor futuro, fora do escopo deste documento.</span></div>
     </section>
 
     <!-- SESSAO-INSERT-POINT: novas secoes entram aqui, imediatamente antes do fechamento de main -->
