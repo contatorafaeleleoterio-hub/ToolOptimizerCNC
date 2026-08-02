@@ -310,6 +310,107 @@
   .slider-variant-label b { font-size: 13.5px; color: var(--dsx-text-1); }
   .slider-variant-label code { font-family: 'JetBrains Mono', monospace; font-size: 11px; color: var(--dsx-text-2); }
   .slider-labels { display: flex; justify-content: space-between; font-family: 'JetBrains Mono', monospace; font-size: 10.5px; color: #4B5563; padding: 0 10px; margin-top: 2px; }
+
+  /* ===== Seção 10 — Painéis e recolhíveis ===== */
+  .details-demo { background: var(--dsx-card); border: 1px solid var(--dsx-border); border-radius: 12px; overflow: hidden; margin: 12px 0; box-shadow: inset 0 0 20px rgba(255,255,255,.03); }
+  .details-demo summary { list-style: none; cursor: pointer; display: flex; align-items: center; justify-content: space-between; padding: 10px 12px; font-size: 13px; font-weight: 700; text-transform: uppercase; letter-spacing: .05em; color: #D1D5DB; }
+  .details-demo summary::-webkit-details-marker { display: none; }
+  .details-demo summary .chev { font-size: 18px; color: #6B7280; transition: transform .3s ease; }
+  .details-demo[open] summary .chev { transform: rotate(180deg); }
+  .details-demo__body { padding: 0 12px 12px; font-size: 13px; color: var(--dsx-text-2); line-height: 1.6; }
+  .details-demo2 { background: var(--dsx-surface); border: 1px solid var(--dsx-border); border-radius: 12px; overflow: hidden; margin: 12px 0; box-shadow: 0 8px 32px 0 rgba(0,0,0,.5); }
+  .details-demo2 summary { list-style: none; cursor: pointer; display: flex; align-items: center; gap: 10px; padding: 10px 14px; }
+  .details-demo2 summary::-webkit-details-marker { display: none; }
+  .details-demo2 summary .ico { width: 28px; height: 28px; border-radius: 8px; background: rgba(0,217,255,.1); border: 1px solid rgba(0,217,255,.2); display: flex; align-items: center; justify-content: center; flex: none; }
+  .details-demo2 summary .ttl { flex: 1; font-size: 12.5px; font-weight: 700; text-transform: uppercase; color: #fff; }
+  .details-demo2 summary .val { font-family: 'JetBrains Mono', monospace; font-weight: 700; color: #fff; margin-right: 4px; }
+  .details-demo2__body { border-top: 1px solid var(--dsx-border); padding: 12px 14px; font-size: 12.5px; color: var(--dsx-text-2); }
+
+  /* ===== Seção 11 — Visores de dados ===== */
+  .visor-stack { display: flex; flex-direction: column; gap: 8px; margin: 16px 0; max-width: 620px; }
+  .visor-zone { border-radius: 8px; padding: 8px 12px; font-family: 'JetBrains Mono', monospace; font-size: 11px; }
+  .visor-zone--header { display: flex; align-items: center; gap: 8px; background: #0f1419; border: 1px solid rgba(255,255,255,.1); }
+  .visor-zone--lcd { background: #05070a; border: 1px solid rgba(0,229,255,.12); display: flex; flex-direction: column; gap: 4px; text-transform: uppercase; letter-spacing: .05em; }
+  .visor-zone--tool { background: rgba(30,35,45,.6); border: 1px solid rgba(255,255,255,.05); display: flex; align-items: center; gap: 8px; }
+  .visor-cards { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+  .visor-card { background: var(--dsx-surface); backdrop-filter: blur(20px); border: 1px solid rgba(255,255,255,.05); border-radius: 12px; padding: 12px; }
+  .visor-card__label { display: flex; justify-content: space-between; align-items: center; font-family: 'Inter',sans-serif; font-size: 10.5px; font-weight: 700; text-transform: uppercase; letter-spacing: .08em; color: rgba(255,255,255,.5); }
+  .visor-card__value { font-family: 'JetBrains Mono', monospace; font-weight: 700; font-size: 30px; line-height: 1; margin: 6px 0; }
+  .visor-grid4 { display: grid; grid-template-columns: repeat(4,1fr); gap: 8px; }
+  .visor-cell { background: rgba(30,35,45,.6); border: 1px solid rgba(255,255,255,.05); border-radius: 8px; padding: 8px 10px; }
+  .visor-cell__label { font-family: 'Inter', sans-serif; font-size: 10px; color: rgba(255,255,255,.4); text-transform: uppercase; }
+  .visor-cell__value { font-family: 'JetBrains Mono', monospace; font-size: 15px; font-weight: 700; color: #fff; }
+  .visor-calcrow { display: flex; align-items: center; background: rgba(0,0,0,.3); border: 1px solid rgba(255,255,255,.05); border-radius: 8px; padding: 6px 12px; }
+  .visor-calcrow__item { flex: 1; display: flex; justify-content: space-between; padding: 0 4px; font-family: 'Inter', sans-serif; font-size: 10.5px; color: rgba(255,255,255,.35); text-transform: uppercase; }
+  .visor-calcrow__item b { font-family: 'JetBrains Mono', monospace; color: rgba(255,255,255,.85); font-weight: 700; }
+  .visor-calcrow__div { width: 1px; height: 16px; background: rgba(255,255,255,.08); flex: none; }
+  .gauge-row { display: flex; gap: 14px; flex-wrap: wrap; margin: 16px 0; }
+  .gauge-demo { display: flex; flex-direction: column; align-items: center; gap: 2px; background: var(--dsx-surface); border: 1px solid rgba(255,255,255,.05); border-radius: 16px; padding: 16px; width: 210px; }
+  .gauge-demo__label { font-size: 10.5px; font-weight: 700; text-transform: uppercase; letter-spacing: .08em; color: #6B7280; margin-bottom: 4px; }
+  .gauge-demo__value { font-family: 'JetBrains Mono', monospace; font-size: 30px; font-weight: 700; color: #fff; }
+
+  /* ===== Seção 12 — Feedback e status ===== */
+  .seg-badge-row { display: flex; flex-wrap: wrap; gap: 10px; margin: 16px 0; }
+  .seg-badge { display: inline-flex; align-items: center; gap: 6px; padding: 6px 12px; border-radius: 10px; border: 1px solid; font-size: 11.5px; font-weight: 700; text-transform: uppercase; letter-spacing: .06em; }
+  .seg-badge .material-symbols-outlined { font-size: 16px; }
+  .health-bar { display: flex; flex-direction: column; gap: 3px; margin: 10px 0; max-width: 480px; }
+  .health-bar__track { position: relative; height: 20px; display: flex; gap: 2px; }
+  .health-bar__seg { flex: 1; border-radius: 2px; }
+  .health-bar__cursor { position: absolute; top: 50%; width: 3px; height: 24px; background: #fff; border-radius: 10px; box-shadow: 0 0 10px rgba(255,255,255,.8); transform: translate(-50%,-50%); }
+  .health-bar__labels { display: flex; justify-content: space-between; font-size: 9.5px; color: #6B7280; }
+  .mini-bar { display: flex; flex-direction: column; gap: 5px; max-width: 320px; margin: 14px 0; }
+  .mini-bar__top { display: flex; justify-content: space-between; font-size: 9.5px; text-transform: uppercase; letter-spacing: .08em; color: rgba(255,255,255,.4); }
+  .mini-bar__top b { font-family: 'JetBrains Mono', monospace; color: #fff; font-size: 11px; }
+  .mini-bar__track { position: relative; height: 4px; border-radius: 999px; overflow: hidden; }
+  .mini-bar__cursor { position: absolute; top: -3px; width: 3px; height: 10px; background: #fff; border-radius: 999px; box-shadow: 0 0 8px rgba(255,255,255,.8); }
+  .toast-demo { display: inline-flex; align-items: center; gap: 6px; padding: 6px 10px; border-radius: 8px; background: rgba(46,204,113,.08); font-size: 12px; font-weight: 700; color: #2ecc71; animation: tdFadeInUp .5s ease infinite; }
+
+  /* ===== Seção 13 — Navegação ===== */
+  .nav-demo { max-width: 220px; background: rgba(22,27,34,.8); backdrop-filter: blur(12px); border-top: 1px solid rgba(255,255,255,.1); border-radius: 0 0 12px 12px; padding: 8px 8px 4px; margin: 16px 0; }
+  .nav-demo__item { display: flex; align-items: center; gap: 8px; padding: 6px 12px; border-radius: 8px; font-size: 13px; color: #9CA3AF; }
+  .nav-demo__item .material-symbols-outlined { font-size: 18px; }
+  .nav-demo__item .count { margin-left: auto; font-family: 'JetBrains Mono', monospace; font-size: 11px; color: #6B7280; }
+  .nav-demo__div { border-top: 1px solid rgba(255,255,255,.05); margin-top: 4px; padding: 6px 12px 0 12px; display: flex; justify-content: space-between; align-items: center; }
+  .back-btn-demo { display: inline-flex; align-items: center; gap: 8px; min-height: 44px; padding: 8px 16px; border-radius: 12px; background: rgba(255,255,255,.05); border: 1px solid rgba(255,255,255,.1); color: #D1D5DB; font-size: 13px; }
+  .tab-row-demo { display: flex; gap: 6px; flex-wrap: wrap; margin: 12px 0; }
+  .tab-item-demo { display: flex; align-items: center; gap: 6px; padding: 8px 12px; border-radius: 8px; font-size: 12.5px; color: #9CA3AF; }
+  .tab-item-demo.is-active { background: rgba(0,217,255,.08); color: var(--dsx-primary); }
+
+  /* ===== Seção 14 — Overlays ===== */
+  .modal-compare { display: grid; grid-template-columns: repeat(auto-fit,minmax(190px,1fr)); gap: 16px; margin: 16px 0; }
+  .modal-frame { border-radius: 10px; padding: 20px; background: rgba(0,0,0,.55); display: flex; align-items: center; justify-content: center; min-height: 150px; }
+  .modal-frame__panel { width: 100%; border-radius: 12px; padding: 12px; }
+  .modal-frame__title { font-weight: 700; color: #fff; font-size: 12px; margin-bottom: 6px; }
+  .modal-frame__spec { font-family: 'JetBrains Mono', monospace; font-size: 9.5px; color: rgba(255,255,255,.45); line-height: 1.7; }
+
+  /* ===== Seção 15 — Mobile ===== */
+  .phone-frame { width: 300px; border-radius: 28px; border: 6px solid #1a1f26; background: #0F1419; overflow: hidden; margin: 16px auto; box-shadow: 0 20px 60px rgba(0,0,0,.6); }
+  .phone-frame__header { display: flex; align-items: center; justify-content: space-between; padding: 10px 14px; background: rgba(15,20,25,.95); border-bottom: 1px solid rgba(255,255,255,.05); }
+  .phone-frame__body { padding: 12px; display: flex; flex-direction: column; gap: 10px; min-height: 220px; }
+  .phone-frame__tabbar { display: flex; border-top: 1px solid rgba(255,255,255,.08); background: rgba(10,14,20,.97); }
+  .phone-tab { flex: 1; display: flex; flex-direction: column; align-items: center; gap: 2px; padding: 10px 0; font-size: 9px; text-transform: uppercase; letter-spacing: .06em; color: rgba(255,255,255,.3); }
+  .phone-tab.is-active { color: var(--dsx-primary); }
+  .phone-tab .material-symbols-outlined { font-size: 18px; }
+  .phone-status { display: flex; align-items: center; justify-content: space-between; padding: 10px 12px; border-radius: 10px; border: 2px solid; }
+  .phone-readout { background: #0A0D10; border-left: 3px solid; border-radius: 0 10px 10px 0; padding: 12px; }
+  .phone-readout__label { font-size: 9px; font-weight: 900; text-transform: uppercase; letter-spacing: .2em; }
+  .phone-readout__value { font-family: 'JetBrains Mono', monospace; font-weight: 900; font-size: 32px; color: #fff; line-height: 1; }
+
+  /* ===== Seção 16 — Admin ===== */
+  .admin-frame { display: flex; border-radius: 14px; overflow: hidden; border: 1px solid rgba(255,255,255,.08); margin: 16px 0; min-height: 220px; }
+  .admin-frame__sidebar { width: 160px; flex: none; background: rgba(255,255,255,.03); border-right: 1px solid rgba(255,255,255,.08); padding: 12px 0; }
+  .admin-frame__navitem { display: flex; align-items: center; gap: 8px; padding: 8px 14px; margin: 0 6px; border-radius: 8px; font-size: 11.5px; color: #9CA3AF; }
+  .admin-frame__navitem.is-active { background: rgba(6,182,212,.15); color: #67e8f9; border: 1px solid rgba(6,182,212,.2); }
+  .admin-frame__navitem .material-symbols-outlined { font-size: 16px; }
+  .admin-frame__main { flex: 1; background: #0F1419; padding: 14px; }
+  .admin-kpi-row { display: grid; grid-template-columns: repeat(auto-fit,minmax(120px,1fr)); gap: 10px; }
+  .admin-kpi { background: rgba(255,255,255,.05); border-radius: 10px; padding: 12px; border: 1px solid; }
+  .admin-kpi__value { font-family: 'JetBrains Mono', monospace; font-size: 20px; font-weight: 700; }
+  .admin-kpi__label { font-size: 10.5px; color: #9CA3AF; margin-top: 2px; }
+  .map-table { width: 100%; border-collapse: collapse; margin: 12px 0 20px; font-size: 12px; }
+  .map-table td { padding: 7px 10px; border-bottom: 1px solid var(--dsx-border); }
+  .map-table code { font-family: 'JetBrains Mono', monospace; font-size: 11px; }
+  .map-table .arrow { color: #4B5563; padding: 0 6px; }
 </style>
 </head>
 <body>
@@ -335,8 +436,15 @@
     <a class="dsx-sidebar__link" href="#s07"><span class="dsx-sidebar__num">07</span> Botões</a>
     <a class="dsx-sidebar__link" href="#s08"><span class="dsx-sidebar__num">08</span> Campos</a>
     <a class="dsx-sidebar__link" href="#s09"><span class="dsx-sidebar__num">09</span> Sliders</a>
+    <a class="dsx-sidebar__link" href="#s10"><span class="dsx-sidebar__num">10</span> Painéis</a>
+    <a class="dsx-sidebar__link" href="#s11"><span class="dsx-sidebar__num">11</span> Visores</a>
+    <a class="dsx-sidebar__link" href="#s12"><span class="dsx-sidebar__num">12</span> Feedback</a>
+    <a class="dsx-sidebar__link" href="#s13"><span class="dsx-sidebar__num">13</span> Navegação</a>
+    <a class="dsx-sidebar__link" href="#s14"><span class="dsx-sidebar__num">14</span> Overlays</a>
+    <a class="dsx-sidebar__link" href="#s15"><span class="dsx-sidebar__num">15</span> Mobile</a>
+    <a class="dsx-sidebar__link" href="#s16"><span class="dsx-sidebar__num">16</span> Admin</a>
   </div>
-  <div class="dsx-sidebar__foot">Sessão 2/4 · 02/08/2026<br>Base: código em v0.11.0</div>
+  <div class="dsx-sidebar__foot">Sessão 3/4 · 02/08/2026<br>Base: código em v0.11.0</div>
 </nav>
 
 <div class="dsx-main">
@@ -926,6 +1034,333 @@
         <tr><td>ap — Profundidade Axial</td><td><code>accent-orange</code> · <code>rgb(249,115,22)</code></td></tr>
       </table>
       <div class="divida"><span class="pill pill--err">Dívida</span><span>4 componentes de slider para 4 variantes é o inventário real — cada um reimplementa drag/touch/teclado do zero, sem hook compartilhado. Unificar a lógica de interação é candidato a refactor futuro, fora do escopo deste documento.</span></div>
+    </section>
+
+    <section id="s10" class="dsx-section">
+      <div class="dsx-section__eyebrow"><span class="dsx-section__num">10</span><span class="dsx-section__group">Componentes</span></div>
+      <h2>Painéis, cards e seções recolhíveis</h2>
+      <p class="lead">2 padrões de acordeão coexistem, com mecanismos de animação diferentes. Os demos abaixo usam <code>&lt;details&gt;</code> nativo — clique para abrir, sem JavaScript.</p>
+
+      <h3>CollapsibleSection — acordeão principal</h3>
+      <details class="details-demo" open>
+        <summary>Configuração Base<span class="chev material-symbols-outlined">expand_more</span></summary>
+        <div class="details-demo__body">Conteúdo do painel — animação real via <code>grid-template-rows: 0fr → 1fr</code>, <code>280ms ease</code>. Ao fechar, mostra um resumo inline (prop <code>summary</code>) truncado em <code>max-w-[140px]</code>.</div>
+      </details>
+      <details class="details-demo">
+        <summary>Ferramenta<span class="chev material-symbols-outlined">expand_more</span></summary>
+        <div class="details-demo__body">Aço 1045 | Desbaste — texto de resumo visível só quando fechado.</div>
+      </details>
+      <div class="canon"><span class="pill pill--info">Canon</span><span><code>bg-card-dark rounded-xl border border-white/5 shadow-inner-glow</code>. Usado nas 4 seções do painel de configuração. Fonte: <code>collapsible-section.tsx</code>.</span></div>
+
+      <h3>FormulaCard — acordeão educacional</h3>
+      <details class="details-demo2">
+        <summary>
+          <span class="ico material-symbols-outlined" style="color:var(--dsx-primary);font-size:16px">speed</span>
+          <span class="ttl">RPM (Rotação)</span>
+          <span class="val">6800</span>
+          <span class="material-symbols-outlined chev" style="color:#9CA3AF">expand_more</span>
+        </summary>
+        <div class="details-demo2__body">Fórmula + substituição + variáveis + barra de contexto + dica prática. Fonte: <code>formula-card.tsx</code>, usado nas 5 fórmulas da Zona 8 do visor (seção 11).</div>
+      </details>
+      <div class="divida"><span class="pill pill--err">Dívida</span><span>2 mecanismos de acordeão para o mesmo conceito: <code>CollapsibleSection</code> anima suavemente (<code>grid-template-rows</code>, 280ms); <code>FormulaCard</code> troca instantaneamente e tenta uma entrada com a classe <code>animate-in</code> — mas o plugin <code>tailwindcss-animate</code> não está instalado no projeto, então essa classe não faz nada. A expansão do FormulaCard não anima, apesar da intenção no código.</span></div>
+
+      <h3>Cards — CARD_GLASS / CARD_INNER</h3>
+      <table class="spec-table">
+        <tr><td><code>CARD_GLASS</code></td><td><code>bg-card-dark rounded-xl p-4 border border-white/5 shadow-inner-glow</code></td></tr>
+        <tr><td><code>CARD_INNER</code></td><td><code>bg-black/30 border border-white/5 rounded-lg p-3</code></td></tr>
+      </table>
+      <div class="proposto"><span class="pill pill--warn">Proposto</span><span><code>design-tokens.ts</code> define estes 2 tokens (+ 3 de modal, seção 14) mas <b>nenhum componente os importa</b> — todo lugar repete a string literal à mão. O arquivo inteiro é código morto hoje; a proposta é adotá-lo como fonte real via import, não string duplicada.</span></div>
+    </section>
+
+    <section id="s11" class="dsx-section">
+      <div class="dsx-section__eyebrow"><span class="dsx-section__num">11</span><span class="dsx-section__group">Componentes</span></div>
+      <h2>Visores de dados</h2>
+      <p class="lead">O painel de resultados é 8 zonas empilhadas verticalmente — um console industrial, não cards soltos num dashboard. Fonte de todas: <code>results-panel.tsx</code>.</p>
+
+      <h3>Zonas 1-3 — Cabeçalho, LCD e ferramenta</h3>
+      <div class="visor-stack">
+        <div class="visor-zone visor-zone--header">
+          <span style="color:rgba(255,255,255,.4)">14:32</span><span style="color:rgba(255,255,255,.2)">●</span>
+          <span style="color:#fff;font-weight:700">Aço 1045</span><span style="color:rgba(255,255,255,.2)">●</span>
+          <span style="background:rgba(255,255,255,.08);padding:2px 8px;border-radius:4px;color:rgba(255,255,255,.7)">DESBASTE</span>
+          <span style="margin-left:auto;display:inline-flex;align-items:center;gap:4px;padding:4px 10px;border-radius:8px;background:rgba(46,204,113,.1);border:1px solid rgba(46,204,113,.3);color:#2ecc71;font-weight:700">✓ SEGURO</span>
+        </div>
+        <div class="visor-zone visor-zone--lcd">
+          <span style="color:#2ecc71;text-shadow:0 0 5px #2ecc714d">✓ PARÂMETROS SEGUROS — SISTEMA OPERANDO NORMALMENTE</span>
+          <span style="color:rgba(255,255,255,.3);border-top:1px solid rgba(255,255,255,.05);padding-top:4px">L/D: 2.1 · CTF: 1.00 · POT. DISPONÍVEL: 78%</span>
+        </div>
+        <div class="visor-zone visor-zone--tool">
+          <span class="material-symbols-outlined" style="color:var(--dsx-primary)">precision_manufacturing</span>
+          <span style="color:rgba(255,255,255,.4);text-transform:uppercase;letter-spacing:.08em;font-family:'Inter',sans-serif;font-size:10px">Ferramenta:</span>
+          <span style="color:#fff;font-weight:700">Topo Reto Ø12 H30 F4</span>
+        </div>
+      </div>
+      <div class="hint" style="margin-top:0">LCD (Zona 2) reusa o ciano duplicado já registrado como dívida na seção 02 (<code>rgba(0,229,255,.12)</code> na borda) — mesma ocorrência, não repetida aqui.</div>
+
+      <h3>Zona 4 — RPM e Avanço</h3>
+      <div class="visor-cards">
+        <div class="visor-card">
+          <div class="visor-card__label">Rotação (RPM)<span class="material-symbols-outlined" style="color:var(--dsx-primary);opacity:.6">speed</span></div>
+          <div class="visor-card__value" style="color:var(--dsx-primary);filter:drop-shadow(0 0 10px rgba(0,217,255,.5))">6.800</div>
+          <div class="slider-demo" style="margin:0">
+            <button class="slider-demo__btn slider-demo__btn--sm" type="button">−</button>
+            <div class="slider-demo__track slider-demo__track--compact"><div class="slider-demo__rail"></div><div class="slider-demo__thumb slider-demo__thumb--compact" style="left:50%;border-color:#00D9FF;color:#00D9FF"></div></div>
+            <button class="slider-demo__btn slider-demo__btn--sm" type="button">+</button>
+          </div>
+        </div>
+        <div class="visor-card">
+          <div class="visor-card__label">Avanço (mm/min)<span class="material-symbols-outlined" style="color:var(--dsx-secondary);opacity:.6">moving</span></div>
+          <div class="visor-card__value" style="color:var(--dsx-secondary);filter:drop-shadow(0 0 10px rgba(57,255,20,.5))">2.176</div>
+          <div class="slider-demo" style="margin:0">
+            <button class="slider-demo__btn slider-demo__btn--sm" type="button">−</button>
+            <div class="slider-demo__track slider-demo__track--compact"><div class="slider-demo__rail"></div><div class="slider-demo__thumb slider-demo__thumb--compact" style="left:50%;border-color:#39FF14;color:#39FF14"></div></div>
+            <button class="slider-demo__btn slider-demo__btn--sm" type="button">+</button>
+          </div>
+        </div>
+      </div>
+      <div class="hint" style="margin-top:0">Número a <code>fontSize:2rem</code> inline (32px, seção 03) com <code>drop-shadow</code> na cor do parâmetro. Slider embutido é a variante <b>compact</b> da seção 09. Revelação com <code>jackpotFlash</code> delay 0ms/50ms.</div>
+
+      <h3>Zonas 5-6 — Parâmetros de entrada e dados calculados</h3>
+      <div class="visor-grid4">
+        <div class="visor-cell"><div class="visor-cell__label">Vc (Vel. Corte)</div><div class="visor-cell__value">180.00 <span style="font-size:10px;color:rgba(255,255,255,.3)">m/min</span></div></div>
+        <div class="visor-cell"><div class="visor-cell__label">fz (Av. Dente)</div><div class="visor-cell__value">0.080 <span style="font-size:10px;color:rgba(255,255,255,.3)">mm</span></div></div>
+        <div class="visor-cell"><div class="visor-cell__label">ap (Prof. Axial)</div><div class="visor-cell__value">3.00 <span style="font-size:10px;color:rgba(255,255,255,.3)">mm</span></div></div>
+        <div class="visor-cell"><div class="visor-cell__label">ae (Eng. Radial)</div><div class="visor-cell__value">6.00 <span style="font-size:10px;color:rgba(255,255,255,.3)">mm</span></div></div>
+      </div>
+      <div class="visor-calcrow" style="margin-top:8px">
+        <div class="visor-calcrow__item">Potência<b>4.20 kW</b></div><div class="visor-calcrow__div"></div>
+        <div class="visor-calcrow__item">Torque<b>5.90 Nm</b></div><div class="visor-calcrow__div"></div>
+        <div class="visor-calcrow__item">Vc Real<b>181 m/min</b></div><div class="visor-calcrow__div"></div>
+        <div class="visor-calcrow__item">MRR<b>21.6 cm³</b></div><div class="visor-calcrow__div"></div>
+        <div class="visor-calcrow__item" style="color:#2ecc7199">L/D<b style="color:#2ecc71">2.10</b></div><div class="visor-calcrow__div"></div>
+        <div class="visor-calcrow__item">CTF<b style="color:var(--dsx-primary)">1.00</b></div>
+      </div>
+      <div class="hint">Zona 5: grid de 4 colunas somente leitura. Zona 6: 1 linha com 6 métricas separadas por divisores <code>w-px h-4 bg-white/8</code> — <code>/8</code> fora da escala canônica da seção 04 (dívida já registrada lá).</div>
+
+      <h3>Zona 7 — Gauges (HalfMoonGauge)</h3>
+      <div class="gauge-row">
+        <div class="gauge-demo">
+          <span class="gauge-demo__label">Eficiência de Avanço</span>
+          <svg width="180" height="100" viewBox="0 0 200 110">
+            <defs><linearGradient id="gg1" x1="0%" y1="0%" x2="100%" y2="0%">
+              <stop offset="0%" stop-color="#FF4D4D"/><stop offset="19%" stop-color="#FF4D4D"/><stop offset="19%" stop-color="#FFA500"/>
+              <stop offset="39%" stop-color="#FFA500"/><stop offset="39%" stop-color="#00E676"/><stop offset="61%" stop-color="#00E676"/>
+              <stop offset="61%" stop-color="#FFA500"/><stop offset="80%" stop-color="#FFA500"/><stop offset="80%" stop-color="#FF4D4D"/><stop offset="100%" stop-color="#FF4D4D"/>
+            </linearGradient></defs>
+            <path d="M20,100 A80,80 0 0,1 180,100" fill="none" stroke="#313742" stroke-width="14" stroke-linecap="round"/>
+            <path d="M20,100 A80,80 0 0,1 180,100" fill="none" stroke="url(#gg1)" stroke-width="14" stroke-linecap="round" opacity=".85"/>
+            <line x1="100" y1="100" x2="100" y2="32" stroke="#fff" stroke-width="3" stroke-linecap="round" style="transform-origin:100px 100px;transform:rotate(24deg);filter:drop-shadow(0 0 3px rgba(255,255,255,.7))"/>
+            <circle cx="100" cy="100" r="7" fill="#fff" stroke="#14161a" stroke-width="2"/>
+          </svg>
+          <span class="gauge-demo__value">62%</span>
+        </div>
+        <div class="gauge-demo">
+          <span class="gauge-demo__label">Saúde da Ferramenta</span>
+          <svg width="180" height="100" viewBox="0 0 200 110">
+            <path d="M20,100 A80,80 0 0,1 180,100" fill="none" stroke="#313742" stroke-width="14" stroke-linecap="round"/>
+            <path d="M20,100 A80,80 0 0,1 180,100" fill="none" stroke="url(#gg1)" stroke-width="14" stroke-linecap="round" opacity=".85"/>
+            <line x1="100" y1="100" x2="100" y2="32" stroke="#fff" stroke-width="3" stroke-linecap="round" style="transform-origin:100px 100px;transform:rotate(-12deg);filter:drop-shadow(0 0 3px rgba(255,255,255,.7))"/>
+            <circle cx="100" cy="100" r="7" fill="#fff" stroke="#14161a" stroke-width="2"/>
+          </svg>
+          <span class="gauge-demo__value">85</span>
+        </div>
+      </div>
+      <div class="canon"><span class="pill pill--info">Canon</span><span>41 barras discretas (simplificado acima como arco SVG contínuo, por espaço), arco -90°→+90°, distribuição fixa <b>8 vermelho · 8 laranja · 9 verde · 8 laranja · 8 vermelho</b>. Agulha branca com glow. Animação própria via <code>requestAnimationFrame</code> + easing <code>easeOutBack</code>, 800ms — <b>não</b> é uma das 8 animações CSS da seção 06, é um terceiro mecanismo de motion no código. Tamanhos: <code>md</code> 240×120 desktop, <code>sm</code> 160×80 mobile. Fonte: <code>half-moon-gauge.tsx</code>.</span></div>
+      <div class="divida"><span class="pill pill--err">Dívida</span><span>Prop <code>palette</code> (<code>"avanco"|"mrr"|"health"</code>) é passada pelas 3 instâncias em <code>results-panel.tsx</code> mas <b>nunca é lida</b> dentro do componente — a cor das barras vem de uma função fixa por índice, não da prop. Parece configurável e não é.</span></div>
+
+      <h3>Fórmulas educacionais</h3>
+      <p class="hint" style="margin-top:0">Zona 8 lista 5 <code>FormulaCard</code> (RPM, Avanço, MRR, Potência, Torque) — componente e acordeão já demonstrados na seção 10. <code>Fraction</code> renderiza frações em texto puro: numerador com borda inferior, denominador abaixo.</p>
+      <div class="panel-glass" style="padding:14px 18px;display:inline-flex;flex-direction:column;align-items:center;font-family:'JetBrains Mono',monospace;font-size:15px;color:#D1D5DB">
+        <span style="border-bottom:1px solid #6B7280;padding:0 4px">Vc × 1000</span>
+        <span style="padding:0 4px">π × D</span>
+      </div>
+      <div class="hint">O componente <code>BigNumber</code> (<code>shared-result-parts.tsx</code>) parece a origem da Zona 4, mas <b>não é usado no desktop</b> — a Zona 4 é markup próprio inline. <code>BigNumber</code> só aparece no visor mobile (seção 15).</div>
+    </section>
+
+    <section id="s12" class="dsx-section">
+      <div class="dsx-section__eyebrow"><span class="dsx-section__num">12</span><span class="dsx-section__group">Componentes</span></div>
+      <h2>Feedback e status</h2>
+      <p class="lead">4 sistemas de feedback: o semáforo de segurança, 2 indicadores de zona saudável de parâmetro que fazem a mesma leitura de 2 formas visuais diferentes, e confirmações pontuais tipo toast.</p>
+
+      <h3>Semáforo — 4 níveis</h3>
+      <div class="canon"><span class="pill pill--info">Canon</span><span>Mapa único <code>SEG_COLORS/SEG_ICONS/SEG_LABELS/SEG_BG</code> compartilhado entre desktop e mobile — a única fonte de verdade do semáforo. Fonte: <code>shared-result-parts.tsx:8-24</code>.</span></div>
+      <div class="seg-badge-row">
+        <span class="seg-badge" style="background:rgba(46,204,113,.1);border-color:rgba(46,204,113,.3);color:#2ecc71"><span class="material-symbols-outlined">check_circle</span>Seguro</span>
+        <span class="seg-badge" style="background:rgba(243,156,18,.1);border-color:rgba(243,156,18,.3);color:#f39c12"><span class="material-symbols-outlined">warning</span>Alerta</span>
+        <span class="seg-badge" style="background:rgba(231,76,60,.1);border-color:rgba(231,76,60,.3);color:#e74c3c"><span class="material-symbols-outlined">error</span>Crítico</span>
+        <span class="seg-badge" style="background:rgba(107,114,128,.1);border-color:rgba(107,114,128,.3);color:#9CA3AF"><span class="material-symbols-outlined">block</span>Bloqueado</span>
+      </div>
+      <div class="hint" style="margin-top:0">Fundo/borda sempre <code>bg-seg-*/10 border-seg-*/30</code> — <code>/30</code> não consta na escala canônica de 6 degraus da seção 04 (dívida). Ícones: <code>check_circle / warning / error / block</code>.</div>
+
+      <h3>Zona saudável — 2 indicadores, mesma leitura</h3>
+      <div class="canon"><span class="pill pill--info">Canon</span><span><code>SegmentedGradientBar</code> é o indicador ativo — o próprio comentário no código diz "Replaces ParameterHealthBar visually". Zonas proporcionais fixas: <b>14% vermelho · 26% laranja · 20% verde · 26% laranja · 14% vermelho</b>, iguais nos 2 indicadores.</span></div>
+      <div class="health-bar">
+        <div class="health-bar__track">
+          <div class="health-bar__seg" style="flex:14;background:#FF4D4D"></div>
+          <div class="health-bar__seg" style="flex:26;background:#FFA500"></div>
+          <div class="health-bar__seg" style="flex:20;background:#00E676"></div>
+          <div class="health-bar__seg" style="flex:26;background:#FFA500"></div>
+          <div class="health-bar__seg" style="flex:14;background:#FF4D4D"></div>
+          <div class="health-bar__cursor" style="left:58%"></div>
+        </div>
+        <div class="health-bar__labels"><span>Baixo</span><span style="color:#00E676">RECOMENDADO</span><span>Desgaste</span></div>
+      </div>
+      <div class="hint" style="margin-top:0">50 segmentos no desktop, 30 no mobile — cursor branco (pílula), overlay de zona ideal dinâmico quando há favorito salvo. 4 instâncias (Vc/fz/ae/ap), cada uma com rótulos e badge (CTF, L/D) próprios. Fonte: <code>segmented-gradient-bar.tsx</code>.</div>
+
+      <div class="mini-bar">
+        <div class="mini-bar__top"><span>MRR</span><b>21.6 cm³/min</b></div>
+        <div class="mini-bar__track">
+          <div style="position:absolute;top:0;bottom:0;left:0;right:0;opacity:.2;background:linear-gradient(to right,#FF4D4D 0%,#FF4D4D 14%,#FFA500 14%,#FFA500 40%,#00E676 40%,#00E676 60%,#FFA500 60%,#FFA500 86%,#FF4D4D 86%,#FF4D4D 100%)"></div>
+          <div style="position:absolute;top:0;bottom:0;left:0;width:58%;background:linear-gradient(to right,#FF4D4D 0%,#FF4D4D 14%,#FFA500 14%,#FFA500 40%,#00E676 40%,#00E676 60%,#FFA500 60%,#FFA500 86%,#FF4D4D 86%,#FF4D4D 100%)"></div>
+          <div class="mini-bar__cursor" style="left:58%"></div>
+        </div>
+      </div>
+      <div class="hint">Variante mobile (<code>MiniResultBar</code>, aba Ajustar) — mesma proporção de zonas, mas em gradiente CSS contínuo em vez de segmentos discretos. Terceira forma visual para a mesma leitura de zona. Fonte: <code>mobile-mini-result-bar.tsx</code>.</div>
+      <div class="divida"><span class="pill pill--err">Dívida</span><span><code>ParameterHealthBar</code> (o componente que <code>SegmentedGradientBar</code> substituiu) continua no código — zero imports do componente visual, mas ele ainda exporta as funções puras <code>computeVcByValue/computeFzByValue/computeAeByValue/computeApByValue</code> que <code>SegmentedGradientBar</code> importa e usa. O visual é órfão; a lógica dele não é.</span></div>
+
+      <h3>Confirmações pontuais</h3>
+      <div class="toast-demo"><span class="material-symbols-outlined" style="font-size:14px">check</span>Ferramenta salva</div>
+      <div class="hint">Texto verde (<code>#2ecc71</code>) + <code>fadeInUp 0.3s ease</code> (seção 06), some sozinho após 2s via <code>setTimeout</code> — não é um componente de toast reutilizável, é <code>useState</code> local repetido em cada tela que precisa do padrão.</div>
+    </section>
+
+    <section id="s13" class="dsx-section">
+      <div class="dsx-section__eyebrow"><span class="dsx-section__num">13</span><span class="dsx-section__group">Componentes</span></div>
+      <h2>Navegação</h2>
+      <p class="lead">3 padrões: rodapé de navegação lateral (desktop), botão "Voltar" nas páginas internas e abas de seção dentro de Configurações.</p>
+
+      <h3>Rodapé de navegação (desktop)</h3>
+      <div class="nav-demo">
+        <div class="nav-demo__item"><span class="material-symbols-outlined" style="color:#facc15">star</span>Favoritos<span class="count" style="color:#facc15b3">3</span></div>
+        <div class="nav-demo__item"><span class="material-symbols-outlined">history</span>Histórico<span class="count">12</span></div>
+        <div class="nav-demo__div"><span style="font-size:11px;color:#6B7280">v0.11.0</span><span class="material-symbols-outlined" style="font-size:18px;color:#6B7280">settings</span></div>
+      </div>
+      <div class="hint" style="margin-top:0">Abaixo do painel de configuração, fora do fluxo de scroll — <code>border-t border-white/10 bg-surface-dark/80 backdrop-blur-md</code>. Contadores em <code>font-mono</code> só aparecem quando > 0. Fonte: <code>sidebar-footer.tsx</code>.</div>
+
+      <h3>Botão Voltar (páginas internas)</h3>
+      <button class="back-btn-demo" type="button"><span class="material-symbols-outlined" style="font-size:14px">arrow_back</span>Voltar</button>
+      <div class="hint" style="margin-top:0">Mesmo padrão em Configurações, Histórico e Favoritos — <code>min-h-[44px]</code>, destino condicional (<code>isMobile ? '/mobile' : '/'</code>). O cabeçalho da página reaproveita o estilo do header principal (<code>rounded-2xl bg-surface-dark shadow-glass</code>, seção 05).</div>
+
+      <h3>Abas de seção (Configurações)</h3>
+      <div class="tab-row-demo">
+        <span class="tab-item-demo is-active"><span class="material-symbols-outlined" style="font-size:16px">precision_manufacturing</span>Máquina</span>
+        <span class="tab-item-demo"><span class="material-symbols-outlined" style="font-size:16px">shield</span>Segurança</span>
+        <span class="tab-item-demo"><span class="material-symbols-outlined" style="font-size:16px">category</span>Materiais</span>
+        <span class="tab-item-demo"><span class="material-symbols-outlined" style="font-size:16px">build</span>Ferramentas</span>
+      </div>
+      <div class="hint">6 seções ao todo (+ Exibição, Dados) — navegação por estado local (<code>useState</code>), não por rota. Fonte: <code>settings-page.tsx:14-23</code>.</div>
+    </section>
+
+    <section id="s14" class="dsx-section">
+      <div class="dsx-section__eyebrow"><span class="dsx-section__num">14</span><span class="dsx-section__group">Componentes</span></div>
+      <h2>Overlays</h2>
+      <p class="lead">3 modais reais no código, cada um com painel, backdrop e estrutura próprios — nenhum importa os tokens de modal já prontos em <code>design-tokens.ts</code>.</p>
+
+      <div class="modal-compare">
+        <div class="modal-frame">
+          <div class="modal-frame__panel" style="background:#0f1419;border:1px solid rgba(255,255,255,.1)">
+            <div class="modal-frame__title">Editar Favorito</div>
+            <div class="modal-frame__spec">rounded-xl · shadow-2xl<br>backdrop /60 blur-sm<br>div único, sem foco preso</div>
+          </div>
+        </div>
+        <div class="modal-frame">
+          <div class="modal-frame__panel" style="background:rgba(20,28,40,.98);border:1px solid rgba(255,255,255,.12)">
+            <div class="modal-frame__title">Editar Ferramenta</div>
+            <div class="modal-frame__spec">rounded-2xl · shadow-glass<br>backdrop /60 blur-sm<br>largura fixa w-80</div>
+          </div>
+        </div>
+        <div class="modal-frame">
+          <div class="modal-frame__panel" style="background:#0F1419;border:1px solid rgba(255,255,255,.1)">
+            <div class="modal-frame__title">AdminModal <span class="pill pill--ok" style="vertical-align:2px">a11y</span></div>
+            <div class="modal-frame__spec">rounded-2xl · shadow-2xl<br>backdrop /70 blur-sm<br>createPortal + role=dialog + Esc</div>
+          </div>
+        </div>
+      </div>
+      <div class="divida"><span class="pill pill--err">Dívida</span><span>3 combinações de raio+sombra+fundo diferentes para o mesmo conceito de "modal". A opacidade do backdrop também diverge: <code>/60</code> (favorito, ferramenta, bug report) vs <code>/70</code> (admin) vs <code>/55</code> com <code>blur-[2px]</code> (diagrama de arquitetura) — 3 valores para o que deveria ser 1.</span></div>
+      <div class="canon"><span class="pill pill--info">Canon</span><span>Painel <code>bg-surface-dark border-white/10 rounded-t-2xl sm:rounded-2xl shadow-glass</code>, backdrop <code>bg-black/60 backdrop-blur-sm</code> — os valores já escritos em <code>design-tokens.ts</code> (<code>MODAL_PANEL</code>/<code>MODAL_BACKDROP</code>/<code>MODAL_HANDLE</code>), hoje sem nenhum import.</span></div>
+      <div class="proposto"><span class="pill pill--warn">Proposto</span><span>Adotar a estrutura do <code>AdminModal</code> como base — é o único dos 3 com <code>createPortal</code> (escapa da árvore DOM local), <code>role="dialog" aria-modal="true"</code> e fechamento por <code>Escape</code>. Os outros 2 fecham só por clique fora.</span></div>
+    </section>
+
+    <section id="s15" class="dsx-section">
+      <div class="dsx-section__eyebrow"><span class="dsx-section__num">15</span><span class="dsx-section__group">Componentes</span></div>
+      <h2>Mobile</h2>
+      <p class="lead">Não é o mesmo app reduzido — é uma árvore de telas própria em <code>src/components/mobile/*</code>, com um visor de resultados totalmente diferente do desktop.</p>
+
+      <div class="phone-frame">
+        <div class="phone-frame__header">
+          <span style="color:#fff;font-size:11px;font-weight:700">ToolOptimizer CNC</span>
+          <div style="display:flex;gap:6px">
+            <span class="material-symbols-outlined" style="font-size:16px;color:#9CA3AF;background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.1);border-radius:6px;padding:4px">history</span>
+            <span class="material-symbols-outlined" style="font-size:16px;color:#9CA3AF;background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.1);border-radius:6px;padding:4px">settings</span>
+          </div>
+        </div>
+        <div class="phone-frame__body">
+          <div class="phone-status" style="background:rgba(46,204,113,.1);border-color:rgba(46,204,113,.4)">
+            <div style="display:flex;align-items:center;gap:8px">
+              <span class="material-symbols-outlined" style="font-size:26px;color:#2ecc71">check_circle</span>
+              <div><div style="color:#2ecc71;font-weight:900;font-size:15px;line-height:1">SEGURO</div><div style="font-size:8px;color:rgba(255,255,255,.4);text-transform:uppercase;letter-spacing:.15em;margin-top:2px">Status do Processo</div></div>
+            </div>
+            <div style="text-align:right;font-family:'JetBrains Mono',monospace;color:#fff;font-size:11px;font-weight:700">Ø12 mm</div>
+          </div>
+          <div class="phone-readout" style="border-color:var(--dsx-primary)">
+            <div class="phone-readout__label" style="color:var(--dsx-primary)">Rotação</div>
+            <div class="phone-readout__value">6.800</div>
+          </div>
+        </div>
+        <div class="phone-frame__tabbar">
+          <div class="phone-tab"><span class="material-symbols-outlined">settings</span>Configurar</div>
+          <div class="phone-tab is-active"><span class="material-symbols-outlined">bar_chart</span>Resultados</div>
+          <div class="phone-tab"><span class="material-symbols-outlined">tune</span>Ajustar</div>
+        </div>
+      </div>
+
+      <h3>HmiVisor — visor mobile</h3>
+      <p class="hint" style="margin-top:0">Substitui as 8 zonas do desktop por 4 blocos de alto contraste: status colorido, 2 cards no estilo <code>BigNumber</code> com borda lateral de 4px (RPM ciano, Avanço verde), 2 células secundárias (Vc/MRR) e uma dica de toque. Números a <code>text-7xl</code> (72px) — maior que qualquer degrau da escala tipográfica canônica (seção 03). Fonte: <code>hmi-visor.tsx</code>.</p>
+      <div class="divida"><span class="pill pill--err">Dívida</span><span>Container principal do <code>HmiVisor</code> tem a classe <code>animate-in fade-in slide-in-from-bottom-4 duration-300</code> — mesma situação da seção 10: plugin não instalado, a entrada não anima.</span></div>
+
+      <h3>Tab bar</h3>
+      <div class="hint" style="margin-top:0">3 abas fixas (Configurar/Resultados/Ajustar), <code>min-h-[56px]</code>, indicador ativo é uma linha de 8px sob o ícone + glow ciano. Badge de "novo resultado" (ponto pulsante) na aba Resultados quando o usuário está em outra aba. Fonte: <code>mobile-tab-bar.tsx</code>.</div>
+
+      <h3>Botão Simular sticky</h3>
+      <div class="hint" style="margin-top:0">Mesma lógica visual do botão desktop (seção 07) — <code>btnIdleGlow</code>, <code>spinIcon</code>, preenchimento de progresso — em barra fixa acima da tab bar, <code>min-h-[48px]</code>, botão de reset ao lado com <code>w-14</code>. Fonte: <code>mobile-simulate-button.tsx</code>.</div>
+      <div class="hint">Slider touch (36px) e <code>MiniResultBar</code> já cobertos nas seções 09 e 12 — não repetidos aqui.</div>
+    </section>
+
+    <section id="s16" class="dsx-section">
+      <div class="dsx-section__eyebrow"><span class="dsx-section__num">16</span><span class="dsx-section__group">Componentes</span></div>
+      <h2>Admin</h2>
+      <p class="lead"><code>/admin</code> usa a paleta padrão do Tailwind (<code>cyan-400</code>, <code>green-500</code>...) — zero sobreposição com os tokens do app. 57 ocorrências de cores <code>cyan-*</code> em 15 arquivos só na área admin.</p>
+
+      <div class="admin-frame">
+        <div class="admin-frame__sidebar">
+          <div style="padding:0 14px 10px;border-bottom:1px solid rgba(255,255,255,.08);margin-bottom:8px">
+            <div style="font-size:9px;color:#6B7280;text-transform:uppercase;letter-spacing:.1em;font-weight:700">ToolOptimizer</div>
+            <div style="font-size:11px;color:#22d3ee;font-weight:600">Admin</div>
+          </div>
+          <div class="admin-frame__navitem is-active"><span class="material-symbols-outlined">dashboard</span>Dashboard</div>
+          <div class="admin-frame__navitem"><span class="material-symbols-outlined">task_alt</span>Tarefas</div>
+          <div class="admin-frame__navitem"><span class="material-symbols-outlined">inbox</span>Inbox de Bugs</div>
+        </div>
+        <div class="admin-frame__main">
+          <div class="admin-kpi-row">
+            <div class="admin-kpi" style="border-color:rgba(6,182,212,.2)"><div class="admin-kpi__value" style="color:#67e8f9">128</div><div class="admin-kpi__label">Sessões</div></div>
+            <div class="admin-kpi" style="border-color:rgba(34,197,94,.2)"><div class="admin-kpi__value" style="color:#86efac">98%</div><div class="admin-kpi__label">Uptime</div></div>
+            <div class="admin-kpi" style="border-color:rgba(239,68,68,.2)"><div class="admin-kpi__value" style="color:#fca5a5">3</div><div class="admin-kpi__label">Erros</div></div>
+          </div>
+        </div>
+      </div>
+      <div class="hint" style="margin-top:0"><code>AdminSidebar</code> (9 rotas), <code>AdminHeader</code> (link "Voltar ao App"), <code>KpiCard</code> e <code>StatusBadge</code> — fundo geral <code>bg-white/3</code>/<code>bg-white/4</code>, bordas <code>border-white/8</code>, nenhum dos dois na escala de 6 degraus da seção 04.</div>
+
+      <h3>Mapeamento de migração — Canonização #11</h3>
+      <table class="map-table">
+        <tr><td><code>cyan-400/500</code></td><td class="arrow">→</td><td><code>primary</code> <span style="color:#6B7280">#00D9FF</span></td></tr>
+        <tr><td><code>green-400/500</code></td><td class="arrow">→</td><td><code>seg-verde</code> <span style="color:#6B7280">#2ecc71</span></td></tr>
+        <tr><td><code>yellow-400/500</code></td><td class="arrow">→</td><td><code>seg-amarelo</code> <span style="color:#6B7280">#f39c12</span></td></tr>
+        <tr><td><code>red-400/500</code></td><td class="arrow">→</td><td><code>seg-vermelho</code> <span style="color:#6B7280">#e74c3c</span></td></tr>
+        <tr><td><code>bg-white/3</code>, <code>bg-white/4</code></td><td class="arrow">→</td><td><code>bg-white/5</code></td></tr>
+        <tr><td><code>border-white/8</code></td><td class="arrow">→</td><td><code>border-white/10</code></td></tr>
+      </table>
+      <div class="divida"><span class="pill pill--err">Dívida</span><span>Além do mapeamento acima, <code>KpiCard</code> e <code>StatusBadge</code> usam mais 3 cores sem correspondência no app: <code>blue-*</code> (em progresso), <code>orange-*</code> (severidade alta), <code>gray-*</code> (neutro/cancelado) — ficam fora da canonização por não terem equivalente semântico direto nos tokens do produto principal.</span></div>
+      <div class="hint">Migração não é urgente — admin é ferramenta interna do Rafael, não superfície pública. Prioridade baixa na seção 18 (Dívida Visual).</div>
     </section>
 
     <!-- SESSAO-INSERT-POINT: novas secoes entram aqui, imediatamente antes do fechamento de main -->
