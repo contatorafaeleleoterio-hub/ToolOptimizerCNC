@@ -1,8 +1,8 @@
 # Backlog de Implementação — ToolOptimizer CNC
 
-> **Última atualização:** 17/04/2026
-> **Versão atual:** v0.10.1 → v0.11.0 (após Story-011 2C)
-> **Total de planos pendentes:** 2 (Segurança v0.5.5 ⏸️ pausada + Story-011 2C pending)
+> **Última atualização:** 02/08/2026
+> **Versão atual:** v0.11.0 (Story-011 2C concluída, `b2183bd`)
+> **Total de planos pendentes:** 3 (Segurança v0.5.5 ⏸️ pausada + Redesign Calculadora 80/20 ⬜ + Design System Canônico ⬜)
 
 Esta lista define a ordem de implementação dos planos criados e ainda não executados.
 A ordem garante estabilidade progressiva: bugs corrigidos antes de features, features antes de polish.
@@ -26,7 +26,9 @@ A ordem garante estabilidade progressiva: bugs corrigidos antes de features, fea
 | 9 | [Implementações Dashboard v0.9](#9-implementações-dashboard-v09) | 🎨 Feature+Redesign | v0.9.4 | 7 itens — 7/7 concluídos | ✅ Concluído (`9b61427`) |
 | 10 | [Redesign Visual Dashboard](#10-redesign-visual-dashboard) | 🎨 Design Audit | v0.10.0 | 6 sessões | ✅ Concluído (`64890cc`) |
 | 11 | [Implementações Dashboard v0.10.1](#11-implementações-dashboard-v0101) | 🎨 Feature | v0.10.1 | 10 itens — todos concluídos | ✅ Concluído (10/10) |
-| 12 | [Story-011 ITEM-5.2 Cassino](#12-story-011-cassino) | 🎬 Animation | v0.11.0 | 3 sub-sessões | ⬜ 2A ✅ 2B ✅ 2C pendente |
+| 12 | [Story-011 ITEM-5.2 Cassino](#12-story-011-cassino) | 🎬 Animation | v0.11.0 | 3 sub-sessões | ✅ Concluído (`b2183bd`) |
+| 13 | [Redesign Calculadora 80/20](#13-redesign-calculadora-8020) | 🎨 Redesign | MINOR | 5 arquivos + testes, 4 sessões (S0-S3) | ⬜ Pendente |
+| 14 | [Design System Canônico](#14-design-system-canônico) | 📄 Docs / Design Audit | — | 1 arquivo HTML, 6 sessões (S1-S6), zero `src/` | ⬜ Pendente |
 
 ---
 
@@ -188,6 +190,55 @@ v0.5.5 — Segurança Cibernética ⬜
 | 3 | Protótipo HTML | `docs/design/DASHBOARD_V2_PROPOSAL.html` |
 
 **Prompts de execução incluídos no plano** — copiar e colar para iniciar cada sessão.
+
+---
+
+### 13. Redesign Calculadora 80/20
+
+**Arquivo do plano:** `REDESIGN_DASHBOARD_80-20.md` (v3 consolidado, 18/07/2026)
+**Prioridade:** ALTA — próxima atividade principal do dashboard de cálculo (Cloud Code)
+**Tipo:** Redesign de exposição — zero engine novo
+
+**Problema:** ~45-50 elementos visuais simultâneos; herói RPM/Avanço em 2rem; estado vazio mostra zeros falsos + timestamp falso; torque exibido sem ser validado em nenhum cálculo; navegação escondida no SidebarFooter.
+
+**4 sessões de execução:**
+
+| Sessão | Foco | Entregável |
+|--------|------|------------|
+| S0 | Preparação | `.interface-design/system.md` restaurado + registro no backlog/roadmap |
+| S1 | Config Panel enxuto | 5 inputs essenciais + toggle "Ajuste avançado" + Simular no rodapé |
+| S2 | Results Panel 4 zonas | Herói text-6xl + estado vazio honesto + torque removido + Detalhes colapsado |
+| S3 | Navegação + polish | Nav no header com contadores + acessibilidade + testes + bump MINOR |
+
+**Meta:** de ~45-50 para ~15-18 elementos visíveis (-65%), fluxo material→simular < 10s.
+
+---
+
+### 14. Design System Canônico
+
+**Arquivo do plano:** `PLAN_DESIGN_SYSTEM_CANONICO.md` (criado 02/08/2026)
+**Prioridade:** ALTA — norma visual que passa a reger todo desenvolvimento de UI
+**Tipo:** Documentação / Design audit — **ZERO alterações em `src/`**
+**Entregável:** `docs/_canonicos/DESIGN-SYSTEM.html` (HTML único, auto-contido, com demos vivos)
+
+**Problema:** não existe fonte única de verdade visual. Tokens só no `@theme` do `index.css`; o resto é convenção implícita em ~90 arquivos `.tsx`. Mapeamento encontrou 3 paletas concorrentes de semáforo, 2 cianos, 5 estilos de modal, 4 sliders, 3 barras de saúde, 14 degraus de alpha sem sistema, e um `src/admin/` com paleta Tailwind totalmente separada dos tokens do app.
+
+**Escopo:** app desktop + mobile + páginas + admin. 20 seções (Marca 00-01, Fundamentos 02-06, Componentes 07-16, Regras 17-19).
+
+**6 sessões de execução:**
+
+| Sessão | Foco | Seções |
+|--------|------|--------|
+| 1 | Esqueleto + chrome + JS + Marca | 00–01 |
+| 2 | Fundamentos (cores, tipo, espaço, layout, motion) | 02–06 |
+| 3 | Botões, campos, sliders | 07–09 |
+| 4 | Painéis, visores de dados, feedback | 10–12 |
+| 5 | Navegação, overlays, mobile, admin | 13–16 |
+| 6 | Propostos + dívida visual + changelog + verificação | 17–19 |
+
+**Decisões fechadas:** canonizar uma versão + seção de Dívida Visual · dark canônico + tema claro PROPOSTO · admin unificado nos tokens do app.
+
+**Regra inegociável:** zero vestígios do design system de referência usado como molde estrutural — verificação por grep na sessão 6.
 
 ---
 
