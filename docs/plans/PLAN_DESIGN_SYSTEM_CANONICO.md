@@ -3,7 +3,7 @@
 > **Criado:** 02/08/2026
 > **Tipo:** 📄 Documentação / Design Audit — **ZERO alterações em `src/`**
 > **Entregável:** `docs/_canonicos/DESIGN-SYSTEM.html`
-> **Status:** ⬜ Pendente — aguardando execução (6 sessões)
+> **Status:** 🔶 Em andamento — sessão 1/4 concluída
 
 ---
 
@@ -122,19 +122,26 @@ O ToolOptimizer não tem fonte única de verdade visual. Os tokens vivem só no 
 
 ---
 
-## Execução — 6 sessões
+## Execução — 4 sessões (re-planejado 02/08/2026, executor Sonnet 1M)
 
-| # | Sessão | Escopo | Status |
-|---|--------|--------|--------|
-| 0 | Registro do plano | Gravar plano + backlog + roadmap | ✅ Concluído (02/08/2026) |
-| 1 | Esqueleto + Marca | Estrutura HTML, CSS do doc com identidade ToolOptimizer, sidebar, toggle de tema, JS (copiar hex, contraste WCAG, scrollspy), seções **00–01** | ⬜ |
-| 2 | Fundamentos | Seções **02–06**: cores (dark + claro proposto), tipografia, espaçamento/raio/elevação/glow, grid e layout, motion com a timeline de simulação de 2,65 s | ⬜ |
-| 3 | Componentes I | Seções **07–09**: botões (todas as variantes e estados), campos e controles, os 4 sliders com demos funcionais | ⬜ |
-| 4 | Componentes II | Seções **10–12**: painéis e cards glass, visores de dados (LCD, BigNumber, HalfMoonGauge, SegmentedGradientBar, FormulaCard, MetricCell), feedback e status | ⬜ |
-| 5 | Componentes III | Seções **13–16**: navegação, overlays, mobile, admin unificado com tabela de migração | ⬜ |
-| 6 | Regras + verificação | Seções **17–19**: componentes propostos, tabela de dívida visual, changelog + varredura anti-vestígio | ⬜ |
+> Dimensionamento por **volume de HTML produzido** (gargalo = output, não leitura).
+> **Teto: ~1000 linhas de HTML/CSS novo por sessão**, escritas append-only (1–2 escritas grandes, sem releitura do arquivo em construção). Régua: referência tem ~80 linhas por seção leve e 200–250 por seção com demos densos.
+>
+> Densidade estimada por seção: 00 LEVE(60) · 01 LEVE(80) · 02 PESADA(250) · 03 MÉDIA(120) · 04 MÉDIA(120) · 05 LEVE(80) · 06 MÉDIA(120) · 07 PESADA(200) · 08 MÉDIA(150) · 09 PESADA(220) · 10 MÉDIA(130) · 11 PESADA(250) · 12 MÉDIA(120) · 13 LEVE(90) · 14 MÉDIA(120) · 15 MÉDIA(150) · 16 MÉDIA(130) · 17 MÉDIA(150) · 18 MÉDIA(120) · 19 LEVE(40). Nenhuma seção sozinha estoura o teto — nenhuma divisão necessária.
+>
+> Dependências de escrita: chrome + CSS de demos compartilhados (btn, swatch, scalerow, pill, slider-demo, panel-glass) nascem na S1 e são reaproveitados; seção 15 (touch-slider) reaproveita o CSS de slider da S2; seção 16 reaproveita pills/panels; 17–19 são só texto/tabela.
 
-Commit ao fim de cada sessão (`docs:`), sem push.
+| # | Sessão | Seções | Linhas HTML estimadas | Status |
+|---|--------|--------|-----------------------|--------|
+| 0 | Registro do plano | — | — | ✅ Concluído (02/08/2026) |
+| 1 | Esqueleto + Marca + Cores | Chrome do doc (sidebar, toggle tema, JS copiar/contraste/scrollspy) + **00–02** | 592 linhas | ✅ Concluído (02/08/2026) |
+| 2 | Fundamentos + Componentes I | **03–09** (tipografia, espaçamento, grid, motion, botões, campos, sliders — CSS de slider criado aqui) | ~1010 | ⬜ |
+| 3 | Componentes II + III | **10–16** (painéis, visores, feedback, navegação, overlays, mobile, admin) | ~990 | ⬜ |
+| 4 | Regras + verificação | **17–19** + varredura anti-vestígio + validação no navegador | ~310 | ⬜ |
+
+Cada sessão fecha as tags abertas (`</main></body></html>` reposicionadas via única Edit no fim) — arquivo sempre válido e abrível. Commit ao fim de cada sessão (`docs:`), sem push.
+
+**Desvio registrado na sessão 1:** CSS de `btn` e `slider-demo` listados como infraestrutura compartilhada da S1 foram **adiados para a S2** — construí-los agora exigiria valores de `config-panel.tsx`/`styled-slider.tsx`/`bidirectional-slider.tsx` que a S1 não lê, e o plano exige fidelidade por Grep na sessão que escreve a seção correspondente (07 Botões, 09 Sliders, ambas na S2). CSS efetivamente criado na S1: chrome completo (sidebar, topbar, tema, scrollspy) + blocos de anotação (`lead/hint/canon/proposto/divida`) + `swatch`/`swatch-grid`/`pill`/`panel-glass`. A S2 deve orçar CSS+HTML juntos para as seções 07 e 09 (o teto de ~1010 linhas já tem folga para isso).
 
 ### Prompt de retomada
 
