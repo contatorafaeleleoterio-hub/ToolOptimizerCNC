@@ -3,7 +3,7 @@
 > **Criado:** 02/08/2026
 > **Tipo:** 📄 Documentação / Design Audit — **ZERO alterações em `src/`**
 > **Entregável:** `docs/_canonicos/DESIGN-SYSTEM.html`
-> **Status:** 🔶 Em andamento — sessão 3/4 concluída
+> **Status:** ✅ Concluído — 4/4 sessões (02/08/2026). Ver nota de verificação pendente logo após a tabela de execução.
 
 ---
 
@@ -137,7 +137,17 @@ O ToolOptimizer não tem fonte única de verdade visual. Os tokens vivem só no 
 | 1 | Esqueleto + Marca + Cores | Chrome do doc (sidebar, toggle tema, JS copiar/contraste/scrollspy) + **00–02** | 592 linhas | ✅ Concluído (02/08/2026) |
 | 2 | Fundamentos + Componentes I | **03–09** (tipografia, espaçamento, grid, motion, botões, campos, sliders — CSS de slider criado aqui) | ~1010 | ✅ Concluído (02/08/2026) |
 | 3 | Componentes II + III | **10–16** (painéis, visores, feedback, navegação, overlays, mobile, admin) | ~990 | ✅ Concluído (02/08/2026) |
-| 4 | Regras + verificação | **17–19** + varredura anti-vestígio + validação no navegador | ~310 | ⬜ |
+| 4 | Regras + verificação | **17–19** + varredura anti-vestígio + validação no navegador | ~310 | ✅ Concluído (02/08/2026) — validação de navegador pendente, ver nota |
+
+**Sessão 4 — notas de execução (02/08/2026):** arquivo passou de 1488 → 1575 linhas (+87). Seções 17-19 sem CSS novo (reaproveitado `orphan-table`/`spec-table`/`canon`/`proposto`/`divida`/`pill`, como previsto). Seção 17 consolida 7 propostas já levantadas nas sessões 1-3 + 2 sínteses novas (acordeão único, toast reutilizável). Seção 18 totaliza **21 itens de dívida visual**, contados e conferidos por Grep contra o próprio documento (5 grupos: Cores, Tipografia/espaçamento, Elevação/motion, Componentes, Admin). Marcador `SESSAO-INSERT-POINT` removido no fim — documento fechado, sem próxima sessão para inserir.
+
+**Verificação executada nesta sessão:**
+- ✅ Tags balanceadas: 20 `<section>`, 432 `<div>`, 12 `<table>`, 57 `<tr>`/`<td>`, 3 `<details>`/`<summary>`, 1 `<html>`/`<body>`/`<main>` — todos os pares abertura/fechamento batem.
+- ✅ Grep anti-vestígio (termos do documento de referência): zero ocorrências.
+- ✅ 20 IDs de seção únicos (`s00`-`s19`), 20 links de sidebar correspondentes.
+- ✅ Sintaxe do bloco `<script>` validada com `node -c` — sem erros.
+- ✅ `git status` em `src/` confirma zero arquivos alterados por este trabalho (único item untracked, `viewport-redirect.tsx`, já existia antes da sessão 1).
+- ⬜ **Pendente — requer navegador real, fora do alcance das ferramentas desta sessão:** carregamento das fontes (Inter/JetBrains Mono/Material Symbols), funcionamento visual do toggle de tema, clique-para-copiar + contraste WCAG nos swatches, scrollspy da sidebar, ausência de erros de console, comparação lado a lado com `npm run dev`. Rafael (ou uma sessão com ferramenta de browser disponível) deve abrir `docs/_canonicos/DESIGN-SYSTEM.html` diretamente para essa checagem final.
 
 **Sessão 3 — notas de execução (02/08/2026):** arquivo passou de 1053 → 1488 linhas (+435). Achados de fidelidade relevantes: prop `palette` do `HalfMoonGauge` é passada em 3 lugares e nunca lida (cor real vem de função fixa por índice); classes `animate-in`/`fade-in`/`slide-in-from-bottom-4` aparecem em 3 arquivos (`formula-card.tsx`, `hmi-visor.tsx`, `mobile-page.tsx`) mas o plugin `tailwindcss-animate` não está instalado — animação zero nesses pontos, achado novo não registrado no mapeamento original; `design-tokens.ts` inteiro (5 exports: CARD_GLASS/CARD_INNER/MODAL_PANEL/MODAL_BACKDROP/MODAL_HANDLE) tem zero imports, não só os tokens de modal; `ParameterHealthBar` como componente visual é órfão mas suas 4 funções puras (`computeVcByValue` etc.) seguem em uso real via `SegmentedGradientBar`; admin usa paleta Tailwind pura (57 ocorrências de `cyan-*` em 15 arquivos) sem nenhuma sobreposição com os tokens do app — confirma `bg-white/3` E `bg-white/4` (não só um dos dois) mais `border-white/8`. Verificação: 17 seções balanceadas (section/div/details/summary/table/svg), grep anti-vestígio limpo, sidebar com 17 links.
 

@@ -443,8 +443,12 @@
     <a class="dsx-sidebar__link" href="#s14"><span class="dsx-sidebar__num">14</span> Overlays</a>
     <a class="dsx-sidebar__link" href="#s15"><span class="dsx-sidebar__num">15</span> Mobile</a>
     <a class="dsx-sidebar__link" href="#s16"><span class="dsx-sidebar__num">16</span> Admin</a>
+    <div class="dsx-sidebar__group">Regras</div>
+    <a class="dsx-sidebar__link" href="#s17"><span class="dsx-sidebar__num">17</span> Propostos</a>
+    <a class="dsx-sidebar__link" href="#s18"><span class="dsx-sidebar__num">18</span> Dívida visual</a>
+    <a class="dsx-sidebar__link" href="#s19"><span class="dsx-sidebar__num">19</span> Changelog</a>
   </div>
-  <div class="dsx-sidebar__foot">Sessão 3/4 · 02/08/2026<br>Base: código em v0.11.0</div>
+  <div class="dsx-sidebar__foot">Completo · 02/08/2026<br>Base: código em v0.11.0</div>
 </nav>
 
 <div class="dsx-main">
@@ -1363,7 +1367,90 @@
       <div class="hint">Migração não é urgente — admin é ferramenta interna do Rafael, não superfície pública. Prioridade baixa na seção 18 (Dívida Visual).</div>
     </section>
 
-    <!-- SESSAO-INSERT-POINT: novas secoes entram aqui, imediatamente antes do fechamento de main -->
+    <section id="s17" class="dsx-section">
+      <div class="dsx-section__eyebrow"><span class="dsx-section__num">17</span><span class="dsx-section__group">Regras</span></div>
+      <h2>Componentes propostos</h2>
+      <p class="lead">Banco de opções — tudo que este documento sugeriu ao longo das seções 00-16 mas que ainda não existe no código, reunido num só lugar para decisão do Rafael. Nenhum item aqui é regra; é sugestão com endereço de onde foi levantada.</p>
+
+      <table class="orphan-table">
+        <tr><td><b>Tema claro</b></td><td>Paleta completa derivada do dark canônico — hue de marca/semáforo/gauge invariantes, só o fundo muda. 100% não implementado.</td><td><code>seção 02</code></td></tr>
+        <tr><td><b>Botão ± "touch" 44px</b></td><td>Terceiro degrau oficial de tamanho, substituindo os 3 valores divergentes (28/40/48px) hoje espalhados.</td><td><code>seção 07</code></td></tr>
+        <tr><td><b>Focus ring <code>focus-visible</code></b></td><td>Trocar <code>focus:</code> por <code>focus-visible:</code> no anel padrão — mesma cor/espessura, sem aparecer em clique de mouse.</td><td><code>seção 08</code></td></tr>
+        <tr><td><b><code>design-tokens.ts</code> adotado</b></td><td>Importar <code>CARD_GLASS</code>/<code>CARD_INNER</code>/<code>MODAL_PANEL</code>/<code>MODAL_BACKDROP</code>/<code>MODAL_HANDLE</code> nos componentes reais em vez de repetir a string à mão.</td><td><code>seções 10, 14</code></td></tr>
+        <tr><td><b>Modal único a partir do <code>AdminModal</code></b></td><td>Generalizar <code>createPortal</code> + <code>role="dialog"</code> + fechamento por <code>Escape</code> para os outros 2 modais do app.</td><td><code>seção 14</code></td></tr>
+        <tr><td><b>Token <code>--color-gauge-*</code></b></td><td>Promover a constante repetida em 3 arquivos (<code>#FF4D4D/#FFA500/#00E676</code>) a token de <code>@theme</code>.</td><td><code>seção 02</code></td></tr>
+        <tr><td><b>Usos de marca formalizados</b></td><td>Regras de do/dont da logomarca não têm diretriz escrita no código — propostas por prática padrão, aguardando validação.</td><td><code>seção 01</code></td></tr>
+      </table>
+
+      <h3>Sínteses novas desta sessão</h3>
+      <div class="proposto"><span class="pill pill--warn">Proposto</span><span><b>Acordeão único.</b> <code>CollapsibleSection</code> e <code>FormulaCard</code> resolvem o mesmo problema (seção 10) com 2 mecanismos diferentes, um dos quais não anima de verdade. Consolidar num só componente — animação <code>grid-template-rows</code> (a que já funciona) + a estrutura de cabeçalho do FormulaCard (ícone + valor inline) para os casos que precisam disso.</span></div>
+      <div class="proposto"><span class="pill pill--warn">Proposto</span><span><b>Confirmação tipo toast reutilizável.</b> O padrão "✓ X salvo" (seção 12) se repete como <code>useState</code> + <code>setTimeout</code> local em pelo menos 2 arquivos (<code>config-panel.tsx</code>, <code>mobile-config-section.tsx</code>). Um componente <code>&lt;Toast/&gt;</code> ou hook <code>useToast()</code> elimina a duplicação.</span></div>
+      <div class="hint">Nenhuma proposta desta seção requer decisão urgente — todas são candidatas para um plano de implementação futuro, priorizadas pelo Rafael quando fizer sentido.</div>
+    </section>
+
+    <section id="s18" class="dsx-section">
+      <div class="dsx-section__eyebrow"><span class="dsx-section__num">18</span><span class="dsx-section__group">Regras</span></div>
+      <h2>Dívida visual</h2>
+      <p class="lead">Lista consolidada de tudo que diverge do canônico, confirmado por Grep ao longo das seções 02-16. Vira backlog de um plano de correção futuro; nenhuma correção acontece neste documento.</p>
+
+      <h3>Cores</h3>
+      <table class="orphan-table">
+        <tr><td>Ciano duplicado — <code>#00D9FF</code> vs <code>rgba(0,229,255,…)</code> na borda do LCD</td><td><code>results-panel.tsx:226</code></td><td><code>02</code></td></tr>
+        <tr><td><code>#0f1419</code> escrito à mão — 36 ocorrências em 12 arquivos</td><td>vários, incl. <code>index.css</code></td><td><code>02</code></td></tr>
+        <tr><td>3º sistema de semáforo órfão — <code>COLOR_PALETTES</code> em <code>gauge.tsx</code></td><td><code>gauge.tsx</code></td><td><code>02</code></td></tr>
+      </table>
+
+      <h3>Tipografia e espaçamento</h3>
+      <table class="orphan-table">
+        <tr><td><code>text-[13px]</code> / <code>text-[18px]</code> fora dos 8 degraus</td><td><code>collapsible-section.tsx</code>, <code>settings-page.tsx</code>, <code>admin-sidebar.tsx</code></td><td><code>03</code></td></tr>
+        <tr><td><code>gap-2.5</code> / <code>gap-5</code> / <code>px-2.5</code> fora da escala de 6 degraus</td><td><code>mobile-adjust-section.tsx</code>, <code>mobile-fine-tune-section.tsx</code>, dezenas de badges</td><td><code>04</code></td></tr>
+        <tr><td><code>border-white/8</code>, <code>/12</code>, <code>/15</code> fora da escala alpha</td><td><code>config-panel.tsx</code>, mobile, admin</td><td><code>04</code></td></tr>
+        <tr><td><code>rounded-md</code> / <code>rounded-3xl</code> fora da escala de raio — 24 ocorrências</td><td>12 arquivos</td><td><code>04</code></td></tr>
+      </table>
+
+      <h3>Elevação e motion</h3>
+      <table class="orphan-table">
+        <tr><td><code>--shadow-neon-green</code> — definido, zero usos</td><td><code>index.css:17</code></td><td><code>04</code></td></tr>
+        <tr><td>6 keyframes órfãos: <code>shimmer/spinner/gaugeRoll/fadeOut/ambientPulse/sliderShake</code></td><td><code>index.css</code></td><td><code>06</code></td></tr>
+        <tr><td>Zero <code>prefers-reduced-motion</code> em 8 animações ativas</td><td>todo o código</td><td><code>06</code></td></tr>
+      </table>
+
+      <h3>Componentes</h3>
+      <table class="orphan-table">
+        <tr><td>Botão ± em 5 tamanhos reais (20/24/28/40/48px), só 2 canônicos</td><td><code>config-panel.tsx</code>, mobile</td><td><code>07</code></td></tr>
+        <tr><td>2 padrões de foco — anel colorido vs só borda</td><td><code>config-panel.tsx:69-73</code></td><td><code>08</code></td></tr>
+        <tr><td>2 mecanismos de acordeão + classe <code>animate-in</code> sem efeito (plugin não instalado)</td><td><code>formula-card.tsx</code></td><td><code>10</code></td></tr>
+        <tr><td><code>design-tokens.ts</code> inteiro sem nenhum import (5 exports)</td><td><code>design-tokens.ts</code></td><td><code>10, 14</code></td></tr>
+        <tr><td>Prop <code>palette</code> do <code>HalfMoonGauge</code> nunca lida</td><td><code>half-moon-gauge.tsx</code></td><td><code>11</code></td></tr>
+        <tr><td><code>ParameterHealthBar</code> visual órfão (lógica pura ainda em uso)</td><td><code>parameter-health-bar.tsx</code></td><td><code>12</code></td></tr>
+        <tr><td>3 variantes de modal + 3 opacidades de backdrop divergentes</td><td>3 arquivos de modal</td><td><code>14</code></td></tr>
+        <tr><td><code>animate-in</code> sem efeito no <code>HmiVisor</code> mobile</td><td><code>hmi-visor.tsx</code></td><td><code>15</code></td></tr>
+      </table>
+
+      <h3>Admin</h3>
+      <table class="orphan-table">
+        <tr><td>Paleta Tailwind pura (<code>cyan/green/yellow/red-400/500</code>) sem overlap com tokens do app — 57 ocorrências de <code>cyan-*</code></td><td>15 arquivos</td><td><code>16</code></td></tr>
+        <tr><td><code>bg-white/3</code>/<code>4</code> e <code>border-white/8</code> fora da escala</td><td><code>admin-sidebar.tsx</code>, <code>admin-header.tsx</code>, várias páginas</td><td><code>16</code></td></tr>
+        <tr><td><code>blue-*</code>/<code>orange-*</code>/<code>gray-*</code> sem correspondência semântica no app</td><td><code>kpi-card.tsx</code>, <code>status-badge.tsx</code></td><td><code>16</code></td></tr>
+      </table>
+
+      <div class="hint">21 itens · nenhum bloqueia uso do produto hoje — são inconsistências visuais, não bugs funcionais. Prioridade de correção fica para um plano à parte, fora do escopo desta auditoria.</div>
+    </section>
+
+    <section id="s19" class="dsx-section">
+      <div class="dsx-section__eyebrow"><span class="dsx-section__num">19</span><span class="dsx-section__group">Regras</span></div>
+      <h2>Changelog</h2>
+      <p class="lead">Histórico das 4 sessões que construíram este documento — não é changelog do produto, é changelog do próprio Design System.</p>
+      <table class="spec-table">
+        <tr><td>Sessão 0 — 02/08/2026</td><td>Registro do plano de execução (<code>PLAN_DESIGN_SYSTEM_CANONICO.md</code>).</td></tr>
+        <tr><td>Sessão 1 — 02/08/2026</td><td>Chrome do documento (sidebar, tema, scrollspy, copiar/contraste) + seções 00-02 (Apresentação, Logomarca, Cores). 592 linhas.</td></tr>
+        <tr><td>Sessão 2 — 02/08/2026</td><td>Seções 03-09 (Tipografia, Espaçamento, Grid, Motion, Botões, Campos, Sliders). +461 linhas → 1053.</td></tr>
+        <tr><td>Sessão 3 — 02/08/2026</td><td>Seções 10-16 (Painéis, Visores, Feedback, Navegação, Overlays, Mobile, Admin). +435 linhas → 1488.</td></tr>
+        <tr><td>Sessão 4 — 02/08/2026</td><td>Seções 17-19 (Propostos, Dívida Visual, Changelog) + varredura final.</td></tr>
+      </table>
+      <div class="hint">Base de código de todas as sessões: ToolOptimizer CNC v0.11.0. Próxima revisão deste documento deve acontecer quando a Dívida Visual (seção 18) for corrigida ou quando novos componentes divergentes forem identificados — não numa cadência fixa.</div>
+    </section>
+
   </main>
 </div>
 
