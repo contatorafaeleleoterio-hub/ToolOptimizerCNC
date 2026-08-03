@@ -2,7 +2,7 @@
 
 > **Última atualização:** 02/08/2026
 > **Versão atual:** v0.11.0 (Story-011 2C concluída, `b2183bd`)
-> **Total de planos pendentes:** 3 (Segurança v0.5.5 ⏸️ pausada + Redesign Calculadora 80/20 ⬜ + Design System Canônico ⬜)
+> **Total de planos pendentes:** 2 (Segurança v0.5.5 ⏸️ pausada + Redesign Calculadora 80/20 ⬜) — Design System Canônico ✅ concluído 02/08/2026
 
 Esta lista define a ordem de implementação dos planos criados e ainda não executados.
 A ordem garante estabilidade progressiva: bugs corrigidos antes de features, features antes de polish.
@@ -28,7 +28,7 @@ A ordem garante estabilidade progressiva: bugs corrigidos antes de features, fea
 | 11 | [Implementações Dashboard v0.10.1](#11-implementações-dashboard-v0101) | 🎨 Feature | v0.10.1 | 10 itens — todos concluídos | ✅ Concluído (10/10) |
 | 12 | [Story-011 ITEM-5.2 Cassino](#12-story-011-cassino) | 🎬 Animation | v0.11.0 | 3 sub-sessões | ✅ Concluído (`b2183bd`) |
 | 13 | [Redesign Calculadora 80/20](#13-redesign-calculadora-8020) | 🎨 Redesign | MINOR | 5 arquivos + testes, 4 sessões (S0-S3) | ⬜ Pendente |
-| 14 | [Design System Canônico](#14-design-system-canônico) | 📄 Docs / Design Audit | — | 1 arquivo HTML, 6 sessões (S1-S6), zero `src/` | ⬜ Pendente |
+| 14 | [Design System Canônico](#14-design-system-canônico) | 📄 Docs / Design Audit | — | 1 arquivo HTML, 4 sessões, zero `src/` | ✅ Concluído (`d471895`) |
 
 ---
 
@@ -225,20 +225,23 @@ v0.5.5 — Segurança Cibernética ⬜
 
 **Escopo:** app desktop + mobile + páginas + admin. 20 seções (Marca 00-01, Fundamentos 02-06, Componentes 07-16, Regras 17-19).
 
-**6 sessões de execução:**
+**Status: ✅ CONCLUÍDO (02/08/2026)** — replanejado de 6 para 4 sessões durante a execução (executor com contexto de 1M tokens comportou mais por sessão que o estimado inicialmente):
 
-| Sessão | Foco | Seções |
-|--------|------|--------|
-| 1 | Esqueleto + chrome + JS + Marca | 00–01 |
-| 2 | Fundamentos (cores, tipo, espaço, layout, motion) | 02–06 |
-| 3 | Botões, campos, sliders | 07–09 |
-| 4 | Painéis, visores de dados, feedback | 10–12 |
-| 5 | Navegação, overlays, mobile, admin | 13–16 |
-| 6 | Propostos + dívida visual + changelog + verificação | 17–19 |
+| Sessão | Foco | Seções | Commit |
+|--------|------|--------|--------|
+| 0 | Registro do plano | — | `394bcd7` |
+| 1 | Chrome do doc + Marca + Cores | 00–02 | `5aadb9b` |
+| 2 | Fundamentos + Componentes I | 03–09 | `6ca60d5` |
+| 3 | Componentes II + III | 10–16 | `476f91f` |
+| 4 | Regras + verificação final | 17–19 | `d471895` |
 
-**Decisões fechadas:** canonizar uma versão + seção de Dívida Visual · dark canônico + tema claro PROPOSTO · admin unificado nos tokens do app.
+**Resultado:** `docs/_canonicos/DESIGN-SYSTEM.html`, 1575 linhas, 20 seções. 21 itens de dívida visual catalogados (seção 18) com recomendação de resolução em 3 blocos por risco (limpeza de código órfão → snap de escala → refactor de componente), passada ao Rafael ao fim da sessão 4 — implementação em plano futuro à parte.
 
-**Regra inegociável:** zero vestígios do design system de referência usado como molde estrutural — verificação por grep na sessão 6.
+**Decisões fechadas:** canonizar uma versão + seção de Dívida Visual · dark canônico + tema claro PROPOSTO · admin unificado nos tokens do app (proposto, não implementado).
+
+**Regra inegociável:** zero vestígios do design system de referência usado como molde estrutural — verificado por grep ao fim de cada sessão (1-4), sempre zero ocorrências.
+
+**Pendente (fora do alcance desta sessão):** validação visual em navegador real (fontes, toggle de tema, contraste WCAG ao vivo, scrollspy) — nenhuma ferramenta de browser disponível nas sessões de execução. Verificado por código o que era possível: tags balanceadas, sintaxe do `<script>` (`node -c`), zero regressão em `src/`.
 
 ---
 

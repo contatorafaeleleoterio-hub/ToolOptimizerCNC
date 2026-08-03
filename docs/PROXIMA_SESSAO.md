@@ -11,6 +11,18 @@
 
 ---
 
+## 📄 Sessão paralela — Design System Canônico (02/08/2026)
+
+Sessão de documentação/design audit, independente da linha mobile/Android abaixo. **Zero alterações em `src/`.**
+
+- Plano `docs/plans/PLAN_DESIGN_SYSTEM_CANONICO.md` executado do zero ao fim — 4 sessões (replanejado de 6), commits `5aadb9b`→`d471895`.
+- Entregável: `docs/_canonicos/DESIGN-SYSTEM.html` — 1575 linhas, 20 seções (Marca, Fundamentos, Componentes, Regras), fonte única de verdade visual do app (desktop + mobile + admin).
+- Seção 18 do documento cataloga 21 itens de dívida visual; recomendação passada ao Rafael: resolver em 3 blocos por risco (limpeza de código órfão zero-risco → snap de escala mecânico → refactor de componente com plano próprio). Nenhuma correção de código feita ainda — fica para plano futuro.
+- Pendente: validação visual em navegador real (sem ferramenta de browser disponível nas sessões de execução).
+- Detalhes completos: `docs/plans/BACKLOG_IMPLEMENTACAO.md` item 14.
+
+---
+
 ## ⚡ RESUMO DA ÚLTIMA SESSÃO (19/04/2026)
 
 **Fases 2 e 3 do Master Plan v2.0 CONCLUÍDAS ✅**
