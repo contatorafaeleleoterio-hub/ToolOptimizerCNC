@@ -11,14 +11,29 @@
   --color-seg-verde: #2ecc71;      /* semáforo: parâmetros seguros (L/D ≤ 3) */
   --color-seg-amarelo: #f39c12;    /* semáforo: alerta vibração / L/D 3–4 */
   --color-seg-vermelho: #e74c3c;   /* semáforo: crítico, sugerir redução (L/D 4–6) */
+  --color-gauge-empty: #313742;    /* trilho vazio de gauges e barras segmentadas */
+  --color-accent-gold: #facc15;    /* accent: favorito (estrela) */
+
+  /* Surface elevation scale (outer → inner → overlay) */
+  --color-lcd-dark: #05070a;              /* fundo do visor LCD (results panel) */
+  --color-lcd-panel: #0a0d10;             /* painel interno do visor HMI */
+  --color-elevated-dark: rgba(30, 38, 50, 0.95);  /* cards elevados (mobile) */
+  --color-overlay-dark: rgba(10, 14, 20, 0.97);   /* barras fixas / overlays */
+  --color-modal-dark: rgba(20, 28, 40, 0.98);     /* superfície de modal */
+  --color-text-muted: #6b7280;            /* texto desabilitado / fallback de série */
+
   --font-display: "Inter", sans-serif;
   --font-mono: "JetBrains Mono", monospace;
   --shadow-neon-cyan: 0 0 15px rgba(0, 217, 255, 0.4), 0 0 30px rgba(0, 217, 255, 0.15);
   --shadow-neon-green: 0 0 15px rgba(57, 255, 20, 0.4), 0 0 30px rgba(57, 255, 20, 0.15);
+  --shadow-neon-orange: 0 0 15px rgba(249, 115, 22, 0.4), 0 0 30px rgba(249, 115, 22, 0.15);
+  --shadow-neon-purple: 0 0 15px rgba(168, 85, 247, 0.4), 0 0 30px rgba(168, 85, 247, 0.15);
   --shadow-glass: 0 8px 32px 0 rgba(0, 0, 0, 0.5);
   --shadow-inner-glow: inset 0 0 20px rgba(255, 255, 255, 0.03);
-  --font-size-2xs: 10px;
-  --font-size-fine: 11px;
+  /* Font sizes — Tailwind v4 namespace is --text-*, NOT --font-size-* */
+  --text-3xs: 9px;
+  --text-2xs: 10px;
+  --text-fine: 11px;
 }
 
 body {

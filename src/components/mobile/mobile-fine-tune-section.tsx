@@ -6,7 +6,9 @@ import { calcularSliderBounds } from '@/engine';
 import type { ParametrosUsinagem, SliderBounds, FavoritoCompleto } from '@/types';
 import { SectionTitle } from '../ui-helpers';
 import { SegmentedGradientBar } from '../segmented-gradient-bar';
-import { getSliderRgb } from '../slider-tokens';
+import { getSliderHex, getSliderRgb, glow, trackGlow, dropGlow } from '../slider-tokens';
+import { ACCENT_TEXT, type AccentColor } from '../accent-tokens';
+import { BTN_STEPPER } from '../design-tokens';
 import { ParamExplanation } from '../param-explanation';
 
 /** Compute ideal zone [0-1] for a parameter based on the most recent favorite. */
@@ -29,12 +31,11 @@ function computeIdealRange(
 /** Fine-tune value input with raw/blur pattern — allows free typing */
 function FineTuneValueInput({ display, step, min, max, color, label, unit, onChange }: {
   display: string; step: number; min: number; max: number;
-  color: string; label: string; unit: string;
+  color: AccentColor; label: string; unit: string;
   onChange: (v: number) => void;
 }) {
   const [raw, setRaw] = useState(display);
   const [focused, setFocused] = useState(false);
-  const rgb = getSliderRgb(color);
 
   const parsed = Number(raw);
   const invalid = raw.trim() === '' || isNaN(parsed) || parsed < min || parsed > max;
@@ -51,8 +52,8 @@ function FineTuneValueInput({ display, step, min, max, color, label, unit, onCha
         }}
         onFocus={() => { setFocused(true); setRaw(display); }}
         onBlur={() => { setFocused(false); if (invalid) setRaw(display); }}
-        className={`w-16 bg-transparent border-none text-right font-mono text-lg font-bold text-${color} outline-none [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none`}
-        style={{ filter: `drop-shadow(0 0 6px rgba(${rgb},0.4))` }}
+        className={`w-16 bg-transparent border-none text-right font-mono text-lg font-bold ${ACCENT_TEXT[color]} outline-none [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none`}
+        style={{ filter: dropGlow(color, 6, 0.4) }}
         aria-label={`${label} value`} />
       <span className="text-2xs text-gray-500 font-mono">{unit}</span>
     </div>
@@ -61,29 +62,29 @@ function FineTuneValueInput({ display, step, min, max, color, label, unit, onCha
 
 /** Configuração visual (labels, cores, textos educacionais) — constante */
 const SLIDER_VISUAL = [
-  { key: 'vc' as const, label: 'Vc', fullLabel: 'Velocidade Corte', unit: 'm/min', color: 'primary',
+  { key: 'vc' as const, label: 'Vc', fullLabel: 'Velocidade Corte', unit: 'm/min', color: 'primary' as AccentColor,
     desc: 'Velocidade tangencial na aresta da ferramenta durante o corte.',
     aumentar: 'Usinagem mais rápida, mas desgaste prematuro e mais calor gerado.',
     diminuir: 'Ferramenta mais protegida, porém pode manchar o acabamento superficial.',
     equilibrio: 'Ajuste junto com fz — material mais duro exige Vc menor.' },
-  { key: 'fz' as const, label: 'fz', fullLabel: 'Avanço/Dente', unit: 'mm', color: 'secondary',
+  { key: 'fz' as const, label: 'fz', fullLabel: 'Avanço/Dente', unit: 'mm', color: 'secondary' as AccentColor,
     desc: 'Espessura do cavaco por aresta de corte em cada passagem.',
     aumentar: 'Maior taxa de remoção (MRR), mas risco de vibração e quebra da ferramenta.',
     diminuir: 'Acabamento mais fino e menor esforço, porém reduz a produtividade.',
     equilibrio: 'Mantenha fz dentro da recomendação do fabricante da ferramenta.' },
-  { key: 'ae' as const, label: 'ae', fullLabel: 'Eng. Radial', unit: 'mm', color: 'accent-purple',
+  { key: 'ae' as const, label: 'ae', fullLabel: 'Eng. Radial', unit: 'mm', color: 'accent-purple' as AccentColor,
     desc: 'Largura radial de corte — quantos % do diâmetro da fresa está em contato.',
     aumentar: 'Remove mais material por passada, mas aumenta pressão lateral e deflexão.',
     diminuir: 'Menor força lateral — ideal para paredes finas ou ferramentas longas.',
     equilibrio: 'ae < 50% do diâmetro ativa o CTF — compensação automática de avanço.' },
-  { key: 'ap' as const, label: 'ap', fullLabel: 'Prof. Axial', unit: 'mm', color: 'accent-orange',
+  { key: 'ap' as const, label: 'ap', fullLabel: 'Prof. Axial', unit: 'mm', color: 'accent-orange' as AccentColor,
     desc: 'Profundidade axial de corte — principal fator da taxa de remoção de material.',
     aumentar: 'MRR sobe proporcionalmente, mas eleva potência e torque exigidos da máquina.',
     diminuir: 'Operação mais leve — essencial quando a potência da máquina é o fator limitante.',
     equilibrio: 'Combine ap alto com ae baixo para operações de desbaste eficiente.' },
 ];
 
-const BTN_CLS = 'w-10 h-10 rounded-lg bg-black/30 border border-white/12 text-gray-400 active:bg-white/10 transition-all text-sm font-bold flex items-center justify-center';
+const BTN_CLS = `w-10 h-10 rounded-lg text-sm ${BTN_STEPPER}`;
 
 /** Maximum number of visible tick marks on the slider track */
 const MAX_TICKS = 20;
@@ -97,11 +98,11 @@ type ParamKey = typeof SLIDER_VISUAL[number]['key'];
  */
 function TouchSlider({ value, min, max, step, color, onChange, label, recomendado }: {
   value: number; min: number; max: number; step: number;
-  color: string; label: string;
+  color: AccentColor; label: string;
   recomendado?: number;
   onChange: (val: number) => void;
 }) {
-  const rgb = getSliderRgb(color);
+  const hex = getSliderHex(color);
   const trackRef = useRef<HTMLDivElement>(null);
   const [dragging, setDragging] = useState(false);
 
@@ -198,7 +199,7 @@ function TouchSlider({ value, min, max, step, color, onChange, label, recomendad
             left: `${((recomendado - min) / (max - min)) * 100}%`,
             top: '50%',
             transform: 'translateY(-50%)',
-            backgroundColor: `rgba(${rgb},0.4)`,
+            backgroundColor: `rgba(${getSliderRgb(color)},0.4)`,
           }}
           title={`Recomendado: ${recomendado}`}
         />
@@ -207,7 +208,7 @@ function TouchSlider({ value, min, max, step, color, onChange, label, recomendad
       {/* Filled track */}
       <div
         className="absolute left-0 h-2 rounded-full pointer-events-none transition-all duration-75"
-        style={{ width: `${pct}%`, backgroundColor: `rgba(${rgb},1)`, boxShadow: `0 0 8px rgba(${rgb},0.6)` }}
+        style={{ width: `${pct}%`, backgroundColor: hex, boxShadow: trackGlow(color) }}
       />
 
       {/* Thumb with invisible hit zone (60×60px) */}
@@ -232,13 +233,13 @@ function TouchSlider({ value, min, max, step, color, onChange, label, recomendad
         <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
           <div
             className="w-9 h-9 rounded-full flex items-center justify-center border-2 border-transparent transition-all duration-150"
-            style={dragging ? { borderColor: `rgba(${rgb},1)`, boxShadow: `0 0 20px rgba(${rgb},0.9)`, transform: 'scale(1.15)' } : undefined}
+            style={dragging ? { borderColor: hex, boxShadow: glow(color, 20, 0.9), transform: 'scale(1.15)' } : undefined}
           >
             <div
               className="w-7 h-7 bg-background-dark border-2 rounded-full flex items-center justify-center"
-              style={{ borderColor: `rgba(${rgb},1)`, boxShadow: `0 0 12px rgba(${rgb},0.8)` }}
+              style={{ borderColor: hex, boxShadow: glow(color, 12, 0.8) }}
             >
-              <div className="w-2.5 h-2.5 rounded-full" style={{ backgroundColor: `rgba(${rgb},1)` }} />
+              <div className="w-2.5 h-2.5 rounded-full" style={{ backgroundColor: hex }} />
             </div>
           </div>
         </div>
@@ -297,9 +298,9 @@ export function MobileFineTuneSection() {
 
   return (
     <section className="flex flex-col gap-4 px-4">
-      <div className="bg-[rgba(30,38,50,0.95)] rounded-xl p-4 border border-white/12">
+      <div className="bg-elevated-dark rounded-xl p-4 border border-white/12">
         <SectionTitle color="bg-primary" label="Fine Tune" />
-        <p className="text-[9px] text-gray-500 mb-3">Arraste os controles para ajustar os parâmetros</p>
+        <p className="text-3xs text-gray-500 mb-3">Arraste os controles para ajustar os parâmetros</p>
         <div className="flex flex-col gap-5">
           {SLIDER_VISUAL.map(({ key, label, fullLabel, unit, color, desc }) => {
             const { min, max, step, recomendado } = bounds[key];
@@ -312,7 +313,7 @@ export function MobileFineTuneSection() {
               <div key={key} className="flex flex-col gap-1">
                 <div className="flex justify-between items-center">
                   <div className="flex items-center gap-2 min-h-[44px]">
-                    <span className={`text-sm font-bold font-mono text-${color}`}>{label}</span>
+                    <span className={`text-sm font-bold font-mono ${ACCENT_TEXT[color]}`}>{label}</span>
                     <span className="text-2xs text-gray-500 uppercase">{fullLabel}</span>
                   </div>
                   <FineTuneValueInput

@@ -2,6 +2,7 @@
 import { useState, useEffect, useRef } from 'react';
 import type { StatusSeguranca } from '@/types';
 import { BidirectionalSlider } from './bidirectional-slider';
+import { ACCENT_TEXT, ACCENT_BG, ACCENT_GRADIENT_FROM, toAccentColor } from './accent-tokens';
 
 export function fmt(n: number): string { return Math.round(n).toLocaleString('pt-BR'); }
 
@@ -64,6 +65,7 @@ export function BigNumber({ label, value, unit, pct, color, glow, barGlow, icon,
   useBidirectionalSlider, baseValue, currentPercent = 0, onPercentChange,
   numericValue, animateOnReveal }: BigNumberProps) {
 
+  const accent = toAccentColor(color);
   const [displayValue, setDisplayValue] = useState(value);
   const [displayPct, setDisplayPct] = useState(animateOnReveal ? 0 : pct);
   const rafRef = useRef<number | null>(null);
@@ -103,11 +105,11 @@ export function BigNumber({ label, value, unit, pct, color, glow, barGlow, icon,
 
   return (
     <div className="relative bg-surface-dark backdrop-blur-xl border border-white/5 rounded-2xl p-6 shadow-glass flex flex-col justify-center group overflow-hidden">
-      <div className={`absolute inset-0 bg-gradient-to-br from-${color}/5 to-transparent opacity-50 group-hover:opacity-100 transition-opacity duration-700`} />
+      <div className={`absolute inset-0 bg-gradient-to-br ${ACCENT_GRADIENT_FROM[accent]} to-transparent opacity-50 group-hover:opacity-100 transition-opacity duration-700`} />
       <div className="absolute top-4 right-4 opacity-30 group-hover:opacity-100 transition-opacity duration-500">
-        <span className={`material-symbols-outlined text-3xl text-${color}`}>{icon}</span>
+        <span className={`material-symbols-outlined text-3xl ${ACCENT_TEXT[accent]}`}>{icon}</span>
       </div>
-      <h3 className={`text-sm uppercase tracking-[0.25em] text-${color} font-bold mb-2 relative z-10`}
+      <h3 className={`text-sm uppercase tracking-[0.25em] ${ACCENT_TEXT[accent]} font-bold mb-2 relative z-10`}
         style={{ filter: `drop-shadow(0 0 8px ${glow})` }}>{label}</h3>
 
       {/* Big number display */}
@@ -125,14 +127,14 @@ export function BigNumber({ label, value, unit, pct, color, glow, barGlow, icon,
             baseValue={baseValue}
             currentPercent={currentPercent}
             onChange={onPercentChange}
-            color={color}
+            color={accent}
             label={label}
             unit={unit}
           />
         </div>
       ) : (
         <div className="mt-4 w-full max-w-sm bg-black/40 h-1.5 rounded-full overflow-hidden relative z-10">
-          <div className={`h-full bg-${color} rounded-full relative`}
+          <div className={`h-full ${ACCENT_BG[accent]} rounded-full relative`}
             style={{ width: `${displayPct}%`, boxShadow: `0 0 15px ${barGlow}` }}>
             <div className="absolute right-0 top-1/2 -translate-y-1/2 w-1.5 h-3 bg-white rounded-full shadow-[0_0_5px_white]" />
           </div>
@@ -193,7 +195,9 @@ export function ProgressCard({ label, value, unit, pct, barColor, barShadow, com
       <div className="h-1 w-full bg-white/10 rounded-full overflow-hidden mt-2">
         <div className={`h-full ${barColor}`} style={{ width: `${displayPct}%`, boxShadow: `0 0 10px ${barShadow}` }} />
       </div>
-      <div className={`absolute bottom-0 left-0 w-full h-[2px] ${barColor}/50 scale-x-0 group-hover:scale-x-100 transition-transform duration-500 origin-left`} />
+      {/* opacity-50 instead of `${barColor}/50`: the latter is a runtime-composed
+          class Tailwind cannot see, so it gets purged in production builds. */}
+      <div className={`absolute bottom-0 left-0 w-full h-[2px] ${barColor} opacity-50 scale-x-0 group-hover:scale-x-100 transition-transform duration-500 origin-left`} />
     </div>
   );
 }

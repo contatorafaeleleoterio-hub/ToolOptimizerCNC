@@ -6,7 +6,8 @@ import { calcularSliderBounds } from '@/engine';
 import type { ParametrosUsinagem, SliderBounds, FavoritoCompleto } from '@/types';
 import { SegmentedGradientBar } from './segmented-gradient-bar';
 import { StyledSlider } from './styled-slider';
-import { getSliderRgb } from './slider-tokens';
+import { dropGlow } from './slider-tokens';
+import { ACCENT_TEXT, ACCENT_BG_30, type AccentColor } from './accent-tokens';
 import { ParamExplanation } from './param-explanation';
 
 /** Compute ideal zone [0-1] for a parameter based on the most recent favorite. */
@@ -28,22 +29,22 @@ function computeIdealRange(
 
 /** Configuração visual (labels, cores, textos educacionais) — constante */
 const SLIDER_VISUAL = [
-  { key: 'vc' as const, label: 'Vc', fullLabel: 'VEL. DE CORTE', unit: 'M/MIN', color: 'primary',
+  { key: 'vc' as const, label: 'Vc', fullLabel: 'VEL. DE CORTE', unit: 'M/MIN', color: 'primary' as AccentColor,
     desc: 'Velocidade tangencial na aresta da ferramenta durante o corte.',
     aumentar: 'Usinagem mais rápida, mas desgaste prematuro e mais calor gerado.',
     diminuir: 'Ferramenta mais protegida, porém pode manchar o acabamento superficial.',
     equilibrio: 'Ajuste junto com fz — material mais duro exige Vc menor.' },
-  { key: 'fz' as const, label: 'fz', fullLabel: 'AVANÇO/DENTE', unit: 'MM/DENTE', color: 'secondary',
+  { key: 'fz' as const, label: 'fz', fullLabel: 'AVANÇO/DENTE', unit: 'MM/DENTE', color: 'secondary' as AccentColor,
     desc: 'Espessura do cavaco por aresta de corte em cada passagem.',
     aumentar: 'Maior taxa de remoção (MRR), mas risco de vibração e quebra da ferramenta.',
     diminuir: 'Acabamento mais fino e menor esforço, porém reduz a produtividade.',
     equilibrio: 'Mantenha fz dentro da recomendação do fabricante da ferramenta.' },
-  { key: 'ae' as const, label: 'ae', fullLabel: 'ENGAJ. RADIAL', unit: 'MM', color: 'accent-purple',
+  { key: 'ae' as const, label: 'ae', fullLabel: 'ENGAJ. RADIAL', unit: 'MM', color: 'accent-purple' as AccentColor,
     desc: 'Largura radial de corte — quantos % do diâmetro da fresa está em contato.',
     aumentar: 'Remove mais material por passada, mas aumenta pressão lateral e deflexão.',
     diminuir: 'Menor força lateral — ideal para paredes finas ou ferramentas longas.',
     equilibrio: 'ae < 50% do diâmetro ativa o CTF — compensação automática de avanço.' },
-  { key: 'ap' as const, label: 'ap', fullLabel: 'PROF. AXIAL', unit: 'MM', color: 'accent-orange',
+  { key: 'ap' as const, label: 'ap', fullLabel: 'PROF. AXIAL', unit: 'MM', color: 'accent-orange' as AccentColor,
     desc: 'Profundidade axial de corte — principal fator da taxa de remoção de material.',
     aumentar: 'MRR sobe proporcionalmente, mas eleva potência e torque exigidos da máquina.',
     diminuir: 'Operação mais leve — essencial quando a potência da máquina é o fator limitante.',
@@ -105,7 +106,6 @@ export function FineTunePanel({ embedded = false }: { embedded?: boolean }) {
 
       <div className="flex-1 flex flex-col justify-between gap-3 px-1">
         {SLIDER_VISUAL.map(({ key, label, fullLabel, unit, color, desc }) => {
-          const rgb = getSliderRgb(color);
           const { min, max, step, recomendado } = bounds[key];
           const val = parametros[key];
           const display = key === 'fz' || key === 'ap' ? val.toFixed(2) : key === 'ae' ? val.toFixed(1) : val.toFixed(0);
@@ -116,7 +116,7 @@ export function FineTunePanel({ embedded = false }: { embedded?: boolean }) {
             <div key={key} className="flex flex-col gap-1 group relative">
               <div className="flex justify-between items-end">
                 <div className="flex items-baseline gap-1.5">
-                  <span className={`text-base font-bold font-mono text-${color}`}>{label}</span>
+                  <span className={`text-base font-bold font-mono ${ACCENT_TEXT[color]}`}>{label}</span>
                   <span className="text-xs font-bold tracking-wider text-gray-500 uppercase">{fullLabel}</span>
                 </div>
                 <div className="text-right">
@@ -125,8 +125,8 @@ export function FineTunePanel({ embedded = false }: { embedded?: boolean }) {
                       const n = Number(e.target.value);
                       if (!isNaN(n) && n >= min && n <= max) ajustarParametros({ [key]: n });
                     }}
-                    className={`w-20 bg-transparent border-none text-right font-mono text-xl font-bold text-${color} outline-none [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none`}
-                    style={{ filter: `drop-shadow(0 0 8px rgba(${rgb},0.4))` }}
+                    className={`w-20 bg-transparent border-none text-right font-mono text-xl font-bold ${ACCENT_TEXT[color]} outline-none [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none`}
+                    style={{ filter: dropGlow(color, 8, 0.4) }}
                     aria-label={`valor de ${label}`} />
                   <div className="text-xs text-gray-500 font-mono tracking-wider">{unit}</div>
                 </div>
@@ -144,7 +144,7 @@ export function FineTunePanel({ embedded = false }: { embedded?: boolean }) {
 
               <ParamExplanation fullLabel={fullLabel} explanationText={desc} />
 
-              <div className={`absolute bottom-0 left-0 w-full h-[1px] bg-${color}/30 scale-x-0 group-hover:scale-x-100 transition-transform duration-500 origin-left overflow-clip`} />
+              <div className={`absolute bottom-0 left-0 w-full h-[1px] ${ACCENT_BG_30[color]} scale-x-0 group-hover:scale-x-100 transition-transform duration-500 origin-left overflow-clip`} />
             </div>
           );
         })}

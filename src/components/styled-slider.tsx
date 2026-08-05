@@ -1,14 +1,16 @@
 import { useState, useRef, useCallback } from 'react';
-import { getSliderRgb } from './slider-tokens';
+import { getSliderRgb, getSliderHex, glow, trackGlow, thumbGlow, THUMB_FILL } from './slider-tokens';
+import { ACCENT_BORDER, type AccentColor } from './accent-tokens';
+import { BTN_STEPPER } from './design-tokens';
 
-export const BTN_CLS = 'w-6 h-6 rounded bg-black/40 border border-white/10 text-gray-400 hover:text-white hover:bg-white/10 active:scale-90 transition-all text-xs font-bold flex items-center justify-center';
+export const BTN_CLS = `w-6 h-6 text-xs font-bold ${BTN_STEPPER}`;
 
 export interface StyledSliderProps {
   value: number;
   min: number;
   max: number;
   step: number;
-  color: string;
+  color: AccentColor;
   label: string;
   recomendado?: number;
   onChange: (val: number) => void;
@@ -18,7 +20,7 @@ export interface StyledSliderProps {
 export function StyledSlider({ value, min, max, step, color, label, recomendado, onChange }: StyledSliderProps) {
   const [pressed, setPressed] = useState(false);
   const trackRef = useRef<HTMLDivElement>(null);
-  const rgb = getSliderRgb(color);
+  const hex = getSliderHex(color);
   const pct = ((value - min) / (max - min)) * 100;
 
   const getValueFromX = useCallback((clientX: number) => {
@@ -112,7 +114,7 @@ export function StyledSlider({ value, min, max, step, color, label, recomendado,
                 left: `${((recomendado - min) / (max - min)) * 100}%`,
                 top: '50%',
                 transform: 'translateY(-50%)',
-                backgroundColor: `rgba(${rgb},0.4)`,
+                backgroundColor: `rgba(${getSliderRgb(color)},0.4)`,
               }}
               title={`Recomendado: ${recomendado}`}
             />
@@ -123,8 +125,8 @@ export function StyledSlider({ value, min, max, step, color, label, recomendado,
             className="absolute left-0 h-1.5 rounded-full pointer-events-none"
             style={{
               width: `${pct}%`,
-              background: `rgba(${rgb},1)`,
-              boxShadow: `0 0 8px rgba(${rgb},0.6)`,
+              background: hex,
+              boxShadow: trackGlow(color),
             }}
           />
 
@@ -135,12 +137,10 @@ export function StyledSlider({ value, min, max, step, color, label, recomendado,
           >
             {/* Outer ring (glow on press) */}
             <div
-              className={`w-7 h-7 rounded-full flex items-center justify-center transition-all duration-150 border-2 border-${color}`}
+              className={`w-7 h-7 rounded-full flex items-center justify-center transition-all duration-150 border-2 ${ACCENT_BORDER[color]}`}
               style={{
-                boxShadow: pressed
-                  ? `0 0 20px rgba(${rgb},0.9), 0 0 8px rgba(${rgb},0.5)`
-                  : `0 0 10px rgba(${rgb},0.4)`,
-                background: 'rgba(15,20,25,0.9)',
+                boxShadow: thumbGlow(color, pressed),
+                background: THUMB_FILL,
               }}
             >
               {/* Inner dot */}
@@ -149,8 +149,8 @@ export function StyledSlider({ value, min, max, step, color, label, recomendado,
                 style={{
                   width: pressed ? '10px' : '8px',
                   height: pressed ? '10px' : '8px',
-                  background: `rgba(${rgb},1)`,
-                  boxShadow: `0 0 6px rgba(${rgb},0.8)`,
+                  background: hex,
+                  boxShadow: glow(color, 6, 0.8),
                 }}
               />
             </div>

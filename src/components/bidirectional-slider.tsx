@@ -17,21 +17,23 @@
  */
 
 import { useState, useRef, useCallback } from 'react';
-import { getSliderRgb } from './slider-tokens';
+import { getSliderHex, glow, dropGlow, thumbGlow, THUMB_FILL } from './slider-tokens';
+import { ACCENT_TEXT, ACCENT_BORDER, type AccentColor } from './accent-tokens';
+import { BTN_STEPPER } from './design-tokens';
 import { haptics } from '@/utils/haptics';
 
 interface BidirectionalSliderProps {
   baseValue: number;
   currentPercent: number;
   onChange: (percent: number) => void;
-  color: string;
+  color: AccentColor;
   label: string;
   unit: string;
   compact?: boolean;
 }
 
-const BTN_CLS = 'w-6 h-6 rounded bg-black/40 border border-white/10 text-gray-400 hover:text-white hover:bg-white/10 active:scale-90 transition-all text-xs font-bold flex items-center justify-center';
-const BTN_CLS_COMPACT = 'w-5 h-5 rounded bg-black/40 border border-white/10 text-gray-400 hover:text-white hover:bg-white/10 active:scale-90 transition-all text-[11px] font-bold flex items-center justify-center';
+const BTN_CLS = `w-6 h-6 text-xs font-bold ${BTN_STEPPER}`;
+const BTN_CLS_COMPACT = `w-5 h-5 text-fine font-bold ${BTN_STEPPER}`;
 
 export function BidirectionalSlider({
   baseValue,
@@ -42,7 +44,7 @@ export function BidirectionalSlider({
   unit,
   compact = false,
 }: BidirectionalSliderProps) {
-  const rgb = getSliderRgb(color);
+  const hex = getSliderHex(color);
   const [pressed, setPressed] = useState(false);
   const trackRef = useRef<HTMLDivElement>(null);
 
@@ -156,8 +158,8 @@ export function BidirectionalSlider({
                 style={{
                   left: filledTrackStyle.left,
                   width: filledTrackStyle.width,
-                  background: `rgba(${rgb},1)`,
-                  boxShadow: `0 0 6px rgba(${rgb},0.6)`,
+                  background: hex,
+                  boxShadow: glow(color, 6, 0.6),
                 }}
               />
             )}
@@ -178,11 +180,11 @@ export function BidirectionalSlider({
               <div
                 className="w-5 h-5 rounded-full flex items-center justify-center border-2 transition-all duration-150"
                 style={{
-                  borderColor: `rgba(${rgb},1)`,
+                  borderColor: hex,
                   boxShadow: pressed
-                    ? `0 0 16px rgba(${rgb},0.9), 0 0 6px rgba(${rgb},0.5)`
-                    : `0 0 8px rgba(${rgb},0.4)`,
-                  background: 'rgba(15,20,25,0.9)',
+                    ? `${glow(color, 16, 0.9)}, ${glow(color, 6, 0.5)}`
+                    : glow(color, 8, 0.4),
+                  background: THUMB_FILL,
                 }}
               >
                 <div
@@ -190,8 +192,8 @@ export function BidirectionalSlider({
                   style={{
                     width: pressed ? '7px' : '6px',
                     height: pressed ? '7px' : '6px',
-                    background: `rgba(${rgb},1)`,
-                    boxShadow: `0 0 4px rgba(${rgb},0.8)`,
+                    background: hex,
+                    boxShadow: glow(color, 4, 0.8),
                   }}
                 />
               </div>
@@ -203,13 +205,13 @@ export function BidirectionalSlider({
 
         {/* Tick labels row */}
         <div className="flex justify-between items-center px-6">
-          <span className="font-mono text-[10px] text-white/25">-150%</span>
+          <span className="font-mono text-2xs text-white/25">-150%</span>
           <span className={`font-mono text-xs font-bold ${
             currentPercent === 0 ? 'text-white/40' : currentPercent > 0 ? 'text-secondary' : 'text-seg-vermelho'
           }`}>
             {currentPercent > 0 ? '+' : ''}{currentPercent}%
           </span>
-          <span className="font-mono text-[10px] text-white/25">+150%</span>
+          <span className="font-mono text-2xs text-white/25">+150%</span>
         </div>
       </div>
     );
@@ -227,7 +229,7 @@ export function BidirectionalSlider({
       {/* Value display */}
       <div className="flex justify-between items-baseline">
         <div className="flex items-baseline gap-2">
-          <span className={`text-sm font-bold font-mono text-${color}`}>{label}</span>
+          <span className={`text-sm font-bold font-mono ${ACCENT_TEXT[color]}`}>{label}</span>
           <span className={`text-xs font-bold tracking-wider ${
             currentPercent === 0 ? 'text-gray-500' : currentPercent > 0 ? 'text-secondary' : 'text-seg-vermelho'
           }`}>
@@ -235,8 +237,8 @@ export function BidirectionalSlider({
           </span>
         </div>
         <div className="text-right">
-          <span className={`font-mono text-xl font-bold text-${color}`}
-            style={{ filter: `drop-shadow(0 0 8px rgba(${rgb},0.4))` }}>
+          <span className={`font-mono text-xl font-bold ${ACCENT_TEXT[color]}`}
+            style={{ filter: dropGlow(color, 8, 0.4) }}>
             {actualValue.toLocaleString('en-US')}
           </span>
           <span className="text-xs text-gray-500 font-mono tracking-wider ml-1">{unit}</span>
@@ -273,8 +275,8 @@ export function BidirectionalSlider({
               style={{
                 left: filledTrackStyle.left,
                 width: filledTrackStyle.width,
-                background: `rgba(${rgb},1)`,
-                boxShadow: `0 0 8px rgba(${rgb},0.6)`,
+                background: hex,
+                boxShadow: glow(color, 8, 0.6),
               }}
             />
           )}
@@ -310,12 +312,10 @@ export function BidirectionalSlider({
           >
             {/* Outer ring */}
             <div
-              className={`w-7 h-7 rounded-full flex items-center justify-center transition-all duration-150 border-2 border-${color}`}
+              className={`w-7 h-7 rounded-full flex items-center justify-center transition-all duration-150 border-2 ${ACCENT_BORDER[color]}`}
               style={{
-                boxShadow: pressed
-                  ? `0 0 20px rgba(${rgb},0.9), 0 0 8px rgba(${rgb},0.5)`
-                  : `0 0 10px rgba(${rgb},0.4)`,
-                background: 'rgba(15,20,25,0.9)',
+                boxShadow: thumbGlow(color, pressed),
+                background: THUMB_FILL,
               }}
             >
               {/* Inner dot */}
@@ -324,8 +324,8 @@ export function BidirectionalSlider({
                 style={{
                   width: pressed ? '10px' : '8px',
                   height: pressed ? '10px' : '8px',
-                  background: `rgba(${rgb},1)`,
-                  boxShadow: `0 0 6px rgba(${rgb},0.8)`,
+                  background: hex,
+                  boxShadow: glow(color, 6, 0.8),
                 }}
               />
             </div>
