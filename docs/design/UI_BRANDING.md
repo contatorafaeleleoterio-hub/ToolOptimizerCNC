@@ -1,4 +1,11 @@
 ﻿# UI/UX BRANDING SPECIFICATION - ToolOptimizer CNC
+
+> **⚠️ Documento histórico.** A fonte de verdade dos tokens visuais é
+> `src/index.css` (bloco `@theme`), documentada em
+> `.interface-design/system.md` (seção "Token Reference"). Os valores abaixo
+> podem estar desatualizados — não copie deles, consulte o `@theme`.
+
+
 **Fonte da Verdade Visual:** Protótipo HTML/Tailwind v1.0 (Fornecido pelo Rafael)
 
 ## 1. ESPECIFICAÇÃO DE CORES (HEX OFICIAL)

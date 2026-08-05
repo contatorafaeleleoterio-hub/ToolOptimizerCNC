@@ -93,6 +93,7 @@ npx tsc --noEmit
 | 11 | [Redesign Visual Dashboard (6 sessões)](#-redesign-visual-dashboard) | 🎨 Design Audit | v0.10.0 | ✅ Concluído (`64890cc`) |
 | 12 | Story-011 Cassino | 🎬 Animation | v0.11.0 | ✅ Concluído (`b2183bd`) |
 | 13 | [MVP Android Launch (11 sessões)](#-mvp-android-launch) | 🚀 Launch | v0.12.0 | ⬜ Pendente |
+| 14 | [Padronização Design System](#-padronização-design-system-v0120) | 🎨 Design System | v0.12.0 | ✅ Concluído |
 
 ### ✅ Reestruturação Documental (v0.6.0) — CONCLUÍDA
 
@@ -218,8 +219,8 @@ npx tsc --noEmit
 
 | Sessão | Foco | Entregável | Status |
 |--------|------|------------|--------|
-| 1 | Audit READ-ONLY (8 componentes) | `SESSAO1-VIOLATION-CATALOG.md` | ✅ Concluído (`6aedb49`) |
-| 2 | Relatório + Propostas por componente | `VISUAL-AUDIT-REPORT.md` | ✅ Concluído (`6aedb49`) |
+| 1 | Audit READ-ONLY (8 componentes) | `docs/_archive/plans-completed/redesign-v0.8.0/SESSAO1-VIOLATION-CATALOG.md` | ✅ Concluído (`6aedb49`) — violações remanescentes zeradas na Padronização Design System (v0.12.0) |
+| 2 | Relatório + Propostas por componente | `docs/_archive/plans-completed/redesign-v0.8.0/VISUAL-AUDIT-REPORT.md` | ✅ Concluído (`6aedb49`) — propostas implementadas integralmente na v0.12.0 |
 | 3 | Protótipo HTML visual | `DASHBOARD_V2_PROPOSAL.html` + `PROTOTIPO_V010_MUDANCAS.html` | ✅ Concluído (28/03/2026) |
 | 4 | slider-tokens.ts + unificar sliders | Tokens + StyledSlider → BidirectionalSlider | ✅ Concluído (`d18d92b`) |
 | 5 | SegmentedGradientBar + Gauge meia-lua | Componentes React desktop | ✅ Concluído (`08acfbe`) |
@@ -239,13 +240,49 @@ Plano: docs/plans/redesign-v0.8.0/SESSAO4-tokens-sliders-desktop.md
 
 ---
 
+---
+
+### ✅ Padronização Design System (v0.12.0)
+
+**Objetivo:** zerar as pendências do design system — tokenizar tudo, eliminar
+classes dinâmicas e reconciliar `.interface-design/system.md` com o código.
+
+| Fase | Foco | Status |
+|------|------|--------|
+| 1 | Camada de tokens (`@theme`, `design-tokens.ts`, `accent-tokens.ts`, helpers de glow) | ✅ Concluído |
+| 2 | Eliminar classes Tailwind dinâmicas (14 ocorrências) | ✅ Concluído |
+| 3 | Substituir literais por tokens (~280 ocorrências) | ✅ Concluído |
+| 4 | Deduplicar padrões repetidos + `src/utils/result-display.ts` | ✅ Concluído |
+| 5 | Reconciliar `system.md` (Regras #4, #6, #11, #12 + Token Reference) | ✅ Concluído |
+| 6 | Fechar catálogos de violação e arquivar | ✅ Concluído |
+
+**Decisões registradas:**
+1. **Paleta de semáforo unificada** — a tríade vívida (`#00E676`/`#FFA500`/`#FF4D4D`),
+   triplicada em 3 componentes, foi descontinuada em favor dos tokens oficiais.
+   `SEMAPHORE_HEX` é a única definição no repo.
+2. **Micro-escala formalizada** — a Regra #4 passou a permitir `[2,6,10,18px]`
+   em trilhos, hairlines e densidade de controles. O código não mudou; a regra
+   é que estava em contradição com o próprio system.md.
+3. **Escopo completo** — `src/components/**`, `src/pages/**`, `src/admin/**`
+   e `src/components/architecture/**`.
+
+**Causa raiz encontrada:** os tokens `--font-size-2xs`/`--font-size-fine` nunca
+geraram utility porque no Tailwind v4 o namespace de font-size é `--text-*`.
+Por isso conviviam com ~145 literais `text-[10px]`/`text-[11px]`.
+
+**Resultado:** zero classes dinâmicas, zero hex fora do `@theme`, zero cores da
+paleta default do Tailwind (red/green/yellow/amber/emerald/cyan) fora do
+gradiente sancionado do CTA primário.
+
+---
+
 ## 🟡 PRIORIDADE 2 — Alternativas (BACKLOG vazio ou bloqueado)
 
 > Usar apenas se todos os itens da P1 estiverem concluídos ou se o item pendente exigir ação manual do Rafael.
 
 | # | Item | Descrição |
 |---|------|-----------|
-| A | Fix teste falhando | `fz step mobile` — 1 teste pendente em `mobile-fine-tune-section.test.tsx` |
+| A | ~~Fix teste falhando~~ | ✅ Resolvido — `mobile-fine-tune-section.test.tsx` passa (14/14) |
 | B | Story-008 | Nova feature a definir com Rafael |
 | C | Landing Page | Cloudflare Pages — setup manual pendente |
 | D | Login Google | Firebase Auth + Firestore — 5 fases (L1-L5) |

@@ -1,4 +1,13 @@
 ﻿# UI DESIGN SPECIFICATION - ToolOptimizer CNC
+
+> **⚠️ Documento histórico.** A fonte de verdade dos tokens visuais é
+> `src/index.css` (bloco `@theme`), documentada em
+> `.interface-design/system.md` (seção "Token Reference"). Os valores abaixo
+> podem estar desatualizados — não copie deles, consulte o `@theme`.
+
+> Além disso, o layout de 3 colunas descrito aqui foi substituído por 2 colunas na v0.8.0.
+
+
 **Base do Design:** Protótipo High-Fidelity (Tailwind/Cyber-Industrial)
 
 ## 1. PALETA DE CORES (Tokens Oficiais)

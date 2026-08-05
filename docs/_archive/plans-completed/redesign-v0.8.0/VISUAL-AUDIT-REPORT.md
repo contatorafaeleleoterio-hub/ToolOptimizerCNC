@@ -1,4 +1,11 @@
 # Visual Audit Report — Redesign Visual v0.10.0
+
+> **✅ RESOLVIDO — arquivado em 05/08/2026.**
+> Todas as violações catalogadas aqui foram corrigidas na entrega
+> "Padronização Design System" (v0.12.0). Este documento fica como registro
+> histórico do audit. A fonte de verdade atual é `.interface-design/system.md`.
+
+
 ## Sessão 2 — Relatório Formal + Propostas por Componente
 
 **Data:** 26/03/2026 | **Branch:** main | **Versão:** v0.9.4

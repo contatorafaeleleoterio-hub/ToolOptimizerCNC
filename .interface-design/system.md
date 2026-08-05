@@ -1,5 +1,7 @@
 # ToolOptimizer CNC — Design System
 
+> Last updated: 2026-08-05 — full tokenization pass (see Token Reference).
+
 ## Direction: Boldness & Clarity
 High contrast neon-on-dark. Every element communicates function.
 Cyber-industrial aesthetic with glassmorphic depth.
@@ -29,6 +31,12 @@ Cyber-industrial aesthetic with glassmorphic depth.
 | accent-orange | #F97316 | Axial depth (ap), warnings, badges |
 
 ### Safety Semaphore (RESERVED — domain-specific)
+
+> **Single palette.** A second, more saturated triple
+> (`#00E676`/`#FFA500`/`#FF4D4D`) used to live in the gauges and segmented
+> bars. It was retired in favour of the tokens below — `SEMAPHORE_HEX` in
+> `design-tokens.ts` is now the only definition in the repo.
+
 | Token | Hex | Condition |
 |-------|-----|-----------|
 | seg-verde | #2ecc71 | Safe — L/D ≤ 3 |
@@ -91,9 +99,24 @@ Cyber-industrial aesthetic with glassmorphic depth.
 | Button padding | 8-12px V, 12-16px H | py-2 px-3 to py-3 px-4 |
 | Slider control spacing | 18px horizontal | mx-[18px] |
 
+### Micro-Scale (documented exception)
+
+Control density and hairline rendering need sub-4px precision. These values are
+part of the system — they are not drift:
+
+| Value | Tailwind | Allowed for |
+|-------|----------|-------------|
+| 2px | `h-0.5`, `mt-0.5`, `w-[2px]` | hairlines, center tick marks, tight vertical nudges |
+| 6px | `h-1.5`, `py-1.5`, `gap-1.5` | slider track height, dense rows, chip padding |
+| 10px | `px-2.5`, `h-2.5` | compact chips and tick marks |
+| 18px | `mx-[18px]` | slider track inset, so the thumb never overflows its container |
+
+Anything outside both scales is drift and must snap to the nearest grid value.
+
 ### Spacing Rules
-- EVERY spacing value must be a multiple of 4px
-- If a value is not on the grid (e.g., 17px, 14px), snap to nearest grid value
+- Layout spacing (padding, margin, gap) must be a multiple of 4px
+- Sub-4px values are allowed ONLY from the micro-scale above
+- If a value is on neither scale (e.g., 17px, 14px), snap to nearest grid value
 - Vertical stacking: prefer `space-y-2` to `space-y-4` depending on density
 - Cards use consistent `p-4` (inner) or `p-6` (outer) — never mix
 
@@ -256,6 +279,13 @@ text-xs text-gray-400 for labels
 | fadeOut | 300ms | ease-in | Panel reset (→0.3 opacity) |
 | dashFlow | 800ms | linear | Gauge arc stroke fill |
 | shimmer | 1.5s | ease-in-out | Loading placeholder shimmer |
+| btnIdleGlow | infinite | ease-in-out | Simulate button breathing glow while idle |
+| jackpotFlash | one-shot | ease-out | Result reveal flash (cyan → green → cyan) |
+| ambientPulse | infinite | ease-in-out | Ambient opacity pulse on background accents |
+| sliderShake | 400ms | ease-out | Slider hit its min/max bound |
+| spinIcon | one-shot | ease-in-out | Icon rotate + scale on action confirm |
+| miniGaugeFlash | one-shot | ease-out | Mini gauge scale pop on value change |
+| tabSlideIn | 200ms | ease-out | Mobile tab content entrance |
 
 ### Transition Defaults
 - Standard: `transition-all duration-300`
@@ -282,7 +312,7 @@ text-xs text-gray-400 for labels
 | Property | Value |
 |----------|-------|
 | Max width | 1500px centered (`max-w-[1500px] mx-auto`) |
-| Desktop grid | 12 cols → 3 (config) + 6 (results) + 3 (fine-tune) |
+| Desktop grid | 2 columns since v0.8.0 (config + results/fine-tune). `docs/design/UI_DESIGN_SPEC_FINAL.md` still describes the old 3-column layout and is superseded by this file. |
 | Min desktop width | 1360px |
 | Header | `flex items-center justify-between py-4 px-6 rounded-2xl` |
 | Section scroll | `overflow-y-auto pr-1` with custom scrollbar |
@@ -308,18 +338,58 @@ text-xs text-gray-400 for labels
 
 ---
 
+---
+
+## Token Reference (source of truth)
+
+Colors live in **one** place: the `@theme` block of `src/index.css`. Everything
+else references them. Never write a hex or rgba literal in a component.
+
+### `src/index.css` — `@theme`
+
+| Namespace | Tokens |
+|-----------|--------|
+| Brand | `primary` `secondary` `accent-orange` `accent-purple` `accent-gold` `accent-mint` `accent-pink` |
+| Semaphore | `seg-verde` `seg-amarelo` `seg-vermelho` `gauge-empty` |
+| Surfaces | `background-dark` `surface-dark` `surface-solid` `card-dark` `lcd-dark` `lcd-panel` `elevated-dark` `overlay-dark` `modal-dark` |
+| Text | `text-muted` |
+| Shadows | `shadow-neon-cyan` `shadow-neon-green` `shadow-neon-orange` `shadow-neon-purple` `shadow-glass` `shadow-inner-glow` |
+| Font size | `text-3xs` (9px) `text-2xs` (10px) `text-fine` (11px) |
+| Font family | `font-display` (Inter) `font-mono` (JetBrains Mono) |
+
+> **Tailwind v4 gotcha:** the font-size namespace is `--text-*`, NOT
+> `--font-size-*`. Tokens declared under the wrong namespace generate no
+> utility at all and fail silently.
+
+### Which module do I reach for?
+
+| Need | Module | Example |
+|------|--------|---------|
+| A class name that varies by accent color | `src/components/accent-tokens.ts` | `ACCENT_TEXT[color]`, `ACCENT_BORDER[color]` |
+| A hex/rgb value for an inline `style={}` | `src/components/accent-tokens.ts` | `ACCENT_HEX.primary`, `ACCENT_RGB.secondary` |
+| A slider glow or drop-shadow | `src/components/slider-tokens.ts` | `trackGlow(color)`, `thumbGlow(color, pressed)`, `dropGlow(color, 8, 0.4)` |
+| A repeated class combination | `src/components/design-tokens.ts` | `CARD_GLASS`, `MODAL_ROOT`, `INPUT_BASE`, `SECTION_HEADER`, `TOUCH_TARGET` |
+| A semaphore or neutral color value | `src/components/design-tokens.ts` | `SEMAPHORE_HEX.verde`, `COLOR_MUTED`, `ACCENT_GOLD` |
+| Shared result-panel formatting | `src/utils/result-display.ts` | `getLdColor()`, `getLcdAlertLine()`, `formatToolSpec()` |
+
+`slider-tokens.ts` derives its values from `accent-tokens.ts` — the accent hex
+values are defined once.
+
+
 ## Rules (Non-Negotiable)
 
 1. **ALL numbers use JetBrains Mono** — no exceptions, anywhere in the UI
 2. **Neon glow only on primary/secondary elements** — not on every border or card
 3. **Glassmorphism max 2 levels deep** — surface → inner, never deeper
-4. **Spacing MUST follow 4px grid** — snap to [4,8,12,16,24,32,64]
+4. **Spacing follows the 4px grid, with a documented micro-scale** — layout, padding, gaps and margins snap to [4,8,12,16,24,32,64]. The micro-scale [2,6,10,18px] is permitted ONLY for slider tracks, hairlines and control density (see Spacing)
 5. **No opaque backgrounds on cards** — always rgba or opacity classes
-6. **Safety colors RESERVED for semaphore** — verde/amarelo/vermelho only for L/D and safety states
+6. **Safety colors RESERVED for semaphore and validation** — seg-verde/amarelo/vermelho for L/D, safety states and form validation errors. There is exactly ONE red, ONE amber and ONE green in the system — never Tailwind's default red-*/yellow-*/green-* ramps
 7. **Gradients only on primary CTA buttons** — no gratuitous gradients elsewhere
 8. **Uppercase + tracking-widest ONLY for section headers** — never on body or values
 9. **Every interactive element needs hover + focus + active states** — no dead elements
 10. **Color with purpose** — unmotivated color is noise; every color must communicate meaning
+11. **NEVER interpolate Tailwind classes** — `text-${color}` is invisible to the scanner and gets purged in production. Use a static map from `accent-tokens.ts`, or an inline `style={}` fed by `slider-tokens.ts`
+12. **No raw hex or rgba in components** — every color literal lives in the `@theme` block of `src/index.css` and is reached through a utility class or a constant from `design-tokens.ts` / `accent-tokens.ts`
 
 ---
 

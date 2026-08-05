@@ -1,4 +1,11 @@
 # Violation Catalog — Redesign Visual v0.10.0
+
+> **✅ RESOLVIDO — arquivado em 05/08/2026.**
+> Todas as violações catalogadas aqui foram corrigidas na entrega
+> "Padronização Design System" (v0.12.0). Este documento fica como registro
+> histórico do audit. A fonte de verdade atual é `.interface-design/system.md`.
+
+
 ## Sessão 1 — Audit READ-ONLY
 
 **Data:** 26/03/2026

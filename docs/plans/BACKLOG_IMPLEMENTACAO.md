@@ -2,7 +2,7 @@
 
 > **Última atualização:** 17/04/2026
 > **Versão atual:** v0.10.1 → v0.11.0 (após Story-011 2C)
-> **Total de planos pendentes:** 2 (Segurança v0.5.5 ⏸️ pausada + Story-011 2C pending)
+> **Total de planos:** 13 · **pendentes:** 2 (Segurança v0.5.5 ⏸️ pausada + Story-011 2C pending)
 
 Esta lista define a ordem de implementação dos planos criados e ainda não executados.
 A ordem garante estabilidade progressiva: bugs corrigidos antes de features, features antes de polish.
@@ -27,6 +27,7 @@ A ordem garante estabilidade progressiva: bugs corrigidos antes de features, fea
 | 10 | [Redesign Visual Dashboard](#10-redesign-visual-dashboard) | 🎨 Design Audit | v0.10.0 | 6 sessões | ✅ Concluído (`64890cc`) |
 | 11 | [Implementações Dashboard v0.10.1](#11-implementações-dashboard-v0101) | 🎨 Feature | v0.10.1 | 10 itens — todos concluídos | ✅ Concluído (10/10) |
 | 12 | [Story-011 ITEM-5.2 Cassino](#12-story-011-cassino) | 🎬 Animation | v0.11.0 | 3 sub-sessões | ⬜ 2A ✅ 2B ✅ 2C pendente |
+| 13 | [Padronização Design System](#13-padronização-design-system) | 🎨 Design System | v0.12.0 | ~60 arquivos, 6 fases | ✅ Concluído |
 
 ---
 
@@ -80,6 +81,34 @@ A ordem garante estabilidade progressiva: bugs corrigidos antes de features, fea
 | 7 | Branch protection + Dependabot alerts | Rafael (manual) | GitHub Settings |
 
 **Testes:** Adicionar testes para importação com valores inválidos
+
+---
+
+### 13. Padronização Design System ✅
+
+**Objetivo:** zerar todas as pendências do design system e deixar uma única
+linguagem visual, tokenizada, com o `system.md` reconciliado com o código.
+
+| Fase | Ação | Arquivos |
+|------|------|----------|
+| 1 | Camada de tokens | `src/index.css` (`@theme`), `design-tokens.ts`, `accent-tokens.ts` (novo), `slider-tokens.ts` |
+| 2 | Eliminar classes Tailwind dinâmicas | `shared-result-parts`, `fine-tune-panel`, `styled-slider`, `bidirectional-slider`, `mobile-fine-tune-section` |
+| 3 | Literais → tokens | ~60 arquivos em `components/`, `pages/`, `admin/`, `architecture/` |
+| 4 | Deduplicar padrões | páginas, modais, `src/utils/result-display.ts` (novo) |
+| 5 | Reconciliar system.md | `.interface-design/system.md`, `docs/design/*` |
+| 6 | Fechar catálogos de violação | `docs/_archive/`, roadmap, backlog |
+
+**Achados relevantes:**
+- Os tokens `--font-size-2xs`/`--font-size-fine` nunca geraram utility: no
+  Tailwind v4 o namespace de font-size é `--text-*`. Por isso conviviam com
+  ~145 literais `text-[10px]`/`text-[11px]`.
+- 14 classes Tailwind construídas em runtime (`text-${color}`) eram purgadas
+  em produção — bug latente, não apenas inconsistência de estilo.
+- `design-tokens.ts` existia desde a v0.8.0 e não era importado por nenhum
+  arquivo (o próprio header dizia "not refactored yet — FASE 3 work").
+
+**Fora do escopo (permanecem abertos):** #5 Segurança v0.5.5, #12 Story-011 2C,
+MVP Android v0.12.0, FASE-7/8A/8B.
 
 ---
 
@@ -184,7 +213,7 @@ v0.5.5 — Segurança Cibernética ⬜
 | Sessão | Foco | Entregável |
 |--------|------|------------|
 | 1 | Análise + Audit + Critique | Catálogo de violações |
-| 2 | Relatório + Propostas | `docs/plans/VISUAL-AUDIT-REPORT.md` |
+| 2 | Relatório + Propostas | `docs/_archive/plans-completed/redesign-v0.8.0/VISUAL-AUDIT-REPORT.md` |
 | 3 | Protótipo HTML | `docs/design/DASHBOARD_V2_PROPOSAL.html` |
 
 **Prompts de execução incluídos no plano** — copiar e colar para iniciar cada sessão.

@@ -107,7 +107,7 @@ const FILE_LINES: Record<string, number> = {
   'src/components/styled-slider.tsx': 108,
   'src/components/tool-summary-viewer.tsx': 42,
   'src/components/ui-helpers.tsx': 51,
-  'src/components/viewport-redirect.tsx': 17,
+  'src/components/viewport-guard.tsx': 17,
   'src/components/architecture/arch-data-flow.tsx': 154,
   'src/components/architecture/arch-edge.tsx': 59,
   'src/components/architecture/arch-group.tsx': 82,
@@ -221,7 +221,7 @@ const NODE_SEEDS: NodeSeed[] = [
   { id: 'styled-slider', labelPt: 'Slider estilizado reutilizavel', category: 'component', filePath: 'src/components/styled-slider.tsx', group: 'components' },
   { id: 'tool-summary-viewer', labelPt: 'Resumo visual da ferramenta', category: 'component', filePath: 'src/components/tool-summary-viewer.tsx', group: 'components' },
   { id: 'ui-helpers', labelPt: 'Helpers de campos de interface', category: 'component', filePath: 'src/components/ui-helpers.tsx', group: 'components' },
-  { id: 'viewport-redirect', labelPt: 'Redirecionamento entre desktop e mobile', category: 'util', filePath: 'src/components/viewport-redirect.tsx', group: 'components' },
+  { id: 'viewport-guard', labelPt: 'Redirecionamento entre desktop e mobile', category: 'util', filePath: 'src/components/viewport-guard.tsx', group: 'components' },
   { id: 'arch-data-flow', labelPt: 'Overlay do fluxo de dados do calculo', category: 'component', filePath: 'src/components/architecture/arch-data-flow.tsx', group: 'components' },
   { id: 'arch-edge', labelPt: 'Aresta SVG entre elementos do mapa', category: 'component', filePath: 'src/components/architecture/arch-edge.tsx', group: 'components' },
   { id: 'arch-group', labelPt: 'Card de grupo do mapa arquitetural', category: 'component', filePath: 'src/components/architecture/arch-group.tsx', group: 'components' },
@@ -342,7 +342,7 @@ const LEVEL1_EDGES: ArchEdge[] = [
 
 const LEVEL2_EDGES: ArchEdge[] = [
   { from: 'main', to: 'app', type: 'renders', level: 2 },
-  { from: 'main', to: 'viewport-redirect', type: 'renders', level: 2 },
+  { from: 'main', to: 'viewport-guard', type: 'renders', level: 2 },
   { from: 'main', to: 'history-page', type: 'renders', level: 2 },
   { from: 'main', to: 'mobile-page', type: 'renders', level: 2 },
   { from: 'main', to: 'settings-page', type: 'renders', level: 2 },
@@ -391,7 +391,7 @@ const LEVEL2_EDGES: ArchEdge[] = [
   { from: 'parameter-health-bar', to: 'data-index', type: 'import', level: 2 },
   { from: 'parameter-health-bar', to: 'engine-index', type: 'import', level: 2 },
   { from: 'parameter-health-bar', to: 'store-index', type: 'state', level: 2 },
-  { from: 'viewport-redirect', to: 'use-is-mobile', type: 'import', level: 2 },
+  { from: 'viewport-guard', to: 'use-is-mobile', type: 'import', level: 2 },
 
   { from: 'mobile-page', to: 'mobile-header', type: 'renders', level: 2 },
   { from: 'mobile-page', to: 'mobile-config-section', type: 'renders', level: 2 },
@@ -502,7 +502,7 @@ export const ARCHITECTURE_GRAPH: ArchGraph = {
   edges: [...LEVEL1_EDGES, ...LEVEL2_EDGES],
   groups: GROUPS,
   metadata: {
-    version: '0.11.0',
+    version: '0.12.0',
     totalFiles: Object.keys(FILE_LINES).length,
     totalLines,
     lastUpdated: '2026-04-06',
