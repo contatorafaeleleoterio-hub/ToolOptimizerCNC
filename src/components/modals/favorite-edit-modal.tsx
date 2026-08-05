@@ -9,6 +9,7 @@ import {
   validateMachineLimits, calcularSliderBounds,
 } from '@/engine/index';
 import { calculateHealthScore, getVcZone, getFzZone, getAeZone, getApZone } from '@/utils/health-score';
+import { MODAL_ROOT } from '../design-tokens';
 
 interface FavoriteEditModalProps {
   favorite: FavoritoCompleto;
@@ -110,7 +111,7 @@ export function FavoriteEditModal({ favorite, onClose }: FavoriteEditModalProps)
 
   return (
     <div
-      className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm"
+      className={MODAL_ROOT}
       onClick={handleOverlayClick}
     >
       <div className="bg-background-dark border border-white/10 rounded-xl p-5 w-full max-w-sm shadow-2xl">
@@ -181,7 +182,7 @@ export function FavoriteEditModal({ favorite, onClose }: FavoriteEditModalProps)
         </div>
 
         {error && (
-          <p className="text-xs text-red-400 mb-3">{error}</p>
+          <p className="text-xs text-seg-vermelho mb-3">{error}</p>
         )}
 
         {/* Actions */}

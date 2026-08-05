@@ -30,7 +30,7 @@ export function ErrorEntry({ entry, onDelete }: Props) {
         </div>
         <button
           onClick={() => onDelete(entry.id)}
-          className="flex items-center justify-center w-7 h-7 rounded-lg text-gray-500 hover:text-red-400 hover:bg-red-500/10 transition-colors shrink-0"
+          className="flex items-center justify-center w-7 h-7 rounded-lg text-gray-500 hover:text-seg-vermelho hover:bg-seg-vermelho/10 transition-colors shrink-0"
           aria-label="Remover erro"
         >
           <span className="material-symbols-outlined text-base">delete</span>

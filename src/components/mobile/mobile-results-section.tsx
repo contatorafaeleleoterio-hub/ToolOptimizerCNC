@@ -3,7 +3,7 @@ import { useMachiningStore } from '@/store';
 import { useHistoryStore } from '@/store';
 import { useSimulationAnimation } from '@/hooks/use-simulation-animation';
 import { TipoUsinagem } from '@/types/index';
-import type { Ferramenta, SavedTool } from '@/types/index';
+import type { SavedTool } from '@/types/index';
 import { FormulaCard, Fraction } from '../formula-card';
 import { ToolEditModal } from '../modals/tool-edit-modal';
 import { getMaterialById } from '@/data';
@@ -14,35 +14,15 @@ import {
 } from '../shared-result-parts';
 import { haptics } from '@/utils/haptics';
 import { HmiVisor } from './hmi-visor';
-import { ACCENT_GOLD, SEMAPHORE_HEX } from '../design-tokens';
+import { ACCENT_GOLD } from '../design-tokens';
 import { ACCENT_HEX } from '../accent-tokens';
+import { formatToolSpec, getLdColor, formatTimestamp, getLcdAlertLine } from '@/utils/result-display';
 
 const OPERACAO_LABELS: Record<TipoUsinagem, string> = {
   [TipoUsinagem.DESBASTE]: 'Desbaste',
   [TipoUsinagem.SEMI_ACABAMENTO]: 'Semi-Acab.',
   [TipoUsinagem.ACABAMENTO]: 'Acabamento',
 };
-
-/** Compact tool spec string: "Toroidal Ø6 R1.0 H25 F4" */
-function formatToolSpec(f: Ferramenta): string {
-  const tipo = f.tipo === 'toroidal' ? 'Toroidal' : f.tipo === 'esferica' ? 'Esférica' : 'Topo Reto';
-  const raio = f.tipo === 'toroidal' ? ` R${f.raioQuina ?? 1.0}` : f.tipo === 'esferica' ? ` R${f.diametro / 2}` : '';
-  return `${tipo} Ø${f.diametro}${raio} H${f.balanco} F${f.numeroArestas}`;
-}
-
-/** L/D color based on thresholds */
-function getLdColor(razaoLD: number): string {
-  if (razaoLD <= 3) return SEMAPHORE_HEX.verde;
-  if (razaoLD <= 4) return SEMAPHORE_HEX.amarelo;
-  return SEMAPHORE_HEX.vermelho;
-}
-
-/** Format timestamp as "DD/MM/YYYY HH:mm" */
-function formatTimestamp(ts: number): string {
-  const d = new Date(ts);
-  const pad = (n: number) => String(n).padStart(2, '0');
-  return `${pad(d.getDate())}/${pad(d.getMonth() + 1)}/${d.getFullYear()} ${pad(d.getHours())}:${pad(d.getMinutes())}`;
-}
 
 export function MobileResultsSection() {
   const storeResultado = useMachiningStore((s) => s.resultado);
@@ -94,13 +74,9 @@ export function MobileResultsSection() {
 
 
   // LCD alert line
-  const lcdAlertLine = (() => {
-    if (!resultado) return { text: 'AGUARDANDO SIMULAÇÃO — CONFIGURE E CLIQUE EM SIMULAR', color: 'rgba(255,255,255,0.25)', icon: 'hourglass_empty' };
-    if (nivel === 'bloqueado') return { text: 'L/D > 6 — OPERAÇÃO BLOQUEADA', color: SEMAPHORE_HEX.vermelho, icon: 'block' };
-    if (nivel === 'vermelho') return { text: avisos[0] ?? 'PARÂMETROS CRÍTICOS DETECTADOS', color: SEMAPHORE_HEX.vermelho, icon: 'emergency_home' };
-    if (nivel === 'amarelo') return { text: avisos[0] ?? 'ATENÇÃO: RISCO DE VIBRAÇÃO', color: SEMAPHORE_HEX.amarelo, icon: 'warning' };
-    return { text: '✓ PARÂMETROS SEGUROS', color: SEMAPHORE_HEX.verde, icon: 'check_circle' };
-  })();
+  const lcdAlertLine = resultado
+    ? getLcdAlertLine(nivel, avisos, '✓ PARÂMETROS SEGUROS')
+    : { text: 'AGUARDANDO SIMULAÇÃO — CONFIGURE E CLIQUE EM SIMULAR', color: 'rgba(255,255,255,0.25)', icon: 'hourglass_empty' };
 
   const lcdInfoText = resultado
     ? `L/D: ${razaoLD.toFixed(1)} · CTF: ${ctf.toFixed(2)} · POT: ${Math.round(resultado.powerHeadroom)}%`
@@ -232,12 +208,12 @@ export function MobileResultsSection() {
 
       {/* Reset warning — shown when resultado is null after a previous simulation */}
       {!storeResultado && latestEntry && (
-        <div className="bg-yellow-500/10 border border-yellow-500/30 rounded-xl p-4 animate-[fadeInUp_0.4s_ease-out]">
+        <div className="bg-seg-amarelo/10 border border-seg-amarelo/30 rounded-xl p-4 animate-[fadeInUp_0.4s_ease-out]">
           <div className="flex items-center gap-3">
-            <span className="material-symbols-outlined text-yellow-400 animate-pulse">refresh</span>
+            <span className="material-symbols-outlined text-seg-amarelo animate-pulse">refresh</span>
             <div>
-              <p className="text-sm font-semibold text-yellow-300">Parâmetros Alterados</p>
-              <p className="text-xs text-yellow-400/80 mt-0.5">Clique em "SIMULAR" para recalcular</p>
+              <p className="text-sm font-semibold text-seg-amarelo">Parâmetros Alterados</p>
+              <p className="text-xs text-seg-amarelo/80 mt-0.5">Clique em "SIMULAR" para recalcular</p>
             </div>
           </div>
         </div>

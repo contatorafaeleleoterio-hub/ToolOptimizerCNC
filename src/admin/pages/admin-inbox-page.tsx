@@ -188,13 +188,13 @@ export default function AdminInboxPage() {
             </button>
             <button
               onClick={resolveFiltered}
-              className="text-xs px-2.5 py-1 rounded-md border border-emerald-500/30 bg-emerald-500/15 text-emerald-300 hover:bg-emerald-500/25 transition-colors"
+              className="text-xs px-2.5 py-1 rounded-md border border-seg-verde/30 bg-seg-verde/15 text-seg-verde hover:bg-seg-verde/25 transition-colors"
             >
               Resolver filtrados
             </button>
             <button
               onClick={ignoreFiltered}
-              className="text-xs px-2.5 py-1 rounded-md border border-amber-500/30 bg-amber-500/15 text-amber-300 hover:bg-amber-500/25 transition-colors"
+              className="text-xs px-2.5 py-1 rounded-md border border-seg-amarelo/30 bg-seg-amarelo/15 text-seg-amarelo hover:bg-seg-amarelo/25 transition-colors"
             >
               Ignorar filtrados
             </button>

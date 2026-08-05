@@ -7,7 +7,7 @@ import { SectionTitle, FieldGroup, NumInput } from '../ui-helpers';
 import { ToolEditModal } from '@/components/modals/tool-edit-modal';
 import { StyledSlider } from '@/components/styled-slider';
 import { haptics } from '@/utils/haptics';
-import { SEMAPHORE_HEX } from '../design-tokens';
+import { SEMAPHORE_HEX, TOUCH_TARGET } from '../design-tokens';
 
 /**
  * Mobile-friendly number input with raw/blur pattern.
@@ -40,11 +40,11 @@ function MobileNumberInput({ label, value, min, max, step, unit, onChange }: {
         onBlur={() => { setFocused(false); if (invalid) setRaw(String(value)); }}
         aria-label={label}
         className={`w-full min-h-[48px] bg-black/40 border rounded-lg py-2 px-3 text-sm text-white font-mono focus:ring-1 focus:ring-primary outline-none ${
-          invalid && focused ? 'border-red-500 text-red-400' : 'border-white/12'
+          invalid && focused ? 'border-seg-vermelho text-seg-vermelho' : 'border-white/12'
         }`}
       />
       {invalid && focused && (
-        <span className="text-xs text-red-400 mt-1 block px-1">Válido: {min}–{max} {unit}</span>
+        <span className="text-xs text-seg-vermelho mt-1 block px-1">Válido: {min}–{max} {unit}</span>
       )}
     </FieldGroup>
   );
@@ -178,7 +178,7 @@ function MobileSavedToolsList({ savedTools, activeDiametro, onLoad, onEdit, onRe
                           onEdit(tool);
                           haptics.impactLight();
                         }}
-                        className="p-1.5 min-h-[44px] min-w-[44px] flex items-center justify-center text-gray-500 active:text-primary transition-colors"
+                        className={`p-1.5 ${TOUCH_TARGET} flex items-center justify-center text-gray-500 active:text-primary transition-colors`}
                       >
                         <span className="material-symbols-outlined" style={{ fontSize: '18px' }}>edit</span>
                       </button>
@@ -188,7 +188,7 @@ function MobileSavedToolsList({ savedTools, activeDiametro, onLoad, onEdit, onRe
                           onRemove(tool.id);
                           haptics.notification();
                         }}
-                        className="p-1.5 min-h-[44px] min-w-[44px] flex items-center justify-center text-gray-500 active:text-red-400 transition-colors"
+                        className={`p-1.5 ${TOUCH_TARGET} flex items-center justify-center text-gray-500 active:text-seg-vermelho transition-colors`}
                       >
                         <span className="material-symbols-outlined" style={{ fontSize: '18px' }}>delete</span>
                       </button>

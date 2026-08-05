@@ -154,7 +154,7 @@ function SetupForm() {
           />
         </div>
 
-        {localError && <p className="text-xs text-red-400">{localError}</p>}
+        {localError && <p className="text-xs text-seg-vermelho">{localError}</p>}
 
         <button
           onClick={handleConnect}
@@ -354,7 +354,7 @@ export default function AdminAnalyticsPage() {
           <button
             onClick={exportCsv}
             disabled={dailyTraffic.length === 0}
-            className="flex items-center gap-2 px-3 py-1.5 rounded-lg text-sm font-medium text-emerald-300 bg-emerald-500/10 border border-emerald-500/20 hover:bg-emerald-500/20 transition-colors disabled:opacity-40 disabled:cursor-not-allowed"
+            className="flex items-center gap-2 px-3 py-1.5 rounded-lg text-sm font-medium text-seg-verde bg-seg-verde/10 border border-seg-verde/20 hover:bg-seg-verde/20 transition-colors disabled:opacity-40 disabled:cursor-not-allowed"
           >
             <span className="material-symbols-outlined text-base">download</span>
             Exportar CSV
@@ -364,7 +364,7 @@ export default function AdminAnalyticsPage() {
             onClick={clearCredentials}
             disabled={isUsingEnv}
             className="flex items-center gap-2 px-3 py-1.5 rounded-lg text-sm font-medium text-gray-400 bg-white/5 border border-white/10 transition-colors
-            hover:bg-red-500/10 hover:text-red-400 hover:border-red-500/20 disabled:opacity-60 disabled:cursor-not-allowed"
+            hover:bg-seg-vermelho/10 hover:text-seg-vermelho hover:border-seg-vermelho/20 disabled:opacity-60 disabled:cursor-not-allowed"
             aria-label="Desconectar"
           >
             <span className="material-symbols-outlined text-base">link_off</span>
@@ -374,13 +374,13 @@ export default function AdminAnalyticsPage() {
       </div>
 
       {status === 'error' && error && (
-        <div className="rounded-xl bg-red-500/10 border border-red-500/20 p-4 flex items-start gap-3">
-          <span className="material-symbols-outlined text-base text-red-400 shrink-0 mt-0.5">error</span>
+        <div className="rounded-xl bg-seg-vermelho/10 border border-seg-vermelho/20 p-4 flex items-start gap-3">
+          <span className="material-symbols-outlined text-base text-seg-vermelho shrink-0 mt-0.5">error</span>
           <div className="flex-1 min-w-0">
-            <p className="text-sm font-semibold text-red-400">Erro ao buscar dados</p>
-            <p className="text-xs text-red-400/70 mt-0.5 break-words">{error}</p>
+            <p className="text-sm font-semibold text-seg-vermelho">Erro ao buscar dados</p>
+            <p className="text-xs text-seg-vermelho/70 mt-0.5 break-words">{error}</p>
           </div>
-          <button onClick={() => void fetchData(selectedDays)} className="text-xs text-red-400 underline shrink-0">
+          <button onClick={() => void fetchData(selectedDays)} className="text-xs text-seg-vermelho underline shrink-0">
             Tentar novamente
           </button>
         </div>
@@ -404,7 +404,7 @@ export default function AdminAnalyticsPage() {
               </div>
             </div>
             <div className="rounded-xl bg-white/4 border border-white/8 p-4 flex items-center gap-4">
-              <span className="material-symbols-outlined text-3xl text-green-400">group</span>
+              <span className="material-symbols-outlined text-3xl text-seg-verde">group</span>
               <div>
                 <p className="text-2xl font-bold font-mono text-white">{totalVisitors.toLocaleString('pt-BR')}</p>
                 <p className="text-xs text-gray-500">Visitantes unicos ({selectedDays} dias)</p>
@@ -423,7 +423,7 @@ export default function AdminAnalyticsPage() {
 
             <section className="rounded-xl bg-white/4 border border-white/8 p-5">
               <div className="flex items-center gap-2 mb-4">
-                <span className="material-symbols-outlined text-lg text-green-400">person</span>
+                <span className="material-symbols-outlined text-lg text-seg-verde">person</span>
                 <h2 className="text-sm font-semibold text-gray-200">Visitantes unicos por dia</h2>
               </div>
               <MiniChart data={visitorsData} color={ACCENT_HEX.secondary} emptyMessage={`Nenhum visitante nos ultimos ${selectedDays} dias`} />

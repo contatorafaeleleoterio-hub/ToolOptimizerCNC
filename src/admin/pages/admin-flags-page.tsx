@@ -89,11 +89,11 @@ export default function AdminFlagsPage() {
       </div>
 
       {/* Notice */}
-      <div className="rounded-xl bg-yellow-500/8 border border-yellow-500/20 p-4 flex items-start gap-3">
-        <span className="material-symbols-outlined text-base text-yellow-400 shrink-0 mt-0.5">
+      <div className="rounded-xl bg-seg-amarelo/8 border border-seg-amarelo/20 p-4 flex items-start gap-3">
+        <span className="material-symbols-outlined text-base text-seg-amarelo shrink-0 mt-0.5">
           info
         </span>
-        <p className="text-xs text-yellow-300/80">
+        <p className="text-xs text-seg-amarelo/80">
           As flags são salvas no localStorage deste navegador. Alterações não afetam outros
           usuários nem o ambiente de produção. Flags como{' '}
           <span className="font-mono">error_tracking</span> e{' '}

@@ -18,8 +18,11 @@ export const CARD_SURFACE = 'bg-surface-dark backdrop-blur-xl rounded-2xl p-6 bo
 /** Level 3 — glass card container (primary sections / settings cards) */
 export const CARD_GLASS = 'bg-card-dark rounded-xl p-4 border border-white/5 shadow-inner-glow';
 
-/** Level 3 — same as CARD_GLASS with page-section padding and bottom margin */
+/** Level 3 — CARD_GLASS with page-section padding and bottom margin */
 export const CARD_PAGE = 'bg-card-dark rounded-xl p-6 border border-white/5 shadow-inner-glow mb-6';
+
+/** CARD_PAGE with responsive padding (mobile-first pages) */
+export const CARD_PAGE_RESPONSIVE = 'bg-card-dark rounded-xl p-4 sm:p-6 border border-white/5 shadow-inner-glow mb-4 sm:mb-6';
 
 /** Inner card (sub-sections, summary boxes inside panels) */
 export const CARD_INNER = 'bg-black/30 border border-white/5 rounded-lg p-3';
@@ -55,6 +58,9 @@ export const EMPTY_STATE = 'flex flex-col items-center justify-center h-48 gap-3
 
 /** Max content width for full-page layouts */
 export const PAGE_MAX = 'max-w-[1200px] mx-auto';
+
+/** Small uppercase field label above an input */
+export const FIELD_LABEL = 'text-fine font-semibold text-gray-500 uppercase tracking-wide mb-1 block';
 
 // ---------------------------------------------------------------------------
 // Form controls

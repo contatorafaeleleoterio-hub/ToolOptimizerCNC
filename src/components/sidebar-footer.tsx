@@ -16,12 +16,12 @@ export function SidebarFooter() {
       {/* Favoritos */}
       <button
         onClick={() => navigate('/favoritos')}
-        className="w-full flex items-center gap-2 px-3 py-1.5 rounded-lg text-sm text-gray-400 hover:text-yellow-400 hover:bg-white/5 transition-colors group"
+        className="w-full flex items-center gap-2 px-3 py-1.5 rounded-lg text-sm text-gray-400 hover:text-seg-amarelo hover:bg-white/5 transition-colors group"
       >
-        <span className="material-symbols-outlined text-[18px] group-hover:text-yellow-400">star</span>
+        <span className="material-symbols-outlined text-[18px] group-hover:text-seg-amarelo">star</span>
         <span className="flex-1 text-left">Favoritos</span>
         {favoriteCount > 0 && (
-          <span className="text-xs font-mono text-yellow-400/70">{favoriteCount}</span>
+          <span className="text-xs font-mono text-seg-amarelo/70">{favoriteCount}</span>
         )}
       </button>
 

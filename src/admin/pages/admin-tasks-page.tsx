@@ -303,7 +303,7 @@ export default function AdminTasksPage() {
           <div className="flex items-center gap-2 flex-wrap">
             <button
               onClick={concludeFiltered}
-              className="text-xs px-2.5 py-1 rounded-md border border-emerald-500/30 bg-emerald-500/15 text-emerald-300 hover:bg-emerald-500/25 transition-colors"
+              className="text-xs px-2.5 py-1 rounded-md border border-seg-verde/30 bg-seg-verde/15 text-seg-verde hover:bg-seg-verde/25 transition-colors"
             >
               Concluir filtradas
             </button>
@@ -363,7 +363,7 @@ export default function AdminTasksPage() {
           {/* Title */}
           <div className="flex flex-col gap-1.5">
             <label className="text-xs font-semibold text-gray-400 uppercase tracking-wide">
-              Título <span className="text-red-400">*</span>
+              Título <span className="text-seg-vermelho">*</span>
             </label>
             <input
               type="text"
@@ -373,7 +373,7 @@ export default function AdminTasksPage() {
               className="bg-white/5 border border-white/10 rounded-lg px-3 py-2 text-sm text-white placeholder-gray-600 focus:outline-none focus:border-primary/40"
               autoFocus
             />
-            {formError && <p className="text-xs text-red-400">{formError}</p>}
+            {formError && <p className="text-xs text-seg-vermelho">{formError}</p>}
           </div>
 
           {/* Description */}

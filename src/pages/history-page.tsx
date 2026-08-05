@@ -11,10 +11,10 @@ import type { FeedbackOperador, HistoricoCalculo } from '@/types';
 import { usePageTitle } from '@/hooks/use-page-title';
 import { SeoHead } from '@/components/seo-head';
 import { usePlausible } from '@/hooks/use-plausible';
-import { ACCENT_GOLD } from '@/components/design-tokens';
+import { ACCENT_GOLD, CARD_PAGE, FIELD_LABEL } from '@/components/design-tokens';
 
-const CARD = 'bg-card-dark rounded-xl p-6 border border-white/5 shadow-inner-glow mb-6';
-const LABEL = 'text-fine font-semibold text-gray-500 uppercase tracking-wide mb-1 block';
+const CARD = CARD_PAGE;
+const LABEL = FIELD_LABEL;
 
 const TIPO_LABELS: Record<TipoUsinagem, string> = {
   [TipoUsinagem.DESBASTE]: 'Desbaste',
@@ -26,7 +26,7 @@ const SEG_COLORS: Record<string, string> = {
   verde: 'bg-seg-verde/20 text-seg-verde border-seg-verde/30',
   amarelo: 'bg-seg-amarelo/20 text-seg-amarelo border-seg-amarelo/30',
   vermelho: 'bg-seg-vermelho/20 text-seg-vermelho border-seg-vermelho/30',
-  bloqueado: 'bg-red-900/30 text-red-400 border-red-500/30',
+  bloqueado: 'bg-seg-vermelho/30 text-seg-vermelho border-seg-vermelho/30',
 };
 
 const SEG_LABELS: Record<string, string> = {
@@ -175,7 +175,7 @@ export function HistoryPage() {
                 onClick={() => setFilters({ favorited: filters.favorited === true ? 'todos' : true })}
                 className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg border text-xs transition-all ${
                   filters.favorited === true
-                    ? 'bg-yellow-400/10 border-yellow-400/40 text-yellow-400 font-bold'
+                    ? 'bg-seg-amarelo/10 border-seg-amarelo/40 text-seg-amarelo font-bold'
                     : 'bg-black/30 border-white/10 text-gray-400 hover:bg-white/5 hover:text-white'
                 }`}
               >

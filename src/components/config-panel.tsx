@@ -69,13 +69,13 @@ function NumberInputRow({
           aria-label={label}
           className={`bg-black/50 border rounded px-2 py-1 text-base text-white font-mono focus:outline-none w-[100px] ${
             invalid
-              ? 'border-red-500 text-red-400 focus:border-red-400'
+              ? 'border-seg-vermelho text-seg-vermelho focus:border-seg-vermelho'
               : 'border-white/15 focus:border-primary'
           }`}
         />
       </div>
       {invalid && (
-        <span className="text-xs text-red-400 px-1">
+        <span className="text-xs text-seg-vermelho px-1">
           Válido: {min}–{max} {unit}
         </span>
       )}
@@ -171,7 +171,7 @@ function SavedToolsList({ savedTools, activeDiametro, onLoad, onEdit, onRemove }
                       <button
                         aria-label={`Remover ${tool.nome}`}
                         onClick={() => onRemove(tool.id)}
-                        className="p-0.5 text-gray-500 hover:text-red-400 transition-colors"
+                        className="p-0.5 text-gray-500 hover:text-seg-vermelho transition-colors"
                       >
                         <span className="material-symbols-outlined" style={{ fontSize: '14px' }}>delete</span>
                       </button>

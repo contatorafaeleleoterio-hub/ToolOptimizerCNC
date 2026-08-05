@@ -60,7 +60,7 @@ export default function AdminUsagePage() {
         {total > 0 && (
           <button
             onClick={clearUsage}
-            className="flex items-center gap-2 px-3 py-1.5 rounded-lg text-sm font-medium text-gray-400 bg-white/5 border border-white/10 hover:bg-red-500/10 hover:text-red-400 hover:border-red-500/20 transition-colors"
+            className="flex items-center gap-2 px-3 py-1.5 rounded-lg text-sm font-medium text-gray-400 bg-white/5 border border-white/10 hover:bg-seg-vermelho/10 hover:text-seg-vermelho hover:border-seg-vermelho/20 transition-colors"
           >
             <span className="material-symbols-outlined text-base">delete_sweep</span>
             Limpar Histórico
@@ -78,7 +78,7 @@ export default function AdminUsagePage() {
           </div>
         </div>
         <div className="rounded-xl bg-white/4 border border-white/8 p-4 flex items-center gap-4">
-          <span className="material-symbols-outlined text-3xl text-green-400">today</span>
+          <span className="material-symbols-outlined text-3xl text-seg-verde">today</span>
           <div>
             <p className="text-2xl font-bold font-mono text-white">{today}</p>
             <p className="text-xs text-gray-500">Simulações hoje</p>
@@ -112,7 +112,7 @@ export default function AdminUsagePage() {
           {/* Top Operações */}
           <section className="rounded-xl bg-white/4 border border-white/8 p-5">
             <div className="flex items-center gap-2 mb-4">
-              <span className="material-symbols-outlined text-lg text-green-400">settings</span>
+              <span className="material-symbols-outlined text-lg text-seg-verde">settings</span>
               <h2 className="text-sm font-semibold text-gray-200">Top Operações</h2>
               <span className="ml-auto text-xs text-gray-600">
                 {topOperacoes.length} operaç{topOperacoes.length !== 1 ? 'ões' : 'ão'}

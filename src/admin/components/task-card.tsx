@@ -60,7 +60,7 @@ export function TaskCard({ task, onEdit, onDelete, onStatusChange }: Props) {
           </button>
           <button
             onClick={() => onDelete(task.id)}
-            className="flex items-center justify-center w-7 h-7 rounded-lg text-gray-500 hover:text-red-400 hover:bg-red-500/10 transition-colors"
+            className="flex items-center justify-center w-7 h-7 rounded-lg text-gray-500 hover:text-seg-vermelho hover:bg-seg-vermelho/10 transition-colors"
             aria-label="Remover tarefa"
           >
             <span className="material-symbols-outlined text-base">delete</span>

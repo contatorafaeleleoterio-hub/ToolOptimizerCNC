@@ -11,9 +11,10 @@ import type { FavoritoCompleto } from '@/types';
 import { usePageTitle } from '@/hooks/use-page-title';
 import { SeoHead } from '@/components/seo-head';
 import { FavoriteEditModal } from '@/components/modals/favorite-edit-modal';
+import { CARD_PAGE, FIELD_LABEL } from '@/components/design-tokens';
 
-const CARD = 'bg-card-dark rounded-xl p-6 border border-white/5 shadow-inner-glow mb-6';
-const LABEL = 'text-fine font-semibold text-gray-500 uppercase tracking-wide mb-1 block';
+const CARD = CARD_PAGE;
+const LABEL = FIELD_LABEL;
 
 const TIPO_LABELS: Record<TipoUsinagem, string> = {
   [TipoUsinagem.DESBASTE]: 'Desbaste',
@@ -25,7 +26,7 @@ const SEG_COLORS: Record<string, string> = {
   verde: 'bg-seg-verde/20 text-seg-verde border-seg-verde/30',
   amarelo: 'bg-seg-amarelo/20 text-seg-amarelo border-seg-amarelo/30',
   vermelho: 'bg-seg-vermelho/20 text-seg-vermelho border-seg-vermelho/30',
-  bloqueado: 'bg-red-900/30 text-red-400 border-red-500/30',
+  bloqueado: 'bg-seg-vermelho/30 text-seg-vermelho border-seg-vermelho/30',
 };
 
 const SEG_LABELS: Record<string, string> = {
@@ -140,7 +141,7 @@ export function FavoritesPage() {
           Voltar
         </button>
         <h1 className="text-xl font-bold text-white flex items-center gap-2">
-          <span className="material-symbols-outlined text-yellow-400" style={{ fontVariationSettings: "'FILL' 1" }}>star</span>
+          <span className="material-symbols-outlined text-seg-amarelo" style={{ fontVariationSettings: "'FILL' 1" }}>star</span>
           Favoritos
         </h1>
         <span className="text-xs text-gray-500 ml-auto font-mono">{favorites.length} favorito{favorites.length !== 1 ? 's' : ''}</span>
@@ -151,7 +152,7 @@ export function FavoritesPage() {
         <div className={CARD}>
           <div className="flex items-center justify-between mb-4">
             <h3 className="text-xs font-bold text-gray-400 uppercase tracking-widest flex items-center gap-2">
-              <span className="w-1 h-3 bg-yellow-400 rounded-full" />
+              <span className="w-1 h-3 bg-seg-amarelo rounded-full" />
               Filtros
             </h3>
             {hasFilters && (
@@ -225,7 +226,7 @@ export function FavoritesPage() {
             >star</span>
             <p className="text-gray-500 text-sm">Nenhum favorito salvo ainda.</p>
             <p className="text-gray-600 text-xs mt-1">
-              Após simular, clique em <span className="text-yellow-400 font-bold">★</span> no painel de resultados para favoritar um setup.
+              Após simular, clique em <span className="text-seg-amarelo font-bold">★</span> no painel de resultados para favoritar um setup.
             </p>
             <button
               onClick={() => navigate('/')}
@@ -320,7 +321,7 @@ function FavoriteCard({
         <div className="shrink-0 min-w-0">
           <span className="text-2xs text-gray-500 block whitespace-nowrap">{formatDate(fav.timestamp)}</span>
           {fav.editedAt && (
-            <span className="text-3xs text-yellow-500/60 block whitespace-nowrap">editado</span>
+            <span className="text-3xs text-seg-amarelo/60 block whitespace-nowrap">editado</span>
           )}
         </div>
 
@@ -355,7 +356,7 @@ function FavoriteCard({
 
         {/* Star indicator */}
         <span
-          className="material-symbols-outlined text-lg text-yellow-400"
+          className="material-symbols-outlined text-lg text-seg-amarelo"
           style={{ fontVariationSettings: "'FILL' 1", filter: 'drop-shadow(0 0 5px rgba(250,204,21,0.4))' }}
         >star</span>
 
@@ -386,8 +387,8 @@ function FavoriteCard({
 
           {/* User note */}
           {fav.userNote && (
-            <div className="bg-yellow-400/5 border border-yellow-400/15 rounded-lg p-3">
-              <span className="text-2xs text-yellow-400/70 font-bold uppercase tracking-wide block mb-1">Nota</span>
+            <div className="bg-seg-amarelo/5 border border-seg-amarelo/15 rounded-lg p-3">
+              <span className="text-2xs text-seg-amarelo/70 font-bold uppercase tracking-wide block mb-1">Nota</span>
               <p className="text-xs text-gray-300">{fav.userNote}</p>
             </div>
           )}

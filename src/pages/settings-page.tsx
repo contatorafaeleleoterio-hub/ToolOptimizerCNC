@@ -10,6 +10,7 @@ import { usePageTitle } from '@/hooks/use-page-title';
 import { SeoHead } from '@/components/seo-head';
 import { StyledSlider } from '@/components/styled-slider';
 import { usePlausible } from '@/hooks/use-plausible';
+import { CARD_PAGE_RESPONSIVE, FIELD_LABEL, SECTION_HEADER, TOUCH_TARGET } from '@/components/design-tokens';
 
 type Section = 'maquina' | 'seguranca' | 'materiais' | 'ferramentas' | 'exibicao' | 'dados';
 
@@ -22,8 +23,8 @@ const SECTIONS: { id: Section; label: string; icon: string }[] = [
   { id: 'dados', label: 'Dados', icon: 'database' },
 ];
 
-const CARD = 'bg-card-dark rounded-xl p-4 sm:p-6 border border-white/5 shadow-inner-glow mb-4 sm:mb-6';
-const LABEL = 'text-fine font-semibold text-gray-500 uppercase tracking-wide mb-1 block';
+const CARD = CARD_PAGE_RESPONSIVE;
+const LABEL = FIELD_LABEL;
 
 export function SettingsPage() {
   usePageTitle('Configurações — ToolOptimizer CNC');
@@ -98,7 +99,7 @@ function MaquinaSection() {
       <SectionHeader icon="precision_manufacturing" title="Máquina" desc="Limites operacionais da máquina CNC" />
 
       <div className={CARD}>
-        <h3 className="text-xs font-bold text-gray-400 uppercase tracking-widest mb-4 flex items-center gap-2">
+        <h3 className={`${SECTION_HEADER} mb-4`}>
           <span className="w-1 h-3 bg-accent-orange rounded-full" />
           Limites da Máquina
         </h3>
@@ -124,7 +125,7 @@ function SegurancaSection() {
       <SectionHeader icon="shield" title="Segurança" desc="Fator de segurança, limites L/D e multiplicadores ap" />
 
       <div className={CARD}>
-        <h3 className="text-xs font-bold text-gray-400 uppercase tracking-widest mb-4 flex items-center gap-2">
+        <h3 className={`${SECTION_HEADER} mb-4`}>
           <span className="w-1 h-3 bg-seg-verde rounded-full" />
           Fator de Correção
         </h3>
@@ -146,7 +147,7 @@ function SegurancaSection() {
       </div>
 
       <div className={CARD}>
-        <h3 className="text-xs font-bold text-gray-400 uppercase tracking-widest mb-4 flex items-center gap-2">
+        <h3 className={`${SECTION_HEADER} mb-4`}>
           <span className="w-1 h-3 bg-seg-amarelo rounded-full" />
           Limites L/D (Balanço / Diâmetro)
         </h3>
@@ -183,7 +184,7 @@ function SegurancaSection() {
       </div>
 
       <div className={CARD}>
-        <h3 className="text-xs font-bold text-gray-400 uppercase tracking-widest mb-4 flex items-center gap-2">
+        <h3 className={`${SECTION_HEADER} mb-4`}>
           <span className="w-1 h-3 bg-accent-purple rounded-full" />
           Multiplicadores ap por Operação
         </h3>
@@ -290,9 +291,9 @@ function MateriaisSection() {
                   ) : (
                     <span className={`text-2xs font-bold px-2 py-0.5 rounded shrink-0 ${
                       mat.iso === 'P' ? 'bg-blue-500/20 text-blue-400' :
-                      mat.iso === 'M' ? 'bg-yellow-500/20 text-yellow-400' :
-                      mat.iso === 'N' ? 'bg-green-500/20 text-green-400' :
-                      'bg-red-500/20 text-red-400'
+                      mat.iso === 'M' ? 'bg-seg-amarelo/20 text-seg-amarelo' :
+                      mat.iso === 'N' ? 'bg-seg-verde/20 text-seg-verde' :
+                      'bg-seg-vermelho/20 text-seg-vermelho'
                     }`}>ISO {mat.iso}</span>
                   )}
                   <span className="text-sm text-gray-200">{mat.nome}</span>
@@ -301,13 +302,13 @@ function MateriaisSection() {
                 </div>
                 <div className="flex items-center">
                   <button onClick={() => handleEditClick(base.id)}
-                    className="min-h-[44px] min-w-[44px] flex items-center justify-center text-gray-500 hover:text-primary transition-colors">
+                    className={`${TOUCH_TARGET} flex items-center justify-center text-gray-500 hover:text-primary transition-colors`}>
                     <span className="material-symbols-outlined text-sm">edit</span>
                   </button>
                   {custom && (
                     <button onClick={() => removeCustomMaterial(base.id)}
                       title="Restaurar padrão"
-                      className="min-h-[44px] min-w-[44px] flex items-center justify-center text-gray-500 hover:text-seg-vermelho transition-colors">
+                      className={`${TOUCH_TARGET} flex items-center justify-center text-gray-500 hover:text-seg-vermelho transition-colors`}>
                       <span className="material-symbols-outlined text-sm">restart_alt</span>
                     </button>
                   )}
@@ -338,11 +339,11 @@ function MateriaisSection() {
                 </div>
                 <div className="flex items-center">
                   <button onClick={() => handleEditClick(m.id)}
-                    className="min-h-[44px] min-w-[44px] flex items-center justify-center text-gray-500 hover:text-primary transition-colors">
+                    className={`${TOUCH_TARGET} flex items-center justify-center text-gray-500 hover:text-primary transition-colors`}>
                     <span className="material-symbols-outlined text-sm">edit</span>
                   </button>
                   <button onClick={() => removeCustomMaterial(m.id)}
-                    className="min-h-[44px] min-w-[44px] flex items-center justify-center text-gray-500 hover:text-seg-vermelho transition-colors">
+                    className={`${TOUCH_TARGET} flex items-center justify-center text-gray-500 hover:text-seg-vermelho transition-colors`}>
                     <span className="material-symbols-outlined text-sm">delete</span>
                   </button>
                 </div>
@@ -523,7 +524,7 @@ function FerramentasSection() {
                 <button
                   onClick={() => removeSavedTool(tool.id)}
                   aria-label={`Excluir ${tool.nome}`}
-                  className="p-1 text-gray-500 hover:text-red-400 transition-colors rounded-md hover:bg-red-400/10"
+                  className="p-1 text-gray-500 hover:text-seg-vermelho transition-colors rounded-md hover:bg-seg-vermelho/10"
                 >
                   <span className="material-symbols-outlined text-[16px]">delete</span>
                 </button>
@@ -677,7 +678,7 @@ function ExibicaoSection() {
       <SectionHeader icon="display_settings" title="Exibição" desc="Preferências visuais e formato numérico" />
 
       <div className={CARD}>
-        <h3 className="text-xs font-bold text-gray-400 uppercase tracking-widest mb-4 flex items-center gap-2">
+        <h3 className={`${SECTION_HEADER} mb-4`}>
           <span className="w-1 h-3 bg-primary rounded-full" />
           Precisão Decimal
         </h3>
@@ -747,7 +748,7 @@ function DadosSection() {
       <SectionHeader icon="database" title="Dados" desc="Exportar, importar e resetar configurações" />
 
       <div className={CARD}>
-        <h3 className="text-xs font-bold text-gray-400 uppercase tracking-widest mb-4 flex items-center gap-2">
+        <h3 className={`${SECTION_HEADER} mb-4`}>
           <span className="w-1 h-3 bg-primary rounded-full" />
           Gerenciamento de Dados
         </h3>

@@ -15,25 +15,25 @@ const BADGE_STYLES: Record<string, string> = {
   // Task status
   aberta: 'bg-primary/15 text-primary border border-primary/30',
   em_progresso: 'bg-blue-500/15 text-blue-300 border border-blue-500/30',
-  concluida: 'bg-green-500/15 text-green-300 border border-green-500/30',
+  concluida: 'bg-seg-verde/15 text-seg-verde border border-seg-verde/30',
   cancelada: 'bg-gray-500/15 text-gray-400 border border-gray-500/30',
 
   // Priority / severity (shared between tasks and bugs)
   baixa: 'bg-gray-500/15 text-gray-400 border border-gray-500/30',
-  media: 'bg-yellow-500/15 text-yellow-300 border border-yellow-500/30',
+  media: 'bg-seg-amarelo/15 text-seg-amarelo border border-seg-amarelo/30',
   alta: 'bg-orange-500/15 text-orange-300 border border-orange-500/30',
-  critica: 'bg-red-500/15 text-red-300 border border-red-500/30',
+  critica: 'bg-seg-vermelho/15 text-seg-vermelho border border-seg-vermelho/30',
 
   // Bug status
   novo: 'bg-primary/15 text-primary border border-primary/30',
   lido: 'bg-blue-500/15 text-blue-300 border border-blue-500/30',
-  resolvido: 'bg-green-500/15 text-green-300 border border-green-500/30',
+  resolvido: 'bg-seg-verde/15 text-seg-verde border border-seg-verde/30',
   ignorado: 'bg-gray-500/15 text-gray-400 border border-gray-500/30',
 
   // Error severity
-  warning: 'bg-yellow-500/15 text-yellow-300 border border-yellow-500/30',
+  warning: 'bg-seg-amarelo/15 text-seg-amarelo border border-seg-amarelo/30',
   error: 'bg-orange-500/15 text-orange-300 border border-orange-500/30',
-  fatal: 'bg-red-500/15 text-red-300 border border-red-500/30',
+  fatal: 'bg-seg-vermelho/15 text-seg-vermelho border border-seg-vermelho/30',
 };
 
 const BADGE_LABELS: Record<string, string> = {

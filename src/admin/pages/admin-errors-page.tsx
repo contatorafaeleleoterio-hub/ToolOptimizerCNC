@@ -73,7 +73,7 @@ export default function AdminErrorsPage() {
           <h1 className="text-2xl font-bold text-white flex items-center gap-2">
             Error Tracking
             {errors.length > 0 && (
-              <span className="text-sm font-semibold px-2 py-0.5 rounded-full bg-red-500/20 text-red-300 border border-red-500/30">
+              <span className="text-sm font-semibold px-2 py-0.5 rounded-full bg-seg-vermelho/20 text-seg-vermelho border border-seg-vermelho/30">
                 {errors.length}
               </span>
             )}
@@ -83,7 +83,7 @@ export default function AdminErrorsPage() {
         {errors.length > 0 && (
           <button
             onClick={clearErrors}
-            className="flex items-center gap-2 px-3 py-1.5 rounded-lg text-sm font-medium text-gray-400 bg-white/5 border border-white/10 hover:bg-red-500/10 hover:text-red-400 hover:border-red-500/20 transition-colors"
+            className="flex items-center gap-2 px-3 py-1.5 rounded-lg text-sm font-medium text-gray-400 bg-white/5 border border-white/10 hover:bg-seg-vermelho/10 hover:text-seg-vermelho hover:border-seg-vermelho/20 transition-colors"
           >
             <span className="material-symbols-outlined text-base">delete_sweep</span>
             Limpar Tudo
@@ -172,7 +172,7 @@ export default function AdminErrorsPage() {
       {/* Error list */}
       {errors.length === 0 ? (
         <div className="flex flex-col items-center justify-center h-48 gap-3 text-center">
-          <span className="material-symbols-outlined text-4xl text-green-500/50">check_circle</span>
+          <span className="material-symbols-outlined text-4xl text-seg-verde/50">check_circle</span>
           <p className="text-gray-400 font-semibold">Nenhum erro capturado</p>
           <p className="text-sm text-gray-600">Os erros JavaScript aparecem aqui automaticamente.</p>
         </div>

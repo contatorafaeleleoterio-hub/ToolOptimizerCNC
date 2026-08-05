@@ -3,7 +3,7 @@ import { useMachiningStore } from '@/store';
 import { useHistoryStore } from '@/store';
 import { useFavoritesStore } from '@/store';
 import { TipoUsinagem } from '@/types/index';
-import type { ResultadoUsinagem, Ferramenta } from '@/types/index';
+import type { ResultadoUsinagem } from '@/types/index';
 import { FavoriteEditModal } from './modals/favorite-edit-modal';
 import { HalfMoonGauge } from './half-moon-gauge';
 import { FormulaCard, Fraction } from './formula-card';
@@ -11,8 +11,9 @@ import { BidirectionalSlider } from './bidirectional-slider';
 import { fmt, SEG_COLORS, SEG_ICONS, SEG_LABELS, SEG_BG } from './shared-result-parts';
 import { getMaterialById } from '@/data';
 import { useSimulationAnimation } from '@/hooks/use-simulation-animation';
-import { ACCENT_GOLD, SEMAPHORE_HEX } from './design-tokens';
+import { ACCENT_GOLD } from './design-tokens';
 import { ACCENT_HEX } from './accent-tokens';
+import { formatToolSpec, getLdColor, formatTimestamp, getActionText, getLcdAlertLine } from '@/utils/result-display';
 
 // MRR benchmarks by operation type (cm³/min) — Sandvik/Kennametal reference values
 const MRR_BENCHMARKS: Record<TipoUsinagem, number> = {
@@ -40,41 +41,6 @@ const EMPTY_RESULTADO: ResultadoUsinagem = {
   powerHeadroom: 100,
   healthScore: 0,
 };
-
-/** Compact tool spec string: "Toroidal Ø6 R1.0 H25 F4" */
-function formatToolSpec(f: Ferramenta): string {
-  const tipo = f.tipo === 'toroidal' ? 'Toroidal' : f.tipo === 'esferica' ? 'Esférica' : 'Topo Reto';
-  const raio = f.tipo === 'toroidal' ? ` R${f.raioQuina ?? 1.0}` : f.tipo === 'esferica' ? ` R${f.diametro / 2}` : '';
-  return `${tipo} Ø${f.diametro}${raio} H${f.balanco} F${f.numeroArestas}`;
-}
-
-/** Generate action recommendation line for LCD display */
-function getActionText(
-  nivel: ResultadoUsinagem['seguranca']['nivel'],
-  razaoLD: number,
-  ctf: number,
-): string {
-  if (nivel === 'bloqueado') return 'REDUZIR BALANÇO OU AUMENTAR DIÂMETRO DA FERRAMENTA.';
-  if (razaoLD > 4) return 'REDUZIR BALANÇO DA FERRAMENTA. VERIFICAR RELAÇÃO L/D.';
-  if (ctf > 1.3) return 'AUMENTAR ae OU REDUZIR fz PARA COMPENSAR CTF ELEVADO.';
-  if (nivel === 'vermelho') return 'REDUZIR ap E ae. VERIFICAR PARÂMETROS CRÍTICOS.';
-  if (nivel === 'amarelo') return 'REDUZIR AVANÇO POR DENTE (fz). MONITORAR VIBRAÇÃO.';
-  return '';
-}
-
-/** L/D color based on thresholds */
-function getLdColor(razaoLD: number): string {
-  if (razaoLD <= 3) return SEMAPHORE_HEX.verde;
-  if (razaoLD <= 4) return SEMAPHORE_HEX.amarelo;
-  return SEMAPHORE_HEX.vermelho;
-}
-
-/** Format timestamp as "DD/MM/YYYY HH:mm" */
-function formatTimestamp(ts: number): string {
-  const d = new Date(ts);
-  const pad = (n: number) => String(n).padStart(2, '0');
-  return `${pad(d.getDate())}/${pad(d.getMonth() + 1)}/${d.getFullYear()} ${pad(d.getHours())}:${pad(d.getMinutes())}`;
-}
 
 export function ResultsPanel() {
   const storeResultado = useMachiningStore((s) => s.resultado);
@@ -133,13 +99,9 @@ export function ResultsPanel() {
   const materialNome = material?.nome ?? '—';
 
   // LCD display content
-  const lcdAlertLine = (() => {
-    if (!storeResultado) return null;
-    if (nivel === 'bloqueado') return { text: 'L/D > 6 — OPERAÇÃO BLOQUEADA', color: SEMAPHORE_HEX.vermelho, icon: 'block' };
-    if (nivel === 'vermelho') return { text: avisos[0] ?? 'PARÂMETROS CRÍTICOS DETECTADOS', color: SEMAPHORE_HEX.vermelho, icon: 'emergency_home' };
-    if (nivel === 'amarelo') return { text: avisos[0] ?? 'ATENÇÃO: RISCO DE VIBRAÇÃO', color: SEMAPHORE_HEX.amarelo, icon: 'warning' };
-    return { text: '✓ PARÂMETROS SEGUROS — SISTEMA OPERANDO NORMALMENTE', color: SEMAPHORE_HEX.verde, icon: 'check_circle' };
-  })();
+  const lcdAlertLine = storeResultado
+    ? getLcdAlertLine(nivel, avisos, '✓ PARÂMETROS SEGUROS — SISTEMA OPERANDO NORMALMENTE')
+    : null;
 
   const lcdActionText = storeResultado
     ? getActionText(nivel, razaoLD, ctf)

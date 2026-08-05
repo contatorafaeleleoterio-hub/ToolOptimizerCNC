@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import type { SavedTool } from '@/types/index';
+import { MODAL_ROOT } from '../design-tokens';
 
 interface ToolEditModalProps {
   tool: SavedTool;
@@ -49,7 +50,7 @@ export function ToolEditModal({ tool, onSave, onClose }: ToolEditModalProps) {
 
   return (
     <div
-      className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm"
+      className={MODAL_ROOT}
       onClick={handleOverlayClick}
       data-testid="tool-edit-modal-overlay"
     >

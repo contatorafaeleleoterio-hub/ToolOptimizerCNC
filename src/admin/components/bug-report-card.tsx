@@ -63,7 +63,7 @@ export function BugReportCard({ bug, onStatusChange, onDelete }: Props) {
           {canIgnore && (
             <button
               onClick={() => onStatusChange(bug.id, 'ignorado')}
-              className="flex items-center justify-center w-7 h-7 rounded-lg text-gray-500 hover:text-yellow-400 hover:bg-yellow-500/10 transition-colors"
+              className="flex items-center justify-center w-7 h-7 rounded-lg text-gray-500 hover:text-seg-amarelo hover:bg-seg-amarelo/10 transition-colors"
               aria-label="Ignorar bug"
               title="Ignorar"
             >
@@ -72,7 +72,7 @@ export function BugReportCard({ bug, onStatusChange, onDelete }: Props) {
           )}
           <button
             onClick={() => onDelete(bug.id)}
-            className="flex items-center justify-center w-7 h-7 rounded-lg text-gray-500 hover:text-red-400 hover:bg-red-500/10 transition-colors"
+            className="flex items-center justify-center w-7 h-7 rounded-lg text-gray-500 hover:text-seg-vermelho hover:bg-seg-vermelho/10 transition-colors"
             aria-label="Remover bug report"
           >
             <span className="material-symbols-outlined text-base">delete</span>

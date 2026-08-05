@@ -60,7 +60,7 @@ export function NumInput({ label, value, onChange, min, max, step }: {
           min={min} max={max} step={step}
           aria-label={label}
           className={`flex-1 min-w-0 min-h-[44px] bg-black/40 border rounded-lg py-2 px-3 text-base text-white font-mono focus:ring-1 focus:ring-primary outline-none ${
-            invalid && focused ? 'border-red-500 text-red-400' : 'border-white/10'
+            invalid && focused ? 'border-seg-vermelho text-seg-vermelho' : 'border-white/10'
           }`}
         />
         <div className="flex flex-col gap-0.5">
@@ -71,7 +71,7 @@ export function NumInput({ label, value, onChange, min, max, step }: {
         </div>
       </div>
       {invalid && focused && (
-        <span className="text-xs text-red-400 mt-1 block px-1">Válido: {min}–{max}</span>
+        <span className="text-xs text-seg-vermelho mt-1 block px-1">Válido: {min}–{max}</span>
       )}
     </div>
   );

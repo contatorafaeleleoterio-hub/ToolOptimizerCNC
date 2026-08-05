@@ -196,7 +196,7 @@ export default function AdminDashboardPage() {
       {/* Activity Feed */}
       <div>
         <h2 className="text-xs font-bold text-gray-500 uppercase tracking-widest mb-4 flex items-center gap-2">
-          <span className="w-1 h-3 bg-green-500 rounded-full" />
+          <span className="w-1 h-3 bg-seg-verde rounded-full" />
           Atividade Recente
         </h2>
         <ActivityFeed />
