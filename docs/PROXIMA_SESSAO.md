@@ -19,6 +19,51 @@
 
 ---
 
+## Sessão 05/08/2026 — Padronização Design System (v0.12.0)
+
+**Branch:** `claude/design-system-standardization-6fsmf5` (não mergeada em `main`)
+
+**Commits desta sessão:**
+- `319cdb1` feat(design): tokenize accents and kill dynamic Tailwind classes
+- `bf610d0` refactor(design): replace hardcoded literals with design tokens
+- `043868d` refactor(design): deduplicate repeated visual patterns
+- `0701e36` docs(design): reconcile system.md with the code and close design pendencies
+
+**O que foi feito:**
+- **Fase 1 — tokens:** novo `src/components/accent-tokens.ts` (mapas de classe estáticos + `ACCENT_HEX`/`ACCENT_RGB`); `slider-tokens.ts` ganhou `glow`/`trackGlow`/`thumbGlow`/`dropGlow`/`THUMB_FILL` e passou a derivar de `accent-tokens`; `design-tokens.ts` virou módulo vivo (superfícies, modais, inputs, stepper, `TOUCH_TARGET`, `SEMAPHORE_HEX`). Novos tokens no `@theme`: `lcd-dark`, `lcd-panel`, `elevated-dark`, `overlay-dark`, `modal-dark`, `surface-solid`, `gauge-empty`, `accent-gold/mint/pink`, `text-muted`, `shadow-neon-orange/purple`.
+- **Fase 2 — classes dinâmicas:** as 14 ocorrências de `text-${color}` / `bg-${color}/30` / `from-${color}/5` / `${barColor}/50` foram substituídas por lookup estático. Props de cor tipadas como `AccentColor`.
+- **Fase 3 — literais:** ~280 substituições (cores de fundo, hex de accent, semáforo, tamanhos de fonte) em ~60 arquivos de `components/`, `pages/`, `admin/` e `architecture/`.
+- **Fase 4 — dedup:** `CARD`/`LABEL` das páginas, `MODAL_ROOT`, `SECTION_HEADER`, `TOUCH_TARGET`; novo `src/utils/result-display.ts` com `formatToolSpec`, `getLdColor`, `formatTimestamp`, `getActionText`, `getLcdAlertLine` (existiam em duplicata em `results-panel` e `mobile-results-section`).
+- **Fases 5-6 — docs:** `system.md` reconciliado; catálogos de violação arquivados em `docs/_archive/plans-completed/redesign-v0.8.0/`.
+
+**Decisões tomadas (aprovadas por Rafael):**
+1. **Paleta de semáforo unificada** — a tríade vívida `#00E676`/`#FFA500`/`#FF4D4D`, triplicada em 3 componentes, foi descontinuada. `SEMAPHORE_HEX` é a única definição. Gauges e barras segmentadas ficaram levemente menos saturados — mudança visual esperada e aceita.
+2. **Micro-escala formalizada** — Regra #4 do `system.md` reescrita: grid 4px em layout + micro-escala documentada `[2,6,10,18px]` para trilhos, hairlines e densidade de controles. O código não mudou; a regra é que contradizia o próprio documento.
+3. **Escopo completo** — incluiu `/admin` e `architecture/`, não só o dashboard principal.
+
+**⚠️ Achados importantes (ler antes de mexer em tokens):**
+- **Tailwind v4: o namespace de font-size é `--text-*`, NÃO `--font-size-*`.** Os tokens `--font-size-2xs`/`--font-size-fine` existiam desde sempre e **nunca geraram utility nenhuma** — falha silenciosa. Por isso conviviam com ~145 literais `text-[10px]`/`text-[11px]`.
+- **Classes Tailwind interpoladas em runtime eram purgadas em produção.** Não era só inconsistência de estilo: `border-accent-purple` e `from-accent-orange/5` simplesmente não existiam no CSS buildado. Agora existem (verificado no `dist/assets/*.css`).
+- `design-tokens.ts` existia desde a v0.8.0 e **nenhum arquivo o importava** — o header dizia "not refactored yet — FASE 3 work", fase que nunca aconteceu.
+- `#00E5FF` em 2 arquivos era drift acidental de `#00D9FF`.
+
+**Correções de passagem:** o grafo de arquitetura e seu teste apontavam para `viewport-redirect.tsx`, renomeado para `viewport-guard.tsx` há tempos. Corrigido — 2 testes voltaram ao verde. O teste `fz step mobile` (P2-A do roadmap) também já passa.
+
+**Estado ao encerrar:**
+- Versão `0.12.0` · TypeScript zero erros · lint limpo · build limpo
+- Testes do projeto: **981 passando / 8 falhando** (`npx vitest run tests/`)
+- Testes `.aiox-core`: 199 passando / 6 falhando (framework, fora do escopo do produto)
+- Greps de regressão zerados: classes dinâmicas, `bg-[#0F1419]`, `text-[9|10|11px]`, paleta vívida, ramps default do Tailwind (red/green/yellow/amber/emerald/cyan)
+
+**Pendências deixadas em aberto (deliberadamente):**
+- **8 testes falhando em `mobile-results-section.test.tsx` (7) e `mobile-page.test.tsx` (1)** — todos por `Found multiple elements`: o texto de segurança é renderizado ao mesmo tempo pelo `HmiVisor` e pelo `SafetyBadge`. É problema de query de teste ou de duplicação estrutural no mobile, **não de design system**. Pré-existente a esta sessão.
+- Não foi extraído um componente `<Icon>` para os ~60 spans `material-symbols-outlined`: eles renderizam o nome do ícone como conteúdo de texto, então envolvê-los quebraria queries por texto sem ganho estrutural.
+- **Branch não mergeada em `main`** — o deploy automático só dispara no push para `main`. Decisão de merge é de Rafael.
+
+**Próxima sessão (Cloud Code):** finalizar APP-3 — Landing Page Android (5 edições em `landing/index.html` + remover `#app-landing` de `index.html`).
+
+---
+
 ## Sessão 08/04/2026 — ITEM-3.2 + Admin Fixes
 
 **Commits desta sessão:**

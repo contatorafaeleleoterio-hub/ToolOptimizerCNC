@@ -250,9 +250,9 @@
     </div>
   </div>
   <div class="h-right">
-    <span class="badge bv">v0.11.0</span>
+    <span class="badge bv">v0.12.0</span>
     <span class="badge bl">● LIVE</span>
-    <span class="badge bd">17/04/2026</span>
+    <span class="badge bd">05/08/2026</span>
   </div>
 </header>
 
@@ -268,7 +268,7 @@
       </div>
       <div class="hero-nums">
         <div class="hnum">
-          <div class="hnum-val c-green">1052</div>
+          <div class="hnum-val c-green">981</div>
           <div class="hnum-lbl">Testes ✓</div>
         </div>
         <div class="hnum">
@@ -284,7 +284,7 @@
     <div class="journey">
       <div class="j-labels">
         <span>🏁 Início</span>
-        <span>🎯 <strong>v0.11.0 ✅ — Próximo: G-1 Pesquisa de Mercado</strong></span>
+        <span>🎯 <strong>v0.12.0 ✅ — Próximo: APP-3 Landing Page Android</strong></span>
         <span>🏆 v1.0.0</span>
       </div>
       <div class="j-bar"><div class="j-fill" id="jbar" style="width:0%"></div></div>
@@ -296,6 +296,7 @@
         <span class="jtag jtag-done">✅ Dashboard Ajustes</span>
         <span class="jtag jtag-done">✅ Favoritos</span>
         <span class="jtag jtag-done">✅ Cassino v0.11.0</span>
+        <span class="jtag jtag-done">✅ Design System v0.12.0</span>
         <span class="jtag jtag-current">⚡ Pré-lançamento</span>
         <span class="jtag jtag-future">○ PRO v1.0</span>
       </div>
@@ -870,6 +871,35 @@
             <li>FineTunePanel desabilitado (pointer-events:none + opacity 0.5) durante isCalculating||isRevealing</li>
             <li>12 novos testes: 6 hook (fases/timing/guard) + 4 config-panel (botão cassino)</li>
             <li>Versão bumped 0.10.1 → 0.11.0 — Story-011 ITEM-5.2 CONCLUÍDA</li>
+          </ul>
+        </div></div>
+      </div>
+
+      <!-- 24 -->
+      <div class="card" data-t="design" onclick="tog(this)">
+        <div class="card-hd">
+          <div class="cicon">🎨</div>
+          <div class="cmeta">
+            <div class="ctitle">Padronização Design System — v0.12.0</div>
+            <div class="csub">Tokenização completa, fim das classes Tailwind dinâmicas, system.md reconciliado</div>
+          </div>
+        </div>
+        <div class="card-ft">
+          <div class="tags"><span class="tag t-done">Concluído</span><span class="tag t-ver">v0.12.0</span></div>
+          <span class="chevron">›</span>
+        </div>
+        <div class="card-det"><div class="card-body">
+          <p class="det-title">O que foi feito</p>
+          <ul class="dlist">
+            <li>Novo <code>accent-tokens.ts</code>: mapas de classe estáticos + ACCENT_HEX/ACCENT_RGB — elimina as 14 classes Tailwind construídas em runtime</li>
+            <li>Bug latente corrigido: classes interpoladas (<code>text-${color}</code>) eram purgadas no build — <code>border-accent-purple</code> e <code>from-accent-orange/5</code> não existiam no CSS de produção</li>
+            <li>Causa raiz encontrada: no Tailwind v4 o namespace de font-size é <code>--text-*</code>, não <code>--font-size-*</code> — os tokens nunca geraram utility, daí ~145 literais <code>text-[10px]</code></li>
+            <li>~280 literais substituídos por tokens em ~60 arquivos (components, pages, admin, architecture)</li>
+            <li>Paleta de semáforo unificada: a tríade vívida #00E676/#FFA500/#FF4D4D, triplicada em 3 componentes, foi descontinuada</li>
+            <li>Ramps default do Tailwind (red/green/yellow/amber/emerald/cyan) dobrados nos tokens — só sobra o gradiente sancionado do CTA</li>
+            <li>Novo <code>src/utils/result-display.ts</code>: 5 helpers que existiam em duplicata entre desktop e mobile</li>
+            <li>system.md: Regra #4 (micro-escala 2/6/10/18px), #6 (uma única paleta), #11 (nunca interpolar classes), #12 (nenhum hex em componente) + seção Token Reference</li>
+            <li>De passagem: grafo de arquitetura e teste apontavam para viewport-redirect.tsx, renomeado para viewport-guard.tsx — 2 testes voltaram ao verde</li>
           </ul>
         </div></div>
       </div>

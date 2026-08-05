@@ -53,12 +53,14 @@
 
 | Item | Valor |
 |------|-------|
-| **Branch** | `main` |
-| **Versão** | `0.11.0` |
-| **Testes** | **1052 passando** (62 arquivos) — 0 falhas |
+| **Branch** | `claude/design-system-standardization-6fsmf5` (não mergeada em `main`) |
+| **Versão** | `0.12.0` |
+| **Testes (projeto)** | **981 passando** / 8 falhando (60 arquivos) |
+| **Testes (.aiox-core)** | 199 passando / 6 falhando — framework, fora do escopo do produto |
 | **TypeScript** | **zero erros** |
-| **Build** | **limpo** — JS ~178KB gzip |
-| **Remote** | `origin/main` — último commit `b2183bd` (pushed ✅) |
+| **Lint** | **limpo** |
+| **Build** | **limpo** |
+| **Remote** | `origin/claude/design-system-standardization-6fsmf5` — último commit `0701e36` (pushed ✅) |
 | **Worker** | ✅ LIVE — `https://tooloptimizercnc.contatorafaeleleoterio.workers.dev` |
 | **Custom Domains** | ✅ `tooloptimizercnc.com.br` + `app.tooloptimizercnc.com.br` |
 | **GitHub Actions** | ✅ deploy automático ao push para main |
