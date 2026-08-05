@@ -7,10 +7,11 @@ import { useMemo } from 'react';
 import { useUsageStore } from '../store/usage-store';
 import { MiniChart } from '../components/mini-chart';
 import type { UsageSummary } from '../types/admin-types';
+import { ACCENT_HEX } from '@/components/accent-tokens';
 
-const CHART_COLOR_MATERIAL = '#00D9FF'; // cyan neon
-const CHART_COLOR_OPERACAO = '#39FF14'; // green neon
-const CHART_COLOR_FERRAMENTA = '#a78bfa'; // purple
+const CHART_COLOR_MATERIAL = ACCENT_HEX.primary; // cyan neon
+const CHART_COLOR_OPERACAO = ACCENT_HEX.secondary; // green neon
+const CHART_COLOR_FERRAMENTA = ACCENT_HEX['accent-purple']; // purple
 
 function topN(labels: string[], n: number): UsageSummary[] {
   const freq: Record<string, number> = {};
@@ -70,7 +71,7 @@ export default function AdminUsagePage() {
       {/* KPI row */}
       <div className="grid grid-cols-2 gap-4">
         <div className="rounded-xl bg-white/4 border border-white/8 p-4 flex items-center gap-4">
-          <span className="material-symbols-outlined text-3xl text-cyan-400">bar_chart</span>
+          <span className="material-symbols-outlined text-3xl text-primary">bar_chart</span>
           <div>
             <p className="text-2xl font-bold font-mono text-white">{total}</p>
             <p className="text-xs text-gray-500">Total de simulações</p>
@@ -99,7 +100,7 @@ export default function AdminUsagePage() {
           {/* Top Materiais */}
           <section className="rounded-xl bg-white/4 border border-white/8 p-5">
             <div className="flex items-center gap-2 mb-4">
-              <span className="material-symbols-outlined text-lg text-cyan-400">category</span>
+              <span className="material-symbols-outlined text-lg text-primary">category</span>
               <h2 className="text-sm font-semibold text-gray-200">Top Materiais</h2>
               <span className="ml-auto text-xs text-gray-600">
                 {topMaterials.length} material{topMaterials.length !== 1 ? 'is' : ''}

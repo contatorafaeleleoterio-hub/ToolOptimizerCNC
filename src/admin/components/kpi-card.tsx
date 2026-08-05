@@ -13,10 +13,10 @@ interface Props {
 
 const COLOR_MAP: Record<string, { icon: string; value: string; border: string; glow: string }> = {
   cyan: {
-    icon: 'text-cyan-400',
-    value: 'text-cyan-300',
-    border: 'border-cyan-500/20',
-    glow: 'shadow-cyan-500/10',
+    icon: 'text-primary',
+    value: 'text-primary',
+    border: 'border-primary/20',
+    glow: 'shadow-primary/10',
   },
   green: {
     icon: 'text-green-400',

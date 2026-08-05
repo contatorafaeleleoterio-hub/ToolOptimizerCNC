@@ -1,6 +1,8 @@
 import { render, screen } from '@testing-library/react';
 import { describe, it, expect } from 'vitest';
 import { Gauge, getSegmentColor } from '@/components/gauge';
+import { ACCENT_HEX } from '@/components/accent-tokens';
+import { ACCENT_GOLD, ACCENT_MINT, SEMAPHORE_HEX } from '@/components/design-tokens';
 
 describe('Gauge', () => {
   it('renders SVG element with correct viewBox', () => {
@@ -56,7 +58,7 @@ describe('Gauge', () => {
   it('100% marker has cyan color', () => {
     const { container } = render(<Gauge value={1000} maxValue={5000} />);
     const marker100 = container.querySelector('[data-testid="scale-100"]');
-    expect(marker100?.getAttribute('fill')).toBe('#00D9FF');
+    expect(marker100?.getAttribute('fill')).toBe(ACCENT_HEX.primary);
   });
 
   it('shows % symbol', () => {
@@ -72,22 +74,22 @@ describe('Gauge', () => {
 
 describe('getSegmentColor', () => {
   it('returns green for 0-33% segments (0-50% value range)', () => {
-    expect(getSegmentColor(0)).toBe('#39FF14');
-    expect(getSegmentColor(10)).toBe('#39FF14');
+    expect(getSegmentColor(0)).toBe(ACCENT_HEX.secondary);
+    expect(getSegmentColor(10)).toBe(ACCENT_HEX.secondary);
   });
 
   it('returns green-cyan for 34-66% segments (51-100% value range)', () => {
-    expect(getSegmentColor(15)).toBe('#00FF88');
-    expect(getSegmentColor(25)).toBe('#00FF88');
+    expect(getSegmentColor(15)).toBe(ACCENT_MINT);
+    expect(getSegmentColor(25)).toBe(ACCENT_MINT);
   });
 
   it('returns cyan for 67-80% segments (101-120% value range)', () => {
-    expect(getSegmentColor(28)).toBe('#00D9FF');
-    expect(getSegmentColor(31)).toBe('#00D9FF');
+    expect(getSegmentColor(28)).toBe(ACCENT_HEX.primary);
+    expect(getSegmentColor(31)).toBe(ACCENT_HEX.primary);
   });
 
   it('returns gold for >80% segments (>120% value range)', () => {
-    expect(getSegmentColor(35)).toBe('#FFD700');
-    expect(getSegmentColor(39)).toBe('#FFD700');
+    expect(getSegmentColor(35)).toBe(ACCENT_GOLD);
+    expect(getSegmentColor(39)).toBe(ACCENT_GOLD);
   });
 });

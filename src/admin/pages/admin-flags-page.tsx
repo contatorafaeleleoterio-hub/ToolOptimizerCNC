@@ -5,6 +5,8 @@
 
 import { useAdminStore } from '../store/admin-store';
 import type { FeatureFlag } from '../types/admin-types';
+import { ACCENT_HEX } from '@/components/accent-tokens';
+import { COLOR_MUTED } from '@/components/design-tokens';
 
 // ── Flag row ──────────────────────────────────────────────────────────────────
 
@@ -21,7 +23,7 @@ function FlagRow({ flag, onToggle }: FlagRowProps) {
       {/* Icon */}
       <span
         className="material-symbols-outlined text-xl shrink-0"
-        style={{ color: flag.enabled ? '#00D9FF' : '#4b5563' }}
+        style={{ color: flag.enabled ? ACCENT_HEX.primary : COLOR_MUTED }}
       >
         {flag.enabled ? 'toggle_on' : 'toggle_off'}
       </span>
@@ -46,13 +48,13 @@ function FlagRow({ flag, onToggle }: FlagRowProps) {
         aria-label={flag.enabled ? `Desativar ${flag.name}` : `Ativar ${flag.name}`}
         className={`
           relative shrink-0 w-11 h-6 rounded-full transition-colors duration-200 focus:outline-none
-          ${flag.enabled ? 'bg-cyan-500/30 border border-cyan-500/50' : 'bg-white/8 border border-white/15'}
+          ${flag.enabled ? 'bg-primary/30 border border-primary/50' : 'bg-white/8 border border-white/15'}
         `}
       >
         <span
           className="absolute top-0.5 w-5 h-5 rounded-full transition-transform duration-200"
           style={{
-            backgroundColor: flag.enabled ? '#00D9FF' : '#4b5563',
+            backgroundColor: flag.enabled ? ACCENT_HEX.primary : COLOR_MUTED,
             transform: flag.enabled ? 'translateX(22px)' : 'translateX(2px)',
           }}
         />
@@ -80,7 +82,7 @@ export default function AdminFlagsPage() {
           </p>
         </div>
         <div className="flex items-center gap-2 px-3 py-1.5 rounded-lg bg-white/4 border border-white/8">
-          <span className="material-symbols-outlined text-base text-cyan-400">check_circle</span>
+          <span className="material-symbols-outlined text-base text-primary">check_circle</span>
           <span className="text-sm font-mono text-white">{enabledCount}</span>
           <span className="text-xs text-gray-500">/ {flags.length} ativas</span>
         </div>

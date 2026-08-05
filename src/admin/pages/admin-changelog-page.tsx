@@ -6,16 +6,18 @@
 import { useState } from 'react';
 import { CHANGELOG } from '../data/changelog-data';
 import type { ChangelogTag } from '../data/changelog-data';
+import { ACCENT_PINK, SEMAPHORE_HEX } from '@/components/design-tokens';
+import { ACCENT_HEX } from '@/components/accent-tokens';
 
 // ── Tag config ────────────────────────────────────────────────────────────────
 
 const TAG_CONFIG: Record<ChangelogTag, { label: string; color: string; icon: string }> = {
-  feat:     { label: 'Feature',   color: '#00D9FF', icon: 'star' },
-  fix:      { label: 'Fix',       color: '#39FF14', icon: 'bug_report' },
-  infra:    { label: 'Infra',     color: '#a78bfa', icon: 'construction' },
-  docs:     { label: 'Docs',      color: '#f39c12', icon: 'description' },
-  security: { label: 'Security',  color: '#e74c3c', icon: 'security' },
-  polish:   { label: 'Polish',    color: '#f472b6', icon: 'auto_awesome' },
+  feat:     { label: 'Feature',   color: ACCENT_HEX.primary, icon: 'star' },
+  fix:      { label: 'Fix',       color: ACCENT_HEX.secondary, icon: 'bug_report' },
+  infra:    { label: 'Infra',     color: ACCENT_HEX['accent-purple'], icon: 'construction' },
+  docs:     { label: 'Docs',      color: SEMAPHORE_HEX.amarelo, icon: 'description' },
+  security: { label: 'Security',  color: SEMAPHORE_HEX.vermelho, icon: 'security' },
+  polish:   { label: 'Polish',    color: ACCENT_PINK, icon: 'auto_awesome' },
 };
 
 // ── Version card ──────────────────────────────────────────────────────────────
@@ -40,7 +42,7 @@ function VersionCard({ entry, isLatest }: VersionCardProps) {
           className="w-3 h-3 rounded-full shrink-0 mt-1"
           style={{ backgroundColor: tag.color, boxShadow: `0 0 8px ${tag.color}66` }}
         />
-        <div className="w-px flex-1 mt-1" style={{ backgroundColor: '#ffffff12' }} />
+        <div className="w-px flex-1 mt-1" style={{ backgroundColor: 'rgba(255,255,255,0.07)' }} />
       </div>
       <div className="flex-1 pb-6">
         <div className="rounded-xl bg-white/4 border border-white/8 p-5 space-y-3">
@@ -48,7 +50,7 @@ function VersionCard({ entry, isLatest }: VersionCardProps) {
             <div className="flex items-center gap-2 flex-wrap">
               <span className="font-mono text-base font-bold text-white">v{entry.version}</span>
               {isLatest && (
-                <span className="text-xs font-semibold px-2 py-0.5 rounded-full bg-cyan-500/15 text-cyan-400 border border-cyan-500/30">
+                <span className="text-xs font-semibold px-2 py-0.5 rounded-full bg-primary/15 text-primary border border-primary/30">
                   Atual
                 </span>
               )}

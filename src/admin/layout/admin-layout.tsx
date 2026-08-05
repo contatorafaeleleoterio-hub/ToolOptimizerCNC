@@ -9,7 +9,7 @@ import { AdminHeader } from './admin-header';
 
 export function AdminLayout() {
   return (
-    <div className="flex h-screen overflow-hidden bg-[#0F1419] text-white">
+    <div className="flex h-screen overflow-hidden bg-background-dark text-white">
       <AdminSidebar />
 
       <div className="flex-1 flex flex-col min-w-0 min-h-0">

@@ -9,6 +9,7 @@ import { useUsageStore } from '../store/usage-store';
 import { useAnalyticsStore } from '../store/analytics-store';
 import { KpiCard } from '../components/kpi-card';
 import { ActivityFeed } from '../components/activity-feed';
+import { ACCENT_HEX } from '@/components/accent-tokens';
 
 interface QuickLink {
   path: string;
@@ -29,7 +30,7 @@ const QUICK_LINKS: QuickLink[] = [
 ];
 
 /** Minimal SVG sparkline for daily visitor data */
-function Sparkline({ data, color = '#00D9FF' }: { data: number[]; color?: string }) {
+function Sparkline({ data, color = ACCENT_HEX.primary }: { data: number[]; color?: string }) {
   if (data.length < 2) return null;
   const max = Math.max(...data, 1);
   const w = 96;
@@ -129,13 +130,13 @@ export default function AdminDashboardPage() {
       {/* Analytics banner */}
       {hasAnalyticsCredentials ? (
         <div className="flex items-center gap-4 px-5 py-4 rounded-xl bg-white/3 border border-white/8">
-          <span className="material-symbols-outlined text-xl text-cyan-400">analytics</span>
+          <span className="material-symbols-outlined text-xl text-primary">analytics</span>
           <div className="flex-1 min-w-0">
             <p className="text-xs text-gray-500 font-medium">Visitantes únicos (7d)</p>
             {analyticsStatus === 'loading' ? (
               <p className="text-sm text-gray-500 mt-0.5">Carregando…</p>
             ) : visitors7d !== null ? (
-              <p className="text-2xl font-bold font-mono text-cyan-300">
+              <p className="text-2xl font-bold font-mono text-primary">
                 {visitors7d.toLocaleString('pt-BR')}
               </p>
             ) : (
@@ -144,10 +145,10 @@ export default function AdminDashboardPage() {
               </p>
             )}
           </div>
-          {sparklineData.length >= 2 && <Sparkline data={sparklineData} color="#00D9FF" />}
+          {sparklineData.length >= 2 && <Sparkline data={sparklineData} color={ACCENT_HEX.primary} />}
           <Link
             to="/admin/analytics"
-            className="text-xs text-cyan-400 hover:text-cyan-300 transition-colors shrink-0"
+            className="text-xs text-primary hover:text-primary transition-colors shrink-0"
           >
             Ver Analytics →
           </Link>
@@ -160,7 +161,7 @@ export default function AdminDashboardPage() {
           </p>
           <Link
             to="/admin/analytics"
-            className="text-xs text-cyan-400 hover:text-cyan-300 transition-colors shrink-0"
+            className="text-xs text-primary hover:text-primary transition-colors shrink-0"
           >
             Configurar →
           </Link>
@@ -170,7 +171,7 @@ export default function AdminDashboardPage() {
       {/* Quick Links */}
       <div>
         <h2 className="text-xs font-bold text-gray-500 uppercase tracking-widest mb-4 flex items-center gap-2">
-          <span className="w-1 h-3 bg-cyan-500 rounded-full" />
+          <span className="w-1 h-3 bg-primary rounded-full" />
           Acesso Rápido
         </h2>
         <div className="grid grid-cols-4 gap-3">
@@ -180,7 +181,7 @@ export default function AdminDashboardPage() {
               to={path}
               className="flex flex-col gap-2 p-4 rounded-xl bg-white/3 border border-white/8 hover:bg-white/6 hover:border-white/15 transition-all group"
             >
-              <span className="material-symbols-outlined text-xl text-gray-400 group-hover:text-cyan-400 transition-colors">
+              <span className="material-symbols-outlined text-xl text-gray-400 group-hover:text-primary transition-colors">
                 {icon}
               </span>
               <div>

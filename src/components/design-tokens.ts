@@ -92,3 +92,15 @@ export const SEMAPHORE_HEX = {
 
 /** Neutral gray for disabled series / missing data (= --color-text-muted) */
 export const COLOR_MUTED = '#6b7280';
+
+/** Favorite star + gauge "attention" band (= --color-accent-gold) */
+export const ACCENT_GOLD = '#facc15';
+
+/** Gauge "optimal" band, between neon green and cyan (= --color-accent-mint) */
+export const ACCENT_MINT = '#00FF88';
+
+/** Changelog "polish" category (= --color-accent-pink) */
+export const ACCENT_PINK = '#f472b6';
+
+/** Opaque variant of surface-dark, for non-glass surfaces (= --color-surface-solid) */
+export const SURFACE_SOLID = '#161b22';

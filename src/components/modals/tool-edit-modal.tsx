@@ -53,7 +53,7 @@ export function ToolEditModal({ tool, onSave, onClose }: ToolEditModalProps) {
       onClick={handleOverlayClick}
       data-testid="tool-edit-modal-overlay"
     >
-      <div className="bg-[rgba(20,28,40,0.98)] border border-white/12 rounded-2xl p-5 w-80 shadow-glass flex flex-col gap-4">
+      <div className="bg-modal-dark border border-white/12 rounded-2xl p-5 w-80 shadow-glass flex flex-col gap-4">
         <h3 className="text-sm font-bold uppercase tracking-widest text-gray-300">
           Editar Ferramenta
         </h3>

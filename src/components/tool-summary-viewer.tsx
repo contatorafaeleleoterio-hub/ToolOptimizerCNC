@@ -24,7 +24,7 @@ function getCornerRadius(f: Ferramenta): string {
 function MiniCell({ label, value }: { label: string; value: string }) {
   return (
     <div className="flex flex-col">
-      <span className="text-[10px] text-gray-500 uppercase tracking-wider">{label}</span>
+      <span className="text-2xs text-gray-500 uppercase tracking-wider">{label}</span>
       <span className="text-sm font-mono font-semibold text-white/90">{value}</span>
     </div>
   );
@@ -33,7 +33,7 @@ function MiniCell({ label, value }: { label: string; value: string }) {
 function OperationBadge({ tipo }: { tipo: TipoUsinagem }) {
   return (
     <div className="flex flex-col">
-      <span className="text-[10px] text-gray-500 uppercase tracking-wider">Operação</span>
+      <span className="text-2xs text-gray-500 uppercase tracking-wider">Operação</span>
       <span className="text-sm font-semibold text-white/90 bg-white/10 px-2 py-0.5 rounded-md inline-block">
         {OPERACAO_LABELS[tipo]}
       </span>
@@ -46,11 +46,11 @@ function ParamCard({ label, value, unit, abbrev, accentClass }: {
 }) {
   return (
     <div className="flex flex-col gap-0.5">
-      <span className="text-[10px] text-gray-400 uppercase tracking-wider">{label}</span>
+      <span className="text-2xs text-gray-400 uppercase tracking-wider">{label}</span>
       <span className="text-xl font-mono font-bold text-white leading-none">{value}</span>
       <div className="flex items-center gap-1.5">
-        <span className="text-[10px] text-gray-500">{unit}</span>
-        <span className={`text-[10px] font-bold ${accentClass}`}>{abbrev}</span>
+        <span className="text-2xs text-gray-500">{unit}</span>
+        <span className={`text-2xs font-bold ${accentClass}`}>{abbrev}</span>
       </div>
     </div>
   );
@@ -72,7 +72,7 @@ export function ToolSummaryViewer() {
         {/* Material + Operation */}
         <div className="flex items-center gap-3 flex-1">
           <div className="flex flex-col">
-            <span className="text-[10px] text-gray-500 uppercase tracking-wider">Material</span>
+            <span className="text-2xs text-gray-500 uppercase tracking-wider">Material</span>
             <span className="text-sm font-semibold text-white">{material?.nome ?? '—'}</span>
           </div>
           <OperationBadge tipo={tipoOperacao} />

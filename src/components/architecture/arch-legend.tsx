@@ -58,7 +58,7 @@ export function ArchLegend({ metadata }: ArchLegendProps) {
 
       <div className="my-4 border-t border-white/5" />
 
-      <div className="space-y-1 text-[11px] text-gray-400">
+      <div className="space-y-1 text-fine text-gray-400">
         <div>v{metadata.version}</div>
         <div>{metadata.totalFiles} arquivos</div>
         <div>{metadata.totalLines} linhas</div>

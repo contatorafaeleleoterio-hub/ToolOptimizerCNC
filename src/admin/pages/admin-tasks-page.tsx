@@ -213,7 +213,7 @@ export default function AdminTasksPage() {
         </div>
         <button
           onClick={openNew}
-          className="flex items-center gap-2 px-4 py-2 rounded-xl bg-cyan-500/15 border border-cyan-500/30 text-cyan-300 text-sm font-semibold hover:bg-cyan-500/25 transition-colors"
+          className="flex items-center gap-2 px-4 py-2 rounded-xl bg-primary/15 border border-primary/30 text-primary text-sm font-semibold hover:bg-primary/25 transition-colors"
         >
           <span className="material-symbols-outlined text-base">add</span>
           Nova Requisição
@@ -232,15 +232,15 @@ export default function AdminTasksPage() {
               className={`
                 flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold transition-colors
                 ${active
-                  ? 'bg-cyan-500/20 text-cyan-300 border border-cyan-500/30'
+                  ? 'bg-primary/20 text-primary border border-primary/30'
                   : 'bg-white/5 text-gray-400 border border-white/8 hover:bg-white/8 hover:text-gray-300'
                 }
               `}
             >
               {label}
               <span className={`
-                inline-flex items-center justify-center w-4 h-4 rounded-full text-[10px] font-bold
-                ${active ? 'bg-cyan-500/30 text-cyan-200' : 'bg-white/10 text-gray-500'}
+                inline-flex items-center justify-center w-4 h-4 rounded-full text-2xs font-bold
+                ${active ? 'bg-primary/30 text-primary' : 'bg-white/10 text-gray-500'}
               `}>
                 {count}
               </span>
@@ -254,10 +254,10 @@ export default function AdminTasksPage() {
         <select
           value={priorityFilter}
           onChange={(e) => setPriorityFilter(e.target.value as TaskPriority | 'todas')}
-          className="bg-white/5 border border-white/10 rounded-lg px-3 py-1.5 text-xs text-gray-300 focus:outline-none focus:border-cyan-500/40"
+          className="bg-white/5 border border-white/10 rounded-lg px-3 py-1.5 text-xs text-gray-300 focus:outline-none focus:border-primary/40"
         >
           {PRIORITY_OPTIONS.map(({ value, label }) => (
-            <option key={value} value={value} className="bg-[#0F1419]">{label}</option>
+            <option key={value} value={value} className="bg-background-dark">{label}</option>
           ))}
         </select>
 
@@ -270,7 +270,7 @@ export default function AdminTasksPage() {
             placeholder="Buscar por título ou descrição..."
             value={search}
             onChange={(e) => setSearch(e.target.value)}
-            className="w-full bg-white/5 border border-white/10 rounded-lg pl-8 pr-3 py-1.5 text-xs text-gray-300 placeholder-gray-600 focus:outline-none focus:border-cyan-500/40"
+            className="w-full bg-white/5 border border-white/10 rounded-lg pl-8 pr-3 py-1.5 text-xs text-gray-300 placeholder-gray-600 focus:outline-none focus:border-primary/40"
           />
         </div>
 
@@ -278,11 +278,11 @@ export default function AdminTasksPage() {
           aria-label="Ordenar tarefas"
           value={sortBy}
           onChange={(e) => setSortBy(e.target.value as SortOption)}
-          className="bg-white/5 border border-white/10 rounded-lg px-3 py-1.5 text-xs text-gray-300 focus:outline-none focus:border-cyan-500/40"
+          className="bg-white/5 border border-white/10 rounded-lg px-3 py-1.5 text-xs text-gray-300 focus:outline-none focus:border-primary/40"
         >
-          <option value="updated_desc" className="bg-[#0F1419]">Mais recentes (atualização)</option>
-          <option value="created_desc" className="bg-[#0F1419]">Mais recentes (criação)</option>
-          <option value="priority_desc" className="bg-[#0F1419]">Maior prioridade primeiro</option>
+          <option value="updated_desc" className="bg-background-dark">Mais recentes (atualização)</option>
+          <option value="created_desc" className="bg-background-dark">Mais recentes (criação)</option>
+          <option value="priority_desc" className="bg-background-dark">Maior prioridade primeiro</option>
         </select>
 
         {hasActiveFilters && (
@@ -333,7 +333,7 @@ export default function AdminTasksPage() {
           {tasks.length === 0 && (
             <button
               onClick={openNew}
-              className="text-xs text-cyan-400 hover:text-cyan-300 transition-colors"
+              className="text-xs text-primary hover:text-primary transition-colors"
             >
               Criar primeira tarefa →
             </button>
@@ -370,7 +370,7 @@ export default function AdminTasksPage() {
               value={form.title}
               onChange={(e) => setForm((f) => ({ ...f, title: e.target.value }))}
               placeholder="Ex: Implementar validação de ranges"
-              className="bg-white/5 border border-white/10 rounded-lg px-3 py-2 text-sm text-white placeholder-gray-600 focus:outline-none focus:border-cyan-500/40"
+              className="bg-white/5 border border-white/10 rounded-lg px-3 py-2 text-sm text-white placeholder-gray-600 focus:outline-none focus:border-primary/40"
               autoFocus
             />
             {formError && <p className="text-xs text-red-400">{formError}</p>}
@@ -384,7 +384,7 @@ export default function AdminTasksPage() {
               onChange={(e) => setForm((f) => ({ ...f, description: e.target.value }))}
               placeholder="Contexto, referências, critérios de aceitação..."
               rows={3}
-              className="bg-white/5 border border-white/10 rounded-lg px-3 py-2 text-sm text-white placeholder-gray-600 focus:outline-none focus:border-cyan-500/40 resize-none"
+              className="bg-white/5 border border-white/10 rounded-lg px-3 py-2 text-sm text-white placeholder-gray-600 focus:outline-none focus:border-primary/40 resize-none"
             />
           </div>
 
@@ -395,12 +395,12 @@ export default function AdminTasksPage() {
               <select
                 value={form.status}
                 onChange={(e) => setForm((f) => ({ ...f, status: e.target.value as TaskStatus }))}
-                className="bg-white/5 border border-white/10 rounded-lg px-3 py-2 text-sm text-white focus:outline-none focus:border-cyan-500/40"
+                className="bg-white/5 border border-white/10 rounded-lg px-3 py-2 text-sm text-white focus:outline-none focus:border-primary/40"
               >
-                <option value="aberta" className="bg-[#0F1419]">Aberta</option>
-                <option value="em_progresso" className="bg-[#0F1419]">Em Progresso</option>
-                <option value="concluida" className="bg-[#0F1419]">Concluída</option>
-                <option value="cancelada" className="bg-[#0F1419]">Cancelada</option>
+                <option value="aberta" className="bg-background-dark">Aberta</option>
+                <option value="em_progresso" className="bg-background-dark">Em Progresso</option>
+                <option value="concluida" className="bg-background-dark">Concluída</option>
+                <option value="cancelada" className="bg-background-dark">Cancelada</option>
               </select>
             </div>
 
@@ -409,12 +409,12 @@ export default function AdminTasksPage() {
               <select
                 value={form.priority}
                 onChange={(e) => setForm((f) => ({ ...f, priority: e.target.value as TaskPriority }))}
-                className="bg-white/5 border border-white/10 rounded-lg px-3 py-2 text-sm text-white focus:outline-none focus:border-cyan-500/40"
+                className="bg-white/5 border border-white/10 rounded-lg px-3 py-2 text-sm text-white focus:outline-none focus:border-primary/40"
               >
-                <option value="baixa" className="bg-[#0F1419]">Baixa</option>
-                <option value="media" className="bg-[#0F1419]">Média</option>
-                <option value="alta" className="bg-[#0F1419]">Alta</option>
-                <option value="critica" className="bg-[#0F1419]">Crítica</option>
+                <option value="baixa" className="bg-background-dark">Baixa</option>
+                <option value="media" className="bg-background-dark">Média</option>
+                <option value="alta" className="bg-background-dark">Alta</option>
+                <option value="critica" className="bg-background-dark">Crítica</option>
               </select>
             </div>
           </div>
@@ -429,7 +429,7 @@ export default function AdminTasksPage() {
               value={form.tagsInput}
               onChange={(e) => setForm((f) => ({ ...f, tagsInput: e.target.value }))}
               placeholder="Ex: admin, fase2, bug"
-              className="bg-white/5 border border-white/10 rounded-lg px-3 py-2 text-sm text-white placeholder-gray-600 focus:outline-none focus:border-cyan-500/40"
+              className="bg-white/5 border border-white/10 rounded-lg px-3 py-2 text-sm text-white placeholder-gray-600 focus:outline-none focus:border-primary/40"
             />
           </div>
 
@@ -449,7 +449,7 @@ export default function AdminTasksPage() {
             </button>
             <button
               onClick={handleSave}
-              className="px-4 py-2 rounded-lg text-sm font-semibold bg-cyan-500/20 text-cyan-300 border border-cyan-500/30 hover:bg-cyan-500/30 transition-colors"
+              className="px-4 py-2 rounded-lg text-sm font-semibold bg-primary/20 text-primary border border-primary/30 hover:bg-primary/30 transition-colors"
             >
               {editingTask ? 'Salvar' : 'Criar'}
             </button>

@@ -1,9 +1,11 @@
+import { SEMAPHORE_HEX } from '../design-tokens';
 // Compact horizontal gauge bar for the "Ajustar" tab.
 // Replaces segments with a continuous gradient line for a distinct mobile experience.
 
-const SEG_RED    = '#FF4D4D';
-const SEG_ORANGE = '#FFA500';
-const SEG_GREEN  = '#00E676';
+// Single source of truth: SEMAPHORE_HEX (mirrors --color-seg-* in index.css)
+const SEG_RED    = SEMAPHORE_HEX.vermelho;
+const SEG_ORANGE = SEMAPHORE_HEX.amarelo;
+const SEG_GREEN  = SEMAPHORE_HEX.verde;
 
 interface MiniResultBarProps {
   label: string;
@@ -50,10 +52,10 @@ export function MiniResultBar({
     >
       {/* Label row */}
       <div className="flex items-baseline justify-between px-0.5">
-        <span className="text-[9px] uppercase tracking-widest text-white/40 font-semibold">{label}</span>
+        <span className="text-3xs uppercase tracking-widest text-white/40 font-semibold">{label}</span>
         <span className="font-mono text-xs font-bold text-white">
           {displayValue}
-          <span className="text-[9px] text-white/35 ml-0.5">{unit}</span>
+          <span className="text-3xs text-white/35 ml-0.5">{unit}</span>
         </span>
       </div>
 

@@ -51,7 +51,7 @@ export function BugReportCard({ bug, onStatusChange, onDelete }: Props) {
           {nextStatus && (
             <button
               onClick={() => onStatusChange(bug.id, nextStatus)}
-              className="flex items-center gap-1 px-2 py-1 rounded-lg text-xs font-medium text-cyan-300 bg-cyan-500/10 border border-cyan-500/20 hover:bg-cyan-500/20 transition-colors"
+              className="flex items-center gap-1 px-2 py-1 rounded-lg text-xs font-medium text-primary bg-primary/10 border border-primary/20 hover:bg-primary/20 transition-colors"
               title={STATUS_NEXT_LABEL[bug.status]}
             >
               <span className="material-symbols-outlined text-sm">
@@ -99,7 +99,7 @@ export function BugReportCard({ bug, onStatusChange, onDelete }: Props) {
             Estado da aplicação
           </button>
           {appStateOpen && (
-            <pre className="text-[10px] text-gray-500 bg-black/30 rounded-lg p-3 overflow-x-auto max-h-48 leading-relaxed">
+            <pre className="text-2xs text-gray-500 bg-black/30 rounded-lg p-3 overflow-x-auto max-h-48 leading-relaxed">
               {bug.appState}
             </pre>
           )}
@@ -108,8 +108,8 @@ export function BugReportCard({ bug, onStatusChange, onDelete }: Props) {
 
       {/* Footer: version + date */}
       <div className="flex items-center justify-between gap-2 pt-1 border-t border-white/5">
-        <span className="text-[10px] text-gray-600 font-mono">v{bug.version}</span>
-        <span className="text-[11px] text-gray-600" title={bug.createdAt}>
+        <span className="text-2xs text-gray-600 font-mono">v{bug.version}</span>
+        <span className="text-fine text-gray-600" title={bug.createdAt}>
           {formatRelativeDate(bug.createdAt)}
         </span>
       </div>

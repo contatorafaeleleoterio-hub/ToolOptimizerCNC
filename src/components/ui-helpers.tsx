@@ -65,9 +65,9 @@ export function NumInput({ label, value, onChange, min, max, step }: {
         />
         <div className="flex flex-col gap-0.5">
           <button onClick={increment} aria-label={`Increase ${label}`}
-            className="w-9 flex-1 rounded bg-black/40 border border-white/10 text-gray-400 active:bg-white/10 hover:text-white hover:bg-white/10 transition-all text-[10px] font-bold flex items-center justify-center">&#9650;</button>
+            className="w-9 flex-1 rounded bg-black/40 border border-white/10 text-gray-400 active:bg-white/10 hover:text-white hover:bg-white/10 transition-all text-2xs font-bold flex items-center justify-center">&#9650;</button>
           <button onClick={decrement} aria-label={`Decrease ${label}`}
-            className="w-9 flex-1 rounded bg-black/40 border border-white/10 text-gray-400 active:bg-white/10 hover:text-white hover:bg-white/10 transition-all text-[10px] font-bold flex items-center justify-center">&#9660;</button>
+            className="w-9 flex-1 rounded bg-black/40 border border-white/10 text-gray-400 active:bg-white/10 hover:text-white hover:bg-white/10 transition-all text-2xs font-bold flex items-center justify-center">&#9660;</button>
         </div>
       </div>
       {invalid && focused && (

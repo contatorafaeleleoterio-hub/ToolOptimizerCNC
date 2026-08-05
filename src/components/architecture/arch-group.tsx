@@ -66,7 +66,7 @@ export function ArchGroup({
       <div className="flex items-start justify-between gap-3">
         <div>
           <div className="text-base font-bold text-white">{group.label}</div>
-          <div className="mt-1 text-[11px] text-gray-400">{group.labelPt}</div>
+          <div className="mt-1 text-fine text-gray-400">{group.labelPt}</div>
         </div>
         <span
           className="mt-0.5 h-2.5 w-2.5 rounded-full"
@@ -74,7 +74,7 @@ export function ArchGroup({
         />
       </div>
 
-      <div className="mt-5 flex flex-wrap gap-2 text-[11px]">
+      <div className="mt-5 flex flex-wrap gap-2 text-fine">
         <span className="rounded-full border border-white/10 bg-white/5 px-2.5 py-1 text-gray-200">
           {nodeCount} arquivos
         </span>

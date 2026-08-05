@@ -4,6 +4,7 @@
  */
 
 import type { UsageSummary } from '../types/admin-types';
+import { ACCENT_HEX } from '@/components/accent-tokens';
 
 interface MiniChartProps {
   data: UsageSummary[];
@@ -23,7 +24,7 @@ export function formatLabel(label: string): string {
 
 export function MiniChart({
   data,
-  color = '#00D9FF',
+  color = ACCENT_HEX.primary,
   emptyMessage = 'Sem dados',
 }: MiniChartProps) {
   if (data.length === 0) {

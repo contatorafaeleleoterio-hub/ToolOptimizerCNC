@@ -20,7 +20,7 @@ export function MobileSimulateButton({ onSimulationStart }: MobileSimulateButton
   };
 
   return (
-    <div className="flex gap-3 bg-[rgba(10,14,20,0.95)] backdrop-blur-xl border-t border-white/5 px-4 py-2">
+    <div className="flex gap-3 bg-overlay-dark backdrop-blur-xl border-t border-white/5 px-4 py-2">
       <button
         onClick={handleSimulate}
         disabled={isCalculating}

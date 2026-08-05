@@ -12,7 +12,10 @@
   --color-seg-amarelo: #f39c12;    /* semáforo: alerta vibração / L/D 3–4 */
   --color-seg-vermelho: #e74c3c;   /* semáforo: crítico, sugerir redução (L/D 4–6) */
   --color-gauge-empty: #313742;    /* trilho vazio de gauges e barras segmentadas */
-  --color-accent-gold: #facc15;    /* accent: favorito (estrela) */
+  --color-accent-gold: #facc15;    /* accent: favorito (estrela), faixa de atenção em gauge */
+  --color-accent-mint: #00FF88;    /* accent: faixa ótima de gauge (entre verde e ciano) */
+  --color-accent-pink: #f472b6;    /* accent: categoria "polish" no changelog admin */
+  --color-surface-solid: #161b22;  /* surface-dark sem alfa, para superfícies opacas */
 
   /* Surface elevation scale (outer → inner → overlay) */
   --color-lcd-dark: #05070a;              /* fundo do visor LCD (results panel) */

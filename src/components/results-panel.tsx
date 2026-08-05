@@ -11,6 +11,8 @@ import { BidirectionalSlider } from './bidirectional-slider';
 import { fmt, SEG_COLORS, SEG_ICONS, SEG_LABELS, SEG_BG } from './shared-result-parts';
 import { getMaterialById } from '@/data';
 import { useSimulationAnimation } from '@/hooks/use-simulation-animation';
+import { ACCENT_GOLD, SEMAPHORE_HEX } from './design-tokens';
+import { ACCENT_HEX } from './accent-tokens';
 
 // MRR benchmarks by operation type (cm³/min) — Sandvik/Kennametal reference values
 const MRR_BENCHMARKS: Record<TipoUsinagem, number> = {
@@ -62,9 +64,9 @@ function getActionText(
 
 /** L/D color based on thresholds */
 function getLdColor(razaoLD: number): string {
-  if (razaoLD <= 3) return '#2ecc71';
-  if (razaoLD <= 4) return '#f39c12';
-  return '#e74c3c';
+  if (razaoLD <= 3) return SEMAPHORE_HEX.verde;
+  if (razaoLD <= 4) return SEMAPHORE_HEX.amarelo;
+  return SEMAPHORE_HEX.vermelho;
 }
 
 /** Format timestamp as "DD/MM/YYYY HH:mm" */
@@ -133,10 +135,10 @@ export function ResultsPanel() {
   // LCD display content
   const lcdAlertLine = (() => {
     if (!storeResultado) return null;
-    if (nivel === 'bloqueado') return { text: 'L/D > 6 — OPERAÇÃO BLOQUEADA', color: '#e74c3c', icon: 'block' };
-    if (nivel === 'vermelho') return { text: avisos[0] ?? 'PARÂMETROS CRÍTICOS DETECTADOS', color: '#e74c3c', icon: 'emergency_home' };
-    if (nivel === 'amarelo') return { text: avisos[0] ?? 'ATENÇÃO: RISCO DE VIBRAÇÃO', color: '#f39c12', icon: 'warning' };
-    return { text: '✓ PARÂMETROS SEGUROS — SISTEMA OPERANDO NORMALMENTE', color: '#2ecc71', icon: 'check_circle' };
+    if (nivel === 'bloqueado') return { text: 'L/D > 6 — OPERAÇÃO BLOQUEADA', color: SEMAPHORE_HEX.vermelho, icon: 'block' };
+    if (nivel === 'vermelho') return { text: avisos[0] ?? 'PARÂMETROS CRÍTICOS DETECTADOS', color: SEMAPHORE_HEX.vermelho, icon: 'emergency_home' };
+    if (nivel === 'amarelo') return { text: avisos[0] ?? 'ATENÇÃO: RISCO DE VIBRAÇÃO', color: SEMAPHORE_HEX.amarelo, icon: 'warning' };
+    return { text: '✓ PARÂMETROS SEGUROS — SISTEMA OPERANDO NORMALMENTE', color: SEMAPHORE_HEX.verde, icon: 'check_circle' };
   })();
 
   const lcdActionText = storeResultado
@@ -154,7 +156,7 @@ export function ResultsPanel() {
     <div className="flex flex-col gap-2">
 
       {/* ═══ ZONA 1 — Console Header Bar ═══ */}
-      <div className="flex items-center gap-2 px-3 py-1.5 bg-[#0f1419] border border-white/10 rounded-lg">
+      <div className="flex items-center gap-2 px-3 py-1.5 bg-background-dark border border-white/10 rounded-lg">
         {/* Meta: timestamp · material · operação */}
         <div className="flex items-center gap-2 flex-1 min-w-0">
           <span className="font-mono text-xs text-white/40 shrink-0">{timestamp}</span>
@@ -204,7 +206,7 @@ export function ResultsPanel() {
                 className="material-symbols-outlined text-lg transition-all"
                 style={{
                   fontVariationSettings: isFavorited ? "'FILL' 1" : "'FILL' 0",
-                  color: isFavorited ? '#facc15' : 'rgba(255,255,255,0.4)',
+                  color: isFavorited ? ACCENT_GOLD : 'rgba(255,255,255,0.4)',
                   filter: isFavorited ? 'drop-shadow(0 0 6px rgba(250,204,21,0.5))' : undefined,
                 }}
               >star</span>
@@ -223,7 +225,7 @@ export function ResultsPanel() {
       </div>
 
       {/* ═══ ZONA 2 — Digital Display LCD ═══ */}
-      <div className="bg-[#05070a] border border-[rgba(0,229,255,0.12)] rounded-lg px-3 py-2 flex flex-col gap-1">
+      <div className="bg-lcd-dark border border-primary/10 rounded-lg px-3 py-2 flex flex-col gap-1">
         {storeResultado === null ? (
           <>
             <div className="flex items-center gap-2 font-mono text-xs uppercase tracking-wide text-white/40">
@@ -267,7 +269,7 @@ export function ResultsPanel() {
       {/* ═══ ZONA 3 — Tool Row ═══ */}
       <div
         data-testid="tool-summary"
-        className="flex items-center gap-2 px-3 py-2 bg-[rgba(30,35,45,0.6)] border border-white/5 rounded-lg"
+        className="flex items-center gap-2 px-3 py-2 bg-card-dark border border-white/5 rounded-lg"
       >
         <span className="material-symbols-outlined text-primary text-xl shrink-0">precision_manufacturing</span>
         <span className="text-xs text-white/40 uppercase tracking-widest shrink-0">Ferramenta:</span>
@@ -336,7 +338,7 @@ export function ResultsPanel() {
           { label: 'ae (Eng. Radial)', value: parametros.ae.toFixed(2), unit: 'mm'   },
         ] as const).map(({ label, value, unit }) => (
           <div key={label}
-            className="bg-[rgba(30,35,45,0.6)] border border-white/5 rounded-lg px-2.5 py-2 flex flex-col gap-0.5">
+            className="bg-card-dark border border-white/5 rounded-lg px-2.5 py-2 flex flex-col gap-0.5">
             <span className="text-xs text-white/40 uppercase tracking-wide leading-none">{label}</span>
             <div className="flex items-baseline gap-1">
               <span className="font-mono text-lg font-bold text-white leading-tight">{value}</span>
@@ -452,7 +454,7 @@ export function ResultsPanel() {
               { symbol: 'Vc', value: `${parametros.vc} m/min`, description: 'velocidade de corte' },
               { symbol: 'D', value: `${ferramenta.diametro} mm`, description: 'diâmetro da ferramenta' },
             ]}
-            contextBar={{ value: rpm, min: 0, max: limites.maxRPM, label: `${fmt(rpm)} / ${limites.maxRPM.toLocaleString('pt-BR')} RPM`, color: '#00D9FF' }}
+            contextBar={{ value: rpm, min: 0, max: limites.maxRPM, label: `${fmt(rpm)} / ${limites.maxRPM.toLocaleString('pt-BR')} RPM`, color: ACCENT_HEX.primary }}
             tip="Para aumentar RPM: aumente Vc ou reduza o diâmetro. Vc maior → RPM maior."
           />
 
@@ -469,7 +471,7 @@ export function ResultsPanel() {
               { symbol: 'Z', value: `${ferramenta.numeroArestas}`, description: 'número de arestas' },
               { symbol: 'N', value: `${fmt(rpm)} RPM`, description: 'rotação' },
             ]}
-            contextBar={{ value: avanco, min: 0, max: limites.maxAvanco, label: `${fmt(avanco)} / ${limites.maxAvanco.toLocaleString('pt-BR')} mm/min`, color: '#39FF14' }}
+            contextBar={{ value: avanco, min: 0, max: limites.maxAvanco, label: `${fmt(avanco)} / ${limites.maxAvanco.toLocaleString('pt-BR')} mm/min`, color: ACCENT_HEX.secondary }}
             tip={resultado.seguranca.ctf > 1
               ? `CTF ativo (${resultado.seguranca.ctf.toFixed(2)}) — ae < 50% de D, fz compensado para manter espessura do cavaco.`
               : 'Mais arestas = mais avanço na mesma fz. Aumente Z para maior produtividade.'}
@@ -504,7 +506,7 @@ export function ResultsPanel() {
               { symbol: 'η', value: `${(limites.eficiencia * 100).toFixed(0)}%`, description: 'eficiência da máquina' },
               { symbol: 'SF', value: `${safetyFactor}`, description: 'fator de segurança' },
             ]}
-            contextBar={{ value: potenciaMotor, min: 0, max: limites.maxPotencia, label: `${potenciaMotor.toFixed(2)} / ${limites.maxPotencia} kW`, color: '#F97316' }}
+            contextBar={{ value: potenciaMotor, min: 0, max: limites.maxPotencia, label: `${potenciaMotor.toFixed(2)} / ${limites.maxPotencia} kW`, color: ACCENT_HEX['accent-orange'] }}
             tip="Material mais duro (Kc alto) = mais potência necessária. Reduza ap/ae se próximo do limite."
           />
 
@@ -520,7 +522,7 @@ export function ResultsPanel() {
               { symbol: 'P', value: `${potenciaMotor.toFixed(2)} kW`, description: 'potência do motor' },
               { symbol: 'N', value: `${fmt(rpm)} RPM`, description: 'rotação' },
             ]}
-            contextBar={{ value: resultado.torque, min: 0, max: limites.maxTorque, label: `${resultado.torque.toFixed(2)} / ${limites.maxTorque} Nm`, color: '#A855F7' }}
+            contextBar={{ value: resultado.torque, min: 0, max: limites.maxTorque, label: `${resultado.torque.toFixed(2)} / ${limites.maxTorque} Nm`, color: ACCENT_HEX['accent-purple'] }}
             tip="RPM baixo com potência alta = torque alto. Cuidado com ferramentas de diâmetro pequeno."
           />
         </div>

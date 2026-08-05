@@ -58,10 +58,10 @@ export function MobileArchitectureView({ onBack }: MobileArchitectureViewProps) 
                 <span className="material-symbols-outlined text-primary text-base">account_tree</span>
                 Arquitetura
               </h1>
-              <p className="text-[10px] text-gray-500">Mapa do codigo fonte</p>
+              <p className="text-2xs text-gray-500">Mapa do codigo fonte</p>
             </div>
           </div>
-          <span className="rounded-full border border-white/10 bg-white/5 px-2 py-0.5 font-mono text-[10px] text-gray-400">
+          <span className="rounded-full border border-white/10 bg-white/5 px-2 py-0.5 font-mono text-2xs text-gray-400">
             v{metadata.version}
           </span>
         </div>
@@ -144,7 +144,7 @@ export function MobileArchitectureView({ onBack }: MobileArchitectureViewProps) 
 
       {/* Stats Footer */}
       <footer className="border-t border-white/5 bg-background-dark/95 px-4 py-3 backdrop-blur-lg">
-        <div className="flex items-center justify-center gap-3 text-[10px] text-gray-600">
+        <div className="flex items-center justify-center gap-3 text-2xs text-gray-600">
           <span>{metadata.totalFiles} arquivos</span>
           <span>&middot;</span>
           <span>{metadata.totalLines.toLocaleString('pt-BR')} linhas</span>

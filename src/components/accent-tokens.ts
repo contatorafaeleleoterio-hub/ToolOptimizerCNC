@@ -7,6 +7,22 @@
  * classes. Use these maps for classes, or `slider-tokens.ts` for inline styles.
  */
 
+/** Canonical hex values — mirrors --color-primary/secondary/accent-* in index.css. */
+export const ACCENT_HEX = {
+  primary: '#00D9FF',
+  secondary: '#39FF14',
+  'accent-purple': '#A855F7',
+  'accent-orange': '#F97316',
+} as const;
+
+/** Comma-separated rgb channels, for composing rgba() in inline styles. */
+export const ACCENT_RGB = {
+  primary: '0,217,255',
+  secondary: '57,255,20',
+  'accent-purple': '168,85,247',
+  'accent-orange': '249,115,22',
+} as const;
+
 export type AccentColor = 'primary' | 'secondary' | 'accent-purple' | 'accent-orange';
 
 export const ACCENT_TEXT: Record<AccentColor, string> = {

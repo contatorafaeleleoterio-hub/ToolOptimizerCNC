@@ -27,10 +27,10 @@ export function AdminSidebar() {
     <aside className="w-56 shrink-0 flex h-screen flex-col overflow-y-auto bg-white/3 border-r border-white/8">
       {/* Logo area */}
       <div className="px-4 py-5 border-b border-white/8">
-        <p className="text-[10px] font-bold text-gray-500 uppercase tracking-widest">
+        <p className="text-2xs font-bold text-gray-500 uppercase tracking-widest">
           ToolOptimizer
         </p>
-        <p className="text-xs font-semibold text-cyan-400 tracking-wide">Admin</p>
+        <p className="text-xs font-semibold text-primary tracking-wide">Admin</p>
       </div>
 
       {/* Nav items */}
@@ -43,7 +43,7 @@ export function AdminSidebar() {
             className={({ isActive }) =>
               `flex items-center gap-3 px-4 py-2.5 mx-2 rounded-lg text-sm font-medium transition-all ${
                 isActive
-                  ? 'bg-cyan-500/15 text-cyan-300 border border-cyan-500/20'
+                  ? 'bg-primary/15 text-primary border border-primary/20'
                   : 'text-gray-400 hover:text-gray-200 hover:bg-white/5'
               }`
             }
@@ -56,7 +56,7 @@ export function AdminSidebar() {
 
       {/* Footer */}
       <div className="px-4 py-3 border-t border-white/8">
-        <p className="text-[10px] text-gray-600 font-mono">v0.7.0</p>
+        <p className="text-2xs text-gray-600 font-mono">v0.7.0</p>
       </div>
     </aside>
   );

@@ -4,6 +4,8 @@ import { useMachiningStore } from '@/store';
 import { usePlausible } from '@/hooks/use-plausible';
 import { formatReport } from './export-buttons';
 import { useAdminStore } from '@/admin/store/admin-store';
+import { SEMAPHORE_HEX, SURFACE_SOLID } from './design-tokens';
+import { ACCENT_HEX } from './accent-tokens';
 
 const BUG_EMAIL = 'contatorafaeleleoterio@gmail.com';
 const APP_VERSION = '0.6.0';
@@ -102,10 +104,10 @@ function BugReportModal({ onClose }: { onClose: () => void }) {
         if (e.target === e.currentTarget) onClose();
       }}
     >
-      <div className="w-full max-w-md rounded-2xl border border-white/10 shadow-glass p-6 mx-4 flex flex-col gap-4" style={{ backgroundColor: '#161B22' }}>
+      <div className="w-full max-w-md rounded-2xl border border-white/10 shadow-glass p-6 mx-4 flex flex-col gap-4" style={{ backgroundColor: SURFACE_SOLID }}>
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-2 text-white">
-            <span className="material-symbols-outlined text-xl" style={{ color: '#f39c12' }}>
+            <span className="material-symbols-outlined text-xl" style={{ color: SEMAPHORE_HEX.amarelo }}>
               bug_report
             </span>
             <span className="text-sm font-semibold">Reportar Bug</span>
@@ -135,7 +137,7 @@ function BugReportModal({ onClose }: { onClose: () => void }) {
             type="checkbox"
             checked={includeState}
             onChange={(e) => setIncludeState(e.target.checked)}
-            className="w-4 h-4 accent-cyan-400"
+            className="w-4 h-4 accent-primary"
           />
           <span className="text-xs text-gray-400">
             Incluir estado atual da aplicação no e-mail
@@ -157,7 +159,7 @@ function BugReportModal({ onClose }: { onClose: () => void }) {
           <button
             onClick={handleSend}
             className="flex items-center gap-2 px-4 py-2 rounded-lg text-xs font-medium text-black transition-all active:scale-[0.98]"
-            style={{ backgroundColor: '#00D9FF' }}
+            style={{ backgroundColor: ACCENT_HEX.primary }}
           >
             <span className="material-symbols-outlined text-sm">send</span>
             Enviar por E-mail

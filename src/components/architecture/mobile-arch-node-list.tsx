@@ -46,21 +46,21 @@ function NodeCard({ node, index }: { node: ArchNode; index: number }) {
               {node.label}
             </span>
           </div>
-          <p className="mt-1 text-[11px] leading-snug text-gray-400">
+          <p className="mt-1 text-fine leading-snug text-gray-400">
             {node.labelPt}
           </p>
         </div>
         <div className="flex shrink-0 flex-col items-end gap-1">
-          <span className="font-mono text-[10px] text-gray-500">
+          <span className="font-mono text-2xs text-gray-500">
             {node.lines} ln
           </span>
-          <span className="text-[10px] text-gray-600">
+          <span className="text-2xs text-gray-600">
             {connections} {connections === 1 ? 'conexao' : 'conexoes'}
           </span>
         </div>
       </div>
 
-      <div className="mt-2 text-[10px] text-gray-600">
+      <div className="mt-2 text-2xs text-gray-600">
         <span className="font-mono">{node.filePath}</span>
       </div>
 
@@ -69,13 +69,13 @@ function NodeCard({ node, index }: { node: ArchNode; index: number }) {
           {connectedIds.slice(0, 5).map((cid) => (
             <span
               key={cid}
-              className="rounded-md border border-white/5 bg-white/3 px-1.5 py-0.5 text-[9px] text-gray-500"
+              className="rounded-md border border-white/5 bg-white/3 px-1.5 py-0.5 text-3xs text-gray-500"
             >
               {cid}
             </span>
           ))}
           {connectedIds.length > 5 && (
-            <span className="rounded-md bg-white/3 px-1.5 py-0.5 text-[9px] text-gray-600">
+            <span className="rounded-md bg-white/3 px-1.5 py-0.5 text-3xs text-gray-600">
               +{connectedIds.length - 5}
             </span>
           )}
@@ -115,7 +115,7 @@ export function MobileArchNodeList({ group, onBack }: MobileArchNodeListProps) {
         <div className="flex items-center justify-between">
           <h2 className="text-base font-bold text-white">{group.labelPt}</h2>
           <span
-            className="rounded-full px-2 py-0.5 text-[10px] font-bold uppercase"
+            className="rounded-full px-2 py-0.5 text-2xs font-bold uppercase"
             style={{
               backgroundColor: `${group.color}18`,
               color: group.color,
@@ -124,7 +124,7 @@ export function MobileArchNodeList({ group, onBack }: MobileArchNodeListProps) {
             {group.label}
           </span>
         </div>
-        <p className="mt-1 text-[11px] text-gray-500">
+        <p className="mt-1 text-fine text-gray-500">
           {nodes.length} arquivos &middot; {totalLines.toLocaleString('pt-BR')} linhas
         </p>
       </div>

@@ -7,6 +7,8 @@ import { useState, useMemo, useEffect } from 'react';
 import { useAnalyticsStore } from '../store/analytics-store';
 import { MiniChart } from '../components/mini-chart';
 import type { UsageSummary, VitalRating, WebVitalsResult } from '../types/admin-types';
+import { COLOR_MUTED, SEMAPHORE_HEX } from '@/components/design-tokens';
+import { ACCENT_HEX } from '@/components/accent-tokens';
 
 type DaysWindow = 7 | 30 | 90;
 type AutoRefreshMinutes = 0 | 5 | 15;
@@ -30,9 +32,9 @@ function clsRating(val: number): VitalRating {
 }
 
 const RATING_COLOR: Record<VitalRating, string> = {
-  good: '#2ecc71',
-  'needs-improvement': '#f39c12',
-  poor: '#e74c3c',
+  good: SEMAPHORE_HEX.verde,
+  'needs-improvement': SEMAPHORE_HEX.amarelo,
+  poor: SEMAPHORE_HEX.vermelho,
 };
 
 const RATING_LABEL: Record<VitalRating, string> = {
@@ -51,7 +53,7 @@ interface VitalCardProps {
 }
 
 function VitalCard({ name, icon, value, unit, rating, thresholds }: VitalCardProps) {
-  const color = rating ? RATING_COLOR[rating] : '#6b7280';
+  const color = rating ? RATING_COLOR[rating] : COLOR_MUTED;
   const label = rating ? RATING_LABEL[rating] : '-';
 
   return (
@@ -117,11 +119,11 @@ function SetupForm() {
 
       <div className="rounded-xl bg-white/4 border border-white/8 p-5 space-y-3">
         <p className="text-sm font-semibold text-gray-300 flex items-center gap-2">
-          <span className="material-symbols-outlined text-base text-cyan-400">info</span>
+          <span className="material-symbols-outlined text-base text-primary">info</span>
           Como obter as credenciais
         </p>
         <ol className="text-xs text-gray-500 space-y-1.5 list-decimal list-inside">
-          <li>Acesse <span className="text-cyan-400 font-mono">dash.cloudflare.com</span> → My Profile → API Tokens</li>
+          <li>Acesse <span className="text-primary font-mono">dash.cloudflare.com</span> → My Profile → API Tokens</li>
           <li>Crie um token com permissao <span className="font-mono text-gray-300">Zone: Analytics: Read</span></li>
           <li>O <span className="font-mono text-gray-300">Zone ID</span> fica em Overview do dominio.</li>
         </ol>
@@ -136,7 +138,7 @@ function SetupForm() {
             value={token}
             onChange={(e) => setToken(e.target.value)}
             placeholder="Bearer token..."
-            className="w-full bg-white/5 border border-white/10 rounded-lg px-3 py-2 text-sm text-white placeholder-gray-600 focus:outline-none focus:border-cyan-500/50"
+            className="w-full bg-white/5 border border-white/10 rounded-lg px-3 py-2 text-sm text-white placeholder-gray-600 focus:outline-none focus:border-primary/50"
           />
         </div>
 
@@ -148,7 +150,7 @@ function SetupForm() {
             value={zoneId}
             onChange={(e) => setZoneId(e.target.value)}
             placeholder="32-character hex string..."
-            className="w-full bg-white/5 border border-white/10 rounded-lg px-3 py-2 text-sm text-white placeholder-gray-600 focus:outline-none focus:border-cyan-500/50 font-mono"
+            className="w-full bg-white/5 border border-white/10 rounded-lg px-3 py-2 text-sm text-white placeholder-gray-600 focus:outline-none focus:border-primary/50 font-mono"
           />
         </div>
 
@@ -157,7 +159,7 @@ function SetupForm() {
         <button
           onClick={handleConnect}
           disabled={connecting}
-          className="w-full flex items-center justify-center gap-2 px-4 py-2.5 rounded-lg text-sm font-semibold bg-cyan-500/10 border border-cyan-500/20 text-cyan-400 hover:bg-cyan-500/20 transition-colors disabled:opacity-50"
+          className="w-full flex items-center justify-center gap-2 px-4 py-2.5 rounded-lg text-sm font-semibold bg-primary/10 border border-primary/20 text-primary hover:bg-primary/20 transition-colors disabled:opacity-50"
         >
           {connecting ? (
             <>
@@ -320,28 +322,28 @@ export default function AdminAnalyticsPage() {
             aria-label="Período analytics"
             value={selectedDays}
             onChange={(e) => setSelectedDays(Number(e.target.value) as DaysWindow)}
-            className="bg-white/5 border border-white/10 rounded-lg px-3 py-1.5 text-sm text-gray-300 focus:outline-none focus:border-cyan-500/40"
+            className="bg-white/5 border border-white/10 rounded-lg px-3 py-1.5 text-sm text-gray-300 focus:outline-none focus:border-primary/40"
           >
-            <option value={7} className="bg-[#0F1419]">7 dias</option>
-            <option value={30} className="bg-[#0F1419]">30 dias</option>
-            <option value={90} className="bg-[#0F1419]">90 dias</option>
+            <option value={7} className="bg-background-dark">7 dias</option>
+            <option value={30} className="bg-background-dark">30 dias</option>
+            <option value={90} className="bg-background-dark">90 dias</option>
           </select>
 
           <select
             aria-label="Auto refresh analytics"
             value={autoRefreshMinutes}
             onChange={(e) => setAutoRefreshMinutes(Number(e.target.value) as AutoRefreshMinutes)}
-            className="bg-white/5 border border-white/10 rounded-lg px-3 py-1.5 text-sm text-gray-300 focus:outline-none focus:border-cyan-500/40"
+            className="bg-white/5 border border-white/10 rounded-lg px-3 py-1.5 text-sm text-gray-300 focus:outline-none focus:border-primary/40"
           >
-            <option value={0} className="bg-[#0F1419]">Auto-refresh: off</option>
-            <option value={5} className="bg-[#0F1419]">Auto-refresh: 5 min</option>
-            <option value={15} className="bg-[#0F1419]">Auto-refresh: 15 min</option>
+            <option value={0} className="bg-background-dark">Auto-refresh: off</option>
+            <option value={5} className="bg-background-dark">Auto-refresh: 5 min</option>
+            <option value={15} className="bg-background-dark">Auto-refresh: 15 min</option>
           </select>
 
           <button
             onClick={() => void fetchData(selectedDays)}
             disabled={status === 'loading'}
-            className="flex items-center gap-2 px-3 py-1.5 rounded-lg text-sm font-medium text-cyan-400 bg-cyan-500/10 border border-cyan-500/20 hover:bg-cyan-500/20 transition-colors disabled:opacity-50"
+            className="flex items-center gap-2 px-3 py-1.5 rounded-lg text-sm font-medium text-primary bg-primary/10 border border-primary/20 hover:bg-primary/20 transition-colors disabled:opacity-50"
           >
             <span className={`material-symbols-outlined text-base ${status === 'loading' ? 'animate-spin' : ''}`}>
               {status === 'loading' ? 'progress_activity' : 'refresh'}
@@ -386,7 +388,7 @@ export default function AdminAnalyticsPage() {
 
       {status === 'loading' && dailyTraffic.length === 0 && (
         <div className="flex flex-col items-center justify-center h-48 gap-3">
-          <span className="material-symbols-outlined text-4xl text-cyan-400 animate-spin">progress_activity</span>
+          <span className="material-symbols-outlined text-4xl text-primary animate-spin">progress_activity</span>
           <p className="text-sm text-gray-500">Buscando dados da Cloudflare...</p>
         </div>
       )}
@@ -395,7 +397,7 @@ export default function AdminAnalyticsPage() {
         <>
           <div className="grid grid-cols-2 gap-4">
             <div className="rounded-xl bg-white/4 border border-white/8 p-4 flex items-center gap-4">
-              <span className="material-symbols-outlined text-3xl text-cyan-400">visibility</span>
+              <span className="material-symbols-outlined text-3xl text-primary">visibility</span>
               <div>
                 <p className="text-2xl font-bold font-mono text-white">{totalPageViews.toLocaleString('pt-BR')}</p>
                 <p className="text-xs text-gray-500">Pageviews ({selectedDays} dias)</p>
@@ -413,10 +415,10 @@ export default function AdminAnalyticsPage() {
           <div className="grid grid-cols-1 gap-6">
             <section className="rounded-xl bg-white/4 border border-white/8 p-5">
               <div className="flex items-center gap-2 mb-4">
-                <span className="material-symbols-outlined text-lg text-cyan-400">bar_chart</span>
+                <span className="material-symbols-outlined text-lg text-primary">bar_chart</span>
                 <h2 className="text-sm font-semibold text-gray-200">Pageviews por dia</h2>
               </div>
-              <MiniChart data={pageViewsData} color="#00D9FF" emptyMessage={`Nenhum pageview nos ultimos ${selectedDays} dias`} />
+              <MiniChart data={pageViewsData} color={ACCENT_HEX.primary} emptyMessage={`Nenhum pageview nos ultimos ${selectedDays} dias`} />
             </section>
 
             <section className="rounded-xl bg-white/4 border border-white/8 p-5">
@@ -424,7 +426,7 @@ export default function AdminAnalyticsPage() {
                 <span className="material-symbols-outlined text-lg text-green-400">person</span>
                 <h2 className="text-sm font-semibold text-gray-200">Visitantes unicos por dia</h2>
               </div>
-              <MiniChart data={visitorsData} color="#39FF14" emptyMessage={`Nenhum visitante nos ultimos ${selectedDays} dias`} />
+              <MiniChart data={visitorsData} color={ACCENT_HEX.secondary} emptyMessage={`Nenhum visitante nos ultimos ${selectedDays} dias`} />
             </section>
           </div>
 

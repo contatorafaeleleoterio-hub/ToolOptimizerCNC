@@ -39,21 +39,21 @@ export function HmiVisor() {
             <span className={`text-xl font-black tracking-tighter leading-none ${SEG_COLORS[nivel]}`}>
               {SEG_LABELS[nivel]}
             </span>
-            <span className="text-[10px] uppercase font-bold text-white/40 tracking-widest mt-0.5">
+            <span className="text-2xs uppercase font-bold text-white/40 tracking-widest mt-0.5">
               Status do Processo
             </span>
           </div>
         </div>
         <div className="text-right">
           <div className="text-white font-mono text-sm font-bold">Ø{ferramenta.diametro} mm</div>
-          <div className="text-white/30 text-[9px] uppercase font-bold tracking-tighter">Ferramenta Atual</div>
+          <div className="text-white/30 text-3xs uppercase font-bold tracking-tighter">Ferramenta Atual</div>
         </div>
       </div>
 
       {/* ─── Main Readouts (High Contrast) ─── */}
       <div className="grid grid-cols-1 gap-4">
         {/* RPM Card */}
-        <div className="bg-[#0A0D10] border-l-4 border-primary rounded-r-2xl p-6 shadow-2xl relative overflow-hidden group">
+        <div className="bg-lcd-panel border-l-4 border-primary rounded-r-2xl p-6 shadow-2xl relative overflow-hidden group">
           <div className="absolute top-0 right-0 p-4 opacity-10 group-active:opacity-30 transition-opacity">
             <span className="material-symbols-outlined text-6xl text-primary">speed</span>
           </div>
@@ -82,7 +82,7 @@ export function HmiVisor() {
         </div>
 
         {/* FEED Card */}
-        <div className="bg-[#0A0D10] border-l-4 border-secondary rounded-r-2xl p-6 shadow-2xl relative overflow-hidden group">
+        <div className="bg-lcd-panel border-l-4 border-secondary rounded-r-2xl p-6 shadow-2xl relative overflow-hidden group">
           <div className="absolute top-0 right-0 p-4 opacity-10 group-active:opacity-30 transition-opacity">
             <span className="material-symbols-outlined text-6xl text-secondary">moving</span>
           </div>
@@ -114,17 +114,17 @@ export function HmiVisor() {
       {/* ─── Secondary Data (2 Columns) ─── */}
       <div className="grid grid-cols-2 gap-3">
         <div className="bg-white/5 border border-white/10 rounded-xl p-4 flex flex-col items-center">
-          <span className="text-[10px] text-white/30 uppercase font-black tracking-widest mb-1">Vel. Corte</span>
+          <span className="text-2xs text-white/30 uppercase font-black tracking-widest mb-1">Vel. Corte</span>
           <div className="flex items-baseline gap-1">
             <span className="text-2xl font-mono font-bold text-white">{vcReal.toFixed(0)}</span>
-            <span className="text-[10px] text-white/40 font-mono">m/min</span>
+            <span className="text-2xs text-white/40 font-mono">m/min</span>
           </div>
         </div>
         <div className="bg-white/5 border border-white/10 rounded-xl p-4 flex flex-col items-center">
-          <span className="text-[10px] text-white/30 uppercase font-black tracking-widest mb-1">Taxa Remoção</span>
+          <span className="text-2xs text-white/30 uppercase font-black tracking-widest mb-1">Taxa Remoção</span>
           <div className="flex items-baseline gap-1">
             <span className="text-2xl font-mono font-bold text-white">{mrr.toFixed(1)}</span>
-            <span className="text-[10px] text-white/40 font-mono">cm³/min</span>
+            <span className="text-2xs text-white/40 font-mono">cm³/min</span>
           </div>
         </div>
       </div>
@@ -132,7 +132,7 @@ export function HmiVisor() {
       {/* ─── Action Hint ─── */}
       <div className="flex items-center justify-center gap-2 py-4 opacity-40">
         <span className="material-symbols-outlined text-sm">touch_app</span>
-        <span className="text-[10px] font-bold uppercase tracking-widest text-white">Toque nos sliders para ajustar em tempo real</span>
+        <span className="text-2xs font-bold uppercase tracking-widest text-white">Toque nos sliders para ajustar em tempo real</span>
       </div>
     </div>
   );

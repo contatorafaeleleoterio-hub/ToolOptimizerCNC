@@ -7,23 +7,20 @@
  * dynamic. For class names use `accent-tokens.ts` instead.
  */
 
-import type { AccentColor } from './accent-tokens';
+import { ACCENT_HEX, ACCENT_RGB, type AccentColor } from './accent-tokens';
 
-export const SLIDER_TOKENS: Record<string, { hex: string; rgb: string }> = {
-  primary:          { hex: '#00D9FF', rgb: '0,217,255' },
-  secondary:        { hex: '#39FF14', rgb: '57,255,20' },
-  'accent-purple':  { hex: '#A855F7', rgb: '168,85,247' },
-  'accent-orange':  { hex: '#F97316', rgb: '249,115,22' },
-};
+export const SLIDER_TOKENS: Record<string, { hex: string; rgb: string }> = Object.fromEntries(
+  (Object.keys(ACCENT_HEX) as AccentColor[]).map((k) => [k, { hex: ACCENT_HEX[k], rgb: ACCENT_RGB[k] }]),
+);
 
 /** Returns the rgb string for a Tailwind color name. Falls back to primary. */
 export function getSliderRgb(color: string): string {
-  return SLIDER_TOKENS[color]?.rgb ?? '0,217,255';
+  return SLIDER_TOKENS[color]?.rgb ?? ACCENT_RGB.primary;
 }
 
 /** Returns the hex value for a Tailwind color name. Falls back to primary. */
 export function getSliderHex(color: string): string {
-  return SLIDER_TOKENS[color]?.hex ?? '#00D9FF';
+  return SLIDER_TOKENS[color]?.hex ?? ACCENT_HEX.primary;
 }
 
 /**

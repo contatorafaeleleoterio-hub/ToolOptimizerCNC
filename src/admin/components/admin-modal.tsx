@@ -44,7 +44,7 @@ export function AdminModal({ isOpen, onClose, title, children, maxWidth = 'max-w
       <div
         className={`
           relative w-full ${maxWidth}
-          bg-[#0F1419] border border-white/10 rounded-2xl
+          bg-background-dark border border-white/10 rounded-2xl
           shadow-2xl shadow-black/60
           flex flex-col
         `}

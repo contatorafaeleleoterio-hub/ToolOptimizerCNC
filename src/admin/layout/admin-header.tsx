@@ -8,7 +8,7 @@ export function AdminHeader() {
   return (
     <header className="h-12 shrink-0 flex items-center justify-between px-6 bg-white/3 border-b border-white/8">
       <div className="flex items-center gap-3">
-        <span className="material-symbols-outlined text-lg text-cyan-400">admin_panel_settings</span>
+        <span className="material-symbols-outlined text-lg text-primary">admin_panel_settings</span>
         <span className="text-sm font-semibold text-white">Central de Gestão</span>
       </div>
 

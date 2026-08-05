@@ -1,5 +1,7 @@
 import { useMemo } from 'react';
 import { useSimulationAnimation } from '@/hooks/use-simulation-animation';
+import { ACCENT_GOLD, ACCENT_MINT, COLOR_MUTED, SEMAPHORE_HEX } from './design-tokens';
+import { ACCENT_HEX } from './accent-tokens';
 
 type ColorPalette = 'avanco' | 'power' | 'health' | 'mrr';
 
@@ -25,29 +27,29 @@ const SCALE_MARKS = [0, 20, 40, 60, 80, 100, 120, 140, 150];
 const COLOR_PALETTES: Record<ColorPalette, (pct: number) => string> = {
   avanco: (pct: number) => {
     // Eficiência de Avanço: verde → ciano → amarelo → vermelho
-    if (pct <= 50) return '#39FF14';
-    if (pct <= 100) return '#00FF88';
-    if (pct <= 120) return '#00D9FF';
-    return '#FFD700';
+    if (pct <= 50) return ACCENT_HEX.secondary;
+    if (pct <= 100) return ACCENT_MINT;
+    if (pct <= 120) return ACCENT_HEX.primary;
+    return ACCENT_GOLD;
   },
   power: (pct: number) => {
     // Margem de Potência: verde (>80%) → amarelo (40-80%) → vermelho (<40%)
-    if (pct >= 80) return '#39FF14';
-    if (pct >= 40) return '#FFD700';
-    return '#E74C3C';
+    if (pct >= 80) return ACCENT_HEX.secondary;
+    if (pct >= 40) return ACCENT_GOLD;
+    return SEMAPHORE_HEX.vermelho;
   },
   health: (pct: number) => {
     // Saúde da Ferramenta: verde (>75%) → amarelo (40-75%) → vermelho (<40%)
-    if (pct > 75) return '#39FF14';
-    if (pct >= 40) return '#FFD700';
-    return '#E74C3C';
+    if (pct > 75) return ACCENT_HEX.secondary;
+    if (pct >= 40) return ACCENT_GOLD;
+    return SEMAPHORE_HEX.vermelho;
   },
   mrr: (pct: number) => {
     // Produtividade MRR: vermelho (<30%) → amarelo (30-60%) → verde (60-100%) → ciano (>100% benchmark)
-    if (pct <= 30) return '#E74C3C';
-    if (pct <= 60) return '#FFD700';
-    if (pct <= 100) return '#39FF14';
-    return '#00D9FF';
+    if (pct <= 30) return SEMAPHORE_HEX.vermelho;
+    if (pct <= 60) return ACCENT_GOLD;
+    if (pct <= 100) return ACCENT_HEX.secondary;
+    return ACCENT_HEX.primary;
   },
 };
 
@@ -139,7 +141,7 @@ export function Gauge({
             const { x, y } = markerPos(val);
             return (
               <text key={val} x={x} y={y} textAnchor="middle" dominantBaseline="central"
-                fill={val === 100 ? '#00D9FF' : '#6b7280'}
+                fill={val === 100 ? ACCENT_HEX.primary : COLOR_MUTED}
                 fontSize={val === 100 ? 14 : 11}
                 fontWeight={val === 100 ? 'bold' : 'normal'}
                 data-testid={`scale-${val}`}>

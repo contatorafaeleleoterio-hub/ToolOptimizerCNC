@@ -10,6 +10,7 @@ import { CollapsibleSection } from './collapsible-section';
 import { FineTunePanel } from './fine-tune-panel';
 import { StyledSlider } from './styled-slider';
 import { ToolEditModal } from './modals/tool-edit-modal';
+import { SEMAPHORE_HEX } from './design-tokens';
 
 const OPERACAO_LABELS: Record<TipoUsinagem, string> = {
   [TipoUsinagem.DESBASTE]: 'Desbaste',
@@ -124,7 +125,7 @@ function SavedToolsList({ savedTools, activeDiametro, onLoad, onEdit, onRemove }
         if (tools.length === 0) return null;
         return (
           <div key={cat.label}>
-            <span className="text-[10px] uppercase tracking-widest text-gray-600 px-1">{cat.label}</span>
+            <span className="text-2xs uppercase tracking-widest text-gray-600 px-1">{cat.label}</span>
             <div className="flex flex-col gap-0.5 mt-0.5">
               {tools.map((tool) => {
                 const isActive = tool.diametro === activeDiametro;
@@ -357,7 +358,7 @@ export function ConfigPanel() {
                 Salvar ferramenta atual
               </button>
               {showSavedBadge && (
-                <span className="text-xs font-semibold mt-1 block animate-[fadeInUp_0.3s_ease]" style={{ color: '#2ecc71' }}>
+                <span className="text-xs font-semibold mt-1 block animate-[fadeInUp_0.3s_ease]" style={{ color: SEMAPHORE_HEX.verde }}>
                   ✓ Ferramenta salva
                 </span>
               )}

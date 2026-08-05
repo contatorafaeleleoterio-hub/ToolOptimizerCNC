@@ -1,4 +1,5 @@
 import { haptics } from '@/utils/haptics';
+import { ACCENT_HEX } from '../accent-tokens';
 
 type Tab = 'config' | 'results' | 'adjust';
 
@@ -22,7 +23,7 @@ export function MobileTabBar({ active, onChange, hasNewResult = false }: MobileT
 
   return (
     <nav
-      className="flex bg-[rgba(10,14,20,0.97)] border-t border-white/8 backdrop-blur-xl"
+      className="flex bg-overlay-dark border-t border-white/8 backdrop-blur-xl"
       style={{ paddingBottom: 'env(safe-area-inset-bottom, 0px)' }}
       role="tablist"
       aria-label="Navegação principal"
@@ -41,7 +42,7 @@ export function MobileTabBar({ active, onChange, hasNewResult = false }: MobileT
               <span
                 className="material-symbols-outlined text-xl transition-all"
                 style={{
-                  color: isActive ? '#00D9FF' : 'rgba(255,255,255,0.35)',
+                  color: isActive ? ACCENT_HEX.primary : 'rgba(255,255,255,0.35)',
                   filter: isActive ? 'drop-shadow(0 0 6px rgba(0,217,255,0.5))' : undefined,
                   fontVariationSettings: isActive ? "'FILL' 1, 'wght' 500" : "'FILL' 0, 'wght' 300",
                 }}
@@ -54,8 +55,8 @@ export function MobileTabBar({ active, onChange, hasNewResult = false }: MobileT
               )}
             </div>
             <span
-              className="text-[9px] uppercase tracking-widest font-semibold transition-colors"
-              style={{ color: isActive ? '#00D9FF' : 'rgba(255,255,255,0.3)' }}
+              className="text-3xs uppercase tracking-widest font-semibold transition-colors"
+              style={{ color: isActive ? ACCENT_HEX.primary : 'rgba(255,255,255,0.3)' }}
             >
               {tab.label}
             </span>
@@ -64,7 +65,7 @@ export function MobileTabBar({ active, onChange, hasNewResult = false }: MobileT
               <span
                 className="absolute top-0 left-1/2 h-[2px] w-8 rounded-full"
                 style={{
-                  background: '#00D9FF',
+                  background: ACCENT_HEX.primary,
                   transform: 'translateX(-50%)',
                   boxShadow: '0 0 8px rgba(0,217,255,0.6)',
                 }}

@@ -1,3 +1,4 @@
+import { ACCENT_HEX } from '../accent-tokens';
 interface PipelineStep {
   id: string;
   label: string;
@@ -25,10 +26,10 @@ const PIPELINE_STEPS: PipelineStep[] = [
 ];
 
 const PHASE_LABELS: Record<string, { label: string; color: string; icon: string }> = {
-  entrada: { label: 'Entrada', color: '#00D9FF', icon: 'input' },
-  processamento: { label: 'Processamento', color: '#F97316', icon: 'precision_manufacturing' },
-  estado: { label: 'Estado', color: '#39FF14', icon: 'inventory_2' },
-  saida: { label: 'Saida', color: '#A855F7', icon: 'output' },
+  entrada: { label: 'Entrada', color: ACCENT_HEX.primary, icon: 'input' },
+  processamento: { label: 'Processamento', color: ACCENT_HEX['accent-orange'], icon: 'precision_manufacturing' },
+  estado: { label: 'Estado', color: ACCENT_HEX.secondary, icon: 'inventory_2' },
+  saida: { label: 'Saida', color: ACCENT_HEX['accent-purple'], icon: 'output' },
 };
 
 const PHASES = ['entrada', 'processamento', 'estado', 'saida'] as const;
@@ -40,7 +41,7 @@ export function MobileArchDataFlow() {
         <h3 className="text-sm font-bold text-white">
           Fluxo de Dados do calcular()
         </h3>
-        <p className="mt-1 text-[11px] text-gray-500">
+        <p className="mt-1 text-fine text-gray-500">
           Pipeline de 16 etapas em{' '}
           <code className="text-primary">machining-store.ts</code>
         </p>
@@ -89,7 +90,7 @@ export function MobileArchDataFlow() {
 
                   <div className="flex items-center gap-2">
                     <div
-                      className="flex h-5 w-5 shrink-0 items-center justify-center rounded-full text-[9px] font-bold"
+                      className="flex h-5 w-5 shrink-0 items-center justify-center rounded-full text-3xs font-bold"
                       style={{
                         backgroundColor: `${phaseInfo.color}22`,
                         color: phaseInfo.color,
@@ -101,7 +102,7 @@ export function MobileArchDataFlow() {
                       {step.label}
                     </span>
                   </div>
-                  <p className="mt-1 pl-7 font-mono text-[10px] text-gray-500">
+                  <p className="mt-1 pl-7 font-mono text-2xs text-gray-500">
                     {step.formula}
                   </p>
                 </div>

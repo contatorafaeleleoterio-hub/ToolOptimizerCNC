@@ -6,6 +6,7 @@
 import { useState, useEffect } from 'react';
 import { useAdminStore } from '../store/admin-store';
 import { useUsageStore } from '../store/usage-store';
+import { SEMAPHORE_HEX, COLOR_MUTED } from '@/components/design-tokens';
 
 // ── Health check types ────────────────────────────────────────────────────────
 
@@ -22,10 +23,10 @@ interface HealthItem {
 // ── Status config ─────────────────────────────────────────────────────────────
 
 const STATUS_CONFIG: Record<HealthStatus, { icon: string; color: string; label: string }> = {
-  ok:       { icon: 'check_circle',      color: '#2ecc71', label: 'OK' },
-  warn:     { icon: 'warning',           color: '#f39c12', label: 'Atenção' },
-  error:    { icon: 'error',             color: '#e74c3c', label: 'Erro' },
-  checking: { icon: 'progress_activity', color: '#6b7280', label: 'Verificando' },
+  ok:       { icon: 'check_circle',      color: SEMAPHORE_HEX.verde, label: 'OK' },
+  warn:     { icon: 'warning',           color: SEMAPHORE_HEX.amarelo, label: 'Atenção' },
+  error:    { icon: 'error',             color: SEMAPHORE_HEX.vermelho, label: 'Erro' },
+  checking: { icon: 'progress_activity', color: COLOR_MUTED, label: 'Verificando' },
 };
 
 // ── Check functions ───────────────────────────────────────────────────────────
@@ -182,7 +183,7 @@ export default function AdminHealthPage() {
         </div>
         <button
           onClick={runChecks}
-          className="flex items-center gap-2 px-3 py-1.5 rounded-lg text-sm font-medium text-cyan-400 bg-cyan-500/10 border border-cyan-500/20 hover:bg-cyan-500/20 transition-colors"
+          className="flex items-center gap-2 px-3 py-1.5 rounded-lg text-sm font-medium text-primary bg-primary/10 border border-primary/20 hover:bg-primary/20 transition-colors"
           aria-label="Verificar Agora"
         >
           <span className="material-symbols-outlined text-base">refresh</span>

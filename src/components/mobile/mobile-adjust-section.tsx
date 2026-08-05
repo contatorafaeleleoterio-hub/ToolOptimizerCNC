@@ -29,11 +29,11 @@ export function MobileAdjustSection() {
     <div className="flex flex-col min-h-full">
       {/* ─── Mini-Gauges: sticky at top of this tab ─── */}
       <div
-        className={`sticky top-0 z-10 bg-[rgba(10,14,20,0.97)] backdrop-blur-xl border-b border-white/8 px-4 py-3 flex flex-col gap-2.5 ${pulseClass}`}
+        className={`sticky top-0 z-10 bg-overlay-dark backdrop-blur-xl border-b border-white/8 px-4 py-3 flex flex-col gap-2.5 ${pulseClass}`}
       >
         <div className="flex items-center gap-1.5 mb-0.5">
           <span className="material-symbols-outlined text-primary text-sm">speed</span>
-          <span className="text-[9px] uppercase tracking-widest text-white/40 font-semibold">Indicadores em Tempo Real</span>
+          <span className="text-3xs uppercase tracking-widest text-white/40 font-semibold">Indicadores em Tempo Real</span>
         </div>
 
         {resultado ? (
@@ -68,7 +68,7 @@ export function MobileAdjustSection() {
             {['Avanço', 'MRR', 'Saúde Ferramenta'].map((label) => (
               <div key={label} className="flex flex-col gap-1">
                 <div className="flex items-baseline justify-between px-0.5">
-                  <span className="text-[9px] uppercase tracking-widest text-white/20 font-semibold">{label}</span>
+                  <span className="text-3xs uppercase tracking-widest text-white/20 font-semibold">{label}</span>
                   <span className="font-mono text-xs text-white/20">—</span>
                 </div>
                 <div className="flex gap-[2px] items-end h-[14px]">
@@ -79,7 +79,7 @@ export function MobileAdjustSection() {
                 <div className="h-[2px] bg-white/5 rounded-full" />
               </div>
             ))}
-            <p className="text-[10px] text-white/30 text-center mt-1">
+            <p className="text-2xs text-white/30 text-center mt-1">
               Simule para ativar o feedback em tempo real
             </p>
           </div>

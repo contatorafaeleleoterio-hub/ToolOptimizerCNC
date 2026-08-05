@@ -7,6 +7,8 @@ import { useMemo } from 'react';
 import { useAdminStore } from '../store/admin-store';
 import { useUsageStore } from '../store/usage-store';
 import type { AdminTask, BugReport, ErrorEntry, UsageEvent } from '../types/admin-types';
+import { ACCENT_HEX } from '@/components/accent-tokens';
+import { SEMAPHORE_HEX } from '@/components/design-tokens';
 
 export interface ActivityEntry {
   id: string;
@@ -17,10 +19,10 @@ export interface ActivityEntry {
 }
 
 const TYPE_CONFIG: Record<ActivityEntry['type'], { icon: string; color: string }> = {
-  bug:        { icon: 'bug_report',  color: '#f59e0b' },
-  task:       { icon: 'task_alt',    color: '#00D9FF' },
-  error:      { icon: 'error',       color: '#ef4444' },
-  simulation: { icon: 'play_circle', color: '#39FF14' },
+  bug:        { icon: 'bug_report',  color: ACCENT_HEX['accent-orange'] },
+  task:       { icon: 'task_alt',    color: ACCENT_HEX.primary },
+  error:      { icon: 'error',       color: SEMAPHORE_HEX.vermelho },
+  simulation: { icon: 'play_circle', color: ACCENT_HEX.secondary },
 };
 
 const OP_LABELS: Record<string, string> = {

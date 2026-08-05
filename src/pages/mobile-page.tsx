@@ -58,9 +58,9 @@ export function MobilePage() {
     <div className="flex flex-col bg-background-dark overflow-hidden" style={{ height: '100dvh', paddingTop: 'env(safe-area-inset-top)', paddingBottom: 'env(safe-area-inset-bottom)' }}>
       {/* Ambient gradient orbs */}
       <div className="pointer-events-none fixed inset-0 overflow-hidden -z-10" aria-hidden>
-        <div className="absolute top-0 left-1/4 w-72 h-72 rounded-full bg-cyan-500/5 blur-3xl" />
+        <div className="absolute top-0 left-1/4 w-72 h-72 rounded-full bg-primary/5 blur-3xl" />
         <div className="absolute top-1/2 right-0 w-56 h-56 rounded-full bg-purple-500/5 blur-3xl" />
-        <div className="absolute bottom-1/4 left-0 w-48 h-48 rounded-full bg-cyan-400/3 blur-3xl" />
+        <div className="absolute bottom-1/4 left-0 w-48 h-48 rounded-full bg-primary/3 blur-3xl" />
       </div>
 
       <SeoHead title="ToolOptimizer CNC Mobile" />
@@ -69,7 +69,7 @@ export function MobilePage() {
       {isOffline && (
         <div className="bg-seg-amarelo/20 border-b border-seg-amarelo/30 px-4 py-1.5 flex items-center justify-center gap-2 animate-in slide-in-from-top duration-300">
           <span className="material-symbols-outlined text-seg-amarelo text-sm">cloud_off</span>
-          <span className="text-[10px] font-bold text-seg-amarelo uppercase tracking-widest">Modo Offline Ativo</span>
+          <span className="text-2xs font-bold text-seg-amarelo uppercase tracking-widest">Modo Offline Ativo</span>
         </div>
       )}
 

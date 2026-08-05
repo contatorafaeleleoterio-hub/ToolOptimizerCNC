@@ -1,8 +1,8 @@
 export function PrivacyPolicyPage() {
   return (
-    <div className="min-h-screen bg-[#0F1419] text-white font-sans px-6 py-12">
+    <div className="min-h-screen bg-background-dark text-white font-sans px-6 py-12">
       <div className="max-w-2xl mx-auto">
-        <h1 className="text-2xl font-bold text-[#00D9FF] mb-2">
+        <h1 className="text-2xl font-bold text-primary mb-2">
           Política de Privacidade — ToolOptimizer CNC
         </h1>
         <p className="text-white/40 text-sm mb-10">Última atualização: abril de 2026</p>
@@ -11,11 +11,11 @@ export function PrivacyPolicyPage() {
           <p>
             O ToolOptimizer CNC é um aplicativo de cálculo de parâmetros de corte para
             fresamento CNC, disponível em{' '}
-            <a href="https://tooloptimizercnc.com.br" className="text-[#00D9FF] underline">
+            <a href="https://tooloptimizercnc.com.br" className="text-primary underline">
               tooloptimizercnc.com.br
             </a>{' '}
             e na Google Play Store. Desenvolvido por Rafael Eleotério (contato:{' '}
-            <a href="mailto:contatorafaeleleoterio@gmail.com" className="text-[#00D9FF] underline">
+            <a href="mailto:contatorafaeleleoterio@gmail.com" className="text-primary underline">
               contatorafaeleleoterio@gmail.com
             </a>
             ).
@@ -71,7 +71,7 @@ export function PrivacyPolicyPage() {
             serviço de terceiros utilizado é o{' '}
             <a
               href="https://www.cloudflare.com/privacypolicy/"
-              className="text-[#00D9FF] underline"
+              className="text-primary underline"
               target="_blank"
               rel="noreferrer"
             >
@@ -109,7 +109,7 @@ export function PrivacyPolicyPage() {
             Dúvidas sobre privacidade:{' '}
             <a
               href="mailto:contatorafaeleleoterio@gmail.com"
-              className="text-[#00D9FF] underline"
+              className="text-primary underline"
             >
               contatorafaeleleoterio@gmail.com
             </a>

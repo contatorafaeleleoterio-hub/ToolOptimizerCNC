@@ -43,7 +43,7 @@ export function MobileArchGroupCard({ group, nodeCount, totalLines, onClick, ind
           {iconName}
         </span>
         <span
-          className="rounded-full px-2 py-0.5 text-[10px] font-bold uppercase tracking-wider"
+          className="rounded-full px-2 py-0.5 text-2xs font-bold uppercase tracking-wider"
           style={{
             backgroundColor: `${borderColor}18`,
             color: borderColor,
@@ -55,7 +55,7 @@ export function MobileArchGroupCard({ group, nodeCount, totalLines, onClick, ind
 
       <div>
         <h3 className="text-sm font-bold text-white">{group.labelPt}</h3>
-        <p className="mt-1 text-[11px] text-gray-500">
+        <p className="mt-1 text-fine text-gray-500">
           {nodeCount} {nodeCount === 1 ? 'arquivo' : 'arquivos'} &middot;{' '}
           {totalLines.toLocaleString('pt-BR')} linhas
         </p>

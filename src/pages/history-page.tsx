@@ -11,9 +11,10 @@ import type { FeedbackOperador, HistoricoCalculo } from '@/types';
 import { usePageTitle } from '@/hooks/use-page-title';
 import { SeoHead } from '@/components/seo-head';
 import { usePlausible } from '@/hooks/use-plausible';
+import { ACCENT_GOLD } from '@/components/design-tokens';
 
 const CARD = 'bg-card-dark rounded-xl p-6 border border-white/5 shadow-inner-glow mb-6';
-const LABEL = 'text-[11px] font-semibold text-gray-500 uppercase tracking-wide mb-1 block';
+const LABEL = 'text-fine font-semibold text-gray-500 uppercase tracking-wide mb-1 block';
 
 const TIPO_LABELS: Record<TipoUsinagem, string> = {
   [TipoUsinagem.DESBASTE]: 'Desbaste',
@@ -161,7 +162,7 @@ export function HistoryPage() {
             </h3>
             {hasFilters && (
               <button onClick={resetFilters}
-                className="text-[10px] text-gray-500 hover:text-primary transition-colors flex items-center gap-1">
+                className="text-2xs text-gray-500 hover:text-primary transition-colors flex items-center gap-1">
                 <span className="material-symbols-outlined text-xs">filter_alt_off</span>
                 Limpar filtros
               </button>
@@ -318,33 +319,33 @@ function HistoryEntryCard({ entry, isExpanded, onToggle, onRestore, onRemove, on
       >
         {/* Timestamp */}
         <div className="shrink-0 min-w-0">
-          <span className="text-[10px] text-gray-500 block whitespace-nowrap">{formatDate(entry.timestamp)}</span>
+          <span className="text-2xs text-gray-500 block whitespace-nowrap">{formatDate(entry.timestamp)}</span>
         </div>
 
         {/* Material + Operation */}
         <div className="flex-1 min-w-0">
           <span className="text-sm text-white font-medium truncate block">{entry.materialNome}</span>
-          <span className="text-[10px] text-gray-500">{TIPO_LABELS[entry.tipoOperacao]} · {TOOL_NAMES[ferramenta.tipo] ?? ferramenta.tipo} Ø{ferramenta.diametro}</span>
+          <span className="text-2xs text-gray-500">{TIPO_LABELS[entry.tipoOperacao]} · {TOOL_NAMES[ferramenta.tipo] ?? ferramenta.tipo} Ø{ferramenta.diametro}</span>
         </div>
 
         {/* Key results — hidden on small screens */}
         <div className="hidden sm:flex items-center gap-6 text-right">
           <div>
-            <span className="text-[10px] text-gray-500 block">RPM</span>
+            <span className="text-2xs text-gray-500 block">RPM</span>
             <span className="text-sm font-mono text-primary font-bold">{fmt(resultado.rpm)}</span>
           </div>
           <div>
-            <span className="text-[10px] text-gray-500 block">Avanço</span>
+            <span className="text-2xs text-gray-500 block">Avanço</span>
             <span className="text-sm font-mono text-secondary font-bold">{fmt(resultado.avanco)}</span>
           </div>
           <div>
-            <span className="text-[10px] text-gray-500 block">Potência</span>
+            <span className="text-2xs text-gray-500 block">Potência</span>
             <span className="text-sm font-mono text-accent-orange font-bold">{resultado.potenciaMotor.toFixed(2)}</span>
           </div>
         </div>
 
         {/* Safety badge */}
-        <span className={`text-[10px] font-bold px-2.5 py-1 rounded-lg border ${SEG_COLORS[nivel]}`}>
+        <span className={`text-2xs font-bold px-2.5 py-1 rounded-lg border ${SEG_COLORS[nivel]}`}>
           {SEG_LABELS[nivel]}
         </span>
 
@@ -368,7 +369,7 @@ function HistoryEntryCard({ entry, isExpanded, onToggle, onRestore, onRemove, on
             className="material-symbols-outlined text-lg transition-all"
             style={{
               fontVariationSettings: entry.favorited ? "'FILL' 1" : "'FILL' 0",
-              color: entry.favorited ? '#facc15' : undefined,
+              color: entry.favorited ? ACCENT_GOLD : undefined,
               filter: entry.favorited ? 'drop-shadow(0 0 5px rgba(250,204,21,0.5))' : undefined,
             }}
           >star</span>
@@ -402,7 +403,7 @@ function HistoryEntryCard({ entry, isExpanded, onToggle, onRestore, onRemove, on
           {/* Warnings */}
           {resultado.seguranca.avisos.length > 0 && (
             <div className="bg-seg-vermelho/5 border border-seg-vermelho/20 rounded-lg p-3">
-              <span className="text-[10px] text-seg-vermelho font-bold uppercase tracking-wide block mb-1">Avisos</span>
+              <span className="text-2xs text-seg-vermelho font-bold uppercase tracking-wide block mb-1">Avisos</span>
               {resultado.seguranca.avisos.map((a, i) => (
                 <p key={i} className="text-xs text-seg-vermelho/80">⚠ {a}</p>
               ))}
@@ -458,7 +459,7 @@ function HistoryEntryCard({ entry, isExpanded, onToggle, onRestore, onRemove, on
 function DetailCell({ label, value, highlight }: { label: string; value: string; highlight?: string }) {
   return (
     <div className="bg-black/30 rounded-lg p-2 border border-white/5">
-      <span className="text-[10px] text-gray-500 block">{label}</span>
+      <span className="text-2xs text-gray-500 block">{label}</span>
       <span className={`text-sm font-mono font-bold ${highlight ?? 'text-white'}`}>{value}</span>
     </div>
   );

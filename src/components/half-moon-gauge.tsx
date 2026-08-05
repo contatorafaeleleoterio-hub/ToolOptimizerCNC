@@ -1,4 +1,5 @@
 import { useMemo, useState, useEffect, useRef } from 'react';
+import { SEMAPHORE_HEX } from './design-tokens';
 
 // ─── Types ────────────────────────────────────────────────────────────────────
 
@@ -26,11 +27,11 @@ const ANIM_MS    = 800;
 const ARC_START_DEG = -90;
 const ARC_STEP_DEG  = 180 / (TOTAL_BARS - 1);
 
-// Color tokens
-const SEG_RED    = '#FF4D4D';
-const SEG_ORANGE = '#FFA500';
-const SEG_GREEN  = '#00E676';
-const SEG_EMPTY  = '#313742';
+// Color tokens — single source of truth: SEMAPHORE_HEX
+const SEG_RED    = SEMAPHORE_HEX.vermelho;
+const SEG_ORANGE = SEMAPHORE_HEX.amarelo;
+const SEG_GREEN  = SEMAPHORE_HEX.verde;
+const SEG_EMPTY  = SEMAPHORE_HEX.vazio;
 
 // Static color map for 41 bars: 8 RED · 8 ORANGE · 9 GREEN · 8 ORANGE · 8 RED
 function barColor(idx: number): string {

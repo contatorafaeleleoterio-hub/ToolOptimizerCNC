@@ -1,4 +1,5 @@
 import { ArchEdge } from './arch-edge';
+import { ACCENT_HEX } from '../accent-tokens';
 
 interface ArchDataFlowProps {
   onClose: () => void;
@@ -103,7 +104,7 @@ export function ArchDataFlow({ onClose }: ArchDataFlowProps) {
         >
           <defs>
             <marker id="arch-arrow-data-flow" markerWidth="10" markerHeight="10" refX="7" refY="3" orient="auto">
-              <path d="M0,0 L0,6 L8,3 z" fill="#00D9FF" />
+              <path d="M0,0 L0,6 L8,3 z" fill={ACCENT_HEX.primary} />
             </marker>
           </defs>
 
@@ -160,7 +161,7 @@ export function ArchDataFlow({ onClose }: ArchDataFlowProps) {
             );
           })}
 
-          <circle r="5" fill="#00D9FF" filter="drop-shadow(0 0 6px #00D9FF)">
+          <circle r="5" fill={ACCENT_HEX.primary} filter={`drop-shadow(0 0 6px ${ACCENT_HEX.primary})`}>
             <animateMotion dur="4s" repeatCount="indefinite" path={flowPath} />
           </circle>
         </svg>

@@ -101,7 +101,7 @@ export default function AdminErrorsPage() {
             placeholder="Buscar por mensagem ou source..."
             value={search}
             onChange={(e) => setSearch(e.target.value)}
-            className="w-full bg-white/5 border border-white/10 rounded-lg pl-8 pr-3 py-1.5 text-xs text-gray-300 placeholder-gray-600 focus:outline-none focus:border-cyan-500/40"
+            className="w-full bg-white/5 border border-white/10 rounded-lg pl-8 pr-3 py-1.5 text-xs text-gray-300 placeholder-gray-600 focus:outline-none focus:border-primary/40"
           />
         </div>
 
@@ -109,12 +109,12 @@ export default function AdminErrorsPage() {
           aria-label="Ordenar erros"
           value={sortBy}
           onChange={(e) => setSortBy(e.target.value as SortOption)}
-          className="bg-white/5 border border-white/10 rounded-lg px-3 py-1.5 text-xs text-gray-300 focus:outline-none focus:border-cyan-500/40"
+          className="bg-white/5 border border-white/10 rounded-lg px-3 py-1.5 text-xs text-gray-300 focus:outline-none focus:border-primary/40"
         >
-          <option value="latest" className="bg-[#0F1419]">Mais recentes</option>
-          <option value="oldest" className="bg-[#0F1419]">Mais antigos</option>
-          <option value="count_desc" className="bg-[#0F1419]">Mais repetidos</option>
-          <option value="severity_desc" className="bg-[#0F1419]">Maior severidade</option>
+          <option value="latest" className="bg-background-dark">Mais recentes</option>
+          <option value="oldest" className="bg-background-dark">Mais antigos</option>
+          <option value="count_desc" className="bg-background-dark">Mais repetidos</option>
+          <option value="severity_desc" className="bg-background-dark">Maior severidade</option>
         </select>
 
         {hasActiveFilters && (
@@ -144,7 +144,7 @@ export default function AdminErrorsPage() {
             >
               {label}
               <span
-                className={`inline-flex items-center justify-center min-w-[18px] h-[18px] rounded-full text-[10px] font-bold ${
+                className={`inline-flex items-center justify-center min-w-[18px] h-[18px] rounded-full text-2xs font-bold ${
                   active ? 'bg-white/15 text-white' : 'bg-white/6 text-gray-500'
                 }`}
               >
@@ -181,7 +181,7 @@ export default function AdminErrorsPage() {
           <p className="text-gray-500 text-sm">Nenhum erro com severidade "{filter}".</p>
           <button
             onClick={() => setFilter('todas')}
-            className="text-xs text-cyan-400 hover:text-cyan-300 transition-colors"
+            className="text-xs text-primary hover:text-primary transition-colors"
           >
             Ver todos
           </button>

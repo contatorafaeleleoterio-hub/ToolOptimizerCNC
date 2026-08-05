@@ -7,6 +7,7 @@ import { SectionTitle, FieldGroup, NumInput } from '../ui-helpers';
 import { ToolEditModal } from '@/components/modals/tool-edit-modal';
 import { StyledSlider } from '@/components/styled-slider';
 import { haptics } from '@/utils/haptics';
+import { SEMAPHORE_HEX } from '../design-tokens';
 
 /**
  * Mobile-friendly number input with raw/blur pattern.
@@ -77,7 +78,7 @@ function AccordionSection({
   const [open, setOpen] = useState(defaultOpen);
 
   return (
-    <div className="bg-[rgba(30,38,50,0.95)] backdrop-blur-sm rounded-xl border border-white/12">
+    <div className="bg-elevated-dark backdrop-blur-sm rounded-xl border border-white/12">
       <button
         type="button"
         onClick={() => {
@@ -90,7 +91,7 @@ function AccordionSection({
         <div className="flex items-center gap-3 min-w-0">
           <SectionTitle color={color} label={label} />
           {!open && (
-            <span className="text-[10px] text-gray-500 font-mono truncate ml-1">{summary}</span>
+            <span className="text-2xs text-gray-500 font-mono truncate ml-1">{summary}</span>
           )}
         </div>
         <span
@@ -141,7 +142,7 @@ function MobileSavedToolsList({ savedTools, activeDiametro, onLoad, onEdit, onRe
         if (tools.length === 0) return null;
         return (
           <div key={cat.label}>
-            <span className="text-[10px] uppercase tracking-widest text-gray-600 px-1">{cat.label}</span>
+            <span className="text-2xs uppercase tracking-widest text-gray-600 px-1">{cat.label}</span>
             <div className="flex flex-col gap-0.5 mt-0.5">
               {tools.map((tool) => {
                 const isActive = tool.diametro === activeDiametro;
@@ -256,12 +257,12 @@ export function MobileConfigSection() {
             </select>
             {material && (
               <div className="flex justify-between mt-1 px-1">
-                <span className="text-[10px] text-gray-500">{material.dureza}</span>
-                {vcRange && <span className="text-[10px] text-primary/70">Vc: {vcRange[0]}-{vcRange[1]} m/min</span>}
+                <span className="text-2xs text-gray-500">{material.dureza}</span>
+                {vcRange && <span className="text-2xs text-primary/70">Vc: {vcRange[0]}-{vcRange[1]} m/min</span>}
               </div>
             )}
             {material?.status === 'estimado' && (
-              <span className="text-[10px] text-seg-amarelo mt-1 block">Dados estimados</span>
+              <span className="text-2xs text-seg-amarelo mt-1 block">Dados estimados</span>
             )}
           </FieldGroup>
           <FieldGroup label="Tipo de Usinagem">
@@ -308,7 +309,7 @@ export function MobileConfigSection() {
               Salvar ferramenta atual
             </button>
             {showSavedBadge && (
-              <span className="text-xs font-semibold mt-1 block animate-[fadeInUp_0.3s_ease]" style={{ color: '#2ecc71' }}>
+              <span className="text-xs font-semibold mt-1 block animate-[fadeInUp_0.3s_ease]" style={{ color: SEMAPHORE_HEX.verde }}>
                 ✓ Ferramenta salva
               </span>
             )}
@@ -425,7 +426,7 @@ export function MobileConfigSection() {
             {Math.round(safetyFactor * 100)}%
           </span>
         </div>
-        <p className="text-[10px] text-gray-500 mt-2">50% = conservador · 100% = agressivo</p>
+        <p className="text-2xs text-gray-500 mt-2">50% = conservador · 100% = agressivo</p>
       </AccordionSection>
     </section>
   );

@@ -42,7 +42,7 @@ export function TaskCard({ task, onEdit, onDelete, onStatusChange }: Props) {
           {nextStatus && (
             <button
               onClick={() => onStatusChange(task.id, nextStatus)}
-              className="flex items-center gap-1 px-2 py-1 rounded-lg text-xs font-medium text-cyan-300 bg-cyan-500/10 border border-cyan-500/20 hover:bg-cyan-500/20 transition-colors"
+              className="flex items-center gap-1 px-2 py-1 rounded-lg text-xs font-medium text-primary bg-primary/10 border border-primary/20 hover:bg-primary/20 transition-colors"
               title={STATUS_NEXT_LABEL[task.status]}
             >
               <span className="material-symbols-outlined text-sm">
@@ -82,13 +82,13 @@ export function TaskCard({ task, onEdit, onDelete, onStatusChange }: Props) {
           {task.tags.map((tag) => (
             <span
               key={tag}
-              className="text-[10px] px-1.5 py-0.5 rounded bg-white/8 text-gray-400 border border-white/10"
+              className="text-2xs px-1.5 py-0.5 rounded bg-white/8 text-gray-400 border border-white/10"
             >
               {tag}
             </span>
           ))}
         </div>
-        <span className="text-[11px] text-gray-600 shrink-0" title={task.createdAt}>
+        <span className="text-fine text-gray-600 shrink-0" title={task.createdAt}>
           {formatRelativeDate(task.updatedAt)}
         </span>
       </div>

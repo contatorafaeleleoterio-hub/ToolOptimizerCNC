@@ -91,7 +91,7 @@ export default function AdminInboxPage() {
         <h1 className="text-xl font-bold text-white flex items-center gap-2">
           Inbox de Bugs
           {newCount > 0 && (
-            <span className="inline-flex items-center justify-center w-5 h-5 rounded-full bg-cyan-500/20 text-cyan-300 text-[10px] font-bold border border-cyan-500/30">
+            <span className="inline-flex items-center justify-center w-5 h-5 rounded-full bg-primary/20 text-primary text-2xs font-bold border border-primary/30">
               {newCount}
             </span>
           )}
@@ -111,15 +111,15 @@ export default function AdminInboxPage() {
               className={`
                 flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold transition-colors
                 ${active
-                  ? 'bg-cyan-500/20 text-cyan-300 border border-cyan-500/30'
+                  ? 'bg-primary/20 text-primary border border-primary/30'
                   : 'bg-white/5 text-gray-400 border border-white/8 hover:bg-white/8 hover:text-gray-300'
                 }
               `}
             >
               {label}
               <span className={`
-                inline-flex items-center justify-center w-4 h-4 rounded-full text-[10px] font-bold
-                ${active ? 'bg-cyan-500/30 text-cyan-200' : 'bg-white/10 text-gray-500'}
+                inline-flex items-center justify-center w-4 h-4 rounded-full text-2xs font-bold
+                ${active ? 'bg-primary/30 text-primary' : 'bg-white/10 text-gray-500'}
               `}>
                 {count}
               </span>
@@ -133,10 +133,10 @@ export default function AdminInboxPage() {
         <select
           value={severityFilter}
           onChange={(e) => setSeverityFilter(e.target.value as BugSeverity | 'todas')}
-          className="bg-white/5 border border-white/10 rounded-lg px-3 py-1.5 text-xs text-gray-300 focus:outline-none focus:border-cyan-500/40"
+          className="bg-white/5 border border-white/10 rounded-lg px-3 py-1.5 text-xs text-gray-300 focus:outline-none focus:border-primary/40"
         >
           {SEVERITY_OPTIONS.map(({ value, label }) => (
-            <option key={value} value={value} className="bg-[#0F1419]">{label}</option>
+            <option key={value} value={value} className="bg-background-dark">{label}</option>
           ))}
         </select>
 
@@ -149,7 +149,7 @@ export default function AdminInboxPage() {
             placeholder="Buscar por descrição ou versão..."
             value={search}
             onChange={(e) => setSearch(e.target.value)}
-            className="w-full bg-white/5 border border-white/10 rounded-lg pl-8 pr-3 py-1.5 text-xs text-gray-300 placeholder-gray-600 focus:outline-none focus:border-cyan-500/40"
+            className="w-full bg-white/5 border border-white/10 rounded-lg pl-8 pr-3 py-1.5 text-xs text-gray-300 placeholder-gray-600 focus:outline-none focus:border-primary/40"
           />
         </div>
 
@@ -157,11 +157,11 @@ export default function AdminInboxPage() {
           aria-label="Ordenar bugs"
           value={sortBy}
           onChange={(e) => setSortBy(e.target.value as SortOption)}
-          className="bg-white/5 border border-white/10 rounded-lg px-3 py-1.5 text-xs text-gray-300 focus:outline-none focus:border-cyan-500/40"
+          className="bg-white/5 border border-white/10 rounded-lg px-3 py-1.5 text-xs text-gray-300 focus:outline-none focus:border-primary/40"
         >
-          <option value="newest" className="bg-[#0F1419]">Mais recentes</option>
-          <option value="oldest" className="bg-[#0F1419]">Mais antigos</option>
-          <option value="severity_desc" className="bg-[#0F1419]">Maior severidade</option>
+          <option value="newest" className="bg-background-dark">Mais recentes</option>
+          <option value="oldest" className="bg-background-dark">Mais antigos</option>
+          <option value="severity_desc" className="bg-background-dark">Maior severidade</option>
         </select>
 
         {hasActiveFilters && (
@@ -182,7 +182,7 @@ export default function AdminInboxPage() {
           <div className="flex items-center gap-2 flex-wrap">
             <button
               onClick={markFilteredAsRead}
-              className="text-xs px-2.5 py-1 rounded-md border border-cyan-500/30 bg-cyan-500/15 text-cyan-300 hover:bg-cyan-500/25 transition-colors"
+              className="text-xs px-2.5 py-1 rounded-md border border-primary/30 bg-primary/15 text-primary hover:bg-primary/25 transition-colors"
             >
               Marcar filtrados como lido
             </button>

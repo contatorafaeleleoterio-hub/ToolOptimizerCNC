@@ -22,7 +22,7 @@ export function ErrorEntry({ entry, onDelete }: Props) {
         <div className="flex items-center gap-2 flex-wrap">
           <StatusBadge variant={entry.severity} />
           {entry.count > 1 && (
-            <span className="inline-flex items-center gap-1 text-[10px] font-semibold px-2 py-0.5 rounded-full bg-white/8 text-gray-300 border border-white/10">
+            <span className="inline-flex items-center gap-1 text-2xs font-semibold px-2 py-0.5 rounded-full bg-white/8 text-gray-300 border border-white/10">
               <span className="material-symbols-outlined text-xs">repeat</span>
               {entry.count}×
             </span>
@@ -44,7 +44,7 @@ export function ErrorEntry({ entry, onDelete }: Props) {
 
       {/* Source */}
       {entry.source && (
-        <p className="text-[11px] text-gray-500 font-mono break-all">{entry.source}</p>
+        <p className="text-fine text-gray-500 font-mono break-all">{entry.source}</p>
       )}
 
       {/* Stack trace collapsible */}
@@ -61,7 +61,7 @@ export function ErrorEntry({ entry, onDelete }: Props) {
             Stack trace
           </button>
           {stackOpen && (
-            <pre className="text-[10px] text-gray-500 bg-black/30 rounded-lg p-3 overflow-x-auto max-h-48 leading-relaxed whitespace-pre-wrap">
+            <pre className="text-2xs text-gray-500 bg-black/30 rounded-lg p-3 overflow-x-auto max-h-48 leading-relaxed whitespace-pre-wrap">
               {entry.stack}
             </pre>
           )}
@@ -70,11 +70,11 @@ export function ErrorEntry({ entry, onDelete }: Props) {
 
       {/* Footer: first seen / last seen */}
       <div className="flex items-center justify-between gap-2 pt-1 border-t border-white/5">
-        <span className="text-[11px] text-gray-600">
+        <span className="text-fine text-gray-600">
           1ª vez: <span title={entry.firstSeenAt}>{formatRelativeDate(entry.firstSeenAt)}</span>
         </span>
         {entry.count > 1 && (
-          <span className="text-[11px] text-gray-600">
+          <span className="text-fine text-gray-600">
             última: <span title={entry.lastSeenAt}>{formatRelativeDate(entry.lastSeenAt)}</span>
           </span>
         )}

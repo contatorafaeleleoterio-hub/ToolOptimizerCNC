@@ -1,3 +1,5 @@
+import { ACCENT_HEX } from '@/components/accent-tokens';
+import { SEMAPHORE_HEX, COLOR_MUTED } from '@/components/design-tokens';
 export type NodeCategory =
   | 'entry'
   | 'page'
@@ -64,22 +66,22 @@ export interface ArchGraph {
 }
 
 export const CATEGORY_COLORS: Record<NodeCategory, string> = {
-  entry: '#00D9FF',
-  page: '#A855F7',
-  component: '#00D9FF',
-  store: '#39FF14',
-  engine: '#F97316',
-  data: '#F39C12',
-  hook: '#A855F7',
-  type: '#6B7280',
+  entry: ACCENT_HEX.primary,
+  page: ACCENT_HEX['accent-purple'],
+  component: ACCENT_HEX.primary,
+  store: ACCENT_HEX.secondary,
+  engine: ACCENT_HEX['accent-orange'],
+  data: SEMAPHORE_HEX.amarelo,
+  hook: ACCENT_HEX['accent-purple'],
+  type: COLOR_MUTED,
   util: '#94A3B8',
 };
 
 export const EDGE_COLORS: Record<ArchEdgeType, string> = {
   import: '#64748B',
-  'data-flow': '#00D9FF',
-  state: '#39FF14',
-  renders: '#A855F7',
+  'data-flow': ACCENT_HEX.primary,
+  state: ACCENT_HEX.secondary,
+  renders: ACCENT_HEX['accent-purple'],
 };
 
 const FILE_LINES: Record<string, number> = {
@@ -305,14 +307,14 @@ const NODES: ArchNode[] = NODE_SEEDS.map((seed) => ({
 }));
 
 const GROUP_LAYOUT: Omit<ArchGroup, 'nodeIds'>[] = [
-  { id: 'entry', label: 'Entry', labelPt: 'Entrada', category: 'entry', position: { x: 180, y: 90 }, color: '#00D9FF' },
-  { id: 'pages', label: 'Pages', labelPt: 'Rotas', category: 'page', position: { x: 620, y: 90 }, color: '#A855F7' },
-  { id: 'components', label: 'Components', labelPt: 'Componentes UI', category: 'component', position: { x: 80, y: 300 }, color: '#00D9FF' },
-  { id: 'stores', label: 'Stores', labelPt: 'Estado', category: 'store', position: { x: 420, y: 300 }, color: '#39FF14' },
-  { id: 'engine', label: 'Engine', labelPt: 'Calculo', category: 'engine', position: { x: 760, y: 300 }, color: '#F97316' },
-  { id: 'hooks', label: 'Hooks', labelPt: 'Hooks', category: 'hook', position: { x: 80, y: 540 }, color: '#A855F7' },
-  { id: 'data', label: 'Data', labelPt: 'Dados', category: 'data', position: { x: 420, y: 540 }, color: '#F39C12' },
-  { id: 'types', label: 'Types', labelPt: 'Tipos', category: 'type', position: { x: 760, y: 540 }, color: '#6B7280' },
+  { id: 'entry', label: 'Entry', labelPt: 'Entrada', category: 'entry', position: { x: 180, y: 90 }, color: ACCENT_HEX.primary },
+  { id: 'pages', label: 'Pages', labelPt: 'Rotas', category: 'page', position: { x: 620, y: 90 }, color: ACCENT_HEX['accent-purple'] },
+  { id: 'components', label: 'Components', labelPt: 'Componentes UI', category: 'component', position: { x: 80, y: 300 }, color: ACCENT_HEX.primary },
+  { id: 'stores', label: 'Stores', labelPt: 'Estado', category: 'store', position: { x: 420, y: 300 }, color: ACCENT_HEX.secondary },
+  { id: 'engine', label: 'Engine', labelPt: 'Calculo', category: 'engine', position: { x: 760, y: 300 }, color: ACCENT_HEX['accent-orange'] },
+  { id: 'hooks', label: 'Hooks', labelPt: 'Hooks', category: 'hook', position: { x: 80, y: 540 }, color: ACCENT_HEX['accent-purple'] },
+  { id: 'data', label: 'Data', labelPt: 'Dados', category: 'data', position: { x: 420, y: 540 }, color: SEMAPHORE_HEX.amarelo },
+  { id: 'types', label: 'Types', labelPt: 'Tipos', category: 'type', position: { x: 760, y: 540 }, color: COLOR_MUTED },
 ];
 
 const GROUPS: ArchGroup[] = GROUP_LAYOUT.map((group) => ({

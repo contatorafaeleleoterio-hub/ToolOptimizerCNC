@@ -208,7 +208,7 @@ export function ArchitectureMap({ level, onLevelChange }: ArchitectureMapProps) 
     <div className="relative">
       <div className="mb-3 flex items-center justify-between gap-3 text-xs text-gray-400">
         <div>Scroll: zoom, arrastar: pan, duplo clique: reset, teclado: 1 / 2 / 3 / Esc</div>
-        <div className="font-mono text-[11px] text-gray-500">{scale.toFixed(1)}x</div>
+        <div className="font-mono text-fine text-gray-500">{scale.toFixed(1)}x</div>
       </div>
 
       <div
@@ -309,7 +309,7 @@ export function ArchitectureMap({ level, onLevelChange }: ArchitectureMapProps) 
                     {ARCHITECTURE_GRAPH.groups.find((group) => group.id === expandedGroup)?.labelPt}
                   </div>
                 </div>
-                <div className="rounded-full border border-white/10 bg-white/5 px-3 py-1 text-[11px] text-gray-300">
+                <div className="rounded-full border border-white/10 bg-white/5 px-3 py-1 text-fine text-gray-300">
                   {expandedNodes.length} arquivos
                 </div>
               </div>

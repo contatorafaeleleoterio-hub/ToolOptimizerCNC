@@ -38,9 +38,9 @@ export function ArchTooltip({ node, mouseX, mouseY }: ArchTooltipProps) {
       <div className="my-3 border-t border-white/5" />
 
       <div className="space-y-1">
-        <div className="break-all font-mono text-[11px] text-primary">{node.filePath}</div>
-        <div className="text-[11px] text-gray-400">{node.lines} linhas</div>
-        <div className="text-[11px] uppercase tracking-[0.14em] text-gray-500">{node.group}</div>
+        <div className="break-all font-mono text-fine text-primary">{node.filePath}</div>
+        <div className="text-fine text-gray-400">{node.lines} linhas</div>
+        <div className="text-fine uppercase tracking-[0.14em] text-gray-500">{node.group}</div>
       </div>
     </div>
   );

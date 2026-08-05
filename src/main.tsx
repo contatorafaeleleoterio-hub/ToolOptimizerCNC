@@ -32,7 +32,7 @@ const AdminFlagsPage     = lazy(() => import('./admin/pages/admin-flags-page'));
 const AdminChangelogPage = lazy(() => import('./admin/pages/admin-changelog-page'));
 const AdminHealthPage    = lazy(() => import('./admin/pages/admin-health-page'));
 
-const AdminFallback = <div className="min-h-screen bg-[#0F1419]" />;
+const AdminFallback = <div className="min-h-screen bg-background-dark" />;
 
 const baseUrl = import.meta.env.BASE_URL || '/ToolOptimizerCNC/';
 const basename = baseUrl.endsWith('/') ? baseUrl.slice(0, -1) : baseUrl;

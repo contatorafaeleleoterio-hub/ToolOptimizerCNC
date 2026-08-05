@@ -14,6 +14,8 @@ import {
 } from '../shared-result-parts';
 import { haptics } from '@/utils/haptics';
 import { HmiVisor } from './hmi-visor';
+import { ACCENT_GOLD, SEMAPHORE_HEX } from '../design-tokens';
+import { ACCENT_HEX } from '../accent-tokens';
 
 const OPERACAO_LABELS: Record<TipoUsinagem, string> = {
   [TipoUsinagem.DESBASTE]: 'Desbaste',
@@ -30,9 +32,9 @@ function formatToolSpec(f: Ferramenta): string {
 
 /** L/D color based on thresholds */
 function getLdColor(razaoLD: number): string {
-  if (razaoLD <= 3) return '#2ecc71';
-  if (razaoLD <= 4) return '#f39c12';
-  return '#e74c3c';
+  if (razaoLD <= 3) return SEMAPHORE_HEX.verde;
+  if (razaoLD <= 4) return SEMAPHORE_HEX.amarelo;
+  return SEMAPHORE_HEX.vermelho;
 }
 
 /** Format timestamp as "DD/MM/YYYY HH:mm" */
@@ -94,10 +96,10 @@ export function MobileResultsSection() {
   // LCD alert line
   const lcdAlertLine = (() => {
     if (!resultado) return { text: 'AGUARDANDO SIMULAÇÃO — CONFIGURE E CLIQUE EM SIMULAR', color: 'rgba(255,255,255,0.25)', icon: 'hourglass_empty' };
-    if (nivel === 'bloqueado') return { text: 'L/D > 6 — OPERAÇÃO BLOQUEADA', color: '#e74c3c', icon: 'block' };
-    if (nivel === 'vermelho') return { text: avisos[0] ?? 'PARÂMETROS CRÍTICOS DETECTADOS', color: '#e74c3c', icon: 'emergency_home' };
-    if (nivel === 'amarelo') return { text: avisos[0] ?? 'ATENÇÃO: RISCO DE VIBRAÇÃO', color: '#f39c12', icon: 'warning' };
-    return { text: '✓ PARÂMETROS SEGUROS', color: '#2ecc71', icon: 'check_circle' };
+    if (nivel === 'bloqueado') return { text: 'L/D > 6 — OPERAÇÃO BLOQUEADA', color: SEMAPHORE_HEX.vermelho, icon: 'block' };
+    if (nivel === 'vermelho') return { text: avisos[0] ?? 'PARÂMETROS CRÍTICOS DETECTADOS', color: SEMAPHORE_HEX.vermelho, icon: 'emergency_home' };
+    if (nivel === 'amarelo') return { text: avisos[0] ?? 'ATENÇÃO: RISCO DE VIBRAÇÃO', color: SEMAPHORE_HEX.amarelo, icon: 'warning' };
+    return { text: '✓ PARÂMETROS SEGUROS', color: SEMAPHORE_HEX.verde, icon: 'check_circle' };
   })();
 
   const lcdInfoText = resultado
@@ -113,13 +115,13 @@ export function MobileResultsSection() {
     <section className="flex flex-col gap-3 px-4 pb-32">
 
       {/* ═══ ZONA 1 — Console Header Bar ═══ */}
-      <div className="flex items-center gap-2 px-2.5 py-1.5 bg-[#0f1419] border border-white/10 rounded-lg">
+      <div className="flex items-center gap-2 px-2.5 py-1.5 bg-background-dark border border-white/10 rounded-lg">
         <div className="flex items-center gap-1.5 flex-1 min-w-0">
-          <span className="font-mono text-[10px] text-white/35 shrink-0">{timestamp}</span>
+          <span className="font-mono text-2xs text-white/35 shrink-0">{timestamp}</span>
           <span className="w-1 h-1 rounded-full bg-white/20 shrink-0" />
-          <span className="text-[11px] font-semibold text-white truncate">{materialNome}</span>
+          <span className="text-fine font-semibold text-white truncate">{materialNome}</span>
           <span className="w-1 h-1 rounded-full bg-white/20 shrink-0" />
-          <span className="text-[10px] font-semibold text-white/60 bg-white/8 px-1.5 py-0.5 rounded uppercase shrink-0">
+          <span className="text-2xs font-semibold text-white/60 bg-white/8 px-1.5 py-0.5 rounded uppercase shrink-0">
             {OPERACAO_LABELS[tipoOperacao]}
           </span>
         </div>
@@ -127,7 +129,7 @@ export function MobileResultsSection() {
         {/* View Mode Toggle */}
         <button
           onClick={toggleViewMode}
-          className={`flex items-center gap-1 px-2 py-0.5 rounded-md border text-[9px] font-bold uppercase tracking-wider transition-all active:scale-95 ${
+          className={`flex items-center gap-1 px-2 py-0.5 rounded-md border text-3xs font-bold uppercase tracking-wider transition-all active:scale-95 ${
             viewMode === 'hmi' 
               ? 'bg-primary/20 border-primary/40 text-primary' 
               : 'bg-white/5 border-white/10 text-white/40'
@@ -140,7 +142,7 @@ export function MobileResultsSection() {
         </button>
 
         {/* Safety badge inline */}
-        <div className={`flex items-center gap-1 px-2 py-0.5 rounded-md border text-[10px] font-bold uppercase tracking-wide shrink-0 ${SEG_BG[nivel]}`}>
+        <div className={`flex items-center gap-1 px-2 py-0.5 rounded-md border text-2xs font-bold uppercase tracking-wide shrink-0 ${SEG_BG[nivel]}`}>
           <span
             className={`material-symbols-outlined text-sm ${SEG_COLORS[nivel]}`}
             style={{ fontVariationSettings: "'FILL' 1, 'wght' 400" }}
@@ -160,7 +162,7 @@ export function MobileResultsSection() {
               className="material-symbols-outlined text-base transition-all"
               style={{
                 fontVariationSettings: isFavorited ? "'FILL' 1" : "'FILL' 0",
-                color: isFavorited ? '#facc15' : 'rgba(255,255,255,0.4)',
+                color: isFavorited ? ACCENT_GOLD : 'rgba(255,255,255,0.4)',
                 filter: isFavorited ? 'drop-shadow(0 0 6px rgba(250,204,21,0.5))' : undefined,
               }}
             >star</span>
@@ -169,9 +171,9 @@ export function MobileResultsSection() {
       </div>
 
       {/* ═══ ZONA 2 — LCD Display (compact, 2 lines) ═══ */}
-      <div className="bg-[#05070a] border border-[rgba(0,229,255,0.12)] rounded-lg px-3 py-2 flex flex-col gap-1">
+      <div className="bg-lcd-dark border border-primary/10 rounded-lg px-3 py-2 flex flex-col gap-1">
         <div
-          className="flex items-center gap-1.5 font-mono text-[10px] uppercase tracking-wide"
+          className="flex items-center gap-1.5 font-mono text-2xs uppercase tracking-wide"
           style={{ color: lcdAlertLine.color }}
         >
           <span className="material-symbols-outlined text-sm shrink-0" style={{ color: lcdAlertLine.color }}>
@@ -180,7 +182,7 @@ export function MobileResultsSection() {
           <span className="truncate">{lcdAlertLine.text}</span>
         </div>
         {lcdInfoText && (
-          <div className="font-mono text-[10px] uppercase tracking-wide text-white/25 border-t border-white/5 pt-1">
+          <div className="font-mono text-2xs uppercase tracking-wide text-white/25 border-t border-white/5 pt-1">
             {lcdInfoText}
           </div>
         )}
@@ -189,10 +191,10 @@ export function MobileResultsSection() {
       {/* ═══ ZONA 3 — Tool Row ═══ */}
       <div
         data-testid="tool-summary"
-        className="flex items-center gap-2 px-3 py-2 bg-[rgba(30,35,45,0.6)] border border-white/5 rounded-lg"
+        className="flex items-center gap-2 px-3 py-2 bg-card-dark border border-white/5 rounded-lg"
       >
         <span className="material-symbols-outlined text-primary text-lg shrink-0">precision_manufacturing</span>
-        <span className="text-[9px] text-white/40 uppercase tracking-widest shrink-0">Ferramenta:</span>
+        <span className="text-3xs text-white/40 uppercase tracking-widest shrink-0">Ferramenta:</span>
         <span className="font-mono text-sm font-bold text-white truncate flex-1">{formatToolSpec(ferramenta)}</span>
         <button
           aria-label="Editar ferramenta"
@@ -205,7 +207,7 @@ export function MobileResultsSection() {
 
       {/* Empty state — first time, no history */}
       {!storeResultado && !latestEntry && (
-        <div className="bg-[rgba(30,38,50,0.95)] backdrop-blur-sm border border-white/12 rounded-2xl p-6">
+        <div className="bg-elevated-dark backdrop-blur-sm border border-white/12 rounded-2xl p-6">
           <div className="flex items-center gap-3 mb-5">
             <span className="material-symbols-outlined text-3xl text-gray-400">precision_manufacturing</span>
             <p className="text-gray-400 text-sm font-medium">Configure os parâmetros e clique em Simular</p>
@@ -283,11 +285,11 @@ export function MobileResultsSection() {
                 { label: 'ae (Eng. Radial)', value: parametros.ae.toFixed(2), unit: 'mm'   },
               ] as const).map(({ label, value, unit }) => (
                 <div key={label}
-                  className="bg-[rgba(30,35,45,0.6)] border border-white/5 rounded-lg px-2 py-1.5 flex flex-col gap-0.5">
-                  <span className="text-[9px] text-white/40 uppercase tracking-wide leading-none">{label}</span>
+                  className="bg-card-dark border border-white/5 rounded-lg px-2 py-1.5 flex flex-col gap-0.5">
+                  <span className="text-3xs text-white/40 uppercase tracking-wide leading-none">{label}</span>
                   <div className="flex items-baseline gap-1">
                     <span className="font-mono text-base font-bold text-white leading-tight">{value}</span>
-                    <span className="text-[9px] text-white/30">{unit}</span>
+                    <span className="text-3xs text-white/30">{unit}</span>
                   </div>
                 </div>
               ))}
@@ -297,42 +299,42 @@ export function MobileResultsSection() {
             <div className="grid grid-cols-2 gap-1.5">
               {/* Potência Est. */}
               <div className="bg-black/30 border border-white/5 rounded-lg px-2.5 py-1.5 flex items-center justify-between">
-                <span className="text-[9px] text-white/35 uppercase tracking-wide">Potência Est.</span>
+                <span className="text-3xs text-white/35 uppercase tracking-wide">Potência Est.</span>
                 <span className="font-mono text-xs font-bold text-white/85">
-                  {potenciaMotor.toFixed(2)}<span className="text-[9px] opacity-40 ml-0.5">kW</span>
+                  {potenciaMotor.toFixed(2)}<span className="text-3xs opacity-40 ml-0.5">kW</span>
                 </span>
               </div>
               {/* Torque */}
               <div className="bg-black/30 border border-white/5 rounded-lg px-2.5 py-1.5 flex items-center justify-between">
-                <span className="text-[9px] text-white/35 uppercase tracking-wide">Torque</span>
+                <span className="text-3xs text-white/35 uppercase tracking-wide">Torque</span>
                 <span className="font-mono text-xs font-bold text-white/85">
-                  {resultado.torque.toFixed(2)}<span className="text-[9px] opacity-40 ml-0.5">Nm</span>
+                  {resultado.torque.toFixed(2)}<span className="text-3xs opacity-40 ml-0.5">Nm</span>
                 </span>
               </div>
               {/* Vc Real */}
               <div className="bg-black/30 border border-white/5 rounded-lg px-2.5 py-1.5 flex items-center justify-between">
-                <span className="text-[9px] text-white/35 uppercase tracking-wide">Vc Real</span>
+                <span className="text-3xs text-white/35 uppercase tracking-wide">Vc Real</span>
                 <span className="font-mono text-xs font-bold text-white/85">
-                  {vcReal.toFixed(0)}<span className="text-[9px] opacity-40 ml-0.5">m/min</span>
+                  {vcReal.toFixed(0)}<span className="text-3xs opacity-40 ml-0.5">m/min</span>
                 </span>
               </div>
               {/* MRR */}
               <div className="bg-black/30 border border-white/5 rounded-lg px-2.5 py-1.5 flex items-center justify-between">
-                <span className="text-[9px] text-white/35 uppercase tracking-wide">MRR</span>
+                <span className="text-3xs text-white/35 uppercase tracking-wide">MRR</span>
                 <span className="font-mono text-xs font-bold text-white/85">
-                  {mrr.toFixed(1)}<span className="text-[9px] opacity-40 ml-0.5">cm³</span>
+                  {mrr.toFixed(1)}<span className="text-3xs opacity-40 ml-0.5">cm³</span>
                 </span>
               </div>
               {/* L/D — color coded */}
               <div className="bg-black/30 border border-white/5 rounded-lg px-2.5 py-1.5 flex items-center justify-between">
-                <span className="text-[9px] uppercase tracking-wide" style={{ color: ldColor + '99' }}>L/D</span>
+                <span className="text-3xs uppercase tracking-wide" style={{ color: ldColor + '99' }}>L/D</span>
                 <span className="font-mono text-xs font-bold" style={{ color: ldColor }}>
                   {razaoLD > 6 ? 'BLOQ.' : razaoLD.toFixed(1)}
                 </span>
               </div>
               {/* CTF */}
               <div className="bg-black/30 border border-white/5 rounded-lg px-2.5 py-1.5 flex items-center justify-between">
-                <span className="text-[9px] text-white/35 uppercase tracking-wide">CTF</span>
+                <span className="text-3xs text-white/35 uppercase tracking-wide">CTF</span>
                 <span className="font-mono text-xs font-bold text-primary">{ctf.toFixed(2)}</span>
               </div>
             </div>
@@ -340,14 +342,14 @@ export function MobileResultsSection() {
             <WarningsSection avisos={avisos} />
 
             {/* ═══ ZONA 8 — Fórmulas Educacionais (colapsáveis) ═══ */}
-            <div className="bg-[rgba(30,38,50,0.95)] backdrop-blur-xl border border-white/12 rounded-2xl p-4 shadow-glass">
+            <div className="bg-elevated-dark backdrop-blur-xl border border-white/12 rounded-2xl p-4 shadow-glass">
               <div className="flex items-center gap-3 mb-4">
                 <div className="w-9 h-9 rounded-lg bg-primary/10 flex items-center justify-center border border-primary/20">
                   <span className="material-symbols-outlined text-primary text-sm">school</span>
                 </div>
                 <div>
                   <h3 className="text-sm font-bold text-white uppercase tracking-widest">Entenda os Cálculos</h3>
-                  <p className="text-[10px] text-gray-500 mt-0.5">Toque para expandir</p>
+                  <p className="text-2xs text-gray-500 mt-0.5">Toque para expandir</p>
                 </div>
               </div>
               <div className="space-y-2">
@@ -362,7 +364,7 @@ export function MobileResultsSection() {
                     { symbol: 'Vc', value: `${parametros.vc} m/min`, description: 'velocidade de corte' },
                     { symbol: 'D', value: `${ferramenta.diametro} mm`, description: 'diâmetro da ferramenta' },
                   ]}
-                  contextBar={{ value: rpm, min: 0, max: limites.maxRPM, label: `${fmt(rpm)} / ${limites.maxRPM.toLocaleString('pt-BR')} RPM`, color: '#00D9FF' }}
+                  contextBar={{ value: rpm, min: 0, max: limites.maxRPM, label: `${fmt(rpm)} / ${limites.maxRPM.toLocaleString('pt-BR')} RPM`, color: ACCENT_HEX.primary }}
                   tip="Para aumentar RPM: aumente Vc ou reduza o diâmetro."
                 />
 
@@ -378,7 +380,7 @@ export function MobileResultsSection() {
                     { symbol: 'Z', value: `${ferramenta.numeroArestas}`, description: 'número de arestas' },
                     { symbol: 'N', value: `${fmt(rpm)} RPM`, description: 'rotação' },
                   ]}
-                  contextBar={{ value: avanco, min: 0, max: limites.maxAvanco, label: `${fmt(avanco)} / ${limites.maxAvanco.toLocaleString('pt-BR')} mm/min`, color: '#39FF14' }}
+                  contextBar={{ value: avanco, min: 0, max: limites.maxAvanco, label: `${fmt(avanco)} / ${limites.maxAvanco.toLocaleString('pt-BR')} mm/min`, color: ACCENT_HEX.secondary }}
                   tip={resultado.seguranca.ctf > 1
                     ? `CTF ativo (${resultado.seguranca.ctf.toFixed(2)}) — ae < 50% de D, fz compensado.`
                     : 'Mais arestas = mais avanço na mesma fz.'}
@@ -411,7 +413,7 @@ export function MobileResultsSection() {
                     { symbol: 'η', value: `${(limites.eficiencia * 100).toFixed(0)}%`, description: 'eficiência da máquina' },
                     { symbol: 'SF', value: `${safetyFactor}`, description: 'fator de segurança' },
                   ]}
-                  contextBar={{ value: potenciaMotor, min: 0, max: limites.maxPotencia, label: `${potenciaMotor.toFixed(2)} / ${limites.maxPotencia} kW`, color: '#F97316' }}
+                  contextBar={{ value: potenciaMotor, min: 0, max: limites.maxPotencia, label: `${potenciaMotor.toFixed(2)} / ${limites.maxPotencia} kW`, color: ACCENT_HEX['accent-orange'] }}
                   tip="Material mais duro = mais potência. Reduza ap/ae se próximo do limite."
                 />
 
@@ -426,7 +428,7 @@ export function MobileResultsSection() {
                     { symbol: 'P', value: `${potenciaMotor.toFixed(2)} kW`, description: 'potência do motor' },
                     { symbol: 'N', value: `${fmt(rpm)} RPM`, description: 'rotação' },
                   ]}
-                  contextBar={{ value: resultado.torque, min: 0, max: limites.maxTorque, label: `${resultado.torque.toFixed(2)} / ${limites.maxTorque} Nm`, color: '#A855F7' }}
+                  contextBar={{ value: resultado.torque, min: 0, max: limites.maxTorque, label: `${resultado.torque.toFixed(2)} / ${limites.maxTorque} Nm`, color: ACCENT_HEX['accent-purple'] }}
                   tip="RPM baixo com potência alta = torque alto."
                 />
               </div>
