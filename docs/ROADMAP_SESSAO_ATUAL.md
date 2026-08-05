@@ -93,8 +93,9 @@ npx tsc --noEmit
 | 11 | [Redesign Visual Dashboard (6 sessões)](#-redesign-visual-dashboard) | 🎨 Design Audit | v0.10.0 | ✅ Concluído (`64890cc`) |
 | 12 | Story-011 Cassino | 🎬 Animation | v0.11.0 | ✅ Concluído (`b2183bd`) |
 | 13 | [MVP Android Launch (11 sessões)](#-mvp-android-launch) | 🚀 Launch | v0.12.0 | ⬜ Pendente |
-| 14 | Redesign Calculadora 80/20 (4 sessões S0-S3) — `docs/plans/REDESIGN_DASHBOARD_80-20.md` | 🎨 Redesign | MINOR | ⬜ Pendente |
+| 14 | Redesign Calculadora 80/20 (4 sessões S0-S3) — `docs/plans/REDESIGN_DASHBOARD_80-20.md` | 🎨 Redesign | MINOR | 🔁 Absorvido pelo item 16 |
 | 15 | Design System Canônico (4 sessões, replanejado de 6) — `docs/plans/PLAN_DESIGN_SYSTEM_CANONICO.md` | 📄 Docs / Design Audit | — | ✅ Concluído (`d471895`) |
+| 16 | Implementação DS + 80/20 + Mobile + Dívida Visual (8 sessões) — `docs/plans/PLAN_IMPLEMENTACAO_DS_80-20_MOBILE.md` | 🎨 Redesign + Refactor | v0.12.0 | ⬜ Pendente |
 
 ### ✅ Reestruturação Documental (v0.6.0) — CONCLUÍDA
 

@@ -1,8 +1,8 @@
 # Backlog de Implementação — ToolOptimizer CNC
 
-> **Última atualização:** 02/08/2026
+> **Última atualização:** 05/08/2026
 > **Versão atual:** v0.11.0 (Story-011 2C concluída, `b2183bd`)
-> **Total de planos pendentes:** 2 (Segurança v0.5.5 ⏸️ pausada + Redesign Calculadora 80/20 ⬜) — Design System Canônico ✅ concluído 02/08/2026
+> **Total de planos pendentes:** 2 (Segurança v0.5.5 ⏸️ pausada + Implementação DS + 80/20 + Mobile ⬜) — Redesign 80/20 absorvido pelo item 15
 
 Esta lista define a ordem de implementação dos planos criados e ainda não executados.
 A ordem garante estabilidade progressiva: bugs corrigidos antes de features, features antes de polish.
@@ -27,8 +27,9 @@ A ordem garante estabilidade progressiva: bugs corrigidos antes de features, fea
 | 10 | [Redesign Visual Dashboard](#10-redesign-visual-dashboard) | 🎨 Design Audit | v0.10.0 | 6 sessões | ✅ Concluído (`64890cc`) |
 | 11 | [Implementações Dashboard v0.10.1](#11-implementações-dashboard-v0101) | 🎨 Feature | v0.10.1 | 10 itens — todos concluídos | ✅ Concluído (10/10) |
 | 12 | [Story-011 ITEM-5.2 Cassino](#12-story-011-cassino) | 🎬 Animation | v0.11.0 | 3 sub-sessões | ✅ Concluído (`b2183bd`) |
-| 13 | [Redesign Calculadora 80/20](#13-redesign-calculadora-8020) | 🎨 Redesign | MINOR | 5 arquivos + testes, 4 sessões (S0-S3) | ⬜ Pendente |
+| 13 | [Redesign Calculadora 80/20](#13-redesign-calculadora-8020) | 🎨 Redesign | MINOR | 5 arquivos + testes, 4 sessões (S0-S3) | 🔁 Absorvido pelo item 15 |
 | 14 | [Design System Canônico](#14-design-system-canônico) | 📄 Docs / Design Audit | — | 1 arquivo HTML, 4 sessões, zero `src/` | ✅ Concluído (`d471895`) |
+| 15 | [Implementação DS + 80/20 + Mobile + Dívida Visual](#15-implementação-ds--8020--mobile--dívida-visual) | 🎨 Redesign + Refactor | v0.12.0 | ~25 arquivos + 9 testes novos, 8 sessões | ⬜ Pendente |
 
 ---
 
@@ -242,6 +243,19 @@ v0.5.5 — Segurança Cibernética ⬜
 **Regra inegociável:** zero vestígios do design system de referência usado como molde estrutural — verificado por grep ao fim de cada sessão (1-4), sempre zero ocorrências.
 
 **Pendente (fora do alcance desta sessão):** validação visual em navegador real (fontes, toggle de tema, contraste WCAG ao vivo, scrollspy) — nenhuma ferramenta de browser disponível nas sessões de execução. Verificado por código o que era possível: tags balanceadas, sintaxe do `<script>` (`node -c`), zero regressão em `src/`.
+
+---
+
+### 15. Implementação DS + 80/20 + Mobile + Dívida Visual
+
+**Arquivo do plano:** `PLAN_IMPLEMENTACAO_DS_80-20_MOBILE.md` (criado 05/08/2026, aprovado)
+**Prioridade:** ALTA — materializa o Design System no código real
+**Tipo:** Redesign + Refactor + limpeza de dívida — **8 sessões**, versão alvo v0.12.0
+**Absorve** o item 13 (Redesign Calculadora 80/20): S1-S3 do redesign viram Sessões 3-5 deste plano.
+
+**Escopo:** implementar o mockup aprovado `docs/design/mockup-redesign-80-20.html` (painel simplificado, 3 gauges mantidos), estender o redesign ao mobile (prioridade do Rafael: MiniResultBar na aba Resultados, alvos ≥44px, estado vazio honesto, 6 testes novos de componentes mobile) e quitar os 21 itens de dívida visual do DS (blocos 1+2+3 — inclui Modal e Acordeão unificados com acessibilidade). Admin fora de escopo.
+
+**Sequência:** Bloco 1 (limpeza) → Modal/Acordeão base → desktop S1/S2/S3 → mobile config → mobile results → Bloco 2 (snap de escala) + docs + bump. Detalhes por sessão no arquivo do plano.
 
 ---
 

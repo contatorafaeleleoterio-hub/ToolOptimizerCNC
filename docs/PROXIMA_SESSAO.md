@@ -11,6 +11,17 @@
 
 ---
 
+## 📄 Sessão de planejamento — Implementação DS + 80/20 + Mobile (05/08/2026)
+
+Sessão só de planejamento — **zero alterações em `src/`**.
+
+- Criado `docs/plans/PLAN_IMPLEMENTACAO_DS_80-20_MOBILE.md` (8 sessões, v0.12.0 alvo): implementa o Design System no código, adota o mockup 80/20 (`docs/design/mockup-redesign-80-20.html`), estende ao mobile e quita os 21 itens de dívida visual (blocos 1+2+3).
+- Decisões do Rafael: blocos 1+2+3 completos · MiniResultBar na aba Resultados mobile · manter 3 gauges desktop · admin fora de escopo.
+- Absorve o item "Redesign Calculadora 80/20" do backlog (agora Sessões 3-5 do novo plano).
+- Próximo passo: executar Sessão 1 (dívida bloco 1, limpeza zero-risco).
+
+---
+
 ## 📄 Sessão paralela — Design System Canônico (02/08/2026)
 
 Sessão de documentação/design audit, independente da linha mobile/Android abaixo. **Zero alterações em `src/`.**
