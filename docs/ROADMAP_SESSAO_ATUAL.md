@@ -95,7 +95,7 @@ npx tsc --noEmit
 | 13 | [MVP Android Launch (11 sessões)](#-mvp-android-launch) | 🚀 Launch | v0.12.0 | ⬜ Pendente |
 | 14 | Redesign Calculadora 80/20 (4 sessões S0-S3) — `docs/plans/REDESIGN_DASHBOARD_80-20.md` | 🎨 Redesign | MINOR | 🔁 Absorvido pelo item 16 |
 | 15 | Design System Canônico (4 sessões, replanejado de 6) — `docs/plans/PLAN_DESIGN_SYSTEM_CANONICO.md` | 📄 Docs / Design Audit | — | ✅ Concluído (`d471895`) |
-| 16 | Implementação DS + 80/20 + Mobile + Dívida Visual (8 sessões) — `docs/plans/PLAN_IMPLEMENTACAO_DS_80-20_MOBILE.md` | 🎨 Redesign + Refactor | v0.12.0 | 🔁 Em andamento (6/8 — `e5975c9`) |
+| 16 | Implementação DS + 80/20 + Mobile + Dívida Visual (8 sessões) — `docs/plans/PLAN_IMPLEMENTACAO_DS_80-20_MOBILE.md` | 🎨 Redesign + Refactor | v0.12.0 | 🔁 Em andamento (7/8 — `31395be`) |
 
 ### ✅ Reestruturação Documental (v0.6.0) — CONCLUÍDA
 
@@ -418,4 +418,21 @@ Quando uma nova implementação for planejada durante a sessão:
 **Correção pós-feedback do Rafael (mesma sessão, commit `e5975c9`):** a remoção de "Parâmetros de Corte" acima estava errada — a seção existe em dois momentos do fluxo (início da configuração + ajuste pós-simulação), não é duplicata. Restaurada dentro de Configurar, mas reconstruída com o mesmo indicador de faixa (`SegmentedGradientBar`) + slider touch (`TouchSlider`) já usado na aba Ajustar, em vez dos `NumInput` crus que ela tinha antes. Os dois pontos de uso (Configurar e Ajustar) agora compartilham o componente `mobile-cutting-params.tsx` (extraído de `mobile-fine-tune-section.tsx`) — comportamento idêntico nos dois, já que o indicador de faixa ideal vem dos favoritos salvos, não do `resultado` da simulação.
 
 **Próximo passo:** Sessão 7 — Mobile: Resultados com indicadores + vazio honesto + torque fora (`docs/plans/PLAN_IMPLEMENTACAO_DS_80-20_MOBILE.md`).
+**Retomar com:** "continuar"
+
+### Atualização de Encerramento — 06/08/2026 (item 16, Sessão 7/8)
+
+**Executado nesta sessão:** Sessão 7 do `PLAN_IMPLEMENTACAO_DS_80-20_MOBILE.md` — commit `31395be` (local, **não pushado ainda** — aguardando "pode seguir").
+
+- **Bloco de indicadores extraído:** os 3 `MiniResultBar` (Avanço/MRR/Saúde Ferramenta) saíram do `mobile-adjust-section.tsx` para um componente novo, `mobile-indicators-block.tsx` — fonte única, usada em 3 lugares: aba Ajustar (sticky, como antes), `HmiVisor` (entre os readouts grandes e os dados secundários) e visão Educacional da aba Resultados (logo após os BigNumbers de RPM/Avanço). Estado vazio honesto (traços, sem zeros falsos) embutido no componente compartilhado.
+- **Causa raiz das 7 falhas pré-existentes encontrada e corrigida:** não eram testes flaky nem cobertura faltando — o `viewMode` do `mobile-results-section.tsx` tem default `'hmi'`, e nesse modo o `HmiVisor` mostra seu próprio status bar grande com "SEGURO", duplicando o badge compacto do cabeçalho (Zona 1) — por isso `getByText('SEGURO')` sempre falhava com match múltiplo, e os outros 6 testes checavam conteúdo exclusivo da visão Educacional sem nunca clicar no toggle "EDUC." para chegar lá. Corrigido escondendo o badge compacto quando `viewMode === 'hmi' && resultado` (o HmiVisor já mostra o mesmo status) e reescrevendo os testes para alternar explicitamente entre as duas visões.
+- Timestamp falso (`formatTimestamp(Date.now())` quando não havia simulação real) removido do cabeçalho — mostra `—` honesto sem `latestEntry`.
+- Torque removido da visão Educacional (célula da zona 6 + `FormulaCard`) — espelha a Sessão 4 do desktop, fica só no engine (`resultado.torque` seguem calculado, não exibido).
+- Dívida corrigida nos arquivos tocados: ciano duplicado `rgba(0,229,255,…)` → `rgba(0,217,255,…)`; `#0f1419` → `bg-background-dark`; `border-white/12`/`/8` → `/10`; `animate-in`/`slide-in-from-*` (classes do plugin `tailwindcss-animate`, não instalado — mortas) trocadas por keyframes próprios (`fadeInUp` em `hmi-visor.tsx`, `slideInTop` novo em `mobile-page.tsx`).
+- 15 testes novos (`hmi-visor.test.tsx`, `mobile-mini-result-bar.test.tsx`, `mobile-adjust-section.test.tsx`) + `mobile-results-section.test.tsx` reescrito cobrindo HMI e Educacional em blocos `describe` separados.
+- Quality gates: **1067/1067 testes do projeto passam** (as 8 falhas pré-existentes eram o bug do `viewMode` acima — resolvidas como efeito colateral da reescrita, não corrigidas "de carona") · TypeScript zero erros · build limpo. `.aiox-core/development/templates/squad-template/tests/example-agent.test.js` segue falhando (import `@aiox/testing` não resolvido) — template do framework, fora do escopo deste plano, não é um teste do projeto.
+
+**Não verificado:** validação visual em navegador real — Playwright MCP não conectado nesta sessão (mesma limitação das sessões anteriores).
+
+**Próximo passo:** Sessão 8 — varredura final de dívida visual (grep sistemático fora de `src/admin/`) + docs + bump `v0.12.0` (`docs/plans/PLAN_IMPLEMENTACAO_DS_80-20_MOBILE.md`).
 **Retomar com:** "continuar"
