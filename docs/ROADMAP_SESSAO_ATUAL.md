@@ -95,7 +95,7 @@ npx tsc --noEmit
 | 13 | [MVP Android Launch (11 sessões)](#-mvp-android-launch) | 🚀 Launch | v0.12.0 | ⬜ Pendente |
 | 14 | Redesign Calculadora 80/20 (4 sessões S0-S3) — `docs/plans/REDESIGN_DASHBOARD_80-20.md` | 🎨 Redesign | MINOR | 🔁 Absorvido pelo item 16 |
 | 15 | Design System Canônico (4 sessões, replanejado de 6) — `docs/plans/PLAN_DESIGN_SYSTEM_CANONICO.md` | 📄 Docs / Design Audit | — | ✅ Concluído (`d471895`) |
-| 16 | Implementação DS + 80/20 + Mobile + Dívida Visual (8 sessões) — `docs/plans/PLAN_IMPLEMENTACAO_DS_80-20_MOBILE.md` | 🎨 Redesign + Refactor | v0.12.0 | 🔁 Em andamento (5/8 — `8e11250`) |
+| 16 | Implementação DS + 80/20 + Mobile + Dívida Visual (8 sessões) — `docs/plans/PLAN_IMPLEMENTACAO_DS_80-20_MOBILE.md` | 🎨 Redesign + Refactor | v0.12.0 | 🔁 Em andamento (6/8 — `d327529`) |
 
 ### ✅ Reestruturação Documental (v0.6.0) — CONCLUÍDA
 
@@ -400,5 +400,20 @@ Quando uma nova implementação for planejada durante a sessão:
 
 **Fora de escopo, não corrigido:** contraste `white/30` em `mobile-results-section.tsx`/`hmi-visor.tsx`/`mobile-adjust-section.tsx` — arquivos de mobile, agendados para reescrita nas Sessões 6-7; não tocados aqui para não antecipar trabalho de outra sessão.
 
-**Próximo passo:** Sessão 6 — Mobile: Config 80/20 + alvos de toque + testes base (`docs/plans/PLAN_IMPLEMENTACAO_DS_80-20_MOBILE.md`).
+### Atualização de Encerramento — 06/08/2026 (item 16, Sessão 6/8)
+
+**Executado nesta sessão:** Sessão 6 do `PLAN_IMPLEMENTACAO_DS_80-20_MOBILE.md` — commit `d327529` (local, **não pushado ainda** — aguardando "pode seguir").
+
+- `mobile-config-section.tsx`: mesma lógica 80/20 do desktop (Sessão 3) aplicada ao mobile. "Configuração Base" e "Ferramenta" deixaram de ser `AccordionSection` fechável — viraram seções sempre visíveis (5 campos essenciais: Material, Tipo de Usinagem, Tipo de fresa, Diâmetro+Z, Altura de Fixação), sem toque extra para chegar neles. Raio da Ponta (só toroidal) + Fator de Correção migraram para um único acordeão "⚙ Ajuste avançado" usando o `CollapsibleSection` unificado da Sessão 2 (`onToggle` para haptics, `localStorage` própria: `tooloptimizer-cnc-mobile-config-advanced-open`).
+- **Interpretação (sinalizar a Rafael):** a antiga seção "Parâmetros de Corte" (ap/ae/fz/Vc como `NumInput` cru) foi **removida** — duplicava a aba "Ajustar" (`mobile-fine-tune-section.tsx`), que já cobre os mesmos 4 campos com sliders touch completos. O texto da Sessão 6 do plano só mencionava mover o Fator de Correção para o acordeão; a remoção desta seção é uma decisão minha para eliminar a duplicação, não um item explícito do plano — reversível via git se o Rafael preferir manter os dois.
+- Arestas (Z) virou stepper ± sobre o catálogo fixo `[2,3,4,6]` (mesma lógica do desktop, `BUTTON_PM_TOUCH` 44px), substituindo os 4 botões separados "2Z/3Z/4Z/6Z".
+- Alvos ≥44px: stepper de Z e do Fator de Correção com `BUTTON_PM_TOUCH`; botões de histórico/config do `mobile-header.tsx` 40px→44px (`w-10 h-10`→`w-11 h-11`).
+- Snap de escala nos arquivos tocados: `border-white/12`/`border-white/8` → `border-white/10` (`mobile-config-section.tsx` ×6, `mobile-tab-bar.tsx` ×1) — canon da seção 04 do DS (só `/5` e `/10` são válidos).
+- `architecture-graph.ts`: LOC do nó `mobile-config-section` atualizado (142→425 linhas, arquivo quase triplicou por causa das seções antes colapsadas ficarem sempre montadas).
+- 11 testes novos/reescritos: `mobile-config-section.test.tsx` reescrito por completo (fluxo flat, sem cliques em accordion para os 5 campos essenciais; stepper de Z testado nos limites do catálogo) + 3 arquivos novos sem cobertura até agora: `mobile-tab-bar.test.tsx` (6), `mobile-simulate-button.test.tsx` (6), `mobile-header.test.tsx` (5).
+- Quality gates: 1040 testes passam, 8 falhas pré-existentes inalteradas (mobile-results-section ×7 + mobile-page ×1, agendadas para Sessão 7) · TypeScript zero erros · build limpo.
+
+**Não verificado:** validação visual em navegador real (`npm run dev` + emulação mobile) — nenhuma ferramenta de browser (Playwright MCP) conectada nesta sessão. Cobertura de comportamento vem só dos testes jsdom/RTL — não pega problemas puramente visuais (layout, overflow, contraste real).
+
+**Próximo passo:** Sessão 7 — Mobile: Resultados com indicadores + vazio honesto + torque fora (`docs/plans/PLAN_IMPLEMENTACAO_DS_80-20_MOBILE.md`).
 **Retomar com:** "continuar"
