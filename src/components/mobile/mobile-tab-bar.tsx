@@ -22,7 +22,7 @@ export function MobileTabBar({ active, onChange, hasNewResult = false }: MobileT
 
   return (
     <nav
-      className="flex bg-[rgba(10,14,20,0.97)] border-t border-white/8 backdrop-blur-xl"
+      className="flex bg-[rgba(10,14,20,0.97)] border-t border-white/10 backdrop-blur-xl"
       style={{ paddingBottom: 'env(safe-area-inset-bottom, 0px)' }}
       role="tablist"
       aria-label="Navegação principal"

@@ -94,7 +94,7 @@ const FILE_LINES: Record<string, number> = {
   'src/components/export-buttons.tsx': 85,
   'src/components/fine-tune-panel.tsx': 171,
   'src/components/formula-card.tsx': 113,
-  'src/components/mobile/mobile-config-section.tsx': 142,
+  'src/components/mobile/mobile-config-section.tsx': 425,
   'src/components/mobile/mobile-fine-tune-section.tsx': 315,
   'src/components/mobile/mobile-header.tsx': 20,
   'src/components/mobile/mobile-results-section.tsx': 64,

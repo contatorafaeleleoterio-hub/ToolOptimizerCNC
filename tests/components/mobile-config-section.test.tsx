@@ -12,9 +12,16 @@ function renderSection() {
   );
 }
 
+/** Opens the "⚙ Ajuste avançado" accordion — content stays mounted either way,
+ *  but tests open it explicitly to mirror real user interaction. */
+function openAdvanced() {
+  fireEvent.click(screen.getByText(/Ajuste avançado/i));
+}
+
 describe('MobileConfigSection', () => {
   beforeEach(() => {
     useMachiningStore.getState().reset();
+    localStorage.clear();
   });
 
   it('renders material select with 9 options', () => {
@@ -31,52 +38,45 @@ describe('MobileConfigSection', () => {
     expect(screen.getByText('Acabamento')).toBeInTheDocument();
   });
 
-  it('renders tool type buttons (inside Ferramenta accordion)', () => {
+  it('renders tool type buttons without needing to open an accordion (5 essential inputs)', () => {
     renderSection();
-    // Open Ferramenta accordion
-    fireEvent.click(screen.getByText('Ferramenta'));
     expect(screen.getAllByText('Toroidal').length).toBeGreaterThanOrEqual(1);
     expect(screen.getAllByText(/^Topo/).length).toBeGreaterThanOrEqual(1);
   });
 
   it('renders diameter free input (not dropdown)', () => {
     renderSection();
-    fireEvent.click(screen.getByText('Ferramenta'));
     expect(screen.getByLabelText('Diâmetro (mm)')).toBeInTheDocument();
   });
 
-  it('renders flute count buttons (2Z, 4Z)', () => {
+  it('renders flute count (Z) stepper with current value', () => {
     renderSection();
-    fireEvent.click(screen.getByText('Ferramenta'));
-    expect(screen.getByText('2Z')).toBeInTheDocument();
-    expect(screen.getByText('4Z')).toBeInTheDocument();
+    expect(screen.getByLabelText('Número de arestas atual')).toHaveTextContent('4');
+    expect(screen.getByLabelText('Aumentar número de arestas')).toBeInTheDocument();
+    expect(screen.getByLabelText('Diminuir número de arestas')).toBeInTheDocument();
   });
 
   it('renders altura de fixação free input', () => {
     renderSection();
-    fireEvent.click(screen.getByText('Ferramenta'));
     expect(screen.getByLabelText('Altura de Fixação (mm)')).toBeInTheDocument();
   });
 
-  it('renders cutting parameter inputs (ap, ae, fz, Vc)', () => {
+  it('does not duplicate ap/ae/fz/Vc raw inputs (fine-tuning lives in the Ajustar tab)', () => {
     renderSection();
-    // Open Parâmetros de Corte accordion
-    fireEvent.click(screen.getByText('Parâmetros de Corte'));
-    expect(screen.getByText('ap (mm)')).toBeInTheDocument();
-    expect(screen.getByText('ae (mm)')).toBeInTheDocument();
-    expect(screen.getByText('fz (mm)')).toBeInTheDocument();
-    expect(screen.getByText('Vc (m/min)')).toBeInTheDocument();
+    expect(screen.queryByLabelText('ap (mm)')).not.toBeInTheDocument();
+    expect(screen.queryByLabelText('ae (mm)')).not.toBeInTheDocument();
+    expect(screen.queryByLabelText('fz (mm)')).not.toBeInTheDocument();
   });
 
-  it('shows Raio da Ponta section for toroidal (default)', () => {
+  it('shows Raio da Ponta inside Ajuste avançado for toroidal (default)', () => {
     renderSection();
-    fireEvent.click(screen.getByText('Ferramenta'));
+    openAdvanced();
     expect(screen.getByLabelText('Raio da Ponta (mm)')).toBeInTheDocument();
   });
 
   it('hides Raio da Ponta when switching to topo', () => {
     renderSection();
-    fireEvent.click(screen.getByText('Ferramenta'));
+    openAdvanced();
     const topoBtn = screen.getAllByText(/^Topo/)[0];
     fireEvent.click(topoBtn);
     expect(screen.queryByLabelText('Raio da Ponta (mm)')).not.toBeInTheDocument();
@@ -89,11 +89,25 @@ describe('MobileConfigSection', () => {
     expect(useMachiningStore.getState().materialId).toBe(3);
   });
 
-  it('changes flute count when clicking 2Z button', () => {
+  it('changes flute count when clicking the stepper − button', () => {
     renderSection();
-    fireEvent.click(screen.getByText('Ferramenta'));
-    fireEvent.click(screen.getByText('2Z'));
+    fireEvent.click(screen.getByLabelText('Diminuir número de arestas'));
+    expect(useMachiningStore.getState().ferramenta.numeroArestas).toBe(3);
+  });
+
+  it('flute count stepper never lands outside [2, 3, 4, 6] — no 5', () => {
+    renderSection();
+    fireEvent.click(screen.getByLabelText('Aumentar número de arestas'));
+    expect(useMachiningStore.getState().ferramenta.numeroArestas).toBe(6);
+    expect(screen.getByLabelText('Aumentar número de arestas')).toBeDisabled();
+  });
+
+  it('flute count stepper − button disables at the bottom of the catalog [2]', () => {
+    renderSection();
+    fireEvent.click(screen.getByLabelText('Diminuir número de arestas'));
+    fireEvent.click(screen.getByLabelText('Diminuir número de arestas'));
     expect(useMachiningStore.getState().ferramenta.numeroArestas).toBe(2);
+    expect(screen.getByLabelText('Diminuir número de arestas')).toBeDisabled();
   });
 
   it('shows estimated badge for estimated material', () => {
@@ -103,30 +117,26 @@ describe('MobileConfigSection', () => {
     expect(screen.getByText('Dados estimados')).toBeInTheDocument();
   });
 
-  it('renders safety factor section', () => {
+  it('renders Ajuste avançado accordion with safety factor summary', () => {
     renderSection();
-    expect(screen.getByText('Fator de Correção')).toBeInTheDocument();
+    expect(screen.getByText(/Ajuste avançado/i)).toBeInTheDocument();
+    expect(screen.getByText('SF 80%')).toBeInTheDocument();
   });
 
-  it('renders saved tools empty state', () => {
+  it('changes safety factor inside Ajuste avançado', () => {
     renderSection();
-    fireEvent.click(screen.getByText('Ferramenta'));
+    openAdvanced();
+    fireEvent.click(screen.getByLabelText('Reduzir fator de correção'));
+    expect(useMachiningStore.getState().safetyFactor).toBeCloseTo(0.75);
+  });
+
+  it('renders saved tools empty state without needing to open an accordion', () => {
+    renderSection();
     expect(screen.getByText('Nenhuma ferramenta salva')).toBeInTheDocument();
   });
 
   it('renders save tool button', () => {
     renderSection();
-    fireEvent.click(screen.getByText('Ferramenta'));
     expect(screen.getByRole('button', { name: 'Salvar ferramenta' })).toBeInTheDocument();
-  });
-
-  it('arestas has 4 options [2, 3, 4, 6] — no 5Z', () => {
-    renderSection();
-    fireEvent.click(screen.getByText('Ferramenta'));
-    expect(screen.getByText('2Z')).toBeInTheDocument();
-    expect(screen.getByText('3Z')).toBeInTheDocument();
-    expect(screen.getByText('4Z')).toBeInTheDocument();
-    expect(screen.getByText('6Z')).toBeInTheDocument();
-    expect(screen.queryByText('5Z')).not.toBeInTheDocument();
   });
 });

@@ -3,9 +3,11 @@ import { useMachiningStore } from '@/store';
 import { MATERIAIS, FERRAMENTAS_PADRAO } from '@/data';
 import { TipoUsinagem } from '@/types';
 import type { SavedTool } from '@/types';
-import { SectionTitle, FieldGroup, NumInput } from '../ui-helpers';
+import { SectionTitle, FieldGroup } from '../ui-helpers';
 import { ToolEditModal } from '@/components/modals/tool-edit-modal';
 import { StyledSlider } from '@/components/styled-slider';
+import { CollapsibleSection } from '@/components/collapsible-section';
+import { BUTTON_PM_TOUCH } from '@/components/design-tokens';
 import { haptics } from '@/utils/haptics';
 
 /**
@@ -39,7 +41,7 @@ function MobileNumberInput({ label, value, min, max, step, unit, onChange }: {
         onBlur={() => { setFocused(false); if (invalid) setRaw(String(value)); }}
         aria-label={label}
         className={`w-full min-h-[48px] bg-black/40 border rounded-lg py-2 px-3 text-sm text-white font-mono focus:ring-1 focus:ring-primary outline-none ${
-          invalid && focused ? 'border-red-500 text-red-400' : 'border-white/12'
+          invalid && focused ? 'border-red-500 text-red-400' : 'border-white/10'
         }`}
       />
       {invalid && focused && (
@@ -55,59 +57,37 @@ const OPERACAO_LABELS: Record<TipoUsinagem, string> = {
   [TipoUsinagem.ACABAMENTO]: 'Acabamento',
 };
 
-const ARESTAS_OPTIONS = [2, 3, 4, 6] as const;
+// Arestas (Z) — catálogo fixo de flautas suportadas pelo motor de cálculo.
+// O stepper avança/recua dentro deste array — nunca aritmética livre (±1),
+// para não permitir valores de Z fora do domínio válido (ex.: 5).
+const ARESTA_OPTIONS = [2, 3, 4, 6] as const;
+
+function stepArestas(current: number, direction: 1 | -1): number {
+  const idx = ARESTA_OPTIONS.indexOf(current as (typeof ARESTA_OPTIONS)[number]);
+  const safeIdx = idx === -1 ? 0 : idx;
+  const nextIdx = Math.min(ARESTA_OPTIONS.length - 1, Math.max(0, safeIdx + direction));
+  return ARESTA_OPTIONS[nextIdx];
+}
 
 const MOBILE_BTN_ACTIVE = 'bg-primary text-black font-bold border-primary shadow-neon-cyan';
-const MOBILE_BTN_IDLE = 'bg-black/40 text-gray-400 active:bg-white/10 border-white/12';
+const MOBILE_BTN_IDLE = 'bg-black/40 text-gray-400 active:bg-white/10 border-white/10';
 
-/** Collapsible accordion section with a summary line when closed */
-function AccordionSection({
-  color,
-  label,
-  summary,
-  defaultOpen = false,
-  children,
-}: {
-  color: string;
-  label: string;
-  summary: string;
-  defaultOpen?: boolean;
-  children: React.ReactNode;
-}) {
-  const [open, setOpen] = useState(defaultOpen);
+const ADVANCED_OPEN_KEY = 'tooloptimizer-cnc-mobile-config-advanced-open';
 
-  return (
-    <div className="bg-[rgba(30,38,50,0.95)] backdrop-blur-sm rounded-xl border border-white/12">
-      <button
-        type="button"
-        onClick={() => {
-          setOpen((o) => !o);
-          haptics.impactLight();
-        }}
-        aria-expanded={open}
-        className="w-full flex items-center justify-between px-4 py-3 gap-3 text-left min-h-[56px]"
-      >
-        <div className="flex items-center gap-3 min-w-0">
-          <SectionTitle color={color} label={label} />
-          {!open && (
-            <span className="text-[10px] text-gray-500 font-mono truncate ml-1">{summary}</span>
-          )}
-        </div>
-        <span
-          className="material-symbols-outlined text-gray-500 shrink-0 transition-transform duration-300"
-          style={{ fontSize: '18px', transform: open ? 'rotate(180deg)' : 'rotate(0deg)' }}
-        >
-          expand_more
-        </span>
-      </button>
+function readAdvancedOpenDefault(): boolean {
+  try {
+    return localStorage.getItem(ADVANCED_OPEN_KEY) === 'true';
+  } catch {
+    return false;
+  }
+}
 
-      {open && (
-        <div className="px-4 pb-4 animate-[fadeInUp_0.2s_ease-out]">
-          {children}
-        </div>
-      )}
-    </div>
-  );
+function persistAdvancedOpen(open: boolean) {
+  try {
+    localStorage.setItem(ADVANCED_OPEN_KEY, String(open));
+  } catch {
+    // localStorage unavailable (privacy mode) — advanced toggle simply won't persist
+  }
 }
 
 const MOBILE_DIAMETER_CATEGORIES = [
@@ -151,7 +131,7 @@ function MobileSavedToolsList({ savedTools, activeDiametro, onLoad, onEdit, onRe
                     className={`flex items-center justify-between px-2 py-2 rounded-lg border transition-all ${
                       isActive
                         ? 'bg-primary/10 border-primary/30'
-                        : 'bg-black/20 border-white/8'
+                        : 'bg-black/20 border-white/10'
                     }`}
                   >
                     <button
@@ -205,14 +185,15 @@ function MobileSavedToolsList({ savedTools, activeDiametro, onLoad, onEdit, onRe
 
 export function MobileConfigSection() {
   const {
-    materialId, ferramenta, tipoOperacao, parametros, safetyFactor,
-    setMaterial, setFerramenta, setTipoOperacao, setParametros,
+    materialId, ferramenta, tipoOperacao, safetyFactor,
+    setMaterial, setFerramenta, setTipoOperacao,
     setSafetyFactor,
     savedTools, loadSavedTool, addSavedTool, removeSavedTool, updateSavedTool,
   } = useMachiningStore();
 
   const [showSavedBadge, setShowSavedBadge] = useState(false);
   const [editingTool, setEditingTool] = useState<SavedTool | null>(null);
+  const [advancedDefaultOpen] = useState(readAdvancedOpenDefault);
 
   const handleSaveTool = () => {
     const { tipo, diametro, raioQuina, numeroArestas, balanco } = ferramenta;
@@ -232,24 +213,21 @@ export function MobileConfigSection() {
   const material = MATERIAIS.find((m) => m.id === materialId);
   const vcRange = material?.vcRanges[tipoOperacao];
 
-  // Summary strings for collapsed headers
-  const summaryBase = `${material?.nome ?? '—'} | ${OPERACAO_LABELS[tipoOperacao]}`;
-  const summaryTool = `${FERRAMENTAS_PADRAO.find((f) => f.tipo === ferramenta.tipo)?.descricao.split(' ')[0] ?? ferramenta.tipo} D${ferramenta.diametro} ${ferramenta.numeroArestas}Z`;
-  const summaryParams = `ap ${parametros.ap} | ae ${parametros.ae} | fz ${parametros.fz}`;
-  const summarySafety = `${Math.round(safetyFactor * 100)}%`;
+  const summaryAdvanced = `SF ${Math.round(safetyFactor * 100)}%`;
 
   return (
     <section className="flex flex-col gap-3 px-4">
-      {/* Material + Operation */}
-      <AccordionSection color="bg-primary" label="Configuração Base" summary={summaryBase} defaultOpen>
+      {/* Material + Operation — always visible (5 essential inputs, no accordion) */}
+      <div className="bg-[rgba(30,38,50,0.95)] backdrop-blur-sm rounded-xl border border-white/10 p-4">
+        <SectionTitle color="bg-primary" label="Configuração Base" />
         <div className="space-y-4 mt-1">
           <FieldGroup label="Material da Peça">
-            <select value={materialId} 
+            <select value={materialId}
               onChange={(e) => {
                 setMaterial(Number(e.target.value));
                 haptics.impactMedium();
               }}
-              className="w-full min-h-[48px] bg-black/40 border border-white/12 rounded-lg py-3 pl-3 pr-10 text-sm text-gray-200 focus:ring-1 focus:ring-primary outline-none appearance-none select-chevron">
+              className="w-full min-h-[48px] bg-black/40 border border-white/10 rounded-lg py-3 pl-3 pr-10 text-sm text-gray-200 focus:ring-1 focus:ring-primary outline-none appearance-none select-chevron">
               {MATERIAIS.map((m) => (
                 <option key={m.id} value={m.id}>{m.nome}{m.status === 'estimado' ? ' ⚠' : ''}</option>
               ))}
@@ -268,7 +246,7 @@ export function MobileConfigSection() {
             <div className="grid grid-cols-3 gap-2">
               {Object.values(TipoUsinagem).map((t) => (
                 <label key={t} className="cursor-pointer group">
-                  <input type="radio" name="mobile_tipo_usinagem" className="peer sr-only" checked={tipoOperacao === t} 
+                  <input type="radio" name="mobile_tipo_usinagem" className="peer sr-only" checked={tipoOperacao === t}
                     onChange={() => {
                       setTipoOperacao(t);
                       haptics.impactMedium();
@@ -281,10 +259,11 @@ export function MobileConfigSection() {
             </div>
           </FieldGroup>
         </div>
-      </AccordionSection>
+      </div>
 
-      {/* Tool section */}
-      <AccordionSection color="bg-secondary" label="Ferramenta" summary={summaryTool}>
+      {/* Tool section — always visible (5 essential inputs, no accordion) */}
+      <div className="bg-[rgba(30,38,50,0.95)] backdrop-blur-sm rounded-xl border border-white/10 p-4">
+        <SectionTitle color="bg-secondary" label="Ferramenta" />
         <div className="space-y-4 mt-1">
           {/* Saved Tools — cards list with edit/delete per item */}
           <div className="mb-1">
@@ -302,7 +281,7 @@ export function MobileConfigSection() {
             <button
               aria-label="Salvar ferramenta"
               onClick={handleSaveTool}
-              className="mt-2 w-full flex items-center justify-center gap-1.5 min-h-[48px] rounded-lg bg-white/5 border border-white/12 active:bg-white/10 transition-colors text-xs text-gray-400"
+              className="mt-2 w-full flex items-center justify-center gap-1.5 min-h-[48px] rounded-lg bg-white/5 border border-white/10 active:bg-white/10 transition-colors text-xs text-gray-400"
             >
               <span className="material-symbols-outlined text-sm">save</span>
               Salvar ferramenta atual
@@ -326,7 +305,7 @@ export function MobileConfigSection() {
           <FieldGroup label="Tipo">
             <div className="grid grid-cols-3 gap-2">
               {FERRAMENTAS_PADRAO.map((f) => (
-                <button key={f.tipo} 
+                <button key={f.tipo}
                   onClick={() => {
                     setFerramenta({ tipo: f.tipo, numeroArestas: f.zPadrao });
                     haptics.impactLight();
@@ -338,13 +317,60 @@ export function MobileConfigSection() {
             </div>
           </FieldGroup>
 
-          <MobileNumberInput
-            label="Diâmetro (mm)"
-            value={ferramenta.diametro}
-            min={0.1} max={200} step={0.1} unit="mm"
-            onChange={(v) => setFerramenta({ diametro: v })}
-          />
+          <div className="grid grid-cols-[1fr_auto] gap-3">
+            <MobileNumberInput
+              label="Diâmetro (mm)"
+              value={ferramenta.diametro}
+              min={0.1} max={200} step={0.1} unit="mm"
+              onChange={(v) => setFerramenta({ diametro: v })}
+            />
+            <FieldGroup label="Arestas (Z)">
+              <div className="flex items-center justify-center gap-1.5 min-h-[48px]">
+                <button
+                  onClick={() => {
+                    setFerramenta({ numeroArestas: stepArestas(ferramenta.numeroArestas, -1) });
+                    haptics.impactLight();
+                  }}
+                  disabled={ferramenta.numeroArestas === ARESTA_OPTIONS[0]}
+                  aria-label="Diminuir número de arestas"
+                  className={`${BUTTON_PM_TOUCH} shrink-0 flex items-center justify-center rounded-lg bg-black/40 border border-white/10 text-white font-bold active:bg-white/10 transition-all disabled:opacity-30 disabled:cursor-not-allowed`}
+                >−</button>
+                <span className="w-8 text-center font-mono text-sm font-bold text-white" aria-label="Número de arestas atual">
+                  {ferramenta.numeroArestas}
+                </span>
+                <button
+                  onClick={() => {
+                    setFerramenta({ numeroArestas: stepArestas(ferramenta.numeroArestas, 1) });
+                    haptics.impactLight();
+                  }}
+                  disabled={ferramenta.numeroArestas === ARESTA_OPTIONS[ARESTA_OPTIONS.length - 1]}
+                  aria-label="Aumentar número de arestas"
+                  className={`${BUTTON_PM_TOUCH} shrink-0 flex items-center justify-center rounded-lg bg-black/40 border border-white/10 text-white font-bold active:bg-white/10 transition-all disabled:opacity-30 disabled:cursor-not-allowed`}
+                >+</button>
+              </div>
+            </FieldGroup>
+          </div>
 
+          <MobileNumberInput
+            label="Altura de Fixação (mm)"
+            value={ferramenta.balanco}
+            min={5} max={300} step={1} unit="mm"
+            onChange={(v) => setFerramenta({ balanco: v })}
+          />
+        </div>
+      </div>
+
+      {/* Ajuste avançado — Raio da Ponta (toroidal) + Fator de Correção */}
+      <CollapsibleSection
+        title="⚙ Ajuste avançado"
+        summary={summaryAdvanced}
+        defaultOpen={advancedDefaultOpen}
+        onToggle={(open) => {
+          persistAdvancedOpen(open);
+          haptics.impactLight();
+        }}
+      >
+        <div className="flex flex-col gap-3 pt-1">
           {ferramenta.tipo === 'toroidal' && (
             <MobileNumberInput
               label="Raio da Ponta (mm)"
@@ -354,79 +380,46 @@ export function MobileConfigSection() {
             />
           )}
 
-          <FieldGroup label="Arestas (Z)">
-            <div className="grid grid-cols-4 gap-2">
-              {ARESTAS_OPTIONS.map((z) => (
-                <button key={z} 
-                  onClick={() => {
-                    setFerramenta({ numeroArestas: z });
+          <div className="space-y-2 pt-1 border-t border-white/5">
+            <div className="flex items-center gap-2 pt-2">
+              <button
+                onClick={() => {
+                  setSafetyFactor(Math.round(Math.max(0.50, safetyFactor - 0.05) * 100) / 100);
+                  haptics.impactLight();
+                }}
+                className={`${BUTTON_PM_TOUCH} shrink-0 flex items-center justify-center rounded-md bg-black/40 border border-white/10 text-gray-400 text-base font-bold`}
+                aria-label="Reduzir fator de correção"
+              >−</button>
+              <div className="flex-1">
+                <StyledSlider
+                  value={safetyFactor}
+                  min={0.50}
+                  max={1.00}
+                  step={0.05}
+                  color="primary"
+                  label="Fator de Correção"
+                  onChange={(v) => {
+                    setSafetyFactor(v);
                     haptics.impactLight();
                   }}
-                  className={`min-h-[48px] py-2 rounded-lg border text-xs font-mono transition-colors ${ferramenta.numeroArestas === z ? MOBILE_BTN_ACTIVE : MOBILE_BTN_IDLE}`}>
-                  {z}Z
-                </button>
-              ))}
+                />
+              </div>
+              <button
+                onClick={() => {
+                  setSafetyFactor(Math.round(Math.min(1.00, safetyFactor + 0.05) * 100) / 100);
+                  haptics.impactLight();
+                }}
+                className={`${BUTTON_PM_TOUCH} shrink-0 flex items-center justify-center rounded-md bg-black/40 border border-white/10 text-gray-400 text-base font-bold`}
+                aria-label="Aumentar fator de correção"
+              >+</button>
+              <span className="text-sm font-mono text-white w-12 text-right shrink-0">
+                {Math.round(safetyFactor * 100)}%
+              </span>
             </div>
-          </FieldGroup>
-
-          <MobileNumberInput
-            label="Altura de Fixação (mm)"
-            value={ferramenta.balanco}
-            min={5} max={300} step={1} unit="mm"
-            onChange={(v) => setFerramenta({ balanco: v })}
-          />
-        </div>
-      </AccordionSection>
-
-      {/* Cutting parameters */}
-      <AccordionSection color="bg-accent-orange" label="Parâmetros de Corte" summary={summaryParams}>
-        <div className="grid grid-cols-2 gap-3 mt-1">
-          <NumInput label="ap (mm)" value={parametros.ap} onChange={(v) => setParametros({ ap: v })} min={0.1} max={50} step={0.1} />
-          <NumInput label="ae (mm)" value={parametros.ae} onChange={(v) => setParametros({ ae: v })} min={0.1} max={50} step={0.1} />
-          <NumInput label="fz (mm)" value={parametros.fz} onChange={(v) => setParametros({ fz: v })} min={0.01} max={1} step={0.01} />
-          <NumInput label="Vc (m/min)" value={parametros.vc} onChange={(v) => setParametros({ vc: v })} min={1} max={1200} step={1} />
-        </div>
-      </AccordionSection>
-
-      {/* Fator de Correção */}
-      <AccordionSection color="bg-seg-verde" label="Fator de Correção" summary={summarySafety}>
-        <div className="flex items-center gap-2 mt-1">
-          <button
-            onClick={() => {
-              setSafetyFactor(Math.round(Math.max(0.50, safetyFactor - 0.05) * 100) / 100);
-              haptics.impactLight();
-            }}
-            className="w-12 h-12 flex items-center justify-center rounded-md bg-black/40 border border-white/10 text-gray-400 text-base font-bold shrink-0"
-            aria-label="Reduzir fator de correção"
-          >−</button>
-          <div className="flex-1">
-            <StyledSlider
-              value={safetyFactor}
-              min={0.50}
-              max={1.00}
-              step={0.05}
-              color="primary"
-              label="Fator de Correção"
-              onChange={(v) => {
-                setSafetyFactor(v);
-                haptics.impactLight();
-              }}
-            />
+            <p className="text-[10px] text-gray-500 mt-2">50% = conservador · 100% = agressivo</p>
           </div>
-          <button
-            onClick={() => {
-              setSafetyFactor(Math.round(Math.min(1.00, safetyFactor + 0.05) * 100) / 100);
-              haptics.impactLight();
-            }}
-            className="w-12 h-12 flex items-center justify-center rounded-md bg-black/40 border border-white/10 text-gray-400 text-base font-bold shrink-0"
-            aria-label="Aumentar fator de correção"
-          >+</button>
-          <span className="text-sm font-mono text-white w-12 text-right shrink-0">
-            {Math.round(safetyFactor * 100)}%
-          </span>
         </div>
-        <p className="text-[10px] text-gray-500 mt-2">50% = conservador · 100% = agressivo</p>
-      </AccordionSection>
+      </CollapsibleSection>
     </section>
   );
 }
