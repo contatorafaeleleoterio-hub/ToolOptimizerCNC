@@ -113,7 +113,7 @@ export function FavoriteEditModal({ favorite, onClose }: FavoriteEditModalProps)
       className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm"
       onClick={handleOverlayClick}
     >
-      <div className="bg-[#0f1419] border border-white/10 rounded-xl p-5 w-full max-w-sm shadow-2xl">
+      <div className="bg-background-dark border border-white/10 rounded-xl p-5 w-full max-w-sm shadow-2xl">
         {/* Header */}
         <div className="flex items-center justify-between mb-4">
           <div>

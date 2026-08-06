@@ -1,6 +1,6 @@
 export function PrivacyPolicyPage() {
   return (
-    <div className="min-h-screen bg-[#0F1419] text-white font-sans px-6 py-12">
+    <div className="min-h-screen bg-background-dark text-white font-sans px-6 py-12">
       <div className="max-w-2xl mx-auto">
         <h1 className="text-2xl font-bold text-[#00D9FF] mb-2">
           Política de Privacidade — ToolOptimizer CNC

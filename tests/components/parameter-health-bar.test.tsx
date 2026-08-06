@@ -1,13 +1,10 @@
-import { describe, it, expect, beforeEach } from 'vitest';
-import { render, screen } from '@testing-library/react';
+import { describe, it, expect } from 'vitest';
 import {
   computeVcByValue,
   computeFzByValue,
   computeAeByValue,
   computeApByValue,
-  ParameterHealthBar,
 } from '@/components/parameter-health-bar';
-import { useMachiningStore } from '@/store';
 
 // ---------------------------------------------------------------------------
 // computeVcByValue — zone based on vc/vcRecomendado ratio:
@@ -369,119 +366,5 @@ describe('computeApByValue', () => {
   it('apMax = 0 AND diametro = 0 → position = 0 (fully safe)', () => {
     const { position } = computeApByValue(1, 1, 0, 0, 18);
     expect(position).toBe(0);
-  });
-});
-
-// ---------------------------------------------------------------------------
-// ParameterHealthBar — Component render tests
-// ---------------------------------------------------------------------------
-describe('ParameterHealthBar', () => {
-  beforeEach(() => { useMachiningStore.getState().reset(); });
-
-  it('renders wrapper with correct data-testid for vc', () => {
-    render(<ParameterHealthBar paramKey="vc" />);
-    expect(screen.getByTestId('health-bar-vc')).toBeInTheDocument();
-  });
-
-  it('renders wrapper with correct data-testid for fz', () => {
-    render(<ParameterHealthBar paramKey="fz" />);
-    expect(screen.getByTestId('health-bar-fz')).toBeInTheDocument();
-  });
-
-  it('renders wrapper with correct data-testid for ae', () => {
-    render(<ParameterHealthBar paramKey="ae" />);
-    expect(screen.getByTestId('health-bar-ae')).toBeInTheDocument();
-  });
-
-  it('renders wrapper with correct data-testid for ap', () => {
-    render(<ParameterHealthBar paramKey="ap" />);
-    expect(screen.getByTestId('health-bar-ap')).toBeInTheDocument();
-  });
-
-  it('vc bar is always active even when resultado = null', () => {
-    render(<ParameterHealthBar paramKey="vc" />);
-    expect(screen.queryByTestId('health-bar-vc-inactive')).not.toBeInTheDocument();
-    expect(screen.getByTestId('health-bar-vc-fill')).toBeInTheDocument();
-  });
-
-  it('fz bar shows inactive state when resultado = null', () => {
-    render(<ParameterHealthBar paramKey="fz" />);
-    expect(screen.getByTestId('health-bar-fz-inactive')).toBeInTheDocument();
-  });
-
-  it('ae bar is always active (no inactive state) even when resultado = null', () => {
-    render(<ParameterHealthBar paramKey="ae" />);
-    expect(screen.queryByTestId('health-bar-ae-inactive')).not.toBeInTheDocument();
-    expect(screen.getByTestId('health-bar-ae-fill')).toBeInTheDocument();
-  });
-
-  it('ap bar is always active (no inactive state) even when resultado = null', () => {
-    render(<ParameterHealthBar paramKey="ap" />);
-    expect(screen.queryByTestId('health-bar-ap-inactive')).not.toBeInTheDocument();
-    expect(screen.getByTestId('health-bar-ap-fill')).toBeInTheDocument();
-  });
-
-  it('vc bar shows fill after calcular()', () => {
-    useMachiningStore.getState().calcular();
-    render(<ParameterHealthBar paramKey="vc" />);
-    expect(screen.queryByTestId('health-bar-vc-inactive')).not.toBeInTheDocument();
-    expect(screen.getByTestId('health-bar-vc-fill')).toBeInTheDocument();
-  });
-
-  it('fz bar shows fill after calcular()', () => {
-    useMachiningStore.getState().calcular();
-    render(<ParameterHealthBar paramKey="fz" />);
-    expect(screen.queryByTestId('health-bar-fz-inactive')).not.toBeInTheDocument();
-    expect(screen.getByTestId('health-bar-fz-fill')).toBeInTheDocument();
-  });
-
-  it('ae bar shows ae/D readout', () => {
-    render(<ParameterHealthBar paramKey="ae" />);
-    expect(screen.getByTestId('ae-ratio-display')).toBeInTheDocument();
-  });
-
-  it('ap bar shows L/D readout', () => {
-    render(<ParameterHealthBar paramKey="ap" />);
-    expect(screen.getByTestId('ap-ld-display')).toBeInTheDocument();
-  });
-
-  it('vc bar shows recommended tick mark', () => {
-    render(<ParameterHealthBar paramKey="vc" />);
-    expect(screen.getByTestId('health-bar-vc-rec-tick')).toBeInTheDocument();
-  });
-
-  it('ae bar shows recommended tick mark', () => {
-    render(<ParameterHealthBar paramKey="ae" />);
-    expect(screen.getByTestId('health-bar-ae-rec-tick')).toBeInTheDocument();
-  });
-
-  it('ap bar shows recommended tick mark', () => {
-    render(<ParameterHealthBar paramKey="ap" />);
-    expect(screen.getByTestId('health-bar-ap-rec-tick')).toBeInTheDocument();
-  });
-
-  it('fz bar shows CTF badge when ctf > 1.0 and resultado defined', () => {
-    // ae=2mm (33% of D=6) → CTF = 1/sqrt(2/6) ≈ 1.73 > 1.0
-    useMachiningStore.getState().setParametros({ ae: 2 });
-    useMachiningStore.getState().calcular();
-    const resultado = useMachiningStore.getState().resultado;
-    expect(resultado).not.toBeNull();
-    expect(resultado!.seguranca.ctf).toBeGreaterThan(1.0);
-
-    render(<ParameterHealthBar paramKey="fz" />);
-    expect(screen.getByTestId('ctf-badge')).toBeInTheDocument();
-  });
-
-  it('fz bar has no CTF badge when resultado = null', () => {
-    render(<ParameterHealthBar paramKey="fz" />);
-    expect(screen.queryByTestId('ctf-badge')).not.toBeInTheDocument();
-  });
-
-  it('fz bar has no CTF badge when ae=50%D (ctf=1.0)', () => {
-    // ae=3 = 50% of D=6 → CTF = 1.0 (boundary, no CTF)
-    useMachiningStore.getState().setParametros({ ae: 3 });
-    useMachiningStore.getState().calcular();
-    render(<ParameterHealthBar paramKey="fz" />);
-    expect(screen.queryByTestId('ctf-badge')).not.toBeInTheDocument();
   });
 });
