@@ -32,12 +32,12 @@ Limpeza (B1) → componentes base Modal/Acordeão (B3 estrutural) → redesign d
 
 Arquivos: `src/components/gauge.tsx` (deletar), `tests/components/gauge.test.tsx` (deletar), `src/data/architecture-graph.ts`, `src/index.css`, `src/components/parameter-health-bar.tsx` + teste, `src/main.tsx`, `src/pages/privacy-policy-page.tsx`, `src/components/modals/favorite-edit-modal.tsx`.
 
-1. Deletar `gauge.tsx` + teste (teste roda contra código morto). Atualizar `architecture-graph.ts` (nó linha ~210, entrada ~96, 3 arestas) e teste de arquitetura se validar contagens.
+1. Deletar `gauge.tsx` + teste (teste roda contra código morto). Atualizar `architecture-graph.ts` em **duas listas**: o nó (`~210`) **e** a entrada do mapa de LOC (`'src/components/gauge.tsx': 154`, ~96) — `architecture-graph.test.ts:46` valida `existsSync` de todo `filePath`. Remover também as 3 arestas do nó.
 2. Deletar 6 keyframes órfãos do `index.css` — **grep por nome antes de cada remoção** (ficam: `subtlePulse`, `fadeInUp`, `jackpotFlash`, `btnIdleGlow`, `spinIcon`, `miniGaugeFlash`, `tabSlideIn`, `dashFlow`).
 3. Deletar `--shadow-neon-green`.
-4. `parameter-health-bar.tsx`: deletar só o componente visual `ParameterHealthBar`; **manter as funções puras** (`computeVcByValue` etc. — importadas por `segmented-gradient-bar.tsx:10`). Podar teste correspondente.
+4. `parameter-health-bar.tsx`: deletar só o componente visual `ParameterHealthBar`; **manter as funções puras** (`computeVcByValue` etc. — importadas por `segmented-gradient-bar.tsx:10`). Podar teste correspondente. Corrigir a aresta obsoleta `fine-tune-panel → parameter-health-bar (renders)` (`architecture-graph.ts:369`) — hoje já é falsa: quem consome é `segmented-gradient-bar`. Trocar origem/tipo, não apenas apagar.
 5. `#0f1419` → `var(--color-background-dark)`/`bg-background-dark` em `main.tsx`, `privacy-policy-page.tsx`, `favorite-edit-modal.tsx`, `index.css` (body + scrollbar). **NÃO tocar:** `src/app/main.js` (Electron), admin, `results-panel.tsx` e `mobile-results-section.tsx` (reescritos nas Sessões 4/7).
-6. `design-tokens.ts`: manter — será adotado via import na Sessão 2.
+6. `design-tokens.ts`: manter — `MODAL_*` será adotado via import na Sessão 2. `CARD_GLASS`/`CARD_INNER` continuam mortos: adotar nos painéis reescritos (Sessões 3/4) ou deletar na Sessão 8 — decidir na Sessão 4, não deixar em aberto.
 
 Risco: teste de arquitetura com contagem exata de nós/arestas — rodar vitest logo após o passo 1.
 
@@ -115,7 +115,8 @@ Arquivos: `mobile/mobile-results-section.tsx`, `hmi-visor.tsx`, `mobile-adjust-s
 1. Grep sistemático fora de `src/admin/`: `gap-2.5|gap-5|px-2.5`, `border-white/(8|12|15)`, `rounded-(md|3xl)`, `text-[13px]/[18px]` → degrau canônico; conferência visual dos casos sensíveis.
 2. `focus-visible` onde restou; confirmar `prefers-reduced-motion` cobre animações mobile.
 3. Atualizar changelog do DS (seção 19: 21 itens quitados, admin registrado como fora de escopo), `REDESIGN_DASHBOARD_80-20.md` (executado), `docs/plans/BACKLOG_IMPLEMENTACAO.md` + `docs/ROADMAP_SESSAO_ATUAL.md`.
-4. Bump MINOR (`0.11.0` → `0.12.0`) em `package.json`; verificação final completa; commit + push.
+4. Bump MINOR (`0.11.0` → `0.12.0`) em `package.json` **E em `src/data/architecture-graph.ts` → `metadata.version`** — `architecture-graph.test.ts:90` exige igualdade; bumpar só o `package.json` deixa a suíte vermelha.
+5. Verificação final completa; commit + push.
 
 ---
 
