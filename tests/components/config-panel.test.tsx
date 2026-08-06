@@ -1,4 +1,4 @@
-import { render, screen, fireEvent, waitFor, act, within } from '@testing-library/react';
+import { render, screen, fireEvent, waitFor, act } from '@testing-library/react';
 import { describe, it, expect, beforeEach } from 'vitest';
 import { BrowserRouter } from 'react-router-dom';
 import { ConfigPanel } from '@/components/config-panel';
@@ -8,9 +8,16 @@ function renderPanel() {
   return render(<BrowserRouter><ConfigPanel /></BrowserRouter>);
 }
 
+/** Opens the "⚙ Ajuste avançado" accordion — content stays mounted either way,
+ *  but tests open it explicitly to mirror real user interaction. */
+function openAdvanced() {
+  fireEvent.click(screen.getByText(/Ajuste avançado/i));
+}
+
 describe('ConfigPanel', () => {
   beforeEach(() => {
     useMachiningStore.getState().reset();
+    localStorage.clear();
   });
 
   it('renders Simular button', () => {
@@ -55,6 +62,7 @@ describe('ConfigPanel', () => {
 
   it('hides raio da ponta when switching to topo', () => {
     renderPanel();
+    openAdvanced();
     fireEvent.click(screen.getByText('Topo'));
     expect(screen.queryByRole('spinbutton', { name: /raio da ponta/i })).not.toBeInTheDocument();
   });
@@ -108,36 +116,37 @@ describe('ConfigPanel', () => {
     expect(screen.getByText('Dados estimados')).toBeInTheDocument();
   });
 
-  it('follows correct tool field order: Tipo -> Diametro -> Raio -> Arestas -> Altura', () => {
+  it('renders essential tool fields: Tipo de fresa, Diâmetro, Raio da Ponta (toroidal), Z, Altura', () => {
     renderPanel();
-    fireEvent.click(screen.getByText('Ferramenta'));
-    const toolLabels = ['Tipo', /di.*metro/i, /raio da ponta/i, /arestas/i, /altura/i];
+    const toolLabels = [/tipo de fresa/i, /di.*metro/i, /raio da ponta/i, /z \(dentes\)/i, /altura/i];
     for (const label of toolLabels) {
-      expect(screen.getByText(label as string | RegExp)).toBeInTheDocument();
+      expect(screen.getByText(label)).toBeInTheDocument();
     }
   });
 
-  it('renders 3 collapsible sections', () => {
+  it('renders essential fields without needing to open any accordion', () => {
+    renderPanel();
+    expect(screen.getAllByRole('combobox').length).toBeGreaterThanOrEqual(1);
+    expect(screen.getByRole('button', { name: 'Desbaste' })).toBeInTheDocument();
+    expect(screen.getByText('Nenhuma ferramenta salva')).toBeInTheDocument();
+  });
+
+  it('renders section labels and the Ajuste avançado accordion', () => {
     renderPanel();
     expect(screen.getByText('Configuração Base')).toBeInTheDocument();
     expect(screen.getByText('Ferramenta')).toBeInTheDocument();
-    expect(screen.getByText('Ajuste Fino')).toBeInTheDocument();
+    expect(screen.getByText(/Ajuste avançado/i)).toBeInTheDocument();
   });
 
-  it('collapsible sections are closed by default', () => {
+  it('Ajuste avançado accordion is closed by default', () => {
     renderPanel();
     const accordionHeaders = screen.getAllByRole('button').filter(
       (b) => b.getAttribute('aria-expanded') !== null,
     );
+    expect(accordionHeaders.length).toBeGreaterThan(0);
     accordionHeaders.forEach((b) => {
       expect(b).toHaveAttribute('aria-expanded', 'false');
     });
-  });
-
-  it('material section opens when Configuração Base is clicked', () => {
-    renderPanel();
-    fireEvent.click(screen.getByText('Configuração Base'));
-    expect(screen.getAllByRole('combobox').length).toBeGreaterThanOrEqual(1);
   });
 
   it('does NOT render cutting parameter NumInputs (section removed)', () => {
@@ -146,20 +155,22 @@ describe('ConfigPanel', () => {
     expect(screen.queryByText('Vc (m/min)')).not.toBeInTheDocument();
   });
 
-  it('renders FineTunePanel sliders inside Ajuste Fino section', () => {
+  it('renders FineTunePanel sliders inside Ajuste avançado section', () => {
     renderPanel();
-    fireEvent.click(screen.getByText('Ajuste Fino'));
+    openAdvanced();
     expect(screen.getByText('VEL. DE CORTE')).toBeInTheDocument();
     expect(screen.getByText('AVANÇO/DENTE')).toBeInTheDocument();
   });
 
   it('raio da ponta renders as numeric input for toroidal', () => {
     renderPanel();
+    openAdvanced();
     expect(screen.getByRole('spinbutton', { name: /raio da ponta/i })).toBeInTheDocument();
   });
 
   it('raio da ponta input has the expected numeric constraints', () => {
     renderPanel();
+    openAdvanced();
     const raioInput = screen.getByRole('spinbutton', { name: /raio da ponta/i });
     expect(raioInput).toHaveAttribute('min', '0.05');
     expect(raioInput).toHaveAttribute('max', '50');
@@ -168,34 +179,54 @@ describe('ConfigPanel', () => {
 
   it('changing raio input updates store.ferramenta.raioQuina', () => {
     renderPanel();
+    openAdvanced();
     const raioInput = screen.getByRole('spinbutton', { name: /raio da ponta/i });
     fireEvent.change(raioInput, { target: { value: '0.2' } });
     expect(useMachiningStore.getState().ferramenta.raioQuina).toBe(0.2);
   });
 
-  it('arestas renders as button group', () => {
+  it('arestas (Z) stepper shows the current value', () => {
     renderPanel();
-    expect(screen.getByText('Arestas (Z)')).toBeInTheDocument();
-    expect(screen.getByRole('button', { name: '2' })).toBeInTheDocument();
+    expect(screen.getByText('Z (dentes)')).toBeInTheDocument();
+    expect(screen.getByLabelText('Número de arestas atual')).toHaveTextContent(
+      String(useMachiningStore.getState().ferramenta.numeroArestas),
+    );
   });
 
-  it('arestas button group has 4 options [2, 3, 4, 6]', () => {
+  it('clicking + advances arestas to the next valid value [2,3,4,6]', () => {
     renderPanel();
-    const arestasLabel = screen.getByText('Arestas (Z)');
-    const arestasSection = arestasLabel.closest('div');
-    expect(arestasSection).not.toBeNull();
-    const buttons = arestasSection ? within(arestasSection).getAllByRole('button') : [];
-    const values = buttons.map((button) => Number(button.textContent));
-    expect(values).toContain(2);
-    expect(values).toContain(3);
-    expect(values).toContain(4);
-    expect(values).toContain(6);
+    const options = [2, 3, 4, 6];
+    const initial = useMachiningStore.getState().ferramenta.numeroArestas;
+    fireEvent.click(screen.getByRole('button', { name: 'Aumentar número de arestas' }));
+    const expected = options[Math.min(options.length - 1, options.indexOf(initial) + 1)];
+    expect(useMachiningStore.getState().ferramenta.numeroArestas).toBe(expected);
   });
 
-  it('clicking an arestas button updates store.ferramenta.numeroArestas', () => {
+  it('clicking − decreases arestas to the previous valid value [2,3,4,6]', () => {
     renderPanel();
-    fireEvent.click(screen.getByRole('button', { name: '3' }));
-    expect(useMachiningStore.getState().ferramenta.numeroArestas).toBe(3);
+    const options = [2, 3, 4, 6];
+    const initial = useMachiningStore.getState().ferramenta.numeroArestas;
+    fireEvent.click(screen.getByRole('button', { name: 'Diminuir número de arestas' }));
+    const expected = options[Math.max(0, options.indexOf(initial) - 1)];
+    expect(useMachiningStore.getState().ferramenta.numeroArestas).toBe(expected);
+  });
+
+  it('+ button (arestas) is disabled at the maximum valid value (6)', () => {
+    useMachiningStore.getState().setFerramenta({ numeroArestas: 6 });
+    renderPanel();
+    expect(screen.getByRole('button', { name: 'Aumentar número de arestas' })).toBeDisabled();
+  });
+
+  it('− button (arestas) is disabled at the minimum valid value (2)', () => {
+    useMachiningStore.getState().setFerramenta({ numeroArestas: 2 });
+    renderPanel();
+    expect(screen.getByRole('button', { name: 'Diminuir número de arestas' })).toBeDisabled();
+  });
+
+  it('radio buttons for arestas NOT in DOM (replaced by stepper)', () => {
+    renderPanel();
+    expect(screen.queryByText('2 Arestas')).not.toBeInTheDocument();
+    expect(screen.queryByText('4 Arestas')).not.toBeInTheDocument();
   });
 
   it('altura de fixacao renders as numeric input', () => {
@@ -224,15 +255,8 @@ describe('ConfigPanel', () => {
     expect(screen.queryByLabelText('Decrease height')).not.toBeInTheDocument();
   });
 
-  it('radio buttons for arestas NOT in DOM (replaced by buttons)', () => {
-    renderPanel();
-    expect(screen.queryByText('2 Arestas')).not.toBeInTheDocument();
-    expect(screen.queryByText('4 Arestas')).not.toBeInTheDocument();
-  });
-
   it('saved tools list shows "Nenhuma ferramenta salva" when empty', () => {
     renderPanel();
-    fireEvent.click(screen.getByText('Ferramenta'));
     expect(screen.getByText('Nenhuma ferramenta salva')).toBeInTheDocument();
   });
 
@@ -240,7 +264,6 @@ describe('ConfigPanel', () => {
     const store = useMachiningStore.getState();
     store.addSavedTool({ tipo: 'topo', diametro: 10, numeroArestas: 4, balanco: 20 });
     renderPanel();
-    fireEvent.click(screen.getByText('Ferramenta'));
     expect(screen.getByText(/10mm/i)).toBeInTheDocument();
   });
 
@@ -248,7 +271,6 @@ describe('ConfigPanel', () => {
     const store = useMachiningStore.getState();
     store.addSavedTool({ tipo: 'topo', diametro: 10, numeroArestas: 4, balanco: 20 });
     renderPanel();
-    fireEvent.click(screen.getByText('Ferramenta'));
     fireEvent.click(screen.getByRole('button', { name: /Carregar/i }));
     expect(useMachiningStore.getState().ferramenta.diametro).toBe(10);
     expect(useMachiningStore.getState().ferramenta.numeroArestas).toBe(4);
@@ -260,14 +282,22 @@ describe('ConfigPanel', () => {
     store.calcular();
     expect(useMachiningStore.getState().resultado).not.toBeNull();
     renderPanel();
-    fireEvent.click(screen.getByText('Ferramenta'));
     fireEvent.click(screen.getByRole('button', { name: /Carregar/i }));
     expect(useMachiningStore.getState().resultado).toBeNull();
   });
 
+  it('edit/remove actions on saved tool cards are always visible (no hover-only)', () => {
+    const store = useMachiningStore.getState();
+    store.addSavedTool({ tipo: 'topo', diametro: 10, numeroArestas: 4, balanco: 20 });
+    renderPanel();
+    const editBtn = screen.getByRole('button', { name: /Editar/i });
+    const removeBtn = screen.getByRole('button', { name: /Remover/i });
+    expect(editBtn.className).not.toMatch(/opacity-0/);
+    expect(removeBtn.className).not.toMatch(/opacity-0/);
+  });
+
   it('clicking save button adds current tool to saved tools', () => {
     renderPanel();
-    fireEvent.click(screen.getByText('Ferramenta'));
     fireEvent.click(screen.getByRole('button', { name: 'Salvar ferramenta' }));
     expect(useMachiningStore.getState().savedTools.length).toBeGreaterThanOrEqual(1);
     expect(screen.queryByText('Nenhuma ferramenta salva')).not.toBeInTheDocument();
@@ -275,7 +305,6 @@ describe('ConfigPanel', () => {
 
   it('save button does NOT duplicate identical tools', () => {
     renderPanel();
-    fireEvent.click(screen.getByText('Ferramenta'));
     fireEvent.click(screen.getByRole('button', { name: 'Salvar ferramenta' }));
     const countAfterFirst = useMachiningStore.getState().savedTools.length;
     fireEvent.click(screen.getByRole('button', { name: 'Salvar ferramenta' }));
@@ -299,7 +328,6 @@ describe('ConfigPanel', () => {
     const store = useMachiningStore.getState();
     store.addSavedTool({ tipo: 'topo', diametro: 8, numeroArestas: 2, balanco: 30 });
     renderPanel();
-    fireEvent.click(screen.getByText('Ferramenta'));
     expect(screen.getByText(/8mm/i)).toBeInTheDocument();
     expect(screen.getByText(/Fresa de topo/i)).toBeInTheDocument();
   });
@@ -308,37 +336,31 @@ describe('ConfigPanel', () => {
     const store = useMachiningStore.getState();
     store.addSavedTool({ tipo: 'toroidal', diametro: 12, raioQuina: 1.5, numeroArestas: 4, balanco: 25 });
     renderPanel();
-    fireEvent.click(screen.getByText('Ferramenta'));
     expect(screen.getAllByText(/12mm/i).length).toBeGreaterThan(0);
     expect(screen.getByText(/R 1\.5/i)).toBeInTheDocument();
     expect(screen.getByText(/Fresa toroidal/i)).toBeInTheDocument();
   });
 
-  it('renders SeguranÃ§a section in the panel', () => {
+  it('renders Segurança controls inside Ajuste avançado', () => {
     renderPanel();
+    openAdvanced();
     expect(screen.getByText(/Seguran/i)).toBeInTheDocument();
   });
 
-  it('SeguranÃ§a section is collapsed by default', () => {
-    renderPanel();
-    const segBtn = screen.getByText(/Seguran/i).closest('button');
-    expect(segBtn).toHaveAttribute('aria-expanded', 'false');
-  });
-
-  it('Segurança summary shows percentage when collapsed', () => {
+  it('Segurança percentage is visible when Ajuste avançado is collapsed', () => {
     renderPanel();
     expect(screen.getAllByText('80%').length).toBeGreaterThan(0);
   });
 
-  it('opening Segurança section shows slider with correct aria-label', () => {
+  it('opening Ajuste avançado shows safety slider with correct aria-label', () => {
     renderPanel();
-    fireEvent.click(screen.getByText(/Seguran/i));
+    openAdvanced();
     expect(screen.getByRole('slider', { name: /Fator de Corre/i })).toBeInTheDocument();
   });
 
   it('+ button increases safetyFactor by 0.05', () => {
     renderPanel();
-    fireEvent.click(screen.getByText(/Seguran/i));
+    openAdvanced();
     const initialSF = useMachiningStore.getState().safetyFactor;
     fireEvent.click(screen.getByRole('button', { name: /Aumentar fator de corre/i }));
     expect(useMachiningStore.getState().safetyFactor).toBeCloseTo(initialSF + 0.05, 5);
@@ -346,7 +368,7 @@ describe('ConfigPanel', () => {
 
   it('minus button decreases safetyFactor by 0.05', () => {
     renderPanel();
-    fireEvent.click(screen.getByText(/Seguran/i));
+    openAdvanced();
     const initialSF = useMachiningStore.getState().safetyFactor;
     fireEvent.click(screen.getByRole('button', { name: /Reduzir fator de corre/i }));
     expect(useMachiningStore.getState().safetyFactor).toBeCloseTo(initialSF - 0.05, 5);
@@ -355,7 +377,7 @@ describe('ConfigPanel', () => {
   it('minus button clamps at 0.50 minimum', () => {
     useMachiningStore.getState().setSafetyFactor(0.50);
     renderPanel();
-    fireEvent.click(screen.getByText(/Seguran/i));
+    openAdvanced();
     fireEvent.click(screen.getByRole('button', { name: /Reduzir fator de corre/i }));
     expect(useMachiningStore.getState().safetyFactor).toBe(0.50);
   });
@@ -363,7 +385,7 @@ describe('ConfigPanel', () => {
   it('+ button clamps at 1.00 maximum', () => {
     useMachiningStore.getState().setSafetyFactor(1.00);
     renderPanel();
-    fireEvent.click(screen.getByText(/Seguran/i));
+    openAdvanced();
     fireEvent.click(screen.getByRole('button', { name: /Aumentar fator de corre/i }));
     expect(useMachiningStore.getState().safetyFactor).toBe(1.00);
   });
@@ -387,14 +409,6 @@ describe('ConfigPanel', () => {
       () => expect(useMachiningStore.getState().resultado).not.toBeNull(),
       { timeout: 2500 },
     );
-  });
-
-  it('FineTunePanel wrapper exists inside Ajuste Fino section', () => {
-    renderPanel();
-    fireEvent.click(screen.getByText('Ajuste Fino'));
-    // The wrapper div must contain the FineTunePanel content
-    expect(screen.getByText('VEL. DE CORTE')).toBeInTheDocument();
-    expect(screen.getByText('AVANÇO/DENTE')).toBeInTheDocument();
   });
 
   it('Simular button re-enables after animation sequence completes', async () => {

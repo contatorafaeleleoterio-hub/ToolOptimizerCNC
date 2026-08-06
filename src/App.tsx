@@ -31,15 +31,15 @@ export default function App() {
         <ExportButtons />
       </header>
 
-      {/* 2-column grid */}
-      <main className="flex-1 grid grid-cols-12 gap-3 min-h-0">
-        <section className="col-span-3 flex flex-col min-h-0 pr-1">
+      {/* 2-column grid — config fixo 340px, resultados ocupam o resto */}
+      <main className="flex-1 grid grid-cols-[340px_1fr] gap-3 min-h-0">
+        <section className="flex flex-col min-h-0 pr-1">
           <div className="flex-1 overflow-y-auto">
             <ConfigPanel />
           </div>
           <SidebarFooter />
         </section>
-        <section className="col-span-9 overflow-y-auto pr-2">
+        <section className="overflow-y-auto pr-2">
           <ResultsPanel />
         </section>
       </main>

@@ -83,12 +83,12 @@ export const EDGE_COLORS: Record<ArchEdgeType, string> = {
 };
 
 const FILE_LINES: Record<string, number> = {
-  'src/App.tsx': 45,
+  'src/App.tsx': 50,
   'src/main.tsx': 33,
   'src/components/bidirectional-slider.tsx': 223,
   'src/components/bug-report-button.tsx': 167,
   'src/components/ui/modal.tsx': 68,
-  'src/components/config-panel.tsx': 183,
+  'src/components/config-panel.tsx': 510,
   'src/components/design-tokens.ts': 15,
   'src/components/disclaimer.tsx': 8,
   'src/components/export-buttons.tsx': 85,
@@ -367,6 +367,7 @@ const LEVEL2_EDGES: ArchEdge[] = [
   { from: 'config-panel', to: 'use-plausible', type: 'import', level: 2 },
   { from: 'config-panel', to: 'use-simulation-animation', type: 'import', level: 2 },
   { from: 'config-panel', to: 'types-index', type: 'import', level: 2 },
+  { from: 'config-panel', to: 'design-tokens', type: 'import', level: 2 },
 
   { from: 'fine-tune-panel', to: 'segmented-gradient-bar', type: 'renders', level: 2 },
   { from: 'fine-tune-panel', to: 'styled-slider', type: 'renders', level: 2 },
