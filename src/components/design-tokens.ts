@@ -18,3 +18,12 @@ export const MODAL_BACKDROP = 'absolute inset-0 bg-black/60 backdrop-blur-sm';
 
 // Handle bar visible only on mobile (drag indicator at top of bottom-sheet)
 export const MODAL_HANDLE = 'w-10 h-1 bg-white/20 rounded-full mx-auto mb-4 sm:hidden';
+
+// Increment/decrement (±) button scale — canon per Design System seção 07.
+// compact: bidirectional-slider.tsx (already compliant) · default: styled-slider.tsx (already compliant)
+// touch: proposed 3rd tier, replaces the 3 divergent sizes (28px/40px/48px) found in
+// config-panel.tsx (segurança), mobile-fine-tune-section.tsx and mobile-config-section.tsx —
+// those call sites still need migrating when each file is rewritten (Sessões 3/6/7).
+export const BUTTON_PM_COMPACT = 'w-5 h-5 text-[11px]';   // 20px
+export const BUTTON_PM_DEFAULT = 'w-6 h-6 text-xs';       // 24px
+export const BUTTON_PM_TOUCH = 'w-11 h-11 text-base';     // 44px

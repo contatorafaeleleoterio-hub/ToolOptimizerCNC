@@ -8,7 +8,7 @@
  * - A practical tip for the operator
  */
 
-import { useState } from 'react';
+import { CollapsibleSection } from './collapsible-section';
 
 interface FormulaCardProps {
   title: string;
@@ -26,88 +26,79 @@ export function FormulaCard({
   title, icon, resultValue, resultUnit, formula, substitution,
   variables, contextBar, tip,
 }: FormulaCardProps) {
-  const [expanded, setExpanded] = useState(false);
-
   return (
-    <div className="bg-surface-dark backdrop-blur-xl border border-white/5 rounded-xl overflow-hidden shadow-glass transition-all duration-300">
-      {/* Header — always visible */}
-      <button
-        onClick={() => setExpanded(!expanded)}
-        className="w-full flex items-center gap-3 px-4 py-3 hover:bg-white/5 transition-colors group"
-        aria-expanded={expanded}
-        aria-label={`${expanded ? 'Recolher' : 'Expandir'} fórmula: ${title}`}
-      >
-        <div className="w-8 h-8 rounded-lg bg-primary/10 border border-primary/20 flex items-center justify-center shrink-0">
-          <span className="material-symbols-outlined text-primary text-sm">{icon}</span>
-        </div>
-        <div className="flex-1 text-left">
-          <span className="text-sm font-bold text-white uppercase tracking-wider">{title}</span>
-        </div>
-        <div className="flex items-baseline gap-1 mr-3">
-          <span className="text-xl font-mono font-bold text-white">{resultValue}</span>
-          <span className="text-xs text-gray-400 font-bold">{resultUnit}</span>
-        </div>
-        <span className={`material-symbols-outlined text-gray-400 text-sm transition-transform duration-300 ${expanded ? 'rotate-180' : ''}`}>
-          expand_more
-        </span>
-      </button>
-
-      {/* Expanded content */}
-      {expanded && (
-        <div className="border-t border-white/5 px-4 py-4 space-y-4 animate-in">
-          {/* Label */}
-          <div className="flex items-center gap-2 text-xs text-primary/70 font-bold uppercase tracking-widest">
-            <span className="material-symbols-outlined text-xs">school</span>
-            Como é Calculado
+    <CollapsibleSection
+      title={title}
+      variant="card"
+      renderHeader={({ isOpen }) => (
+        <div className="flex items-center gap-3 px-4 py-3 hover:bg-white/5 transition-colors group">
+          <div className="w-8 h-8 rounded-lg bg-primary/10 border border-primary/20 flex items-center justify-center shrink-0">
+            <span className="material-symbols-outlined text-primary text-sm">{icon}</span>
           </div>
-
-          {/* Formula display */}
-          <div className="bg-black/40 rounded-lg border border-white/5 px-4 py-3 font-mono text-base text-center space-y-1">
-            <div className="text-gray-300">{formula}</div>
-            <div className="text-primary">{substitution}</div>
+          <div className="flex-1 text-left">
+            <span className="text-sm font-bold text-white uppercase tracking-wider">{title}</span>
           </div>
-
-          {/* Variables legend */}
-          <div className="grid grid-cols-2 gap-x-4 gap-y-1.5">
-            {variables.map((v) => (
-              <div key={v.symbol} className="flex items-baseline gap-2 text-sm">
-                <span className="font-mono font-bold text-primary">{v.symbol}</span>
-                <span className="text-gray-500">=</span>
-                <span className="font-mono text-white">{v.value}</span>
-                <span className="text-gray-500 text-xs truncate">({v.description})</span>
-              </div>
-            ))}
+          <div className="flex items-baseline gap-1 mr-3">
+            <span className="text-xl font-mono font-bold text-white">{resultValue}</span>
+            <span className="text-xs text-gray-400 font-bold">{resultUnit}</span>
           </div>
+          <span className={`material-symbols-outlined text-gray-400 text-sm transition-transform duration-300 ${isOpen ? 'rotate-180' : ''}`}>
+            expand_more
+          </span>
+        </div>
+      )}
+    >
+      {/* Label */}
+      <div className="flex items-center gap-2 text-xs text-primary/70 font-bold uppercase tracking-widest">
+        <span className="material-symbols-outlined text-xs">school</span>
+        Como é Calculado
+      </div>
 
-          {/* Context bar */}
-          {contextBar && (
-            <div className="space-y-1">
-              <div className="flex justify-between text-xs text-gray-500 font-mono">
-                <span>{contextBar.min}</span>
-                <span>{contextBar.label}</span>
-                <span>{contextBar.max.toLocaleString('en-US')}</span>
-              </div>
-              <div className="h-2 w-full bg-black/40 rounded-full overflow-hidden border border-white/5">
-                <div
-                  className="h-full rounded-full transition-all duration-500"
-                  style={{
-                    width: `${Math.min(Math.max(((contextBar.value - contextBar.min) / (contextBar.max - contextBar.min)) * 100, 0), 100)}%`,
-                    backgroundColor: contextBar.color,
-                    boxShadow: `0 0 8px ${contextBar.color}`,
-                  }}
-                />
-              </div>
-            </div>
-          )}
+      {/* Formula display */}
+      <div className="bg-black/40 rounded-lg border border-white/5 px-4 py-3 font-mono text-base text-center space-y-1">
+        <div className="text-gray-300">{formula}</div>
+        <div className="text-primary">{substitution}</div>
+      </div>
 
-          {/* Practical tip */}
-          <div className="flex items-start gap-2 bg-primary/5 border border-primary/10 rounded-lg px-3 py-2">
-            <span className="material-symbols-outlined text-primary text-sm mt-0.5">lightbulb</span>
-            <span className="text-sm text-gray-300 leading-relaxed">{tip}</span>
+      {/* Variables legend */}
+      <div className="grid grid-cols-2 gap-x-4 gap-y-1.5">
+        {variables.map((v) => (
+          <div key={v.symbol} className="flex items-baseline gap-2 text-sm">
+            <span className="font-mono font-bold text-primary">{v.symbol}</span>
+            <span className="text-gray-500">=</span>
+            <span className="font-mono text-white">{v.value}</span>
+            <span className="text-gray-500 text-xs truncate">({v.description})</span>
+          </div>
+        ))}
+      </div>
+
+      {/* Context bar */}
+      {contextBar && (
+        <div className="space-y-1">
+          <div className="flex justify-between text-xs text-gray-500 font-mono">
+            <span>{contextBar.min}</span>
+            <span>{contextBar.label}</span>
+            <span>{contextBar.max.toLocaleString('en-US')}</span>
+          </div>
+          <div className="h-2 w-full bg-black/40 rounded-full overflow-hidden border border-white/5">
+            <div
+              className="h-full rounded-full transition-all duration-500"
+              style={{
+                width: `${Math.min(Math.max(((contextBar.value - contextBar.min) / (contextBar.max - contextBar.min)) * 100, 0), 100)}%`,
+                backgroundColor: contextBar.color,
+                boxShadow: `0 0 8px ${contextBar.color}`,
+              }}
+            />
           </div>
         </div>
       )}
-    </div>
+
+      {/* Practical tip */}
+      <div className="flex items-start gap-2 bg-primary/5 border border-primary/10 rounded-lg px-3 py-2">
+        <span className="material-symbols-outlined text-primary text-sm mt-0.5">lightbulb</span>
+        <span className="text-sm text-gray-300 leading-relaxed">{tip}</span>
+      </div>
+    </CollapsibleSection>
   );
 }
 

@@ -63,8 +63,7 @@ describe('BugReportButton — desktop variant', () => {
   it('closes modal when overlay is clicked', () => {
     renderWithRouter(<BugReportButton />);
     fireEvent.click(screen.getByRole('button', { name: /reportar bug/i }));
-    const overlay = screen.getByText('Descreva o problema encontrado').closest('.fixed');
-    if (overlay) fireEvent.click(overlay);
+    fireEvent.click(screen.getByTestId('bug-report-modal-overlay'));
     expect(screen.queryByText('Descreva o problema encontrado')).not.toBeInTheDocument();
   });
 

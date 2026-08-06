@@ -2,13 +2,10 @@ import { useMemo, useState, useEffect, useRef } from 'react';
 
 // ─── Types ────────────────────────────────────────────────────────────────────
 
-type ColorPalette = 'avanco' | 'power' | 'health' | 'mrr';
-
 interface HalfMoonGaugeProps {
   value: number;
   maxValue: number;
   label?: string;
-  palette?: ColorPalette;
   badge?: string;
   /** 'md' = desktop (240×120), 'sm' = mobile (160×80). Default: 'md'. */
   size?: 'sm' | 'md';

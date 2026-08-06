@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import type { FavoritoCompleto, ResultadoUsinagem } from '@/types/index';
 import { LIMITES_PADRAO_MAQUINA, SAFETY_RULES_PADRAO } from '@/types/index';
 import { useFavoritesStore } from '@/store';
@@ -9,6 +9,7 @@ import {
   validateMachineLimits, calcularSliderBounds,
 } from '@/engine/index';
 import { calculateHealthScore, getVcZone, getFzZone, getAeZone, getApZone } from '@/utils/health-score';
+import { Modal } from '../ui/modal';
 
 interface FavoriteEditModalProps {
   favorite: FavoritoCompleto;
@@ -101,105 +102,96 @@ export function FavoriteEditModal({ favorite, onClose }: FavoriteEditModalProps)
     onClose();
   };
 
-  const handleOverlayClick = (e: React.MouseEvent<HTMLDivElement>) => {
-    if (e.target === e.currentTarget) onClose();
-  };
-
   const inputCls = 'w-full bg-white/5 border border-white/10 rounded-lg px-3 py-2 text-white font-mono text-sm focus:outline-none focus:border-primary/50 transition-colors';
   const labelCls = 'text-xs text-gray-400 uppercase tracking-wide mb-1 block';
 
   return (
-    <div
-      className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm"
-      onClick={handleOverlayClick}
-    >
-      <div className="bg-background-dark border border-white/10 rounded-xl p-5 w-full max-w-sm shadow-2xl">
-        {/* Header */}
-        <div className="flex items-center justify-between mb-4">
-          <div>
-            <h2 className="text-sm font-semibold text-white">Editar Favorito</h2>
-            <p className="text-[11px] text-gray-500 mt-0.5">
-              {favorite.materialNome} · {favorite.tipoOperacao}
-            </p>
-          </div>
-          <button
-            onClick={onClose}
-            aria-label="Fechar"
-            className="p-1 rounded-lg text-gray-500 hover:text-white hover:bg-white/5 transition-colors"
-          >
-            <span className="material-symbols-outlined text-lg">close</span>
-          </button>
+    <Modal onClose={onClose} ariaLabel="Editar Favorito" overlayTestId="favorite-edit-modal-overlay">
+      {/* Header */}
+      <div className="flex items-center justify-between mb-4">
+        <div>
+          <h2 className="text-sm font-semibold text-white">Editar Favorito</h2>
+          <p className="text-[11px] text-gray-500 mt-0.5">
+            {favorite.materialNome} · {favorite.tipoOperacao}
+          </p>
         </div>
+        <button
+          onClick={onClose}
+          aria-label="Fechar"
+          className="p-1 rounded-lg text-gray-500 hover:text-white hover:bg-white/5 transition-colors"
+        >
+          <span className="material-symbols-outlined text-lg">close</span>
+        </button>
+      </div>
 
-        {/* Parametros */}
-        <div className="grid grid-cols-2 gap-3 mb-3">
-          <div>
-            <label className={labelCls}>Vc (m/min)</label>
-            <input
-              type="number" min={1} step={1}
-              value={vc} onChange={(e) => setVc(Number(e.target.value))}
-              className={inputCls}
-            />
-          </div>
-          <div>
-            <label className={labelCls}>fz (mm/dente)</label>
-            <input
-              type="number" min={0.001} step={0.001}
-              value={fz} onChange={(e) => setFz(Number(e.target.value))}
-              className={inputCls}
-            />
-          </div>
-          <div>
-            <label className={labelCls}>ae (mm)</label>
-            <input
-              type="number" min={0.01} step={0.01}
-              value={ae} onChange={(e) => setAe(Number(e.target.value))}
-              className={inputCls}
-            />
-          </div>
-          <div>
-            <label className={labelCls}>ap (mm)</label>
-            <input
-              type="number" min={0.01} step={0.01}
-              value={ap} onChange={(e) => setAp(Number(e.target.value))}
-              className={inputCls}
-            />
-          </div>
-        </div>
-
-        {/* Note */}
-        <div className="mb-4">
-          <label className={labelCls}>Nota (opcional)</label>
-          <textarea
-            value={note}
-            onChange={(e) => setNote(e.target.value)}
-            maxLength={200}
-            rows={2}
-            placeholder="Observações sobre este setup..."
-            className={`${inputCls} resize-none`}
+      {/* Parametros */}
+      <div className="grid grid-cols-2 gap-3 mb-3">
+        <div>
+          <label className={labelCls}>Vc (m/min)</label>
+          <input
+            type="number" min={1} step={1}
+            value={vc} onChange={(e) => setVc(Number(e.target.value))}
+            className={inputCls}
           />
         </div>
-
-        {error && (
-          <p className="text-xs text-red-400 mb-3">{error}</p>
-        )}
-
-        {/* Actions */}
-        <div className="flex gap-2">
-          <button
-            onClick={onClose}
-            className="flex-1 py-2 rounded-lg border border-white/10 text-sm text-gray-400 hover:text-white hover:bg-white/5 transition-colors"
-          >
-            Cancelar
-          </button>
-          <button
-            onClick={handleSave}
-            className="flex-1 py-2 rounded-lg bg-primary/20 border border-primary/40 text-sm text-primary hover:bg-primary/30 transition-colors font-medium"
-          >
-            Salvar e Recalcular
-          </button>
+        <div>
+          <label className={labelCls}>fz (mm/dente)</label>
+          <input
+            type="number" min={0.001} step={0.001}
+            value={fz} onChange={(e) => setFz(Number(e.target.value))}
+            className={inputCls}
+          />
+        </div>
+        <div>
+          <label className={labelCls}>ae (mm)</label>
+          <input
+            type="number" min={0.01} step={0.01}
+            value={ae} onChange={(e) => setAe(Number(e.target.value))}
+            className={inputCls}
+          />
+        </div>
+        <div>
+          <label className={labelCls}>ap (mm)</label>
+          <input
+            type="number" min={0.01} step={0.01}
+            value={ap} onChange={(e) => setAp(Number(e.target.value))}
+            className={inputCls}
+          />
         </div>
       </div>
-    </div>
+
+      {/* Note */}
+      <div className="mb-4">
+        <label className={labelCls}>Nota (opcional)</label>
+        <textarea
+          value={note}
+          onChange={(e) => setNote(e.target.value)}
+          maxLength={200}
+          rows={2}
+          placeholder="Observações sobre este setup..."
+          className={`${inputCls} resize-none`}
+        />
+      </div>
+
+      {error && (
+        <p className="text-xs text-red-400 mb-3">{error}</p>
+      )}
+
+      {/* Actions */}
+      <div className="flex gap-2">
+        <button
+          onClick={onClose}
+          className="flex-1 py-2 rounded-lg border border-white/10 text-sm text-gray-400 hover:text-white hover:bg-white/5 transition-colors"
+        >
+          Cancelar
+        </button>
+        <button
+          onClick={handleSave}
+          className="flex-1 py-2 rounded-lg bg-primary/20 border border-primary/40 text-sm text-primary hover:bg-primary/30 transition-colors font-medium"
+        >
+          Salvar e Recalcular
+        </button>
+      </div>
+    </Modal>
   );
 }

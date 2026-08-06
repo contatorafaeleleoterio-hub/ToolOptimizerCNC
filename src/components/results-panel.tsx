@@ -402,7 +402,6 @@ export function ResultsPanel() {
             value={avanco}
             maxValue={limites.maxAvanco}
             label="Eficiência de Avanço"
-            palette="avanco"
             animateOnMount
           />
         </div>
@@ -411,7 +410,6 @@ export function ResultsPanel() {
             value={mrrPct}
             maxValue={100}
             label="Produtividade MRR"
-            palette="mrr"
             badge={storeResultado ? `${mrr.toFixed(1)} cm³/min` : undefined}
             animateOnMount
           />
@@ -421,7 +419,6 @@ export function ResultsPanel() {
             value={resultado.healthScore}
             maxValue={100}
             label="Saúde da Ferramenta"
-            palette="health"
             badge={storeResultado && resultado.healthScore === 0 ? 'BLOQUEADO' : undefined}
             animateOnMount
           />
