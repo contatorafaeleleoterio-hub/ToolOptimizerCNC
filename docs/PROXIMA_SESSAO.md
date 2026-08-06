@@ -11,6 +11,19 @@
 
 ---
 
+## 📄 Sessão de execução — Implementação DS + 80/20 + Mobile, Sessões 1-3/8 (05/08/2026)
+
+Execução do `PLAN_IMPLEMENTACAO_DS_80-20_MOBILE.md` — commits `895ba05`, `abe7588`, `7845488` (pushados).
+
+- **Sessão 1** (dívida bloco 1): deletado `gauge.tsx` morto + teste; 6 keyframes órfãos e `--shadow-neon-green` removidos do `index.css`; `ParameterHealthBar` reduzido às 4 funções puras (componente visual morto removido); `#0f1419` → `bg-background-dark` em `main.tsx`/`privacy-policy-page.tsx`/`favorite-edit-modal.tsx`.
+- **Sessão 2** (Modal/Acordeão base): criado `src/components/ui/modal.tsx` (portal, Escape, backdrop-to-close, focus trap) migrando os 3 modais divergentes; `collapsible-section.tsx` ganhou `variant`/`renderHeader`/`onToggle`, `formula-card.tsx` migrado; prop `palette` morta removida de `half-moon-gauge.tsx`; escala canônica dos botões ± (20/24/44px — DS seção 07) exportada em `design-tokens.ts`.
+- **Sessão 3** (Desktop S1 — Config Panel): reduzido a 5 campos sempre visíveis + 1 acordeão "⚙ Ajuste avançado" (fechado, persistido em `localStorage`) com FineTune + Raio da Ponta + Segurança; Simular+Reset viraram sticky no rodapé; `App.tsx` com grid fixo `340px|1fr`; Arestas (Z) virou stepper ± sobre o catálogo fixo `[2,3,4,6]`.
+- Achados fora de escopo (sinalizados, não corrigidos): 8 testes pré-existentes falhando em `mobile-results-section`/`mobile-page` (não causados por estas sessões) + template `.aiox-core` com import quebrado; gaps maiores no `architecture-graph.ts` (nó `favorites-page` ausente, aresta `app→fine-tune-panel` obsoleta).
+- Verificação de cada sessão: `tsc` 0 erros, build ok, suíte verde exceto as 8 falhas pré-existentes acima.
+- Próximo passo: Sessão 4 — Desktop S2: Results Panel 8→4 zonas (maior sessão do plano).
+
+---
+
 ## 📄 Sessão de planejamento — Implementação DS + 80/20 + Mobile (05/08/2026)
 
 Sessão só de planejamento — **zero alterações em `src/`**.

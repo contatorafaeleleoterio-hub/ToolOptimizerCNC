@@ -54,11 +54,11 @@
 | Item | Valor |
 |------|-------|
 | **Branch** | `main` |
-| **Versão** | `0.11.0` |
-| **Testes** | **1052 passando** (62 arquivos) — 0 falhas |
+| **Versão** | `0.11.0` (alvo `0.12.0` ao final do item 16 — DS+80/20+Mobile) |
+| **Testes** | **1017 passando** (60 arquivos) — 8 falhas pré-existentes fora de escopo (mobile-results-section + mobile-page + template `.aiox-core`, não causadas pelas Sessões 1-3) |
 | **TypeScript** | **zero erros** |
-| **Build** | **limpo** — JS ~178KB gzip |
-| **Remote** | `origin/main` — último commit `b2183bd` (pushed ✅) |
+| **Build** | **limpo** |
+| **Remote** | `origin/main` — último commit `7845488` (pushed ✅) |
 | **Worker** | ✅ LIVE — `https://tooloptimizercnc.contatorafaeleleoterio.workers.dev` |
 | **Custom Domains** | ✅ `tooloptimizercnc.com.br` + `app.tooloptimizercnc.com.br` |
 | **GitHub Actions** | ✅ deploy automático ao push para main |
@@ -95,7 +95,7 @@ npx tsc --noEmit
 | 13 | [MVP Android Launch (11 sessões)](#-mvp-android-launch) | 🚀 Launch | v0.12.0 | ⬜ Pendente |
 | 14 | Redesign Calculadora 80/20 (4 sessões S0-S3) — `docs/plans/REDESIGN_DASHBOARD_80-20.md` | 🎨 Redesign | MINOR | 🔁 Absorvido pelo item 16 |
 | 15 | Design System Canônico (4 sessões, replanejado de 6) — `docs/plans/PLAN_DESIGN_SYSTEM_CANONICO.md` | 📄 Docs / Design Audit | — | ✅ Concluído (`d471895`) |
-| 16 | Implementação DS + 80/20 + Mobile + Dívida Visual (8 sessões) — `docs/plans/PLAN_IMPLEMENTACAO_DS_80-20_MOBILE.md` | 🎨 Redesign + Refactor | v0.12.0 | ⬜ Pendente |
+| 16 | Implementação DS + 80/20 + Mobile + Dívida Visual (8 sessões) — `docs/plans/PLAN_IMPLEMENTACAO_DS_80-20_MOBILE.md` | 🎨 Redesign + Refactor | v0.12.0 | 🔁 Em andamento (3/8 — `7845488`) |
 
 ### ✅ Reestruturação Documental (v0.6.0) — CONCLUÍDA
 
@@ -360,3 +360,22 @@ Quando uma nova implementação for planejada durante a sessão:
 1. Rodar `npx vitest run tests/admin/admin-analytics.test.tsx`.
 2. Se travar: matar processos `node` e rodar de novo.
 3. Quando passar, rodar `npx tsc --noEmit` e `npx vite build`.
+
+### Atualização de Encerramento — 05/08/2026 (item 16, Sessões 1-3/8)
+
+**Executado nesta sessão:** Sessões 1, 2 e 3 do `PLAN_IMPLEMENTACAO_DS_80-20_MOBILE.md` — commits `895ba05`, `abe7588`, `7845488` (todos pushados).
+- Sessão 1: dívida bloco 1 (código morto: `gauge.tsx`, keyframes órfãos, `--shadow-neon-green`, `ParameterHealthBar` visual; `#0f1419` → token).
+- Sessão 2: `Modal` base unificado (portal/Escape/backdrop/focus trap) migrando os 3 modais divergentes; `CollapsibleSection` com `variant`/`renderHeader`/`onToggle`; escala canônica dos botões ± exportada.
+- Sessão 3: Config Panel reduzido a 5 campos sempre visíveis + 1 acordeão "Ajuste avançado" (localStorage); Simular+Reset sticky no rodapé; grid `340px|1fr` no `App.tsx`.
+
+**Achados registrados (não bloqueiam, não corrigidos — fora do escopo de cada sessão):**
+- 8 testes pré-existentes falhando (`mobile-results-section.test.tsx` ×7, `mobile-page.test.tsx` ×1) — não causados por estas sessões; `mobile-results-section.tsx` já está previsto para reescrita na Sessão 7.
+- `.aiox-core/development/templates/squad-template/tests/example-agent.test.js` falha por import `@aiox/testing` não resolvido — template do framework, fora do escopo deste plano.
+- `architecture-graph.ts` tem gaps pré-existentes maiores (nó `favorites-page` inexistente, aresta `app→fine-tune-panel` obsoleta) — recomendo sessão dedicada de limpeza do grafo, não corrigir de carona.
+
+**Decisões de interpretação tomadas (Sessão 3) — revisar se divergente da intenção do Rafael:**
+- Lista de ferramentas salvas manteve o formato categorizado por diâmetro (não virou dropdown único como no mockup) — só as ações editar/remover deixaram de ser hover-only.
+- Arestas (Z) virou stepper ± navegando o catálogo fixo `[2,3,4,6]` (nunca aritmética livre), para não abrir Z fora do domínio suportado pelo motor.
+
+**Próximo passo:** Sessão 4 — Desktop S2: Results Panel 8→4 zonas (maior sessão do plano, ver `docs/plans/PLAN_IMPLEMENTACAO_DS_80-20_MOBILE.md`).
+**Retomar com:** "continuar"

@@ -1,8 +1,8 @@
 # Backlog de Implementação — ToolOptimizer CNC
 
-> **Última atualização:** 05/08/2026
-> **Versão atual:** v0.11.0 (Story-011 2C concluída, `b2183bd`)
-> **Total de planos pendentes:** 2 (Segurança v0.5.5 ⏸️ pausada + Implementação DS + 80/20 + Mobile ⬜) — Redesign 80/20 absorvido pelo item 15
+> **Última atualização:** 05/08/2026 (sessão de execução — 3/8 sessões do item 15)
+> **Versão atual:** v0.11.0 (Story-011 2C concluída, `b2183bd`) — v0.12.0 alvo ao final do item 15
+> **Total de planos pendentes:** 2 (Segurança v0.5.5 ⏸️ pausada + Implementação DS + 80/20 + Mobile 🔁 em andamento) — Redesign 80/20 absorvido pelo item 15
 
 Esta lista define a ordem de implementação dos planos criados e ainda não executados.
 A ordem garante estabilidade progressiva: bugs corrigidos antes de features, features antes de polish.
@@ -29,7 +29,7 @@ A ordem garante estabilidade progressiva: bugs corrigidos antes de features, fea
 | 12 | [Story-011 ITEM-5.2 Cassino](#12-story-011-cassino) | 🎬 Animation | v0.11.0 | 3 sub-sessões | ✅ Concluído (`b2183bd`) |
 | 13 | [Redesign Calculadora 80/20](#13-redesign-calculadora-8020) | 🎨 Redesign | MINOR | 5 arquivos + testes, 4 sessões (S0-S3) | 🔁 Absorvido pelo item 15 |
 | 14 | [Design System Canônico](#14-design-system-canônico) | 📄 Docs / Design Audit | — | 1 arquivo HTML, 4 sessões, zero `src/` | ✅ Concluído (`d471895`) |
-| 15 | [Implementação DS + 80/20 + Mobile + Dívida Visual](#15-implementação-ds--8020--mobile--dívida-visual) | 🎨 Redesign + Refactor | v0.12.0 | ~25 arquivos + 9 testes novos, 8 sessões | ⬜ Pendente |
+| 15 | [Implementação DS + 80/20 + Mobile + Dívida Visual](#15-implementação-ds--8020--mobile--dívida-visual) | 🎨 Redesign + Refactor | v0.12.0 | ~25 arquivos + 9 testes novos, 8 sessões | 🔁 Em andamento (3/8 sessões — `7845488`) |
 
 ---
 
@@ -256,6 +256,12 @@ v0.5.5 — Segurança Cibernética ⬜
 **Escopo:** implementar o mockup aprovado `docs/design/mockup-redesign-80-20.html` (painel simplificado, 3 gauges mantidos), estender o redesign ao mobile (prioridade do Rafael: MiniResultBar na aba Resultados, alvos ≥44px, estado vazio honesto, 6 testes novos de componentes mobile) e quitar os 21 itens de dívida visual do DS (blocos 1+2+3 — inclui Modal e Acordeão unificados com acessibilidade). Admin fora de escopo.
 
 **Sequência:** Bloco 1 (limpeza) → Modal/Acordeão base → desktop S1/S2/S3 → mobile config → mobile results → Bloco 2 (snap de escala) + docs + bump. Detalhes por sessão no arquivo do plano.
+
+**Progresso (05/08/2026):**
+- ✅ Sessão 1 — dívida bloco 1: limpeza zero-risco (`895ba05`)
+- ✅ Sessão 2 — Modal e Acordeão unificados (`abe7588`)
+- ✅ Sessão 3 — Desktop S1: Config Panel enxuto (`7845488`)
+- ⬜ Sessões 4-8 pendentes (próxima: Desktop S2 — Results Panel 8→4 zonas)
 
 ---
 

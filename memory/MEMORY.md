@@ -7,14 +7,18 @@
 
 ## Estado Atual
 
+> **Nota:** este arquivo ficou vários ciclos sem atualização (última entrada era v0.8.0) — o histórico completo v0.9→v0.11 está em `docs/PROXIMA_SESSAO.md` e `docs/plans/BACKLOG_IMPLEMENTACAO.md`, que são a fonte de verdade mais confiável. Reconciliação completa deste arquivo fica pendente.
+
 | Item | Valor |
 |------|-------|
-| **Versão** | `0.8.0` |
-| **Último commit** | `05f2ecf` feat: #03 favoritar + #07 slider SF (Fase B v0.9) |
-| **Testes** | 864 passando (15 falhas pré-existentes — não relacionadas) |
+| **Versão** | `0.11.0` (alvo `0.12.0` ao final do item 16 do backlog) |
+| **Último commit** | `7845488` refactor: Config Panel enxuto 80/20 (Sessão 3/8 DS 80-20 mobile) |
+| **Testes** | 1017 passando — 8 falhas pré-existentes fora de escopo (mobile-results-section/mobile-page/`.aiox-core` template) |
 | **TypeScript** | zero erros |
-| **Build** | limpo — 101KB gzip |
+| **Build** | limpo |
 | **Deploy** | ✅ LIVE — `tooloptimizercnc.com.br` / `app.tooloptimizercnc.com.br` |
+
+**Sessão em andamento (05/08/2026):** execução de `docs/plans/PLAN_IMPLEMENTACAO_DS_80-20_MOBILE.md`, Sessões 1-3/8 concluídas (limpeza de dívida, Modal/Acordeão unificados, Config Panel 80/20). Próximo: Sessão 4 — Results Panel 8→4 zonas.
 
 ---
 
