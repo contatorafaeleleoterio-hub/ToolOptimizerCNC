@@ -2,6 +2,7 @@ import { useMachiningStore } from '@/store';
 import { fmt, SEG_COLORS, SEG_ICONS, SEG_LABELS, SEG_BG } from '@/components/shared-result-parts';
 import { haptics } from '@/utils/haptics';
 import { BidirectionalSlider } from '@/components/bidirectional-slider';
+import { MobileIndicatorsBlock } from './mobile-indicators-block';
 
 export function HmiVisor() {
   const resultado = useMachiningStore((s) => s.resultado);
@@ -28,7 +29,7 @@ export function HmiVisor() {
   };
 
   return (
-    <div className="flex flex-col gap-4 animate-in fade-in slide-in-from-bottom-4 duration-300">
+    <div className="flex flex-col gap-4" style={{ animation: 'fadeInUp 300ms ease-out' }}>
       {/* ─── Status Bar (Industrial) ─── */}
       <div className={`flex items-center justify-between px-4 py-3 rounded-xl border-2 shadow-lg ${SEG_BG[nivel]}`}>
         <div className="flex items-center gap-3">
@@ -109,6 +110,12 @@ export function HmiVisor() {
             </div>
           </div>
         </div>
+      </div>
+
+      {/* ─── Real-time Indicators — same block used in Ajustar/Educacional ─── */}
+      <div className="bg-white/5 border border-white/10 rounded-xl p-4 flex flex-col gap-3">
+        <span className="text-[10px] text-white/30 uppercase font-black tracking-widest">Indicadores</span>
+        <MobileIndicatorsBlock />
       </div>
 
       {/* ─── Secondary Data (2 Columns) ─── */}

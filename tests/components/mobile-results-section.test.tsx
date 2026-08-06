@@ -12,6 +12,11 @@ function renderSection() {
   );
 }
 
+/** Switches from the default HMI view to the Educational view (BigNumbers + formula cards). */
+function switchToEducational() {
+  fireEvent.click(screen.getByText('HMI'));
+}
+
 describe('MobileResultsSection', () => {
   beforeEach(() => {
     useMachiningStore.getState().reset();
@@ -48,7 +53,12 @@ describe('MobileResultsSection', () => {
     expect(screen.getByText('SEGURO')).toBeInTheDocument();
   });
 
-  describe('after calcular()', () => {
+  it('shows an honest dash for timestamp when there is no history entry (no fake "now")', () => {
+    renderSection();
+    expect(screen.getByText('—', { selector: 'span.font-mono' })).toBeInTheDocument();
+  });
+
+  describe('after calcular() — HMI view (default)', () => {
     beforeEach(() => {
       const state = useMachiningStore.getState();
       state.setFerramenta({ tipo: 'topo', diametro: 10, balanco: 30 });
@@ -61,67 +71,85 @@ describe('MobileResultsSection', () => {
       expect(screen.queryByText(/Configure os parâmetros/)).not.toBeInTheDocument();
     });
 
-    it('shows SafetyBadge SEGURO', () => {
+    it('shows exactly one SafetyBadge SEGURO (no duplicate with HmiVisor status bar)', () => {
       renderSection();
       expect(screen.getByText('SEGURO')).toBeInTheDocument();
     });
 
-    it('shows BigNumber labels for RPM and Feed', () => {
+    it('renders the HMI status bar with tool diameter', () => {
       renderSection();
+      expect(screen.getByText('Status do Processo')).toBeInTheDocument();
+    });
+
+    it('renders the real-time indicators block inside HmiVisor', () => {
+      renderSection();
+      expect(screen.getByText('Indicadores')).toBeInTheDocument();
+      expect(screen.getAllByText('Avanço').length).toBeGreaterThanOrEqual(1);
+      expect(screen.getAllByText('MRR').length).toBeGreaterThanOrEqual(1);
+      expect(screen.getByText('Saúde Ferramenta')).toBeInTheDocument();
+    });
+  });
+
+  describe('after calcular() — Educational view', () => {
+    beforeEach(() => {
+      const state = useMachiningStore.getState();
+      state.setFerramenta({ tipo: 'topo', diametro: 10, balanco: 30 });
+      state.setParametros({ ap: 2, ae: 5, fz: 0.1, vc: 100 });
+      state.calcular();
+      renderSection();
+      switchToEducational();
+    });
+
+    it('shows BigNumber labels for RPM and Feed', () => {
       expect(screen.getAllByText('Rotação (RPM)').length).toBeGreaterThanOrEqual(1);
       expect(screen.getAllByText('Avanço (mm/min)').length).toBeGreaterThanOrEqual(1);
     });
 
+    it('renders the real-time indicators block between BigNumbers and input params', () => {
+      expect(screen.getByText('Indicadores em Tempo Real')).toBeInTheDocument();
+      expect(screen.getAllByText('MRR').length).toBeGreaterThanOrEqual(1);
+      expect(screen.getByText('Saúde Ferramenta')).toBeInTheDocument();
+    });
+
     it('renders input params Vc fz ap ae (zona 5)', () => {
-      renderSection();
       expect(screen.getByText('Vc (Vel. Corte)')).toBeInTheDocument();
       expect(screen.getByText('fz (Av. Dente)')).toBeInTheDocument();
       expect(screen.getByText('ap (Prof. Axial)')).toBeInTheDocument();
       expect(screen.getByText('ae (Eng. Radial)')).toBeInTheDocument();
     });
 
-    it('renders zona 6 with potência torque vc real mrr', () => {
-      renderSection();
+    it('renders zona 6 with potência, vc real, mrr — torque removed from the UI', () => {
       expect(screen.getByText('Potência Est.')).toBeInTheDocument();
-      expect(screen.getAllByText('Torque').length).toBeGreaterThanOrEqual(1);
       expect(screen.getByText('Vc Real')).toBeInTheDocument();
-      expect(screen.getByText('MRR')).toBeInTheDocument();
+      expect(screen.getAllByText('MRR').length).toBeGreaterThanOrEqual(1);
+      expect(screen.queryByText('Torque')).not.toBeInTheDocument();
     });
 
     it('renders zona 6 with L/D and CTF', () => {
-      renderSection();
       expect(screen.getByText('L/D')).toBeInTheDocument();
       expect(screen.getByText('CTF')).toBeInTheDocument();
     });
 
-    it('renders zona 7 data in calculated grid (gauges migrated to MobileAdjustSection)', () => {
-      // Zona 7 (HalfMoonGauges) was moved to MobileAdjustSection.
-      // Verify the zone-6 grid still renders key data (MRR, L/D, CTF).
-      renderSection();
-      expect(screen.getByText('MRR')).toBeInTheDocument();
-      expect(screen.getByText('L/D')).toBeInTheDocument();
-      expect(screen.getByText('CTF')).toBeInTheDocument();
-    });
-
-    it('renders Favoritar button after simular()', () => {
-      // Favoritar requires a history entry — simular() creates one
-      const state = useMachiningStore.getState();
-      state.setFerramenta({ tipo: 'topo', diametro: 10, balanco: 30 });
-      state.setParametros({ ap: 2, ae: 5, fz: 0.1, vc: 100 });
-      state.simular();
-      renderSection();
-      expect(screen.getByLabelText(/Favoritar simulação/)).toBeInTheDocument();
-    });
-
-    it('renders educational formula cards section', () => {
-      renderSection();
+    it('renders educational formula cards section without a Torque card', () => {
       expect(screen.getByText('Entenda os Cálculos')).toBeInTheDocument();
+      expect(screen.getByText('RPM (Rotação)')).toBeInTheDocument();
+      expect(screen.getByText('Potência (Motor)')).toBeInTheDocument();
+      expect(screen.queryByText('Torque')).not.toBeInTheDocument();
     });
 
     it('edit button click does not throw (no matching saved tool → no-op)', () => {
-      renderSection();
       const editBtn = screen.getByLabelText('Editar ferramenta');
       expect(() => fireEvent.click(editBtn)).not.toThrow();
     });
+  });
+
+  it('renders Favoritar button after simular()', () => {
+    // Favoritar requires a history entry — simular() creates one
+    const state = useMachiningStore.getState();
+    state.setFerramenta({ tipo: 'topo', diametro: 10, balanco: 30 });
+    state.setParametros({ ap: 2, ae: 5, fz: 0.1, vc: 100 });
+    state.simular();
+    renderSection();
+    expect(screen.getByLabelText(/Favoritar simulação/)).toBeInTheDocument();
   });
 });

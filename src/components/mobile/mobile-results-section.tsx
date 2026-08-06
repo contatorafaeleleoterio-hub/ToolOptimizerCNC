@@ -14,6 +14,7 @@ import {
 } from '@/components/shared-result-parts';
 import { haptics } from '@/utils/haptics';
 import { HmiVisor } from '@/components/mobile/hmi-visor';
+import { MobileIndicatorsBlock } from '@/components/mobile/mobile-indicators-block';
 
 const OPERACAO_LABELS: Record<TipoUsinagem, string> = {
   [TipoUsinagem.DESBASTE]: 'Desbaste',
@@ -79,7 +80,7 @@ export function MobileResultsSection() {
 
   const material = getMaterialById(materialId);
   const materialNome = material?.nome ?? '—';
-  const timestamp = latestEntry ? formatTimestamp(latestEntry.timestamp) : formatTimestamp(Date.now());
+  const timestamp = latestEntry ? formatTimestamp(latestEntry.timestamp) : '—';
 
   // Derived values when resultado is available
   const resultado = storeResultado;
@@ -118,7 +119,7 @@ export function MobileResultsSection() {
     <section className="flex flex-col gap-3 px-4 pb-32">
 
       {/* ═══ ZONA 1 — Console Header Bar ═══ */}
-      <div className="flex items-center gap-2 px-2.5 py-1.5 bg-[#0f1419] border border-white/10 rounded-lg">
+      <div className="flex items-center gap-2 px-2.5 py-1.5 bg-background-dark border border-white/10 rounded-lg">
         <div className="flex items-center gap-1.5 flex-1 min-w-0">
           <span className="font-mono text-[10px] text-white/35 shrink-0">{timestamp}</span>
           <span className="w-1 h-1 rounded-full bg-white/20 shrink-0" />
@@ -144,16 +145,19 @@ export function MobileResultsSection() {
           {viewMode === 'hmi' ? 'HMI' : 'EDUC.'}
         </button>
 
-        {/* Safety badge inline */}
-        <div className={`flex items-center gap-1 px-2 py-0.5 rounded-md border text-[10px] font-bold uppercase tracking-wide shrink-0 ${SEG_BG[nivel]}`}>
-          <span
-            className={`material-symbols-outlined text-sm ${SEG_COLORS[nivel]}`}
-            style={{ fontVariationSettings: "'FILL' 1, 'wght' 400" }}
-          >
-            {SEG_ICONS[nivel]}
-          </span>
-          <span className={SEG_COLORS[nivel]}>{SEG_LABELS[nivel]}</span>
-        </div>
+        {/* Safety badge inline — hidden in HMI mode once resultado exists, since HmiVisor
+            already shows the same status prominently in its own status bar right below */}
+        {!(viewMode === 'hmi' && resultado) && (
+          <div className={`flex items-center gap-1 px-2 py-0.5 rounded-md border text-[10px] font-bold uppercase tracking-wide shrink-0 ${SEG_BG[nivel]}`}>
+            <span
+              className={`material-symbols-outlined text-sm ${SEG_COLORS[nivel]}`}
+              style={{ fontVariationSettings: "'FILL' 1, 'wght' 400" }}
+            >
+              {SEG_ICONS[nivel]}
+            </span>
+            <span className={SEG_COLORS[nivel]}>{SEG_LABELS[nivel]}</span>
+          </div>
+        )}
         {/* Favorite button */}
         {storeResultado !== null && latestEntry && (
           <button
@@ -174,7 +178,7 @@ export function MobileResultsSection() {
       </div>
 
       {/* ═══ ZONA 2 — LCD Display (compact, 2 lines) ═══ */}
-      <div className="bg-[#05070a] border border-[rgba(0,229,255,0.12)] rounded-lg px-3 py-2 flex flex-col gap-1">
+      <div className="bg-[#05070a] border border-[rgba(0,217,255,0.12)] rounded-lg px-3 py-2 flex flex-col gap-1">
         <div
           className="flex items-center gap-1.5 font-mono text-[10px] uppercase tracking-wide"
           style={{ color: lcdAlertLine.color }}
@@ -210,7 +214,7 @@ export function MobileResultsSection() {
 
       {/* Empty state — first time, no history */}
       {!storeResultado && !latestEntry && (
-        <div className="bg-[rgba(30,38,50,0.95)] backdrop-blur-sm border border-white/12 rounded-2xl p-6">
+        <div className="bg-[rgba(30,38,50,0.95)] backdrop-blur-sm border border-white/10 rounded-2xl p-6">
           <div className="flex items-center gap-3 mb-5">
             <span className="material-symbols-outlined text-3xl text-gray-400">precision_manufacturing</span>
             <p className="text-gray-400 text-sm font-medium">Configure os parâmetros e clique em Simular</p>
@@ -279,6 +283,12 @@ export function MobileResultsSection() {
                 onPercentChange={setManualFeedPercent} />
             </div>
 
+            {/* ═══ Indicadores em tempo real — mesmo bloco da aba Ajustar ═══ */}
+            <div className="bg-black/30 border border-white/10 rounded-xl p-3 flex flex-col gap-3">
+              <span className="text-[9px] uppercase tracking-widest text-white/40 font-semibold">Indicadores em Tempo Real</span>
+              <MobileIndicatorsBlock />
+            </div>
+
             {/* ═══ ZONA 5 — Input Params (2×2) ═══ */}
             <div className="grid grid-cols-2 gap-1.5">
               {([
@@ -307,13 +317,6 @@ export function MobileResultsSection() {
                   {potenciaMotor.toFixed(2)}<span className="text-[9px] opacity-40 ml-0.5">kW</span>
                 </span>
               </div>
-              {/* Torque */}
-              <div className="bg-black/30 border border-white/5 rounded-lg px-2.5 py-1.5 flex items-center justify-between">
-                <span className="text-[9px] text-white/35 uppercase tracking-wide">Torque</span>
-                <span className="font-mono text-xs font-bold text-white/85">
-                  {resultado.torque.toFixed(2)}<span className="text-[9px] opacity-40 ml-0.5">Nm</span>
-                </span>
-              </div>
               {/* Vc Real */}
               <div className="bg-black/30 border border-white/5 rounded-lg px-2.5 py-1.5 flex items-center justify-between">
                 <span className="text-[9px] text-white/35 uppercase tracking-wide">Vc Real</span>
@@ -336,7 +339,7 @@ export function MobileResultsSection() {
                 </span>
               </div>
               {/* CTF */}
-              <div className="bg-black/30 border border-white/5 rounded-lg px-2.5 py-1.5 flex items-center justify-between">
+              <div className="col-span-2 bg-black/30 border border-white/5 rounded-lg px-2.5 py-1.5 flex items-center justify-between">
                 <span className="text-[9px] text-white/35 uppercase tracking-wide">CTF</span>
                 <span className="font-mono text-xs font-bold text-primary">{ctf.toFixed(2)}</span>
               </div>
@@ -345,7 +348,7 @@ export function MobileResultsSection() {
             <WarningsSection avisos={avisos} />
 
             {/* ═══ ZONA 8 — Fórmulas Educacionais (colapsáveis) ═══ */}
-            <div className="bg-[rgba(30,38,50,0.95)] backdrop-blur-xl border border-white/12 rounded-2xl p-4 shadow-glass">
+            <div className="bg-[rgba(30,38,50,0.95)] backdrop-blur-xl border border-white/10 rounded-2xl p-4 shadow-glass">
               <div className="flex items-center gap-3 mb-4">
                 <div className="w-9 h-9 rounded-lg bg-primary/10 flex items-center justify-center border border-primary/20">
                   <span className="material-symbols-outlined text-primary text-sm">school</span>
@@ -418,21 +421,6 @@ export function MobileResultsSection() {
                   ]}
                   contextBar={{ value: potenciaMotor, min: 0, max: limites.maxPotencia, label: `${potenciaMotor.toFixed(2)} / ${limites.maxPotencia} kW`, color: '#F97316' }}
                   tip="Material mais duro = mais potência. Reduza ap/ae se próximo do limite."
-                />
-
-                <FormulaCard
-                  title="Torque"
-                  icon="rotate_right"
-                  resultValue={resultado.torque.toFixed(2)}
-                  resultUnit="Nm"
-                  formula={<>T = <Fraction num="P × 9549" den="N" /></>}
-                  substitution={<>T = <Fraction num={<>{potenciaMotor.toFixed(2)} × 9549</>} den={fmt(rpm)} /> = <span className="text-white font-bold">{resultado.torque.toFixed(2)}</span></>}
-                  variables={[
-                    { symbol: 'P', value: `${potenciaMotor.toFixed(2)} kW`, description: 'potência do motor' },
-                    { symbol: 'N', value: `${fmt(rpm)} RPM`, description: 'rotação' },
-                  ]}
-                  contextBar={{ value: resultado.torque, min: 0, max: limites.maxTorque, label: `${resultado.torque.toFixed(2)} / ${limites.maxTorque} Nm`, color: '#A855F7' }}
-                  tip="RPM baixo com potência alta = torque alto."
                 />
               </div>
             </div>

@@ -67,7 +67,7 @@ export function MobilePage() {
 
       {/* Offline Banner */}
       {isOffline && (
-        <div className="bg-seg-amarelo/20 border-b border-seg-amarelo/30 px-4 py-1.5 flex items-center justify-center gap-2 animate-in slide-in-from-top duration-300">
+        <div className="bg-seg-amarelo/20 border-b border-seg-amarelo/30 px-4 py-1.5 flex items-center justify-center gap-2" style={{ animation: 'slideInTop 300ms ease-out' }}>
           <span className="material-symbols-outlined text-seg-amarelo text-sm">cloud_off</span>
           <span className="text-[10px] font-bold text-seg-amarelo uppercase tracking-widest">Modo Offline Ativo</span>
         </div>
