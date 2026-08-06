@@ -262,7 +262,8 @@ v0.5.5 — Segurança Cibernética ⬜
 - ✅ Sessão 2 — Modal e Acordeão unificados (`abe7588`)
 - ✅ Sessão 3 — Desktop S1: Config Panel enxuto (`7845488`)
 - ✅ Sessão 4 — Desktop S2: Results Panel 8→4 zonas (`4254bfb`)
-- ⬜ Sessões 5-8 pendentes (próxima: Desktop S3 — nav no header + acessibilidade)
+- ✅ Sessão 5 — Desktop S3: nav no header + acessibilidade (`8e11250`)
+- ⬜ Sessões 6-8 pendentes (próxima: Mobile Config 80/20 + alvos de toque)
 
 ---
 

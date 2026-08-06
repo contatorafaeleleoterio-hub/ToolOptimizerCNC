@@ -12,13 +12,13 @@
 | Item | Valor |
 |------|-------|
 | **Versão** | `0.11.0` (alvo `0.12.0` ao final do item 16 do backlog) |
-| **Último commit** | `4254bfb` refactor: Results Panel 8→4 zonas (Sessão 4/8 DS 80-20 mobile) — **local, não pushado** |
-| **Testes** | 1030 (1022 passando) — 8 falhas pré-existentes fora de escopo (mobile-results-section/mobile-page) |
+| **Último commit** | `8e11250` refactor: nav no header + acessibilidade (Sessão 5/8 DS 80-20 mobile) — **local, não pushado** |
+| **Testes** | 1022 passando — 8 falhas pré-existentes fora de escopo (mobile-results-section/mobile-page) |
 | **TypeScript** | zero erros |
 | **Build** | limpo |
-| **Deploy** | ✅ LIVE — `tooloptimizercnc.com.br` / `app.tooloptimizercnc.com.br` (Sessão 4 ainda não deployada) |
+| **Deploy** | ✅ LIVE — `tooloptimizercnc.com.br` / `app.tooloptimizercnc.com.br` (Sessão 4 já deployada; Sessão 5 ainda não) |
 
-**Sessão em andamento (06/08/2026):** execução de `docs/plans/PLAN_IMPLEMENTACAO_DS_80-20_MOBILE.md`, Sessões 1-4/8 concluídas (limpeza de dívida, Modal/Acordeão unificados, Config Panel 80/20, Results Panel 8→4 zonas). Próximo: Sessão 5 — nav no header + acessibilidade.
+**Sessão em andamento (06/08/2026):** execução de `docs/plans/PLAN_IMPLEMENTACAO_DS_80-20_MOBILE.md`, Sessões 1-5/8 concluídas (limpeza de dívida, Modal/Acordeão unificados, Config Panel 80/20, Results Panel 8→4 zonas, nav no header + acessibilidade). Próximo: Sessão 6 — Mobile Config 80/20 + alvos de toque.
 
 ---
 

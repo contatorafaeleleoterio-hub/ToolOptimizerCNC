@@ -95,7 +95,7 @@ npx tsc --noEmit
 | 13 | [MVP Android Launch (11 sessões)](#-mvp-android-launch) | 🚀 Launch | v0.12.0 | ⬜ Pendente |
 | 14 | Redesign Calculadora 80/20 (4 sessões S0-S3) — `docs/plans/REDESIGN_DASHBOARD_80-20.md` | 🎨 Redesign | MINOR | 🔁 Absorvido pelo item 16 |
 | 15 | Design System Canônico (4 sessões, replanejado de 6) — `docs/plans/PLAN_DESIGN_SYSTEM_CANONICO.md` | 📄 Docs / Design Audit | — | ✅ Concluído (`d471895`) |
-| 16 | Implementação DS + 80/20 + Mobile + Dívida Visual (8 sessões) — `docs/plans/PLAN_IMPLEMENTACAO_DS_80-20_MOBILE.md` | 🎨 Redesign + Refactor | v0.12.0 | 🔁 Em andamento (4/8 — `4254bfb`) |
+| 16 | Implementação DS + 80/20 + Mobile + Dívida Visual (8 sessões) — `docs/plans/PLAN_IMPLEMENTACAO_DS_80-20_MOBILE.md` | 🎨 Redesign + Refactor | v0.12.0 | 🔁 Em andamento (5/8 — `8e11250`) |
 
 ### ✅ Reestruturação Documental (v0.6.0) — CONCLUÍDA
 
@@ -387,5 +387,18 @@ Quando uma nova implementação for planejada durante a sessão:
 
 **Achado fora de escopo (resolvido antes de iniciar, não gerado por esta sessão):** reorganização de arquivos feita pelo Gemini CLI em 23/04/2026 estava havia ~4 meses sem commit (135 arquivos — .interface-design/system.md deletado sem destino real, .aiox-core/.antigravity/.codex marcados como "removidos" no relatório mas continuavam no disco). Descartada (`git restore`) por decisão do Rafael antes de iniciar a Sessão 4 — ver commit anterior a este.
 
-**Próximo passo:** Sessão 5 — Desktop S3: nav no header + acessibilidade (`docs/plans/PLAN_IMPLEMENTACAO_DS_80-20_MOBILE.md`).
+### Atualização de Encerramento — 06/08/2026 (item 16, Sessão 5/8)
+
+**Executado nesta sessão:** Sessão 5 do `PLAN_IMPLEMENTACAO_DS_80-20_MOBILE.md` — commit `8e11250` (local, **não pushado ainda** — aguardando "pode seguir").
+
+- `SidebarFooter` substituído por `HeaderNav` no cabeçalho: Calcular/Favoritos/Histórico/Config com badges via selectors Zustand primitivos, usando `NavLink` (estado ativo nativo, sem `useLocation` manual).
+- Linha de fluxo "Material → Ferramenta → Simular" acima do Config Panel — passo 3 reflete `resultado !== null` real (Material/Ferramenta sempre "done" porque a store sempre tem defaults válidos, não são estados inventados).
+- Acessibilidade: `focus-visible` ring nos 3 sliders (teclado com setas já funcionava desde antes, faltava só o indicador visual); `prefers-reduced-motion` global no `index.css`; contraste do CTA do herói (Sessão 4) ajustado de `white/30` para `white/60`.
+- `architecture-graph.ts`: node `sidebar-footer` → `header-nav` (arquivo deletado quebraria o teste de integridade do grafo sem isso).
+- 11 testes novos (`app.test.tsx` + `header-nav.test.tsx`) substituindo os 9 de `sidebar-footer.test.tsx` (removido).
+- Quality gates: 1022 testes passam, 8 falhas pré-existentes inalteradas (mobile) · TypeScript zero erros · build limpo.
+
+**Fora de escopo, não corrigido:** contraste `white/30` em `mobile-results-section.tsx`/`hmi-visor.tsx`/`mobile-adjust-section.tsx` — arquivos de mobile, agendados para reescrita nas Sessões 6-7; não tocados aqui para não antecipar trabalho de outra sessão.
+
+**Próximo passo:** Sessão 6 — Mobile: Config 80/20 + alvos de toque + testes base (`docs/plans/PLAN_IMPLEMENTACAO_DS_80-20_MOBILE.md`).
 **Retomar com:** "continuar"
