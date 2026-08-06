@@ -261,7 +261,8 @@ v0.5.5 — Segurança Cibernética ⬜
 - ✅ Sessão 1 — dívida bloco 1: limpeza zero-risco (`895ba05`)
 - ✅ Sessão 2 — Modal e Acordeão unificados (`abe7588`)
 - ✅ Sessão 3 — Desktop S1: Config Panel enxuto (`7845488`)
-- ⬜ Sessões 4-8 pendentes (próxima: Desktop S2 — Results Panel 8→4 zonas)
+- ✅ Sessão 4 — Desktop S2: Results Panel 8→4 zonas (`4254bfb`)
+- ⬜ Sessões 5-8 pendentes (próxima: Desktop S3 — nav no header + acessibilidade)
 
 ---
 

@@ -95,7 +95,7 @@ npx tsc --noEmit
 | 13 | [MVP Android Launch (11 sessões)](#-mvp-android-launch) | 🚀 Launch | v0.12.0 | ⬜ Pendente |
 | 14 | Redesign Calculadora 80/20 (4 sessões S0-S3) — `docs/plans/REDESIGN_DASHBOARD_80-20.md` | 🎨 Redesign | MINOR | 🔁 Absorvido pelo item 16 |
 | 15 | Design System Canônico (4 sessões, replanejado de 6) — `docs/plans/PLAN_DESIGN_SYSTEM_CANONICO.md` | 📄 Docs / Design Audit | — | ✅ Concluído (`d471895`) |
-| 16 | Implementação DS + 80/20 + Mobile + Dívida Visual (8 sessões) — `docs/plans/PLAN_IMPLEMENTACAO_DS_80-20_MOBILE.md` | 🎨 Redesign + Refactor | v0.12.0 | 🔁 Em andamento (3/8 — `7845488`) |
+| 16 | Implementação DS + 80/20 + Mobile + Dívida Visual (8 sessões) — `docs/plans/PLAN_IMPLEMENTACAO_DS_80-20_MOBILE.md` | 🎨 Redesign + Refactor | v0.12.0 | 🔁 Em andamento (4/8 — `4254bfb`) |
 
 ### ✅ Reestruturação Documental (v0.6.0) — CONCLUÍDA
 
@@ -377,5 +377,15 @@ Quando uma nova implementação for planejada durante a sessão:
 - Lista de ferramentas salvas manteve o formato categorizado por diâmetro (não virou dropdown único como no mockup) — só as ações editar/remover deixaram de ser hover-only.
 - Arestas (Z) virou stepper ± navegando o catálogo fixo `[2,3,4,6]` (nunca aritmética livre), para não abrir Z fora do domínio suportado pelo motor.
 
-**Próximo passo:** Sessão 4 — Desktop S2: Results Panel 8→4 zonas (maior sessão do plano, ver `docs/plans/PLAN_IMPLEMENTACAO_DS_80-20_MOBILE.md`).
+### Atualização de Encerramento — 06/08/2026 (item 16, Sessão 4/8)
+
+**Executado nesta sessão:** Sessão 4 do `PLAN_IMPLEMENTACAO_DS_80-20_MOBILE.md` — commit `4254bfb` (local, **não pushado ainda** — aguardando "pode seguir").
+
+- `results-panel.tsx` reescrito seguindo `docs/design/DASHBOARD_80-20_MOCKUP.html` (mockup local não commitado, mas fiel ao `REDESIGN_DASHBOARD_80-20.md` v3): herói RPM/Avanço `text-6xl` via `BigNumber` (mesmo componente já usado no mobile), 3 gauges + chips L/D (cor por faixa)/CTF nos indicadores, torque removido de toda a UI (fica só no engine), "Detalhes e Fórmulas" colapsável com badge âmbar "manual" por parâmetro (Vc/fz/ap/ae) quando diverge de `getRecommendedParams()`, estado vazio honesto (herói mostra "—", sem timestamp fake), chip "SF X%" no console header quando `safetyFactor ≠ 0.80`, ciano duplicado `rgba(0,229,255,…)` → token primary `rgba(0,217,255,…)`, `#0f1419` → `bg-background-dark`. `CARD_INNER` adotado (dívida do design-tokens.ts resolvida parcialmente — `CARD_GLASS` segue sem uso claro, decisão adiada para Sessão 8).
+- 6 testes novos + 2 assertions atualizadas em `results-panel.test.tsx` (Torque removido, "Potência Est." → "Potência Estimada").
+- Quality gates: 1030 testes (1022 passam, 8 falhas pré-existentes inalteradas — mesmas de mobile) · TypeScript zero erros · build limpo.
+
+**Achado fora de escopo (resolvido antes de iniciar, não gerado por esta sessão):** reorganização de arquivos feita pelo Gemini CLI em 23/04/2026 estava havia ~4 meses sem commit (135 arquivos — .interface-design/system.md deletado sem destino real, .aiox-core/.antigravity/.codex marcados como "removidos" no relatório mas continuavam no disco). Descartada (`git restore`) por decisão do Rafael antes de iniciar a Sessão 4 — ver commit anterior a este.
+
+**Próximo passo:** Sessão 5 — Desktop S3: nav no header + acessibilidade (`docs/plans/PLAN_IMPLEMENTACAO_DS_80-20_MOBILE.md`).
 **Retomar com:** "continuar"
