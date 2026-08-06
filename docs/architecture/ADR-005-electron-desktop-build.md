@@ -51,7 +51,7 @@ Usar **Electron** para empacotar o SPA React/Vite como `.exe` portátil (sem ins
 ### Passo 1: Clonar repositório em pasta isolada
 
 ```bash
-cd C:\Users\USUARIO\Desktop\INICIO_TOOLOPTIMIZERCNC
+cd C:\Users\USUARIO\Desktop\TOOLOPTIMIZERCNC
 git clone . Sistema_Desktop_Pen_driver
 cd Sistema_Desktop_Pen_driver
 ```
@@ -216,7 +216,7 @@ render(<MemoryRouter><Component /></MemoryRouter>);
 
 ### Passo 12: Corrigir Vitest root em subdiretório
 
-⚠️ **PROBLEMA CRÍTICO:** Quando o clone é subdiretório do projeto original (ex: `INICIO_TOOLOPTIMIZERCNC/Sistema_Desktop_Pen_driver/`), o Vitest resolve o `root` para o diretório **pai** que também tem `vite.config.ts`. Resultado: `Cannot find module .../INICIO_TOOLOPTIMIZERCNC/tests/setup.ts` (caminho errado, sem `Sistema_Desktop_Pen_driver/`).
+⚠️ **PROBLEMA CRÍTICO:** Quando o clone é subdiretório do projeto original (ex: `TOOLOPTIMIZERCNC/Sistema_Desktop_Pen_driver/`), o Vitest resolve o `root` para o diretório **pai** que também tem `vite.config.ts`. Resultado: `Cannot find module .../TOOLOPTIMIZERCNC/tests/setup.ts` (caminho errado, sem `Sistema_Desktop_Pen_driver/`).
 
 **SOLUÇÃO:** No `vitest.config.ts`, forçar root e setupFiles com caminho absoluto:
 
