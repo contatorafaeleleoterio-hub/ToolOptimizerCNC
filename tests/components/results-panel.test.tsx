@@ -34,8 +34,8 @@ describe('ResultsPanel', () => {
     renderPanel();
     expect(screen.getAllByText('Rotação (RPM)').length).toBeGreaterThan(0);
     expect(screen.getAllByText('Avanço (mm/min)').length).toBeGreaterThan(0);
-    // Zona 6: calc-row compact labels
-    expect(screen.getByText('Potência Est.')).toBeInTheDocument();
+    // Zona 6 — Detalhes e Fórmulas (colapsável, mas os testids ficam no DOM)
+    expect(screen.getByText('Potência Estimada')).toBeInTheDocument();
   });
 
   it('shows safety badge', () => {
@@ -54,13 +54,13 @@ describe('ResultsPanel', () => {
   it('shows progress cards', () => {
     setupSafeCalc();
     renderPanel();
-    // Zona 2: 4 ProgressCards (HMI redesign v0.9.3)
-    expect(screen.getByText('Potência Est.')).toBeInTheDocument();
+    // Zona 6 — Detalhes e Fórmulas: linhas de resultado calculado
+    expect(screen.getByText('Potência Estimada')).toBeInTheDocument();
     expect(screen.getByText('Vc Real')).toBeInTheDocument();
-    // 'Torque' appears in both ProgressCard (Zona 2) and FormulaCard (Zona 5)
-    expect(screen.getAllByText('Torque').length).toBeGreaterThanOrEqual(1);
     expect(screen.getByText('MRR')).toBeInTheDocument();
-    // Zona 3: Gauges still present
+    // Torque foi removido da UI (Sessão 4 — DS 80-20)
+    expect(screen.queryByText('Torque')).not.toBeInTheDocument();
+    // Zona 5 — Gauges ainda presentes
     expect(screen.getByText('Produtividade MRR')).toBeInTheDocument();
   });
 
@@ -131,5 +131,42 @@ describe('ResultsPanel', () => {
     store.setManualRPMPercent(20);
     const newAvanco = useMachiningStore.getState().resultado!.avanco;
     expect(newAvanco).not.toBe(initialAvanco);
+  });
+
+  // ─── Sessão 4 (DS 80-20): herói + estado vazio honesto + chip SF + badge manual ──
+
+  it('shows dash placeholders in hero before first simulation (no fake zeros)', () => {
+    renderPanel();
+    // Duas ocorrências: RPM e Avanço
+    expect(screen.getAllByText('—', { selector: 'span.text-6xl' }).length).toBe(2);
+  });
+
+  it('does not show a fake timestamp before any simulation', () => {
+    renderPanel();
+    // Sem histórico ainda: nenhum timestamp DD/MM/YYYY deveria aparecer
+    expect(screen.queryByText(/^\d{2}\/\d{2}\/\d{4}/)).not.toBeInTheDocument();
+  });
+
+  it('shows SF chip only when safety factor differs from the 0.80 default', () => {
+    setupSafeCalc();
+    renderPanel();
+    expect(screen.queryByText(/^SF \d+%$/)).not.toBeInTheDocument();
+  });
+
+  it('shows SF chip when safety factor is changed from default', () => {
+    const s = useMachiningStore.getState();
+    s.setFerramenta({ diametro: 10, balanco: 20 });
+    s.setParametros({ ap: 2, ae: 5, fz: 0.1, vc: 100 });
+    s.setSafetyFactor(0.7);
+    s.calcular();
+    renderPanel();
+    expect(screen.getByText('SF 70%')).toBeInTheDocument();
+  });
+
+  it('shows manual badge when parameters diverge from the recommendation engine', () => {
+    // setupSafeCalc já usa valores fixos de teste que não batem com a tabela de recomendação
+    setupSafeCalc();
+    renderPanel();
+    expect(screen.getAllByText('manual').length).toBeGreaterThanOrEqual(1);
   });
 });
