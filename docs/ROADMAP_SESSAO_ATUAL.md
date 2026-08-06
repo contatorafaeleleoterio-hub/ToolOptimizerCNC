@@ -55,10 +55,10 @@
 |------|-------|
 | **Branch** | `main` |
 | **Versão** | `0.11.0` (alvo `0.12.0` ao final do item 16 — DS+80/20+Mobile) |
-| **Testes** | **1017 passando** (60 arquivos) — 8 falhas pré-existentes fora de escopo (mobile-results-section + mobile-page + template `.aiox-core`, não causadas pelas Sessões 1-3) |
+| **Testes** | **1067 passando** (66 arquivos) — 0 falhas de projeto (as 8 pré-existentes foram resolvidas na Sessão 7); resta só o template `.aiox-core/development/templates/squad-template` fora do escopo (import `@aiox/testing` não resolvido) |
 | **TypeScript** | **zero erros** |
 | **Build** | **limpo** |
-| **Remote** | `origin/main` — último commit `7845488` (pushed ✅) |
+| **Remote** | `origin/main` — último commit `757309d` (pushed ✅) |
 | **Worker** | ✅ LIVE — `https://tooloptimizercnc.contatorafaeleleoterio.workers.dev` |
 | **Custom Domains** | ✅ `tooloptimizercnc.com.br` + `app.tooloptimizercnc.com.br` |
 | **GitHub Actions** | ✅ deploy automático ao push para main |

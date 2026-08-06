@@ -11,6 +11,19 @@
 
 ---
 
+## 📄 Sessão de execução — Implementação DS + 80/20 + Mobile, Sessões 6-7/8 (06/08/2026)
+
+Execução do `PLAN_IMPLEMENTACAO_DS_80-20_MOBILE.md` — commits `d327529`, `783d31d`, `e5975c9`, `986e724`, `31395be`, `757309d` (pushados).
+
+- **Sessão 6** (Mobile Config 80/20 + alvos de toque): mesma lógica 80/20 do desktop aplicada ao mobile — "Configuração Base" e "Ferramenta" viram seções sempre visíveis (5 campos essenciais: Material, Operação, Tipo de fresa, Diâmetro+Z, Altura de Fixação); Raio da Ponta + Fator de Correção migram para o `CollapsibleSection` unificado ("⚙ Ajuste avançado"). Arestas (Z) vira stepper ± sobre `[2,3,4,6]`. Alvos ≥44px (`BUTTON_PM_TOUCH`) + snap `border-white/12|8`→`/10`.
+  - **Correção pós-feedback do Rafael (mesma sessão, commit `e5975c9`):** a remoção inicial da seção "Parâmetros de Corte" (Vc/fz/ap/ae) estava errada — a seção existe em 2 momentos distintos do fluxo (setup inicial em Configurar vs. ajuste pós-simulação em Ajustar), não é duplicata. Restaurada em Configurar com o mesmo indicador+slider já usado em Ajustar — extraída a lista de sliders para `mobile-cutting-params.tsx`, componente compartilhado pelos dois pontos de uso.
+- **Sessão 7** (Mobile Resultados com indicadores + vazio honesto + torque fora): os 3 `MiniResultBar` (Avanço/MRR/Saúde) extraídos de `mobile-adjust-section.tsx` para `mobile-indicators-block.tsx`, reusado em 3 lugares (Ajustar sticky, `HmiVisor`, Educacional pós-BigNumbers). Timestamp falso removido (mostra "—" honesto sem simulação real). Torque fora da visão Educacional (célula + FormulaCard), espelha a Sessão 4. Ciano duplicado/`#0f1419`/`border-white/12|8`/`animate-in` mortos corrigidos.
+  - **Achado importante:** as 7 falhas pré-existentes em `mobile-results-section.test.tsx` (arrastadas desde a Sessão 1) não eram teste flaky — `viewMode` default `'hmi'` fazia o `HmiVisor` duplicar o badge "SEGURO" do cabeçalho, e os outros testes checavam conteúdo só-Educacional sem clicar no toggle "EDUC.". Corrigido escondendo o badge duplicado + testes reescritos alternando as visões. Resultado: **1067/1067 testes do projeto passam** (resolvido como efeito colateral da reescrita mandatada pelo plano).
+- Sem verificação visual em navegador em nenhuma das duas sessões — Playwright MCP não conectado.
+- Próximo passo: Sessão 8 (última) — varredura final de dívida visual (grep sistemático fora de `src/admin/`) + changelog do DS + bump `0.11.0`→`0.12.0` em `package.json` **e** `architecture-graph.ts` (`metadata.version`).
+
+---
+
 ## 📄 Sessão de execução — Implementação DS + 80/20 + Mobile, Sessões 4-5/8 (06/08/2026)
 
 Execução do `PLAN_IMPLEMENTACAO_DS_80-20_MOBILE.md` — commits `4254bfb`, `8e11250` (pushados).
