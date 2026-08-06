@@ -11,6 +11,19 @@
 
 ---
 
+## 📄 Sessão de execução — Implementação DS + 80/20 + Mobile, Sessões 4-5/8 (06/08/2026)
+
+Execução do `PLAN_IMPLEMENTACAO_DS_80-20_MOBILE.md` — commits `4254bfb`, `8e11250` (pushados).
+
+- **Achado inicial (resolvido antes de codar):** reorganização de arquivos do Gemini CLI (23/04/2026) achada sem commit há ~4 meses — 135 arquivos, `.interface-design/system.md` deletado sem destino real, `.aiox-core`/`.antigravity`/`.codex` marcados como "removidos" no relatório mas ainda no disco. Descartada via `git restore` por decisão do Rafael — o framework AIOX segue em uso ativo, "remoção por redundância" não fazia sentido.
+- **Sessão 4** (Desktop S2 — Results Panel 8→4 zonas): `results-panel.tsx` reescrito seguindo `docs/design/DASHBOARD_80-20_MOCKUP.html` — herói RPM/Avanço `text-6xl` via `BigNumber` compartilhado com o mobile, 3 gauges + chips L/D/CTF, torque removido de toda a UI (só engine), "Detalhes e Fórmulas" colapsável com badge "manual" por parâmetro (Vc/fz/ap/ae) vs `getRecommendedParams()`, estado vazio honesto (herói mostra "—", sem timestamp fake), chip "SF X%" quando safety factor ≠ 0.80, ciano duplicado unificado no token primary. `CARD_INNER` adotado; decisão sobre `CARD_GLASS` adiada para Sessão 8.
+- **Sessão 5** (Desktop S3 — nav + acessibilidade): `SidebarFooter` deletado, substituído por `HeaderNav` (Calcular/Favoritos/Histórico/Config com badges, `NavLink` nativo). Linha de fluxo "Material→Ferramenta→Simular" acima do Config Panel. `focus-visible` ring nos 3 sliders (teclado já funcionava), `prefers-reduced-motion` global, 1 fix de contraste. `architecture-graph.ts` ajustado (node sidebar-footer→header-nav, obrigatório para o teste de integridade do grafo não quebrar).
+- Achados fora de escopo (sinalizados, não corrigidos): os mesmos 8 testes pré-existentes de mobile seguem inalterados; contraste `white/30` em arquivos mobile (`hmi-visor.tsx` etc.) fica para as Sessões 6-7, que já vão reescrever esses arquivos.
+- Verificação de cada sessão: `tsc` 0 erros, build ok, suíte verde exceto as 8 falhas pré-existentes de sempre. Sem verificação visual em navegador — nenhuma ferramenta de browser disponível nestas sessões.
+- Próximo passo: Sessão 6 — Mobile: Config 80/20 + alvos de toque + testes base.
+
+---
+
 ## 📄 Sessão de execução — Implementação DS + 80/20 + Mobile, Sessões 1-3/8 (05/08/2026)
 
 Execução do `PLAN_IMPLEMENTACAO_DS_80-20_MOBILE.md` — commits `895ba05`, `abe7588`, `7845488` (pushados).
