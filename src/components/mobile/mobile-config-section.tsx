@@ -9,6 +9,7 @@ import { StyledSlider } from '@/components/styled-slider';
 import { CollapsibleSection } from '@/components/collapsible-section';
 import { BUTTON_PM_TOUCH } from '@/components/design-tokens';
 import { haptics } from '@/utils/haptics';
+import { MobileCuttingParamsSliders } from './mobile-cutting-params';
 
 /**
  * Mobile-friendly number input with raw/blur pattern.
@@ -358,6 +359,13 @@ export function MobileConfigSection() {
             onChange={(v) => setFerramenta({ balanco: v })}
           />
         </div>
+      </div>
+
+      {/* Cutting parameters — same sliders component used post-simulation in the Ajustar tab */}
+      <div data-testid="cutting-params-section" className="bg-[rgba(30,38,50,0.95)] backdrop-blur-sm rounded-xl border border-white/10 p-4">
+        <SectionTitle color="bg-accent-orange" label="Parâmetros de Corte" />
+        <p className="text-[9px] text-gray-500 mb-3">Ajuste Vc, fz, ap e ae antes de simular</p>
+        <MobileCuttingParamsSliders />
       </div>
 
       {/* Ajuste avançado — Raio da Ponta (toroidal) + Fator de Correção */}

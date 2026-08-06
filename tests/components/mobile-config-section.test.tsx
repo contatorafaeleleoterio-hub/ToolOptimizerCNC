@@ -1,4 +1,4 @@
-import { render, screen, fireEvent } from '@testing-library/react';
+import { render, screen, fireEvent, within } from '@testing-library/react';
 import { describe, it, expect, beforeEach } from 'vitest';
 import { BrowserRouter } from 'react-router-dom';
 import { MobileConfigSection } from '@/components/mobile/mobile-config-section';
@@ -61,11 +61,17 @@ describe('MobileConfigSection', () => {
     expect(screen.getByLabelText('Altura de Fixação (mm)')).toBeInTheDocument();
   });
 
-  it('does not duplicate ap/ae/fz/Vc raw inputs (fine-tuning lives in the Ajustar tab)', () => {
+  it('renders the 4 cutting-parameter sliders (Vc/fz/ae/ap) always visible, before simulating', () => {
     renderSection();
-    expect(screen.queryByLabelText('ap (mm)')).not.toBeInTheDocument();
-    expect(screen.queryByLabelText('ae (mm)')).not.toBeInTheDocument();
-    expect(screen.queryByLabelText('fz (mm)')).not.toBeInTheDocument();
+    const section = screen.getByTestId('cutting-params-section');
+    expect(within(section).getByText('Parâmetros de Corte')).toBeInTheDocument();
+    expect(within(section).getAllByRole('slider')).toHaveLength(4);
+  });
+
+  it('changes fz when its slider value input changes', () => {
+    renderSection();
+    fireEvent.change(screen.getByLabelText('fz value'), { target: { value: '0.08' } });
+    expect(useMachiningStore.getState().parametros.fz).toBeCloseTo(0.08);
   });
 
   it('shows Raio da Ponta inside Ajuste avançado for toroidal (default)', () => {
