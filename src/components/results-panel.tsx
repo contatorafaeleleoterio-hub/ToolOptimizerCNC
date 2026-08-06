@@ -323,7 +323,7 @@ export function ResultsPanel() {
         </div>
       </div>
       {storeResultado === null && (
-        <div className="flex items-center justify-center gap-2 -mt-1 font-mono text-xs uppercase tracking-wide text-white/30">
+        <div className="flex items-center justify-center gap-2 -mt-1 font-mono text-xs uppercase tracking-wide text-white/60">
           <span className="material-symbols-outlined text-sm">touch_app</span>
           Configure os parâmetros e clique em Simular
         </div>

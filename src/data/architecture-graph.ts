@@ -177,7 +177,7 @@ const FILE_LINES: Record<string, number> = {
   'src/components/collapsible-section.tsx': 95,
   'src/components/half-moon-gauge.tsx': 174,
   'src/components/segmented-gradient-bar.tsx': 239,
-  'src/components/sidebar-footer.tsx': 52,
+  'src/components/header-nav.tsx': 48,
   'src/components/slider-tokens.ts': 17,
   'src/vite-env.d.ts': 3,
 };
@@ -291,7 +291,7 @@ const NODE_SEEDS: NodeSeed[] = [
   { id: 'collapsible-section', labelPt: 'collapsible section', category: 'component', filePath: 'src/components/collapsible-section.tsx', group: 'components' },
   { id: 'half-moon-gauge', labelPt: 'half moon gauge', category: 'component', filePath: 'src/components/half-moon-gauge.tsx', group: 'components' },
   { id: 'segmented-gradient-bar', labelPt: 'segmented gradient bar', category: 'component', filePath: 'src/components/segmented-gradient-bar.tsx', group: 'components' },
-  { id: 'sidebar-footer', labelPt: 'sidebar footer', category: 'component', filePath: 'src/components/sidebar-footer.tsx', group: 'components' },
+  { id: 'header-nav', labelPt: 'nav do header (Calcular/Favoritos/Histórico/Config)', category: 'component', filePath: 'src/components/header-nav.tsx', group: 'components' },
   { id: 'slider-tokens', labelPt: 'slider tokens', category: 'util', filePath: 'src/components/slider-tokens.ts', group: 'components' },
   { id: 'modal', labelPt: 'Modal base compartilhado (portal, foco, Escape)', category: 'component', filePath: 'src/components/ui/modal.tsx', group: 'components' },
   { id: 'vite-env.d', labelPt: 'vite env.d', category: 'type', filePath: 'src/vite-env.d.ts', group: 'types' },
@@ -346,6 +346,7 @@ const LEVEL2_EDGES: ArchEdge[] = [
   { from: 'main', to: 'settings-page', type: 'renders', level: 2 },
   { from: 'main', to: 'architecture-page', type: 'renders', level: 2 },
 
+  { from: 'app', to: 'header-nav', type: 'renders', level: 2 },
   { from: 'app', to: 'config-panel', type: 'renders', level: 2 },
   { from: 'app', to: 'results-panel', type: 'renders', level: 2 },
   { from: 'app', to: 'fine-tune-panel', type: 'renders', level: 2 },

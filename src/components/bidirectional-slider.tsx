@@ -133,7 +133,7 @@ export function BidirectionalSlider({
 
           <div
             ref={trackRef}
-            className="relative h-8 flex-1 mx-[12px] flex items-center cursor-pointer select-none touch-none"
+            className="relative h-8 flex-1 mx-[12px] flex items-center cursor-pointer select-none touch-none rounded-full focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/60 focus-visible:ring-offset-2 focus-visible:ring-offset-background-dark"
             onMouseDown={handleMouseDown}
             onTouchStart={handleTouchStart}
             onTouchMove={handleTouchMove}
@@ -250,7 +250,7 @@ export function BidirectionalSlider({
         {/* Custom div-based slider track */}
         <div
           ref={trackRef}
-          className="relative h-10 flex-1 mx-[18px] flex items-center cursor-pointer select-none touch-none"
+          className="relative h-10 flex-1 mx-[18px] flex items-center cursor-pointer select-none touch-none rounded-full focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/60 focus-visible:ring-offset-2 focus-visible:ring-offset-background-dark"
           onMouseDown={handleMouseDown}
           onTouchStart={handleTouchStart}
           onTouchMove={handleTouchMove}
