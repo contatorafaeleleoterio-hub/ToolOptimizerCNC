@@ -29,7 +29,7 @@ A ordem garante estabilidade progressiva: bugs corrigidos antes de features, fea
 | 12 | [Story-011 ITEM-5.2 Cassino](#12-story-011-cassino) | 🎬 Animation | v0.11.0 | 3 sub-sessões | ✅ Concluído (`b2183bd`) |
 | 13 | [Redesign Calculadora 80/20](#13-redesign-calculadora-8020) | 🎨 Redesign | MINOR | 5 arquivos + testes, 4 sessões (S0-S3) | 🔁 Absorvido pelo item 15 |
 | 14 | [Design System Canônico](#14-design-system-canônico) | 📄 Docs / Design Audit | — | 1 arquivo HTML, 4 sessões, zero `src/` | ✅ Concluído (`d471895`) |
-| 15 | [Implementação DS + 80/20 + Mobile + Dívida Visual](#15-implementação-ds--8020--mobile--dívida-visual) | 🎨 Redesign + Refactor | v0.12.0 | ~25 arquivos + 9 testes novos, 8 sessões | 🔁 Em andamento (6/8 sessões — `d327529`) |
+| 15 | [Implementação DS + 80/20 + Mobile + Dívida Visual](#15-implementação-ds--8020--mobile--dívida-visual) | 🎨 Redesign + Refactor | v0.12.0 | ~25 arquivos + 9 testes novos, 8 sessões | 🔁 Em andamento (6/8 sessões — `e5975c9`) |
 
 ---
 
@@ -263,7 +263,7 @@ v0.5.5 — Segurança Cibernética ⬜
 - ✅ Sessão 3 — Desktop S1: Config Panel enxuto (`7845488`)
 - ✅ Sessão 4 — Desktop S2: Results Panel 8→4 zonas (`4254bfb`)
 - ✅ Sessão 5 — Desktop S3: nav no header + acessibilidade (`8e11250`)
-- ✅ Sessão 6 — Mobile: Config 80/20 + alvos de toque (`d327529`)
+- ✅ Sessão 6 — Mobile: Config 80/20 + alvos de toque (`d327529`, corrigido em `e5975c9` — Parâmetros de Corte restaurado com indicadores+sliders após feedback)
 - ⬜ Sessões 7-8 pendentes (próxima: Mobile Resultados com indicadores + vazio honesto)
 
 ---

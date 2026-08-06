@@ -95,7 +95,7 @@ npx tsc --noEmit
 | 13 | [MVP Android Launch (11 sessões)](#-mvp-android-launch) | 🚀 Launch | v0.12.0 | ⬜ Pendente |
 | 14 | Redesign Calculadora 80/20 (4 sessões S0-S3) — `docs/plans/REDESIGN_DASHBOARD_80-20.md` | 🎨 Redesign | MINOR | 🔁 Absorvido pelo item 16 |
 | 15 | Design System Canônico (4 sessões, replanejado de 6) — `docs/plans/PLAN_DESIGN_SYSTEM_CANONICO.md` | 📄 Docs / Design Audit | — | ✅ Concluído (`d471895`) |
-| 16 | Implementação DS + 80/20 + Mobile + Dívida Visual (8 sessões) — `docs/plans/PLAN_IMPLEMENTACAO_DS_80-20_MOBILE.md` | 🎨 Redesign + Refactor | v0.12.0 | 🔁 Em andamento (6/8 — `d327529`) |
+| 16 | Implementação DS + 80/20 + Mobile + Dívida Visual (8 sessões) — `docs/plans/PLAN_IMPLEMENTACAO_DS_80-20_MOBILE.md` | 🎨 Redesign + Refactor | v0.12.0 | 🔁 Em andamento (6/8 — `e5975c9`) |
 
 ### ✅ Reestruturação Documental (v0.6.0) — CONCLUÍDA
 
@@ -414,6 +414,8 @@ Quando uma nova implementação for planejada durante a sessão:
 - Quality gates: 1040 testes passam, 8 falhas pré-existentes inalteradas (mobile-results-section ×7 + mobile-page ×1, agendadas para Sessão 7) · TypeScript zero erros · build limpo.
 
 **Não verificado:** validação visual em navegador real (`npm run dev` + emulação mobile) — nenhuma ferramenta de browser (Playwright MCP) conectada nesta sessão. Cobertura de comportamento vem só dos testes jsdom/RTL — não pega problemas puramente visuais (layout, overflow, contraste real).
+
+**Correção pós-feedback do Rafael (mesma sessão, commit `e5975c9`):** a remoção de "Parâmetros de Corte" acima estava errada — a seção existe em dois momentos do fluxo (início da configuração + ajuste pós-simulação), não é duplicata. Restaurada dentro de Configurar, mas reconstruída com o mesmo indicador de faixa (`SegmentedGradientBar`) + slider touch (`TouchSlider`) já usado na aba Ajustar, em vez dos `NumInput` crus que ela tinha antes. Os dois pontos de uso (Configurar e Ajustar) agora compartilham o componente `mobile-cutting-params.tsx` (extraído de `mobile-fine-tune-section.tsx`) — comportamento idêntico nos dois, já que o indicador de faixa ideal vem dos favoritos salvos, não do `resultado` da simulação.
 
 **Próximo passo:** Sessão 7 — Mobile: Resultados com indicadores + vazio honesto + torque fora (`docs/plans/PLAN_IMPLEMENTACAO_DS_80-20_MOBILE.md`).
 **Retomar com:** "continuar"
