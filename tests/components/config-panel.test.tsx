@@ -155,11 +155,12 @@ describe('ConfigPanel', () => {
     expect(screen.queryByText('Vc (m/min)')).not.toBeInTheDocument();
   });
 
-  it('renders FineTunePanel sliders inside Ajuste avançado section', () => {
+  it('renders the 4 cutting parameter sliders without opening any accordion', () => {
     renderPanel();
-    openAdvanced();
-    expect(screen.getByText('VEL. DE CORTE')).toBeInTheDocument();
-    expect(screen.getByText('AVANÇO/DENTE')).toBeInTheDocument();
+    expect(screen.getByText('Parâmetros de Corte')).toBeInTheDocument();
+    for (const label of ['VEL. DE CORTE', 'AVANÇO/DENTE', 'ENGAJ. RADIAL', 'PROF. AXIAL']) {
+      expect(screen.getByText(label)).toBeInTheDocument();
+    }
   });
 
   it('raio da ponta renders as numeric input for toroidal', () => {

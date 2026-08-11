@@ -52,8 +52,8 @@ export default function App() {
         <ExportButtons />
       </header>
 
-      {/* 2-column grid — config fixo 340px, resultados ocupam o resto */}
-      <main className="flex-1 grid grid-cols-[340px_1fr] gap-3 min-h-0">
+      {/* 2-column grid — config fixo 400px, resultados ocupam o resto */}
+      <main className="flex-1 grid grid-cols-[400px_1fr] gap-3 min-h-0">
         <section className="flex flex-col min-h-0 pr-1 gap-2">
           <FlowStep />
           <div className="flex-1 overflow-y-auto">

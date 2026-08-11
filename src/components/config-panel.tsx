@@ -67,31 +67,29 @@ function NumberInputRow({
 
   return (
     <div className="flex flex-col gap-1 rounded-lg px-3 py-2" style={ROW_STYLE}>
-      <div className="flex items-center justify-between gap-3">
-        <span className="text-base font-semibold text-white/85 leading-none">{label}</span>
-        <input
-          type="number"
-          min={min}
-          max={max}
-          step={step}
-          value={raw}
-          onChange={(e) => {
-            setRaw(e.target.value);
-            const n = Number(e.target.value);
-            if (!isNaN(n) && n >= min && n <= max) onChange(n);
-          }}
-          onBlur={() => {
-            // Reset display to last valid store value if current raw is invalid
-            if (invalid) setRaw(String(value));
-          }}
-          aria-label={label}
-          className={`bg-black/50 border rounded px-2 py-1 text-base text-white font-mono focus:outline-none w-[100px] ${
-            invalid
-              ? 'border-red-500 text-red-400 focus:border-red-400'
-              : 'border-white/10 focus:border-primary'
-          }`}
-        />
-      </div>
+      <span className="text-base font-semibold text-white/85 leading-none">{label}</span>
+      <input
+        type="number"
+        min={min}
+        max={max}
+        step={step}
+        value={raw}
+        onChange={(e) => {
+          setRaw(e.target.value);
+          const n = Number(e.target.value);
+          if (!isNaN(n) && n >= min && n <= max) onChange(n);
+        }}
+        onBlur={() => {
+          // Reset display to last valid store value if current raw is invalid
+          if (invalid) setRaw(String(value));
+        }}
+        aria-label={label}
+        className={`bg-black/50 border rounded px-2 py-1 text-base text-white font-mono focus:outline-none w-full max-w-[140px] ${
+          invalid
+            ? 'border-red-500 text-red-400 focus:border-red-400'
+            : 'border-white/10 focus:border-primary'
+        }`}
+      />
       {invalid && (
         <span className="text-xs text-red-400 px-1">
           Válido: {min}–{max} {unit}
@@ -219,7 +217,7 @@ function SavedToolsList({ savedTools, activeDiametro, onLoad, onEdit, onRemove }
 
 export function ConfigPanel() {
   const {
-    materialId, ferramenta, tipoOperacao, parametros,
+    materialId, ferramenta, tipoOperacao,
     setMaterial, setFerramenta, setTipoOperacao,
     simular, reset,
     savedTools, loadSavedTool, addSavedTool, removeSavedTool, updateSavedTool,
@@ -250,7 +248,7 @@ export function ConfigPanel() {
   const material = MATERIAIS.find((m) => m.id === materialId);
   const vcRange = material?.vcRanges[tipoOperacao];
 
-  const summaryAvancado = `Vc ${parametros.vc} · SF ${Math.round(safetyFactor * 100)}%`;
+  const summaryAvancado = `SF ${Math.round(safetyFactor * 100)}%`;
 
   const handleSimulate = () => {
     track('Simulacao_Executada', {
@@ -352,7 +350,7 @@ export function ConfigPanel() {
           </div>
         </FieldGroup>
 
-        <div className="grid grid-cols-[1fr_140px] gap-3">
+        <div className="grid grid-cols-[minmax(0,1fr)_140px] gap-3">
           <NumberInputRow
             label="Diâmetro (mm)"
             value={ferramenta.diametro}
@@ -398,6 +396,10 @@ export function ConfigPanel() {
           onChange={(v) => setFerramenta({ balanco: v })}
         />
 
+        <span className="text-[11px] uppercase tracking-widest text-gray-600 font-bold mt-2">Parâmetros de Corte</span>
+
+        <FineTunePanel embedded />
+
         <CollapsibleSection
           title="⚙ Ajuste avançado"
           summary={summaryAvancado}
@@ -416,10 +418,6 @@ export function ConfigPanel() {
                 onChange={(v) => setFerramenta({ raioQuina: v })}
               />
             )}
-
-            <div>
-              <FineTunePanel embedded />
-            </div>
 
             <div className="space-y-2 pt-1 border-t border-white/5">
               <div className="flex items-center gap-2 pt-2">

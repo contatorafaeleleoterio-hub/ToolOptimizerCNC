@@ -96,7 +96,7 @@ export function FineTunePanel({ embedded = false }: { embedded?: boolean }) {
   }, [bounds.vc.min, bounds.vc.max, bounds.ae.max, bounds.ap.max, bounds.fz.min, bounds.fz.max]);
 
   return (
-    <div className={embedded ? 'flex flex-col overflow-hidden' : 'bg-surface-dark backdrop-blur-xl border border-white/5 rounded-2xl p-4 shadow-glass h-full flex flex-col overflow-y-auto'}>
+    <div className={embedded ? 'flex flex-col' : 'bg-surface-dark backdrop-blur-xl border border-white/5 rounded-2xl p-4 shadow-glass h-full flex flex-col overflow-y-auto'}>
       {!embedded && (
         <h2 className="text-sm font-bold uppercase tracking-widest mb-4 flex items-center gap-2 text-gray-300">
           <span className="material-symbols-outlined text-base">tune</span> Ajuste Fino

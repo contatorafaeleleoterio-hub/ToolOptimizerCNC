@@ -88,7 +88,7 @@ const FILE_LINES: Record<string, number> = {
   'src/components/bidirectional-slider.tsx': 223,
   'src/components/bug-report-button.tsx': 167,
   'src/components/ui/modal.tsx': 68,
-  'src/components/config-panel.tsx': 510,
+  'src/components/config-panel.tsx': 490,
   'src/components/design-tokens.ts': 15,
   'src/components/disclaimer.tsx': 8,
   'src/components/export-buttons.tsx': 85,
