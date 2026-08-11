@@ -34,7 +34,7 @@ function OperationBadge({ tipo }: { tipo: TipoUsinagem }) {
   return (
     <div className="flex flex-col">
       <span className="text-[10px] text-gray-500 uppercase tracking-wider">Operação</span>
-      <span className="text-sm font-semibold text-white/90 bg-white/10 px-2 py-0.5 rounded-md inline-block">
+      <span className="text-sm font-semibold text-white/90 bg-white/10 px-2 py-0.5 rounded-lg inline-block">
         {OPERACAO_LABELS[tipo]}
       </span>
     </div>

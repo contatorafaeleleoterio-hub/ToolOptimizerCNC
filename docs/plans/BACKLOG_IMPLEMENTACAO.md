@@ -1,8 +1,8 @@
 # Backlog de Implementação — ToolOptimizer CNC
 
-> **Última atualização:** 05/08/2026 (sessão de execução — 3/8 sessões do item 15)
-> **Versão atual:** v0.11.0 (Story-011 2C concluída, `b2183bd`) — v0.12.0 alvo ao final do item 15
-> **Total de planos pendentes:** 2 (Segurança v0.5.5 ⏸️ pausada + Implementação DS + 80/20 + Mobile 🔁 em andamento) — Redesign 80/20 absorvido pelo item 15
+> **Última atualização:** 07/08/2026 (sessão de execução — 8/8 sessões do item 15)
+> **Versão atual:** v0.12.0 (Implementação DS + 80/20 + Mobile concluída localmente)
+> **Total de planos pendentes:** 0 — Redesign 80/20 absorvido e concluído pelo item 15
 
 Esta lista define a ordem de implementação dos planos criados e ainda não executados.
 A ordem garante estabilidade progressiva: bugs corrigidos antes de features, features antes de polish.
@@ -19,7 +19,6 @@ A ordem garante estabilidade progressiva: bugs corrigidos antes de features, fea
 | 2 | Fix TouchSlider Mobile | 🐛 Bug Fix | v0.5.2 | 1 arquivo | ✅ Concluído (`9fbb34b`) |
 | 3 | Unificar Indicadores Ajuste Fino | ✨ Feature | v0.5.3 | 2 arquivos | ✅ Concluído (`b6b9812`) |
 | 4 | Favicon e Ícones | 💄 Polish | v0.5.4 | 4+ arquivos | ✅ Concluído (`51b272a`) |
-| 5 | [Segurança Cibernética](#5-segurança-cibernética) | 🔒 Security | v0.5.5 | 6 arquivos + config manual | ⬜ Pendente |
 | 6 | [Reestruturação Documental](#6-reestruturação-documental) | 🏗️ Infra | v0.6.0 | ~150 arquivos docs | ✅ Concluído (4 fases) |
 | 7 | [Admin Dashboard](#7-admin-dashboard) | ✨ Feature | v0.7.0 | 9 páginas, 3 stores, ~30 arquivos | ✅ Concluído (`ab5eb8f`) |
 | 8 | [Redesign Dashboard Principal](#8-redesign-dashboard-principal) | 🎨 Redesign | v0.8.0 | ~10 arquivos + testes, 8 fases | ✅ Concluído (`78d6a0e`) |
@@ -29,7 +28,7 @@ A ordem garante estabilidade progressiva: bugs corrigidos antes de features, fea
 | 12 | [Story-011 ITEM-5.2 Cassino](#12-story-011-cassino) | 🎬 Animation | v0.11.0 | 3 sub-sessões | ✅ Concluído (`b2183bd`) |
 | 13 | [Redesign Calculadora 80/20](#13-redesign-calculadora-8020) | 🎨 Redesign | MINOR | 5 arquivos + testes, 4 sessões (S0-S3) | 🔁 Absorvido pelo item 15 |
 | 14 | [Design System Canônico](#14-design-system-canônico) | 📄 Docs / Design Audit | — | 1 arquivo HTML, 4 sessões, zero `src/` | ✅ Concluído (`d471895`) |
-| 15 | [Implementação DS + 80/20 + Mobile + Dívida Visual](#15-implementação-ds--8020--mobile--dívida-visual) | 🎨 Redesign + Refactor | v0.12.0 | ~25 arquivos + 9 testes novos, 8 sessões | 🔁 Em andamento (7/8 sessões — `31395be`) |
+| 15 | [Implementação DS + 80/20 + Mobile + Dívida Visual](#15-implementação-ds--8020--mobile--dívida-visual) | 🎨 Redesign + Refactor | v0.12.0 | ~25 arquivos + 9 testes novos, 8 sessões | 🔁 Concluído localmente (8/8 sessões) |
 
 ---
 
@@ -63,29 +62,6 @@ A ordem garante estabilidade progressiva: bugs corrigidos antes de features, fea
 
 ---
 
-### 5. Segurança Cibernética
-
-**Arquivo do plano:** `PLAN_Seguranca_Cibernetica.md`
-**Prioridade:** ALTA — mas depende de ações manuais (GitHub privado, Cloudflare config)
-
-**Problema:** Auditoria identificou gaps: CSP header faltando, dependências com vulnerabilidades, `importSettings()` sem validação de ranges, repositório público expondo código-fonte, script Plausible inativo carregando CDN desnecessário.
-
-**7 fases de implementação (na ordem):**
-
-| Fase | Ação | Quem | Arquivo |
-|------|------|------|---------|
-| 1 | Repo privado + remover GitHub Pages | Rafael (manual) | GitHub Settings |
-| 2 | CSP header | Claude | `public/_headers` |
-| 3 | npm audit no CI + Dependabot | Claude | `ci.yml` + novo `dependabot.yml` |
-| 4 | Validação ranges em importSettings/importHistory | Claude | stores |
-| 5 | Remover script Plausible inativo | Claude | `index.html` + `use-plausible.ts` |
-| 6 | Bot Fight Mode + Rate Limiting | Rafael (manual) | Cloudflare Dashboard |
-| 7 | Branch protection + Dependabot alerts | Rafael (manual) | GitHub Settings |
-
-**Testes:** Adicionar testes para importação com valores inválidos
-
----
-
 ## Rationale da Ordem
 
 ```
@@ -96,8 +72,6 @@ v0.5.1 — Fix BugReportModal ✅
 v0.5.2 — Fix TouchSlider Mobile + Favicon ✅
     ↓ [consistência visual]
 v0.5.3/v0.4.2 — Unificar Indicadores ✅
-    ↓ [segurança]
-v0.5.5 — Segurança Cibernética ⬜
 ```
 
 ### 6. Reestruturação Documental
@@ -197,7 +171,7 @@ v0.5.5 — Segurança Cibernética ⬜
 ### 13. Redesign Calculadora 80/20
 
 **Arquivo do plano:** `REDESIGN_DASHBOARD_80-20.md` (v3 consolidado, 18/07/2026)
-**Prioridade:** ALTA — próxima atividade principal do dashboard de cálculo (Cloud Code)
+**Prioridade:** ALTA — próxima atividade principal do dashboard de cálculo
 **Tipo:** Redesign de exposição — zero engine novo
 
 **Problema:** ~45-50 elementos visuais simultâneos; herói RPM/Avanço em 2rem; estado vazio mostra zeros falsos + timestamp falso; torque exibido sem ser validado em nenhum cálculo; navegação escondida no SidebarFooter.
@@ -257,7 +231,7 @@ v0.5.5 — Segurança Cibernética ⬜
 
 **Sequência:** Bloco 1 (limpeza) → Modal/Acordeão base → desktop S1/S2/S3 → mobile config → mobile results → Bloco 2 (snap de escala) + docs + bump. Detalhes por sessão no arquivo do plano.
 
-**Progresso (05/08/2026):**
+**Progresso (07/08/2026):**
 - ✅ Sessão 1 — dívida bloco 1: limpeza zero-risco (`895ba05`)
 - ✅ Sessão 2 — Modal e Acordeão unificados (`abe7588`)
 - ✅ Sessão 3 — Desktop S1: Config Panel enxuto (`7845488`)
@@ -265,12 +239,11 @@ v0.5.5 — Segurança Cibernética ⬜
 - ✅ Sessão 5 — Desktop S3: nav no header + acessibilidade (`8e11250`)
 - ✅ Sessão 6 — Mobile: Config 80/20 + alvos de toque (`d327529`, corrigido em `e5975c9` — Parâmetros de Corte restaurado com indicadores+sliders após feedback)
 - ✅ Sessão 7 — Mobile: Resultados com indicadores + vazio honesto + torque fora (`31395be`) — resolveu as 8 falhas pré-existentes (bug de `viewMode` duplicando badge de segurança)
-- ⬜ Sessão 8 pendente (varredura final de dívida visual + docs + bump v0.12.0)
+- ✅ Sessão 8 — varredura final de dívida visual + Vitest confiável + architecture graph + docs + bump v0.12.0 (local)
 
 ---
 
 **Regras aplicadas:**
 - Bugs antes de features
 - Menor escopo antes de maior escopo
-- Segurança após estabilidade funcional
 - Fases manuais (Rafael) e automáticas (Claude) claramente separadas

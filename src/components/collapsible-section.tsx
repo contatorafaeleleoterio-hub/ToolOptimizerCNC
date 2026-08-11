@@ -52,7 +52,7 @@ export function CollapsibleSection({
             <span className="text-sm font-bold uppercase tracking-widest text-gray-300">{title}</span>
             <div className="flex items-center gap-2">
               {!isOpen && summary && (
-                <span className="text-[13px] text-gray-500 truncate max-w-[140px]">{summary}</span>
+                <span className="text-sm text-gray-500 truncate max-w-[140px]">{summary}</span>
               )}
               <span
                 className="material-symbols-outlined text-gray-500 transition-transform duration-300 text-base"

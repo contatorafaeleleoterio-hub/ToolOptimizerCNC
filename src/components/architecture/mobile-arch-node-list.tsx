@@ -69,13 +69,13 @@ function NodeCard({ node, index }: { node: ArchNode; index: number }) {
           {connectedIds.slice(0, 5).map((cid) => (
             <span
               key={cid}
-              className="rounded-md border border-white/5 bg-white/3 px-1.5 py-0.5 text-[9px] text-gray-500"
+              className="rounded-lg border border-white/5 bg-white/3 px-1.5 py-0.5 text-[9px] text-gray-500"
             >
               {cid}
             </span>
           ))}
           {connectedIds.length > 5 && (
-            <span className="rounded-md bg-white/3 px-1.5 py-0.5 text-[9px] text-gray-600">
+            <span className="rounded-lg bg-white/3 px-1.5 py-0.5 text-[9px] text-gray-600">
               +{connectedIds.length - 5}
             </span>
           )}

@@ -395,7 +395,7 @@ export function MobileConfigSection() {
                   setSafetyFactor(Math.round(Math.max(0.50, safetyFactor - 0.05) * 100) / 100);
                   haptics.impactLight();
                 }}
-                className={`${BUTTON_PM_TOUCH} shrink-0 flex items-center justify-center rounded-md bg-black/40 border border-white/10 text-gray-400 text-base font-bold`}
+                className={`${BUTTON_PM_TOUCH} shrink-0 flex items-center justify-center rounded-lg bg-black/40 border border-white/10 text-gray-400 text-base font-bold`}
                 aria-label="Reduzir fator de correção"
               >−</button>
               <div className="flex-1">
@@ -417,7 +417,7 @@ export function MobileConfigSection() {
                   setSafetyFactor(Math.round(Math.min(1.00, safetyFactor + 0.05) * 100) / 100);
                   haptics.impactLight();
                 }}
-                className={`${BUTTON_PM_TOUCH} shrink-0 flex items-center justify-center rounded-md bg-black/40 border border-white/10 text-gray-400 text-base font-bold`}
+                className={`${BUTTON_PM_TOUCH} shrink-0 flex items-center justify-center rounded-lg bg-black/40 border border-white/10 text-gray-400 text-base font-bold`}
                 aria-label="Aumentar fator de correção"
               >+</button>
               <span className="text-sm font-mono text-white w-12 text-right shrink-0">

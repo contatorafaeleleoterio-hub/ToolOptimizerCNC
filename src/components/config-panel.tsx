@@ -66,7 +66,7 @@ function NumberInputRow({
   const invalid = raw.trim() === '' || isNaN(parsed) || parsed < min || parsed > max;
 
   return (
-    <div className="flex flex-col gap-1 rounded-md px-3 py-2" style={ROW_STYLE}>
+    <div className="flex flex-col gap-1 rounded-lg px-3 py-2" style={ROW_STYLE}>
       <div className="flex items-center justify-between gap-3">
         <span className="text-base font-semibold text-white/85 leading-none">{label}</span>
         <input
@@ -88,7 +88,7 @@ function NumberInputRow({
           className={`bg-black/50 border rounded px-2 py-1 text-base text-white font-mono focus:outline-none w-[100px] ${
             invalid
               ? 'border-red-500 text-red-400 focus:border-red-400'
-              : 'border-white/15 focus:border-primary'
+              : 'border-white/10 focus:border-primary'
           }`}
         />
       </div>
@@ -165,7 +165,7 @@ function SavedToolsList({ savedTools, activeDiametro, onLoad, onEdit, onRemove }
                     className={`flex items-center justify-between px-2 py-1.5 rounded-lg border transition-all ${
                       isActive
                         ? 'bg-primary/10 border-primary/30'
-                        : 'bg-black/20 border-white/8 hover:bg-white/5 hover:border-white/15'
+                        : 'bg-black/20 border-white/10 hover:bg-white/5 hover:border-white/10'
                     }`}
                   >
                     <button
@@ -244,7 +244,7 @@ export function ConfigPanel() {
     setTimeout(() => setShowSavedBadge(false), 2000);
   };
 
-  const { isCalculating, calcProgress, isRevealing, runSimulation } = useSimulationAnimation();
+  const { isUpdated, runSimulation } = useSimulationAnimation();
   const { track } = usePlausible();
 
   const material = MATERIAIS.find((m) => m.id === materialId);
@@ -362,7 +362,7 @@ export function ConfigPanel() {
             unit="mm"
             onChange={(v) => setFerramenta({ diametro: v })}
           />
-          <div className="flex flex-col gap-1 rounded-md px-3 py-2" style={ROW_STYLE}>
+          <div className="flex flex-col gap-1 rounded-lg px-3 py-2" style={ROW_STYLE}>
             <span className="text-base font-semibold text-white/85 leading-none">Z (dentes)</span>
             <div className="flex items-center gap-1.5">
               <button
@@ -417,7 +417,7 @@ export function ConfigPanel() {
               />
             )}
 
-            <div style={(isCalculating || isRevealing) ? { pointerEvents: 'none', opacity: 0.5 } : undefined}>
+            <div>
               <FineTunePanel embedded />
             </div>
 
@@ -425,7 +425,7 @@ export function ConfigPanel() {
               <div className="flex items-center gap-2 pt-2">
                 <button
                   onClick={() => setSafetyFactor(Math.round(Math.max(0.50, safetyFactor - 0.05) * 100) / 100)}
-                  className={`${BUTTON_PM_TOUCH} shrink-0 flex items-center justify-center rounded-md bg-black/30 border border-white/10 text-gray-400 hover:text-white hover:bg-white/10 transition-all font-bold`}
+                  className={`${BUTTON_PM_TOUCH} shrink-0 flex items-center justify-center rounded-lg bg-black/30 border border-white/10 text-gray-400 hover:text-white hover:bg-white/10 transition-all font-bold`}
                   aria-label="Reduzir fator de correção"
                 >−</button>
                 <div className="flex-1">
@@ -441,7 +441,7 @@ export function ConfigPanel() {
                 </div>
                 <button
                   onClick={() => setSafetyFactor(Math.round(Math.min(1.00, safetyFactor + 0.05) * 100) / 100)}
-                  className={`${BUTTON_PM_TOUCH} shrink-0 flex items-center justify-center rounded-md bg-black/30 border border-white/10 text-gray-400 hover:text-white hover:bg-white/10 transition-all font-bold`}
+                  className={`${BUTTON_PM_TOUCH} shrink-0 flex items-center justify-center rounded-lg bg-black/30 border border-white/10 text-gray-400 hover:text-white hover:bg-white/10 transition-all font-bold`}
                   aria-label="Aumentar fator de correção"
                 >+</button>
                 <span className="text-base font-mono text-primary w-12 text-right shrink-0">
@@ -465,31 +465,13 @@ export function ConfigPanel() {
         <div className="flex gap-3">
           <button
             onClick={handleSimulate}
-            disabled={isCalculating}
-            className="relative flex-1 py-2 px-4 rounded-xl bg-gradient-to-r from-cyan-600 to-cyan-500 text-white font-bold tracking-wide shadow-neon-cyan hover:brightness-110 transition-all active:scale-[0.98] flex items-center justify-center gap-2 text-base uppercase disabled:opacity-70 disabled:cursor-not-allowed overflow-hidden"
-            style={!isCalculating ? { animation: 'btnIdleGlow 3s ease-in-out infinite' } : undefined}
+            className="flex-1 py-2 px-4 rounded-xl bg-gradient-to-r from-cyan-600 to-cyan-500 text-white font-bold tracking-wide shadow-neon-cyan hover:brightness-110 transition-all active:scale-[0.98] flex items-center justify-center gap-2 text-base uppercase"
           >
-            {/* Progress bar fill */}
-            {isCalculating && (
-              <span
-                className="absolute inset-0 rounded-xl origin-left transition-none"
-                style={{
-                  background: 'linear-gradient(90deg, rgba(0,217,255,0.35) 0%, rgba(57,255,20,0.25) 100%)',
-                  transform: `scaleX(${calcProgress / 100})`,
-                  transition: calcProgress > 0 ? 'transform 0.08s linear' : 'none',
-                }}
-              />
-            )}
-            <span className="relative flex items-center gap-2">
-              {isCalculating ? (
+            <span className="flex items-center gap-2">
+              {isUpdated ? (
                 <>
-                  <span
-                    className="material-symbols-outlined text-lg"
-                    style={{ animation: 'spinIcon 0.9s linear infinite' }}
-                  >
-                    casino
-                  </span>
-                  CALCULANDO {calcProgress}%
+                  <span className="material-symbols-outlined text-lg">check_circle</span>
+                  Atualizado
                 </>
               ) : (
                 <>

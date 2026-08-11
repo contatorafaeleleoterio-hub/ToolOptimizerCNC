@@ -75,10 +75,10 @@ export function ArchGroup({
       </div>
 
       <div className="mt-5 flex flex-wrap gap-2 text-[11px]">
-        <span className="rounded-full border border-white/10 bg-white/5 px-2.5 py-1 text-gray-200">
+        <span className="rounded-full border border-white/10 bg-white/5 px-3 py-1 text-gray-200">
           {nodeCount} arquivos
         </span>
-        <span className="rounded-full border border-white/10 bg-white/5 px-2.5 py-1 text-gray-200">
+        <span className="rounded-full border border-white/10 bg-white/5 px-3 py-1 text-gray-200">
           {totalLines} linhas
         </span>
       </div>

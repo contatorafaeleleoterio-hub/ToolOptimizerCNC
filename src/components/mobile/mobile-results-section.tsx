@@ -1,7 +1,6 @@
 import { useState } from 'react';
 import { useMachiningStore } from '@/store';
 import { useHistoryStore } from '@/store';
-import { useSimulationAnimation } from '@/hooks/use-simulation-animation';
 import { TipoUsinagem } from '@/types/index';
 import type { Ferramenta, SavedTool } from '@/types/index';
 import { FormulaCard, Fraction } from '@/components/formula-card';
@@ -62,9 +61,7 @@ export function MobileResultsSection() {
   const historyEntries = useHistoryStore((s) => s.entries);
   const toggleFavorite = useHistoryStore((s) => s.toggleFavorite);
 
-  const { isRevealing } = useSimulationAnimation();
-  const flash = (delayMs: number) =>
-    isRevealing ? { animation: `jackpotFlash 550ms ease-out ${delayMs}ms both` } : undefined;
+  const flash = (_delayMs: number) => undefined;
 
   const [editingTool, setEditingTool] = useState<SavedTool | null>(null);
   const [viewMode, setViewMode] = useState<'educational' | 'hmi'>('hmi');
@@ -119,7 +116,7 @@ export function MobileResultsSection() {
     <section className="flex flex-col gap-3 px-4 pb-32">
 
       {/* ═══ ZONA 1 — Console Header Bar ═══ */}
-      <div className="flex items-center gap-2 px-2.5 py-1.5 bg-background-dark border border-white/10 rounded-lg">
+      <div className="flex items-center gap-2 px-3 py-1.5 bg-background-dark border border-white/10 rounded-lg">
         <div className="flex items-center gap-1.5 flex-1 min-w-0">
           <span className="font-mono text-[10px] text-white/35 shrink-0">{timestamp}</span>
           <span className="w-1 h-1 rounded-full bg-white/20 shrink-0" />
@@ -133,7 +130,7 @@ export function MobileResultsSection() {
         {/* View Mode Toggle */}
         <button
           onClick={toggleViewMode}
-          className={`flex items-center gap-1 px-2 py-0.5 rounded-md border text-[9px] font-bold uppercase tracking-wider transition-all active:scale-95 ${
+          className={`flex items-center gap-1 px-2 py-0.5 rounded-lg border text-[9px] font-bold uppercase tracking-wider transition-all active:scale-95 ${
             viewMode === 'hmi' 
               ? 'bg-primary/20 border-primary/40 text-primary' 
               : 'bg-white/5 border-white/10 text-white/40'
@@ -148,7 +145,7 @@ export function MobileResultsSection() {
         {/* Safety badge inline — hidden in HMI mode once resultado exists, since HmiVisor
             already shows the same status prominently in its own status bar right below */}
         {!(viewMode === 'hmi' && resultado) && (
-          <div className={`flex items-center gap-1 px-2 py-0.5 rounded-md border text-[10px] font-bold uppercase tracking-wide shrink-0 ${SEG_BG[nivel]}`}>
+          <div className={`flex items-center gap-1 px-2 py-0.5 rounded-lg border text-[10px] font-bold uppercase tracking-wide shrink-0 ${SEG_BG[nivel]}`}>
             <span
               className={`material-symbols-outlined text-sm ${SEG_COLORS[nivel]}`}
               style={{ fontVariationSettings: "'FILL' 1, 'wght' 400" }}
@@ -163,7 +160,7 @@ export function MobileResultsSection() {
           <button
             aria-label={isFavorited ? 'Remover dos favoritos' : 'Favoritar simulação'}
             onClick={() => toggleFavorite(latestEntry.id)}
-            className="p-1 rounded-md bg-black/30 border border-white/10 active:bg-white/5 transition-all active:scale-95 shrink-0"
+            className="p-1 rounded-lg bg-black/30 border border-white/10 active:bg-white/5 transition-all active:scale-95 shrink-0"
           >
             <span
               className="material-symbols-outlined text-base transition-all"
@@ -206,7 +203,7 @@ export function MobileResultsSection() {
         <button
           aria-label="Editar ferramenta"
           onClick={() => matchingSavedTool && setEditingTool(matchingSavedTool)}
-          className="p-1 rounded-md bg-white/5 border border-white/10 active:bg-white/10 transition-all shrink-0"
+          className="p-1 rounded-lg bg-white/5 border border-white/10 active:bg-white/10 transition-all shrink-0"
         >
           <span className="material-symbols-outlined text-sm text-white/50">edit</span>
         </button>
@@ -311,35 +308,35 @@ export function MobileResultsSection() {
             {/* ═══ ZONA 6 — Dados Calculados (2×2 + L/D + CTF) ═══ */}
             <div className="grid grid-cols-2 gap-1.5">
               {/* Potência Est. */}
-              <div className="bg-black/30 border border-white/5 rounded-lg px-2.5 py-1.5 flex items-center justify-between">
+              <div className="bg-black/30 border border-white/5 rounded-lg px-3 py-1.5 flex items-center justify-between">
                 <span className="text-[9px] text-white/35 uppercase tracking-wide">Potência Est.</span>
                 <span className="font-mono text-xs font-bold text-white/85">
                   {potenciaMotor.toFixed(2)}<span className="text-[9px] opacity-40 ml-0.5">kW</span>
                 </span>
               </div>
               {/* Vc Real */}
-              <div className="bg-black/30 border border-white/5 rounded-lg px-2.5 py-1.5 flex items-center justify-between">
+              <div className="bg-black/30 border border-white/5 rounded-lg px-3 py-1.5 flex items-center justify-between">
                 <span className="text-[9px] text-white/35 uppercase tracking-wide">Vc Real</span>
                 <span className="font-mono text-xs font-bold text-white/85">
                   {vcReal.toFixed(0)}<span className="text-[9px] opacity-40 ml-0.5">m/min</span>
                 </span>
               </div>
               {/* MRR */}
-              <div className="bg-black/30 border border-white/5 rounded-lg px-2.5 py-1.5 flex items-center justify-between">
+              <div className="bg-black/30 border border-white/5 rounded-lg px-3 py-1.5 flex items-center justify-between">
                 <span className="text-[9px] text-white/35 uppercase tracking-wide">MRR</span>
                 <span className="font-mono text-xs font-bold text-white/85">
                   {mrr.toFixed(1)}<span className="text-[9px] opacity-40 ml-0.5">cm³</span>
                 </span>
               </div>
               {/* L/D — color coded */}
-              <div className="bg-black/30 border border-white/5 rounded-lg px-2.5 py-1.5 flex items-center justify-between">
+              <div className="bg-black/30 border border-white/5 rounded-lg px-3 py-1.5 flex items-center justify-between">
                 <span className="text-[9px] uppercase tracking-wide" style={{ color: ldColor + '99' }}>L/D</span>
                 <span className="font-mono text-xs font-bold" style={{ color: ldColor }}>
                   {razaoLD > 6 ? 'BLOQ.' : razaoLD.toFixed(1)}
                 </span>
               </div>
               {/* CTF */}
-              <div className="col-span-2 bg-black/30 border border-white/5 rounded-lg px-2.5 py-1.5 flex items-center justify-between">
+              <div className="col-span-2 bg-black/30 border border-white/5 rounded-lg px-3 py-1.5 flex items-center justify-between">
                 <span className="text-[9px] text-white/35 uppercase tracking-wide">CTF</span>
                 <span className="font-mono text-xs font-bold text-primary">{ctf.toFixed(2)}</span>
               </div>

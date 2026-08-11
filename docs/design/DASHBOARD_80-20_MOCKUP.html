@@ -1,0 +1,414 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>ToolOptimizer CNC — Mockup Redesign 80/20</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet" />
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet" />
+<style>
+  :root {
+    --color-background-dark: #0F1419;
+    --color-surface-dark: rgba(22, 27, 34, 0.7);
+    --color-card-dark: rgba(30, 35, 45, 0.6);
+    --color-primary: #00D9FF;
+    --color-secondary: #39FF14;
+    --color-accent-orange: #F97316;
+    --color-accent-purple: #A855F7;
+    --color-seg-verde: #2ecc71;
+    --color-seg-amarelo: #f39c12;
+    --color-seg-vermelho: #e74c3c;
+    --shadow-neon-cyan: 0 0 15px rgba(0, 217, 255, 0.4), 0 0 30px rgba(0, 217, 255, 0.15);
+    --shadow-glass: 0 8px 32px 0 rgba(0, 0, 0, 0.5);
+  }
+  * { box-sizing: border-box; }
+  body {
+    font-family: "Inter", sans-serif;
+    background-color: var(--color-background-dark);
+    color: #e5e7eb;
+    margin: 0;
+    min-width: 1360px;
+  }
+  .mono { font-family: "JetBrains Mono", monospace; }
+  .material-symbols-outlined {
+    font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+    font-size: 20px; line-height: 1; vertical-align: middle;
+  }
+  .glass {
+    background: var(--color-surface-dark);
+    backdrop-filter: blur(20px);
+    border: 1px solid rgba(255,255,255,0.05);
+    box-shadow: var(--shadow-glass);
+    border-radius: 16px;
+  }
+  .card {
+    background: var(--color-card-dark);
+    border: 1px solid rgba(255,255,255,0.05);
+    border-radius: 12px;
+  }
+  .glow-cyan { filter: drop-shadow(0 0 12px rgba(0,217,255,0.55)); }
+  .glow-green { filter: drop-shadow(0 0 12px rgba(57,255,20,0.55)); }
+  .btn-primary {
+    background: linear-gradient(90deg, #0891b2, #06b6d4);
+    box-shadow: var(--shadow-neon-cyan);
+  }
+  .row-bg { background: linear-gradient(135deg, rgba(255,255,255,0.05), rgba(255,255,255,0.02)); }
+  .toggle-track { width: 40px; height: 22px; border-radius: 999px; background: rgba(255,255,255,0.1); position: relative; transition: background .2s; }
+  .toggle-track.on { background: var(--color-primary); }
+  .toggle-thumb { width: 18px; height: 18px; border-radius: 999px; background: #fff; position: absolute; top: 2px; left: 2px; transition: transform .2s; }
+  .toggle-track.on .toggle-thumb { transform: translateX(18px); }
+
+  /* ==== Layout ==== */
+  .app-shell { max-width: 1440px; margin: 0 auto; padding: 12px; display: flex; flex-direction: column; gap: 12px; min-height: 100vh; }
+  header { display: flex; align-items: center; justify-content: space-between; padding: 10px 20px; }
+  nav.header-nav { display: flex; align-items: center; gap: 4px; }
+  nav.header-nav a {
+    display: flex; align-items: center; gap: 6px;
+    padding: 8px 14px; border-radius: 10px; font-size: 13px; font-weight: 600;
+    color: rgba(255,255,255,0.55); text-decoration: none; position: relative;
+  }
+  nav.header-nav a.active { color: var(--color-primary); background: rgba(0,217,255,0.08); }
+  .count-badge {
+    font-size: 10px; font-weight: 700; padding: 1px 5px; border-radius: 999px;
+    background: rgba(255,255,255,0.12); color: rgba(255,255,255,0.7);
+  }
+  main { flex: 1; display: grid; grid-template-columns: 340px 1fr; gap: 12px; align-items: start; }
+
+  /* ==== Config panel (left) ==== */
+  .config-col { display: flex; flex-direction: column; gap: 10px; }
+  .flow-step { display: flex; align-items: center; gap: 8px; font-size: 11px; text-transform: uppercase; letter-spacing: .08em; color: rgba(255,255,255,0.35); padding: 0 4px; }
+  .flow-step .dot { width: 18px; height: 18px; border-radius: 999px; display: flex; align-items: center; justify-content: center; font-size: 10px; font-weight: 700; }
+  .flow-step .dot.done { background: var(--color-seg-verde); color: #04140a; }
+  .flow-step .dot.pending { border: 1px solid rgba(255,255,255,0.25); color: rgba(255,255,255,0.4); }
+  .field-label { font-size: 11px; text-transform: uppercase; letter-spacing: .06em; color: rgba(255,255,255,0.5); margin-bottom: 6px; display: block; }
+  select.input, input.input {
+    width: 100%; background: rgba(0,0,0,0.4); border: 1px solid rgba(255,255,255,0.1);
+    border-radius: 10px; padding: 12px; color: #e5e7eb; font-size: 14px;
+  }
+  .seg-btns { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; }
+  .seg-btn {
+    padding: 10px; border-radius: 8px; border: 1px solid rgba(255,255,255,0.1);
+    background: rgba(0,0,0,0.4); color: rgba(255,255,255,0.55); font-size: 13px; text-align: center; cursor: default;
+  }
+  .seg-btn.active { background: var(--color-primary); color: #001217; font-weight: 700; border-color: var(--color-primary); box-shadow: var(--shadow-neon-cyan); }
+  .z-btn { width: 44px; height: 40px; border-radius: 8px; border: 1px solid rgba(255,255,255,0.1); background: rgba(0,0,0,0.4); color: rgba(255,255,255,0.55); font-family: "JetBrains Mono"; font-size: 13px; }
+  .z-btn.active { background: var(--color-primary); color: #001217; font-weight: 700; border-color: var(--color-primary); }
+  .advanced-panel { border-top: 1px dashed rgba(255,255,255,0.1); margin-top: 4px; padding-top: 12px; display: flex; flex-direction: column; gap: 10px; }
+  .sim-btn {
+    width: 100%; padding: 16px; border-radius: 14px; border: none; color: #fff;
+    font-weight: 700; font-size: 15px; letter-spacing: .04em; text-transform: uppercase;
+    display: flex; align-items: center; justify-content: center; gap: 10px;
+  }
+
+  /* ==== Results panel (right) ==== */
+  .results-col { display: flex; flex-direction: column; gap: 10px; }
+  .console-header { display: flex; align-items: center; gap: 10px; padding: 8px 14px; background: #0f1419; border: 1px solid rgba(255,255,255,0.1); border-radius: 10px; }
+  .safety-badge { display: flex; align-items: center; gap: 6px; padding: 5px 12px; border-radius: 8px; font-size: 12px; font-weight: 700; text-transform: uppercase; letter-spacing: .04em; }
+  .safety-badge.verde { background: rgba(46,204,113,0.12); border: 1px solid rgba(46,204,113,0.3); color: var(--color-seg-verde); }
+  .lcd { background: #05070a; border: 1px solid rgba(0,229,255,0.12); border-radius: 10px; padding: 10px 14px; font-family: "JetBrains Mono"; font-size: 12px; text-transform: uppercase; letter-spacing: .04em; display: flex; flex-direction: column; gap: 6px; }
+
+  /* HERO */
+  .hero { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+  .hero-card { padding: 22px 24px 18px; display: flex; flex-direction: column; gap: 4px; min-height: 190px; justify-content: center; }
+  .hero-label { display: flex; align-items: center; justify-content: space-between; }
+  .hero-label span.name { font-size: 13px; font-weight: 700; letter-spacing: .08em; text-transform: uppercase; color: rgba(255,255,255,0.6); }
+  .hero-value { font-family: "JetBrains Mono"; font-weight: 700; font-size: 76px; line-height: 1; margin: 6px 0; }
+  .hero-unit { font-family: "JetBrains Mono"; font-size: 14px; color: rgba(255,255,255,0.35); }
+  .hero-slider-track { height: 6px; border-radius: 999px; background: rgba(255,255,255,0.08); position: relative; margin-top: 14px; }
+  .hero-slider-fill { position: absolute; top:0; bottom:0; left: 50%; border-radius: 999px; }
+  .hero-slider-thumb { position: absolute; top: 50%; width: 16px; height: 16px; border-radius: 999px; background: #fff; transform: translate(-50%,-50%); box-shadow: 0 0 8px rgba(0,0,0,0.6); }
+
+  /* indicators */
+  .indicators { display: grid; grid-template-columns: repeat(3, 1fr) auto auto; gap: 10px; align-items: stretch; }
+  .gauge-card { padding: 14px; display: flex; flex-direction: column; align-items: center; gap: 8px; }
+  .gauge-arc { width: 96px; height: 52px; }
+  .gauge-label { font-size: 10px; text-transform: uppercase; letter-spacing: .05em; color: rgba(255,255,255,0.45); text-align: center; }
+  .gauge-value { font-family: "JetBrains Mono"; font-size: 15px; font-weight: 700; }
+  .chip { display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 2px; padding: 10px 14px; border-radius: 12px; min-width: 74px; }
+  .chip .chip-label { font-size: 11px; font-weight: 700; text-transform: uppercase; }
+  .chip .chip-value { font-family: "JetBrains Mono"; font-size: 18px; font-weight: 700; }
+
+  /* details collapsible */
+  .details-toggle {
+    display: flex; align-items: center; justify-content: space-between; padding: 12px 16px;
+    cursor: default; color: rgba(255,255,255,0.75); font-size: 13px; font-weight: 700; text-transform: uppercase; letter-spacing: .04em;
+  }
+  .details-body { padding: 0 16px 16px; display: flex; flex-direction: column; gap: 12px; }
+  .param-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; }
+  .param-cell { padding: 8px 10px; border-radius: 8px; background: rgba(0,0,0,0.25); }
+  .param-cell .l { font-size: 10px; color: rgba(255,255,255,0.4); text-transform: uppercase; }
+  .param-cell .v { font-family: "JetBrains Mono"; font-size: 15px; font-weight: 700; }
+  .formula-row { display: flex; align-items: center; justify-content: space-between; padding: 10px 12px; border-radius: 8px; background: rgba(0,0,0,0.2); font-size: 12px; color: rgba(255,255,255,0.55); }
+
+  .annot {
+    position: absolute; background: rgba(0,217,255,0.95); color: #001217; font-size: 10px; font-weight: 700;
+    padding: 2px 6px; border-radius: 4px; white-space: nowrap; z-index: 5;
+  }
+  .badge-manual { font-size: 10px; font-weight: 700; padding: 2px 6px; border-radius: 999px; background: rgba(245,158,11,0.15); color: #f59e0b; border: 1px solid rgba(245,158,11,0.35); }
+</style>
+</head>
+<body>
+
+<div class="app-shell">
+
+  <!-- ═══ HEADER com navegação (S3) ═══ -->
+  <header class="glass">
+    <div style="display:flex;align-items:center;gap:10px;">
+      <div style="width:34px;height:34px;border-radius:9px;background:linear-gradient(135deg,#00D9FF,#0891b2);display:flex;align-items:center;justify-content:center;">
+        <span class="material-symbols-outlined" style="color:#001217;">precision_manufacturing</span>
+      </div>
+      <span style="font-weight:700;font-size:15px;">ToolOptimizer <span style="color:var(--color-primary)">CNC</span></span>
+    </div>
+    <nav class="header-nav">
+      <a class="active"><span class="material-symbols-outlined" style="font-size:16px">calculate</span> Calcular</a>
+      <a><span class="material-symbols-outlined" style="font-size:16px">star</span> Favoritos <span class="count-badge">6</span></a>
+      <a><span class="material-symbols-outlined" style="font-size:16px">history</span> Histórico <span class="count-badge">23</span></a>
+      <a><span class="material-symbols-outlined" style="font-size:16px">settings</span> Config</a>
+    </nav>
+    <div style="display:flex;gap:8px;">
+      <button class="card" style="padding:8px 12px;color:rgba(255,255,255,0.6);font-size:12px;display:flex;align-items:center;gap:6px;border:1px solid rgba(255,255,255,0.08);"><span class="material-symbols-outlined" style="font-size:16px">download</span>PDF</button>
+    </div>
+  </header>
+
+  <main>
+
+    <!-- ═══════════════ COLUNA ESQUERDA — CONFIG (S1) ═══════════════ -->
+    <section class="config-col">
+
+      <div class="flow-step">
+        <span class="dot done">✓</span> Material
+        <span style="opacity:.3">→</span>
+        <span class="dot done">✓</span> Ferramenta
+        <span style="opacity:.3">→</span>
+        <span class="dot pending">3</span> Simular
+      </div>
+
+      <div class="glass" style="padding:16px; display:flex; flex-direction:column; gap:16px;">
+
+        <!-- 1. Material -->
+        <div>
+          <label class="field-label">Material da Peça</label>
+          <select class="input">
+            <option>Aço 1045 — Temperado</option>
+          </select>
+          <div style="display:flex;justify-content:space-between;margin-top:5px;padding:0 2px;">
+            <span style="font-size:11px;color:rgba(255,255,255,0.35)">170-210 HB</span>
+            <span style="font-size:11px;color:rgba(0,217,255,0.55)">Vc: 80-140 m/min</span>
+          </div>
+        </div>
+
+        <!-- 2. Operação -->
+        <div>
+          <label class="field-label">Tipo de Usinagem</label>
+          <div class="seg-btns">
+            <div class="seg-btn active">Desbaste</div>
+            <div class="seg-btn">Semi-Acab.</div>
+            <div class="seg-btn">Acabamento</div>
+          </div>
+        </div>
+
+        <!-- 3. Tipo de fresa -->
+        <div>
+          <label class="field-label">Tipo de Fresa</label>
+          <div class="seg-btns">
+            <div class="seg-btn active">Topo Reto</div>
+            <div class="seg-btn">Toroidal</div>
+            <div class="seg-btn">Esférica</div>
+          </div>
+        </div>
+
+        <!-- 4. Diâmetro + Z em linha única -->
+        <div style="display:grid; grid-template-columns: 1fr auto; gap:10px; align-items:end;">
+          <div>
+            <label class="field-label">Diâmetro (mm)</label>
+            <input class="input mono" value="12.0" />
+          </div>
+          <div>
+            <label class="field-label" style="text-align:center;">Arestas (Z)</label>
+            <div style="display:flex; gap:4px;">
+              <button class="z-btn">2</button>
+              <button class="z-btn">3</button>
+              <button class="z-btn active">4</button>
+              <button class="z-btn">6</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- 5. Balanço -->
+        <div>
+          <label class="field-label">Balanço / Altura de Fixação (mm)</label>
+          <input class="input mono" value="35" />
+        </div>
+
+        <!-- Ferramenta salva — dropdown compacto -->
+        <div class="row-bg" style="border-radius:10px; padding:10px 12px; display:flex; align-items:center; justify-content:space-between;">
+          <span style="font-size:12px; color:rgba(255,255,255,0.5); display:flex; align-items:center; gap:6px;">
+            <span class="material-symbols-outlined" style="font-size:16px;">bookmark</span>
+            Usar ferramenta salva
+          </span>
+          <span style="display:flex; align-items:center; gap:8px;">
+            <span class="material-symbols-outlined" style="font-size:16px; color:rgba(255,255,255,0.45);">edit</span>
+            <span class="material-symbols-outlined" style="font-size:16px; color:rgba(255,255,255,0.45);">delete</span>
+            <span class="material-symbols-outlined" style="font-size:18px; color:rgba(255,255,255,0.6);">expand_more</span>
+          </span>
+        </div>
+
+        <!-- Toggle: Ajuste avançado -->
+        <div>
+          <div style="display:flex; align-items:center; justify-content:space-between; padding:10px 2px;">
+            <span style="font-size:13px; font-weight:600; color:rgba(255,255,255,0.75); display:flex; align-items:center; gap:6px;">
+              <span class="material-symbols-outlined" style="font-size:16px;">tune</span>
+              Ajuste avançado
+            </span>
+            <div class="toggle-track"><div class="toggle-thumb"></div></div>
+          </div>
+          <div style="font-size:11px; color:rgba(255,255,255,0.3); padding:0 2px;">Vc, fz, ae, ap · raio de ponta · fator de segurança — fechado por padrão</div>
+        </div>
+
+      </div>
+
+      <!-- Simular sticky no rodapé (S1) -->
+      <button class="sim-btn btn-primary">
+        <span class="material-symbols-outlined">play_arrow</span> Simular
+      </button>
+
+    </section>
+
+    <!-- ═══════════════ COLUNA DIREITA — RESULTS (S2) ═══════════════ -->
+    <section class="results-col">
+
+      <!-- Console header -->
+      <div class="console-header">
+        <div style="flex:1; display:flex; align-items:center; gap:8px;">
+          <span class="mono" style="font-size:11px; color:rgba(255,255,255,0.4);">18/07/2026 14:32</span>
+          <span style="width:5px;height:5px;border-radius:999px;background:rgba(255,255,255,0.2);"></span>
+          <span style="font-size:12px; font-weight:700;">Aço 1045 — Temperado</span>
+          <span style="width:5px;height:5px;border-radius:999px;background:rgba(255,255,255,0.2);"></span>
+          <span style="font-size:11px; font-weight:700; background:rgba(255,255,255,0.08); padding:2px 8px; border-radius:6px; text-transform:uppercase;">Desbaste</span>
+        </div>
+        <span class="mono" style="font-size:10px; font-weight:700; padding:3px 8px; border-radius:6px; background:rgba(0,217,255,0.1); color:var(--color-primary); border:1px solid rgba(0,217,255,0.25);">SF 70%</span>
+        <div class="safety-badge verde">
+          <span class="material-symbols-outlined" style="font-size:15px;">check_circle</span> Seguro
+        </div>
+        <span class="material-symbols-outlined" style="color:#facc15; font-size:20px;">star</span>
+      </div>
+
+      <!-- LCD — Zona Ação (mantido) -->
+      <div class="lcd">
+        <div style="display:flex; align-items:center; gap:8px; color:var(--color-seg-verde); text-shadow:0 0 5px rgba(46,204,113,.3);">
+          <span class="material-symbols-outlined" style="font-size:15px;">check_circle</span>
+          ✓ PARÂMETROS SEGUROS — SISTEMA OPERANDO NORMALMENTE
+        </div>
+        <div style="display:flex; align-items:center; gap:8px; color:var(--color-primary); text-shadow:0 0 5px rgba(0,229,255,.3); border-top:1px solid rgba(255,255,255,0.05); padding-top:6px;">
+          <span class="material-symbols-outlined" style="font-size:15px;">arrow_forward</span>
+          AÇÃO: NENHUMA — PARÂMETROS DENTRO DA FAIXA IDEAL
+        </div>
+      </div>
+
+      <!-- ═══ ZONA 1 — HERÓI (text-6xl+, domina a tela) ═══ -->
+      <div class="hero">
+        <div class="glass hero-card" style="position:relative;">
+          <div class="annot" style="top:12px; right:16px; background:rgba(239,68,68,0.9);">76px vs 32px hoje</div>
+          <div class="hero-label">
+            <span class="name"><span class="material-symbols-outlined" style="color:var(--color-primary); opacity:.7;">speed</span> Rotação</span>
+          </div>
+          <div class="hero-value" style="color:var(--color-primary);" class="glow-cyan">
+            <span class="glow-cyan">4.680</span>
+          </div>
+          <span class="hero-unit">RPM</span>
+          <div class="hero-slider-track">
+            <div class="hero-slider-fill" style="width:8%; background:var(--color-primary); box-shadow:0 0 8px rgba(0,217,255,.5);"></div>
+            <div class="hero-slider-thumb" style="left:58%; background:var(--color-primary);"></div>
+          </div>
+        </div>
+        <div class="glass hero-card">
+          <div class="hero-label">
+            <span class="name"><span class="material-symbols-outlined" style="color:var(--color-secondary); opacity:.7;">moving</span> Avanço</span>
+          </div>
+          <div class="hero-value" style="color:var(--color-secondary);">
+            <span class="glow-green">1.872</span>
+          </div>
+          <span class="hero-unit">mm/min</span>
+          <div class="hero-slider-track">
+            <div class="hero-slider-fill" style="width:6%; background:var(--color-secondary); box-shadow:0 0 8px rgba(57,255,20,.5);"></div>
+            <div class="hero-slider-thumb" style="left:56%; background:var(--color-secondary);"></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ═══ ZONA 3 — Indicadores (gauges + chips L/D e CTF) ═══ -->
+      <div class="indicators">
+        <div class="glass gauge-card">
+          <svg class="gauge-arc" viewBox="0 0 100 55">
+            <path d="M6 50 A44 44 0 0 1 94 50" fill="none" stroke="rgba(255,255,255,0.08)" stroke-width="9" stroke-linecap="round"/>
+            <path d="M6 50 A44 44 0 0 1 94 50" fill="none" stroke="#00D9FF" stroke-width="9" stroke-linecap="round" stroke-dasharray="138" stroke-dashoffset="41" style="filter:drop-shadow(0 0 4px #00D9FF);"/>
+          </svg>
+          <span class="gauge-value" style="color:var(--color-primary);">70%</span>
+          <span class="gauge-label">Eficiência de Avanço</span>
+        </div>
+        <div class="glass gauge-card">
+          <svg class="gauge-arc" viewBox="0 0 100 55">
+            <path d="M6 50 A44 44 0 0 1 94 50" fill="none" stroke="rgba(255,255,255,0.08)" stroke-width="9" stroke-linecap="round"/>
+            <path d="M6 50 A44 44 0 0 1 94 50" fill="none" stroke="#39FF14" stroke-width="9" stroke-linecap="round" stroke-dasharray="138" stroke-dashoffset="66" style="filter:drop-shadow(0 0 4px #39FF14);"/>
+          </svg>
+          <span class="gauge-value" style="color:var(--color-secondary);">52%</span>
+          <span class="gauge-label">Produtividade MRR</span>
+        </div>
+        <div class="glass gauge-card">
+          <svg class="gauge-arc" viewBox="0 0 100 55">
+            <path d="M6 50 A44 44 0 0 1 94 50" fill="none" stroke="rgba(255,255,255,0.08)" stroke-width="9" stroke-linecap="round"/>
+            <path d="M6 50 A44 44 0 0 1 94 50" fill="none" stroke="#2ecc71" stroke-width="9" stroke-linecap="round" stroke-dasharray="138" stroke-dashoffset="14" style="filter:drop-shadow(0 0 4px #2ecc71);"/>
+          </svg>
+          <span class="gauge-value" style="color:var(--color-seg-verde);">90%</span>
+          <span class="gauge-label">Saúde da Ferramenta</span>
+        </div>
+        <div class="glass chip" style="background:rgba(46,204,113,0.08); border:1px solid rgba(46,204,113,0.25);">
+          <span class="chip-label" style="color:var(--color-seg-verde);">L/D</span>
+          <span class="chip-value" style="color:var(--color-seg-verde);">2.9</span>
+        </div>
+        <div class="glass chip" style="background:rgba(0,217,255,0.06); border:1px solid rgba(0,217,255,0.2);">
+          <span class="chip-label" style="color:var(--color-primary);">CTF</span>
+          <span class="chip-value" style="color:var(--color-primary);">1.00</span>
+        </div>
+      </div>
+
+      <!-- ═══ ZONA 4 — Detalhes e fórmulas (colapsado) ═══ -->
+      <div class="glass">
+        <div class="details-toggle">
+          <span style="display:flex; align-items:center; gap:8px;">
+            <span class="material-symbols-outlined" style="font-size:18px; color:var(--color-primary);">school</span>
+            Detalhes e fórmulas
+          </span>
+          <span class="material-symbols-outlined" style="font-size:18px; color:rgba(255,255,255,0.4);">expand_more</span>
+        </div>
+        <div class="details-body" style="opacity:.5;">
+          <div class="param-grid">
+            <div class="param-cell"><div class="l">Vc</div><div class="v">108.00 <span style="font-size:10px;opacity:.4">m/min</span></div></div>
+            <div class="param-cell"><div class="l">fz <span class="badge-manual">manual</span></div><div class="v">0.085 <span style="font-size:10px;opacity:.4">mm</span></div></div>
+            <div class="param-cell"><div class="l">ap</div><div class="v">3.50 <span style="font-size:10px;opacity:.4">mm</span></div></div>
+            <div class="param-cell"><div class="l">ae</div><div class="v">6.00 <span style="font-size:10px;opacity:.4">mm</span></div></div>
+          </div>
+          <div class="formula-row"><span>Potência Estimada</span><span class="mono" style="color:#fff;">2.14 kW</span></div>
+          <div class="formula-row"><span>Vc Real</span><span class="mono" style="color:#fff;">108 m/min</span></div>
+          <div class="formula-row"><span>MRR</span><span class="mono" style="color:#fff;">10.4 cm³/min</span></div>
+          <div style="font-size:11px; color:rgba(255,255,255,0.3); text-align:center; padding-top:4px;">↓ 4 fórmulas educacionais (RPM, Avanço, MRR, Potência) — sem Torque</div>
+        </div>
+      </div>
+
+    </section>
+  </main>
+
+  <!-- Anotações de leitura do mockup -->
+  <div class="glass" style="padding:14px 18px; font-size:12px; color:rgba(255,255,255,0.55); line-height:1.6;">
+    <strong style="color:var(--color-primary);">Leitura do mockup</strong> — estático, sem funções reais (dados fixos p/ visualização).
+    Mudanças-chave: 5 inputs essenciais visíveis + toggle "Ajuste avançado" fechado · botão Simular fixo no rodapé ·
+    herói RPM/Avanço em 76px dominando a tela (vs 32px atual) · torque removido de todo lugar ·
+    chips L/D/CTF maiores e legíveis à distância · seção "Detalhes e fórmulas" colapsada por padrão ·
+    nav com contadores no header · chip "SF 70%" avisa quando o fator de segurança não é o default.
+  </div>
+
+</div>
+
+</body>
+</html>

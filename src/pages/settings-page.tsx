@@ -496,7 +496,7 @@ function FerramentasSection() {
       {/* Ferramentas Salvas */}
       <div className={CARD}>
         <h3 className="text-sm font-semibold text-white mb-3 flex items-center gap-2">
-          <span className="material-symbols-outlined text-[18px] text-primary">build</span>
+          <span className="material-symbols-outlined text-lg text-primary">build</span>
           Ferramentas Salvas
           <span className="text-xs font-mono text-gray-500 ml-auto">
             {savedTools.length} salva{savedTools.length !== 1 ? 's' : ''}
@@ -523,7 +523,7 @@ function FerramentasSection() {
                 <button
                   onClick={() => removeSavedTool(tool.id)}
                   aria-label={`Excluir ${tool.nome}`}
-                  className="p-1 text-gray-500 hover:text-red-400 transition-colors rounded-md hover:bg-red-400/10"
+                  className="p-1 text-gray-500 hover:text-red-400 transition-colors rounded-lg hover:bg-red-400/10"
                 >
                   <span className="material-symbols-outlined text-[16px]">delete</span>
                 </button>

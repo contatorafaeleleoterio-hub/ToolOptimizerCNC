@@ -2,11 +2,7 @@ import { StrictMode, Suspense, lazy } from 'react';
 import { createRoot } from 'react-dom/client';
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import App from './App';
-import { SettingsPage } from './pages/settings-page';
-import { HistoryPage } from './pages/history-page';
-import { MobilePage } from './pages/mobile-page';
 import { ViewportGuard } from './components/viewport-guard';
-import { PrivacyPolicyPage } from './pages/privacy-policy-page';
 import { installErrorTracker } from './admin/hooks/use-error-tracker';
 import './index.css';
 
@@ -14,6 +10,18 @@ import './index.css';
 installErrorTracker();
 
 const ArchitecturePage = lazy(() => import('./pages/architecture-page'));
+const MobilePage = lazy(() =>
+  import('./pages/mobile-page').then((m) => ({ default: m.MobilePage }))
+);
+const PrivacyPolicyPage = lazy(() =>
+  import('./pages/privacy-policy-page').then((m) => ({ default: m.PrivacyPolicyPage }))
+);
+const HistoryPage = lazy(() =>
+  import('./pages/history-page').then((m) => ({ default: m.HistoryPage }))
+);
+const SettingsPage = lazy(() =>
+  import('./pages/settings-page').then((m) => ({ default: m.SettingsPage }))
+);
 const FavoritesPage = lazy(() =>
   import('./pages/favorites-page').then((m) => ({ default: m.FavoritesPage }))
 );
@@ -32,7 +40,8 @@ const AdminFlagsPage     = lazy(() => import('./admin/pages/admin-flags-page'));
 const AdminChangelogPage = lazy(() => import('./admin/pages/admin-changelog-page'));
 const AdminHealthPage    = lazy(() => import('./admin/pages/admin-health-page'));
 
-const AdminFallback = <div className="min-h-screen bg-background-dark" />;
+const PageFallback = <div className="min-h-screen bg-background-dark" />;
+const AdminFallback = PageFallback;
 
 const baseUrl = import.meta.env.BASE_URL || '/ToolOptimizerCNC/';
 const basename = baseUrl.endsWith('/') ? baseUrl.slice(0, -1) : baseUrl;
@@ -43,14 +52,14 @@ createRoot(document.getElementById('root')!).render(
       <ViewportGuard />
       <Routes>
         <Route path="/" element={<App />} />
-        <Route path="/mobile" element={<MobilePage />} />
-        <Route path="/privacidade" element={<PrivacyPolicyPage />} />
-        <Route path="/history" element={<HistoryPage />} />
-        <Route path="/settings" element={<SettingsPage />} />
+        <Route path="/mobile" element={<Suspense fallback={PageFallback}><MobilePage /></Suspense>} />
+        <Route path="/privacidade" element={<Suspense fallback={PageFallback}><PrivacyPolicyPage /></Suspense>} />
+        <Route path="/history" element={<Suspense fallback={PageFallback}><HistoryPage /></Suspense>} />
+        <Route path="/settings" element={<Suspense fallback={PageFallback}><SettingsPage /></Suspense>} />
         <Route
           path="/favoritos"
           element={
-            <Suspense fallback={<div className="min-h-screen bg-background-dark" />}>
+            <Suspense fallback={PageFallback}>
               <FavoritesPage />
             </Suspense>
           }
@@ -58,7 +67,7 @@ createRoot(document.getElementById('root')!).render(
         <Route
           path="/architecture"
           element={
-            <Suspense fallback={<div className="min-h-screen bg-background-dark" />}>
+            <Suspense fallback={PageFallback}>
               <ArchitecturePage />
             </Suspense>
           }

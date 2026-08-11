@@ -31,18 +31,23 @@ export function MobilePage() {
   // Detect new simulation by watching resultado timestamp in store
   const resultado = useMachiningStore((s) => s.resultado);
   const prevResultadoRef = useRef(resultado);
+  const shouldOpenResultsRef = useRef(false);
 
   useEffect(() => {
     document.body.classList.add('mobile-active');
     return () => { document.body.classList.remove('mobile-active'); };
   }, []);
 
-  // Auto-switch to Resultados when a new simulation completes
+  // Only an explicit Simular action changes tabs. Live input updates keep the
+  // operator in the current context while the shared result updates.
   useEffect(() => {
     if (resultado !== null && resultado !== prevResultadoRef.current) {
       prevResultadoRef.current = resultado;
       setHasNewResult(true);
-      setActiveTab('results');
+      if (shouldOpenResultsRef.current) {
+        setActiveTab('results');
+        shouldOpenResultsRef.current = false;
+      }
     }
     if (resultado === null) {
       prevResultadoRef.current = null;
@@ -88,7 +93,10 @@ export function MobilePage() {
       {/* ─── Bottom: Simulate button + Disclaimer (config tab only) + Tab bar ─── */}
       <div className="shrink-0">
         {activeTab === 'config' && <Disclaimer />}
-        <MobileSimulateButton onSimulationStart={() => setHasNewResult(false)} />
+        <MobileSimulateButton onSimulationStart={() => {
+          shouldOpenResultsRef.current = true;
+          setHasNewResult(false);
+        }} />
         <MobileTabBar active={activeTab} onChange={handleTabChange} hasNewResult={hasNewResult} />
       </div>
     </div>

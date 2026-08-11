@@ -2,7 +2,7 @@ import { NavLink } from 'react-router-dom';
 import { useHistoryStore } from '@/store';
 import { useFavoritesStore } from '@/store';
 
-const LINK_BASE = 'flex items-center gap-1.5 px-3.5 py-2 rounded-[10px] text-[13px] font-semibold transition-colors';
+const LINK_BASE = 'flex items-center gap-1.5 px-3.5 py-2 rounded-[10px] text-sm font-semibold transition-colors';
 const LINK_ACTIVE = 'text-primary bg-primary/[0.08]';
 const LINK_INACTIVE = 'text-white/60 hover:text-white/85 hover:bg-white/5';
 

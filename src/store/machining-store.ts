@@ -56,6 +56,8 @@ interface MachiningState {
   parametros: ParametrosUsinagem;
   limitesMaquina: LimitesMaquina;
   resultado: ResultadoUsinagem | null;
+  /** Runtime-only: enabled by an explicit simulation to keep inputs live. */
+  liveCalculationEnabled: boolean;
   safetyFactor: number;
   manualOverrides: ManualOverrides;
   baseRPM: number; // Calculated RPM before adjustments
@@ -111,6 +113,7 @@ const INITIAL_STATE: MachiningState = {
   parametros: DEFAULT_PARAMETROS,
   limitesMaquina: LIMITES_PADRAO_MAQUINA,
   resultado: null,
+  liveCalculationEnabled: false,
   safetyFactor: 0.8,
   manualOverrides: {},
   baseRPM: 0,
@@ -154,16 +157,17 @@ export const useMachiningStore = create<MachiningState & MachiningActions>()(
         ...INITIAL_STATE,
 
         setMaterial: (id) => {
-          const { tipoOperacao, ferramenta, customMaterials } = get();
+          const { tipoOperacao, ferramenta, customMaterials, liveCalculationEnabled } = get();
           const recommended = autoPopulateParams(id, tipoOperacao, ferramenta.diametro, customMaterials);
-          set({ materialId: id, resultado: null, manualOverrides: {}, ...(recommended && { parametros: recommended, baseParams: recommended }) });
-          // Don't auto-calculate on material change - user must click Simular
+          set({ materialId: id, ...(liveCalculationEnabled ? {} : { resultado: null }), manualOverrides: {}, ...(recommended && { parametros: recommended, baseParams: recommended }) });
+          if (liveCalculationEnabled) get().calcular();
         },
 
         setFerramenta: (f) => {
+          const liveCalculationEnabled = get().liveCalculationEnabled;
           set((state) => {
             const newFerramenta = { ...state.ferramenta, ...f };
-            const updates: Partial<MachiningState> = { ferramenta: newFerramenta, resultado: null, manualOverrides: {} };
+            const updates: Partial<MachiningState> = { ferramenta: newFerramenta, ...(liveCalculationEnabled ? {} : { resultado: null }), manualOverrides: {} };
             if (f.diametro !== undefined && f.diametro !== state.ferramenta.diametro) {
               const recommended = autoPopulateParams(state.materialId, state.tipoOperacao, f.diametro, state.customMaterials);
               if (recommended) {
@@ -173,19 +177,20 @@ export const useMachiningStore = create<MachiningState & MachiningActions>()(
             }
             return updates;
           });
-          // Don't auto-calculate on tool change - user must click Simular
+          if (liveCalculationEnabled) get().calcular();
         },
 
         setTipoOperacao: (tipo) => {
-          const { materialId, ferramenta, customMaterials } = get();
+          const { materialId, ferramenta, customMaterials, liveCalculationEnabled } = get();
           const recommended = autoPopulateParams(materialId, tipo, ferramenta.diametro, customMaterials);
-          set({ tipoOperacao: tipo, resultado: null, manualOverrides: {}, ...(recommended && { parametros: recommended, baseParams: recommended }) });
-          // Don't auto-calculate on operation change - user must click Simular
+          set({ tipoOperacao: tipo, ...(liveCalculationEnabled ? {} : { resultado: null }), manualOverrides: {}, ...(recommended && { parametros: recommended, baseParams: recommended }) });
+          if (liveCalculationEnabled) get().calcular();
         },
 
         setParametros: (p) => {
-          set((state) => ({ parametros: { ...state.parametros, ...p }, resultado: null, manualOverrides: {} }));
-          // Don't auto-calculate on parameter change - user must click Simular
+          const liveCalculationEnabled = get().liveCalculationEnabled;
+          set((state) => ({ parametros: { ...state.parametros, ...p }, ...(liveCalculationEnabled ? {} : { resultado: null }), manualOverrides: {} }));
+          if (liveCalculationEnabled) get().calcular();
         },
 
         ajustarParametros: (p) => {
@@ -200,8 +205,9 @@ export const useMachiningStore = create<MachiningState & MachiningActions>()(
         },
 
         setSafetyFactor: (f) => {
-          set({ safetyFactor: f, resultado: null });
-          // Don't auto-calculate on safety factor change - user must click Simular
+          const liveCalculationEnabled = get().liveCalculationEnabled;
+          set({ safetyFactor: f, ...(liveCalculationEnabled ? {} : { resultado: null }) });
+          if (liveCalculationEnabled) get().calcular();
         },
 
         setManualRPM: (rpm) => {
@@ -420,6 +426,7 @@ export const useMachiningStore = create<MachiningState & MachiningActions>()(
         },
 
         simular: () => {
+          set({ liveCalculationEnabled: true });
           get().calcular();
           const { resultado, materialId, ferramenta, tipoOperacao, parametros, customMaterials } = get();
           if (!resultado) return;
@@ -472,15 +479,16 @@ export const useMachiningStore = create<MachiningState & MachiningActions>()(
         },
 
         loadSavedTool: (id) => {
-          const { savedTools } = get();
+          const { savedTools, liveCalculationEnabled } = get();
           const tool = savedTools.find((t) => t.id === id);
           if (!tool) return;
           const { id: _id, nome: _nome, createdAt: _createdAt, ...ferramentaFields } = tool;
           set({
             ferramenta: { ...get().ferramenta, ...ferramentaFields },
-            resultado: null,
+            ...(liveCalculationEnabled ? {} : { resultado: null }),
             manualOverrides: {},
           });
+          if (liveCalculationEnabled) get().calcular();
         },
 
         addValidatedSimulation: (sim) => {

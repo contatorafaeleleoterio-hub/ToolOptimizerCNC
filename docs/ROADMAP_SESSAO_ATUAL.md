@@ -6,29 +6,10 @@
 
 ---
 
-## ESCOPO POR AMBIENTE (REGRA OBRIGATORIA)
+## ESCOPO POR AMBIENTE
 
-- Codex (OpenAI), neste workspace, trabalha somente no Admin Dashboard (`/admin`): painel de administracao, coleta de dados, fluxo de pessoas, bugs e proximas acoes.
-- Codex NAO pode editar nada do dashboard de calculos e parametros do produto final, nem configuracoes desse dashboard, nem pagina de vendas relacionada ao produto.
-- Cloud Code e o ambiente autorizado para evolucoes do dashboard de calculos/parametros e demais partes do produto final.
-- Esta separacao e obrigatoria e deve ser conferida no inicio de cada sessao.
-
-## ⚡ PRÓXIMA AÇÃO OBRIGATÓRIA (Cloud Code)
-
-> **APP-2 ✅ concluída** — Build CI/CD verde + APK validado no dispositivo (`5917f39`)
-> **APP-3 ✅ parcialmente concluída** — Privacy policy + feature graphic + store listing texts (`e3a02aa`)
->
-> **Próxima ação: finalizar APP-3 — Landing Page Android**
-> Plano completo e aprovado: `.claude/plans/agora-voce-so-deve-sorted-spark.md`
->
-> **O que falta (5 edições cirúrgicas):**
-> 1. `landing/index.html` — Hero: "📱 Baixar para Android" + badge "Em breve na Play Store"
-> 2. `landing/index.html` — Feature card: "Desktop + Web" → "Web + Android + Desktop"
-> 3. `landing/index.html` — CTA Final: adicionar botão Android secundário
-> 4. `landing/index.html` — Footer: links "Privacidade" + "Sobre o projeto"
-> 5. `index.html` — Remover bloco `#app-landing` (linhas 137–220)
->
-> Após as edições: `npx vite build` → commit → push → APP-4.
+- Codex (OpenAI), neste workspace, pode atuar em todo o projeto conforme a prioridade ativa, respeitando stories, planos e quality gates.
+- Evoluções devem seguir `CLI First -> Observability Second -> UI Third` e manter rastreabilidade nos documentos ativos.
 
 ### SESSÃO 2C — ✅ CONCLUÍDA (`b2183bd`) — v0.11.0
 
@@ -42,23 +23,16 @@
 
 ---
 
-## PROXIMAS 2 SESSOES (SEPARADAS)
-
-1. Sessao Cloud Code: **Sessão 2B** — Cassino Fase B + Mobile Polimento
-2. Sessao Codex: trabalhar somente no Admin Dashboard (`/admin`).
-
----
-
 ## 📍 ESTADO DO PROJETO
 
 | Item | Valor |
 |------|-------|
 | **Branch** | `main` |
-| **Versão** | `0.11.0` (alvo `0.12.0` ao final do item 16 — DS+80/20+Mobile) |
-| **Testes** | **1067 passando** (66 arquivos) — 0 falhas de projeto (as 8 pré-existentes foram resolvidas na Sessão 7); resta só o template `.aiox-core/development/templates/squad-template` fora do escopo (import `@aiox/testing` não resolvido) |
+| **Versão** | `0.12.0` (DS+80/20+Mobile concluído localmente) |
+| **Testes** | **1067 passando** (66 arquivos) — 0 falhas de projeto; `npm test` agora exclui `.aiox-core/**` |
 | **TypeScript** | **zero erros** |
 | **Build** | **limpo** |
-| **Remote** | `origin/main` — último commit `757309d` (pushed ✅) |
+| **Remote** | `origin/main` — último commit `757309d` (pushed ✅); Sessão 8 ainda local |
 | **Worker** | ✅ LIVE — `https://tooloptimizercnc.contatorafaeleleoterio.workers.dev` |
 | **Custom Domains** | ✅ `tooloptimizercnc.com.br` + `app.tooloptimizercnc.com.br` |
 | **GitHub Actions** | ✅ deploy automático ao push para main |
@@ -84,7 +58,6 @@ npx tsc --noEmit
 | 2 | Fix TouchSlider Mobile | 🐛 Bug Fix | v0.5.2 | ✅ Concluído |
 | 3 | Unificar Indicadores Ajuste Fino | ✨ Feature | v0.5.3 | ✅ Concluído |
 | 4 | Favicon e Ícones | 💄 Polish | v0.5.4 | ✅ Concluído |
-| 5 | Segurança Cibernética | 🔒 Security | v0.5.5 | ⏸️ PAUSADO — aguardando decisão de Rafael |
 | 6 | Reestruturação Documental | 🏗️ Infra | v0.6.0 | ✅ Concluído |
 | 7 | Admin Dashboard (8 fases) | ✨ Feature | v0.7.0 | ✅ Concluído (`ab5eb8f`) |
 | 8 | Reestruturação Docs Marketing & Monetização (12 docs) | 📄 Docs | — | ✅ Concluído |
@@ -92,10 +65,9 @@ npx tsc --noEmit
 | 10 | [Implementações Dashboard v0.9 (7 itens)](#-implementações-dashboard-v09) | 🎨 Feature+Redesign | v0.9.4 | ✅ Concluído (`9b61427`) |
 | 11 | [Redesign Visual Dashboard (6 sessões)](#-redesign-visual-dashboard) | 🎨 Design Audit | v0.10.0 | ✅ Concluído (`64890cc`) |
 | 12 | Story-011 Cassino | 🎬 Animation | v0.11.0 | ✅ Concluído (`b2183bd`) |
-| 13 | [MVP Android Launch (11 sessões)](#-mvp-android-launch) | 🚀 Launch | v0.12.0 | ⬜ Pendente |
 | 14 | Redesign Calculadora 80/20 (4 sessões S0-S3) — `docs/plans/REDESIGN_DASHBOARD_80-20.md` | 🎨 Redesign | MINOR | 🔁 Absorvido pelo item 16 |
 | 15 | Design System Canônico (4 sessões, replanejado de 6) — `docs/plans/PLAN_DESIGN_SYSTEM_CANONICO.md` | 📄 Docs / Design Audit | — | ✅ Concluído (`d471895`) |
-| 16 | Implementação DS + 80/20 + Mobile + Dívida Visual (8 sessões) — `docs/plans/PLAN_IMPLEMENTACAO_DS_80-20_MOBILE.md` | 🎨 Redesign + Refactor | v0.12.0 | 🔁 Em andamento (7/8 — `31395be`) |
+| 16 | Implementação DS + 80/20 + Mobile + Dívida Visual (8 sessões) — `docs/plans/PLAN_IMPLEMENTACAO_DS_80-20_MOBILE.md` | 🎨 Redesign + Refactor | v0.12.0 | 🔁 Concluído localmente (8/8) |
 
 ### ✅ Reestruturação Documental (v0.6.0) — CONCLUÍDA
 
@@ -125,14 +97,7 @@ npx tsc --noEmit
 | 7 | Flags + Changelog + Health | ✅ Concluído (`5be515a`) |
 | 8 | Polish + Integração | ✅ Concluído (`ab5eb8f`) |
 
-**Admin Dashboard v0.7.0 completo.** Próxima: Segurança Cibernética v0.5.5 (fases 2-5) ou Story-008.
-
----
-
-### ⏸️ Segurança Cibernética (v0.5.5) — PAUSADO
-
-> **NÃO iniciar esta fase.** Aguardando decisão explícita de Rafael para retomar.
-> Plano completo disponível em: `docs/plans/PLAN_Seguranca_Cibernetica.md`
+**Admin Dashboard v0.7.0 completo.**
 
 ---
 
@@ -436,3 +401,11 @@ Quando uma nova implementação for planejada durante a sessão:
 
 **Próximo passo:** Sessão 8 — varredura final de dívida visual (grep sistemático fora de `src/admin/`) + docs + bump `v0.12.0` (`docs/plans/PLAN_IMPLEMENTACAO_DS_80-20_MOBILE.md`).
 **Retomar com:** "continuar"
+### Atualização de Encerramento — 07/08/2026 (item 16, Sessão 8/8)
+
+**Executado nesta sessão:** fechamento do plano `PLAN_IMPLEMENTACAO_DS_80-20_MOBILE.md` como release local `v0.12.0`.
+
+- `vitest.config.ts`: `npm test` passou a excluir `.aiox-core/**`, eliminando a coleta do template interno com import `@aiox/testing`.
+- Varredura DS fora de `src/admin/`: corrigidos snaps mecânicos de spacing, border alpha, radius e tamanhos de texto; sobra apenas `src/app/main.js` (Electron), fora do escopo definido.
+- `architecture-graph.ts`: adicionados favoritos, privacidade, modais, componentes mobile, storage e haptics; removida a aresta obsoleta `app -> fine-tune-panel`; `metadata.version` sincronizada com `package.json`.
+- Bump `0.11.0` → `0.12.0` em `package.json`, `package-lock.json` e grafo; docs de release sincronizados.

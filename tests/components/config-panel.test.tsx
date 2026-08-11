@@ -398,26 +398,22 @@ describe('ConfigPanel', () => {
   });
 
   // Cassino animation — Story-011 2C
-  it('Simular button is disabled immediately after click (calculating state)', async () => {
+  it('Simular button remains interactive and confirms the update immediately', () => {
     renderPanel();
     const btn = screen.getByText('Simular').closest('button')!;
     expect(btn).not.toBeDisabled();
     fireEvent.click(btn);
-    expect(btn).toBeDisabled();
-    // Wait for sequence to complete so timers don't leak
-    await waitFor(
-      () => expect(useMachiningStore.getState().resultado).not.toBeNull(),
-      { timeout: 2500 },
-    );
+    expect(btn).not.toBeDisabled();
+    expect(screen.getByText('Atualizado')).toBeInTheDocument();
   });
 
-  it('Simular button re-enables after animation sequence completes', async () => {
+  it('Simular button returns to idle after confirmation', async () => {
     renderPanel();
     const btn = screen.getByText('Simular').closest('button')!;
     await act(async () => { fireEvent.click(btn); });
     await waitFor(
       () => expect(btn).not.toBeDisabled(),
-      { timeout: 3500 },
+      { timeout: 500 },
     );
   });
 

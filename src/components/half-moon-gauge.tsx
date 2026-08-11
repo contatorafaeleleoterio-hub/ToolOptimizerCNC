@@ -17,7 +17,7 @@ interface HalfMoonGaugeProps {
 
 const TOTAL_BARS = 41;
 const MAX_PCT    = 150;
-const ANIM_MS    = 800;
+const ANIM_MS    = 280;
 
 // Arc: -90° to +90° (180° total), step = 180/40 = 4.5° per bar
 const ARC_START_DEG = -90;
@@ -44,9 +44,8 @@ function barGlow(idx: number): string {
 }
 
 // easeOutBack: slight overshoot then settles — validated formula from story spec
-function easeOutBack(t: number): number {
-  const s = t - 1;
-  return 1 + s * s * (2.70158 * s + 1.70158);
+function easeOutCubic(t: number): number {
+  return 1 - (1 - t) ** 3;
 }
 
 // ─── Size lookup ─────────────────────────────────────────────────────────────
@@ -71,24 +70,30 @@ export function HalfMoonGauge({
 
   const [displayPct, setDisplayPct] = useState(() => (animateOnMount ? 0 : targetPct));
   const rafRef = useRef<number | null>(null);
+  const displayPctRef = useRef(displayPct);
 
   useEffect(() => {
-    if (!animateOnMount || value <= 0) {
+    if (!animateOnMount) {
       setDisplayPct(targetPct);
+      displayPctRef.current = targetPct;
       return;
     }
 
     if (rafRef.current !== null) cancelAnimationFrame(rafRef.current);
+    const startPct = displayPctRef.current;
+    if (Math.abs(targetPct - startPct) < 0.01) return;
     const startTime = performance.now();
 
     const animate = (now: number) => {
       const t = Math.min((now - startTime) / ANIM_MS, 1);
-      // Allow easeOutBack overshoot (values slightly above targetPct), clamp 0 floor
-      setDisplayPct(Math.max(0, easeOutBack(t) * targetPct));
+      const nextPct = startPct + (targetPct - startPct) * easeOutCubic(t);
+      displayPctRef.current = nextPct;
+      setDisplayPct(nextPct);
       if (t < 1) {
         rafRef.current = requestAnimationFrame(animate);
       } else {
-        setDisplayPct(targetPct); // settle exactly at target
+        displayPctRef.current = targetPct;
+        setDisplayPct(targetPct);
         rafRef.current = null;
       }
     };

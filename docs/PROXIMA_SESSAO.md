@@ -3,14 +3,16 @@
 > **Ponto de entrada da sessão:** `docs/ROADMAP_SESSAO_ATUAL.md` — ler este primeiro!
 
 ---
+## 📄 Sessão de execução — Fechamento DS + 80/20 + Mobile, Sessão 8/8 (07/08/2026)
 
-## ESCOPO POR AMBIENTE (REGRA OBRIGATORIA)
+Execução final do `PLAN_IMPLEMENTACAO_DS_80-20_MOBILE.md` como release local `v0.12.0`.
 
-- Codex (OpenAI): trabalha somente no Admin Dashboard (`/admin`).
-- Gemini/Cloud Code: ambiente autorizado para evoluções do dashboard de cálculos e produto final.
+- **Vitest confiável:** `vitest.config.ts` agora exclui `.aiox-core/**`, então `npm test` não coleta mais templates internos do framework.
+- **Varredura visual final:** greps de dívida visual fora de `src/admin/` corrigidos para spacing/radius/border/text. Sobra registrada: `src/app/main.js` usa `#0f1419`, mas é Electron e ficou fora de escopo.
+- **Architecture graph:** `src/data/architecture-graph.ts` recebeu os arquivos produtivos faltantes (favoritos, privacidade, modais, mobile tab/simulate/mini bar, viewport guard, haptics e storage), com arestas baseadas em imports reais e `metadata.version` em `0.12.0`.
+- **Release docs:** `package.json`, `package-lock.json`, roadmap, backlog, timeline e memory sincronizados para `v0.12.0`.
 
 ---
-
 ## 📄 Sessão de execução — Implementação DS + 80/20 + Mobile, Sessões 6-7/8 (06/08/2026)
 
 Execução do `PLAN_IMPLEMENTACAO_DS_80-20_MOBILE.md` — commits `d327529`, `783d31d`, `e5975c9`, `986e724`, `31395be`, `757309d` (pushados).
@@ -23,7 +25,16 @@ Execução do `PLAN_IMPLEMENTACAO_DS_80-20_MOBILE.md` — commits `d327529`, `78
 - Próximo passo: Sessão 8 (última) — varredura final de dívida visual (grep sistemático fora de `src/admin/`) + changelog do DS + bump `0.11.0`→`0.12.0` em `package.json` **e** `architecture-graph.ts` (`metadata.version`).
 
 ---
+## 📄 Sessão de execução — Fechamento DS + 80/20 + Mobile, Sessão 8/8 (07/08/2026)
 
+Execução final do `PLAN_IMPLEMENTACAO_DS_80-20_MOBILE.md` como release local `v0.12.0`.
+
+- **Vitest confiável:** `vitest.config.ts` agora exclui `.aiox-core/**`, então `npm test` não coleta mais templates internos do framework.
+- **Varredura visual final:** greps de dívida visual fora de `src/admin/` corrigidos para spacing/radius/border/text. Sobra registrada: `src/app/main.js` usa `#0f1419`, mas é Electron e ficou fora de escopo.
+- **Architecture graph:** `src/data/architecture-graph.ts` recebeu os arquivos produtivos faltantes (favoritos, privacidade, modais, mobile tab/simulate/mini bar, viewport guard, haptics e storage), com arestas baseadas em imports reais e `metadata.version` em `0.12.0`.
+- **Release docs:** `package.json`, `package-lock.json`, roadmap, backlog, timeline e memory sincronizados para `v0.12.0`.
+
+---
 ## 📄 Sessão de execução — Implementação DS + 80/20 + Mobile, Sessões 4-5/8 (06/08/2026)
 
 Execução do `PLAN_IMPLEMENTACAO_DS_80-20_MOBILE.md` — commits `4254bfb`, `8e11250` (pushados).
@@ -36,7 +47,16 @@ Execução do `PLAN_IMPLEMENTACAO_DS_80-20_MOBILE.md` — commits `4254bfb`, `8e
 - Próximo passo: Sessão 6 — Mobile: Config 80/20 + alvos de toque + testes base.
 
 ---
+## 📄 Sessão de execução — Fechamento DS + 80/20 + Mobile, Sessão 8/8 (07/08/2026)
 
+Execução final do `PLAN_IMPLEMENTACAO_DS_80-20_MOBILE.md` como release local `v0.12.0`.
+
+- **Vitest confiável:** `vitest.config.ts` agora exclui `.aiox-core/**`, então `npm test` não coleta mais templates internos do framework.
+- **Varredura visual final:** greps de dívida visual fora de `src/admin/` corrigidos para spacing/radius/border/text. Sobra registrada: `src/app/main.js` usa `#0f1419`, mas é Electron e ficou fora de escopo.
+- **Architecture graph:** `src/data/architecture-graph.ts` recebeu os arquivos produtivos faltantes (favoritos, privacidade, modais, mobile tab/simulate/mini bar, viewport guard, haptics e storage), com arestas baseadas em imports reais e `metadata.version` em `0.12.0`.
+- **Release docs:** `package.json`, `package-lock.json`, roadmap, backlog, timeline e memory sincronizados para `v0.12.0`.
+
+---
 ## 📄 Sessão de execução — Implementação DS + 80/20 + Mobile, Sessões 1-3/8 (05/08/2026)
 
 Execução do `PLAN_IMPLEMENTACAO_DS_80-20_MOBILE.md` — commits `895ba05`, `abe7588`, `7845488` (pushados).
@@ -49,7 +69,16 @@ Execução do `PLAN_IMPLEMENTACAO_DS_80-20_MOBILE.md` — commits `895ba05`, `ab
 - Próximo passo: Sessão 4 — Desktop S2: Results Panel 8→4 zonas (maior sessão do plano).
 
 ---
+## 📄 Sessão de execução — Fechamento DS + 80/20 + Mobile, Sessão 8/8 (07/08/2026)
 
+Execução final do `PLAN_IMPLEMENTACAO_DS_80-20_MOBILE.md` como release local `v0.12.0`.
+
+- **Vitest confiável:** `vitest.config.ts` agora exclui `.aiox-core/**`, então `npm test` não coleta mais templates internos do framework.
+- **Varredura visual final:** greps de dívida visual fora de `src/admin/` corrigidos para spacing/radius/border/text. Sobra registrada: `src/app/main.js` usa `#0f1419`, mas é Electron e ficou fora de escopo.
+- **Architecture graph:** `src/data/architecture-graph.ts` recebeu os arquivos produtivos faltantes (favoritos, privacidade, modais, mobile tab/simulate/mini bar, viewport guard, haptics e storage), com arestas baseadas em imports reais e `metadata.version` em `0.12.0`.
+- **Release docs:** `package.json`, `package-lock.json`, roadmap, backlog, timeline e memory sincronizados para `v0.12.0`.
+
+---
 ## 📄 Sessão de planejamento — Implementação DS + 80/20 + Mobile (05/08/2026)
 
 Sessão só de planejamento — **zero alterações em `src/`**.
@@ -60,7 +89,16 @@ Sessão só de planejamento — **zero alterações em `src/`**.
 - Próximo passo: executar Sessão 1 (dívida bloco 1, limpeza zero-risco).
 
 ---
+## 📄 Sessão de execução — Fechamento DS + 80/20 + Mobile, Sessão 8/8 (07/08/2026)
 
+Execução final do `PLAN_IMPLEMENTACAO_DS_80-20_MOBILE.md` como release local `v0.12.0`.
+
+- **Vitest confiável:** `vitest.config.ts` agora exclui `.aiox-core/**`, então `npm test` não coleta mais templates internos do framework.
+- **Varredura visual final:** greps de dívida visual fora de `src/admin/` corrigidos para spacing/radius/border/text. Sobra registrada: `src/app/main.js` usa `#0f1419`, mas é Electron e ficou fora de escopo.
+- **Architecture graph:** `src/data/architecture-graph.ts` recebeu os arquivos produtivos faltantes (favoritos, privacidade, modais, mobile tab/simulate/mini bar, viewport guard, haptics e storage), com arestas baseadas em imports reais e `metadata.version` em `0.12.0`.
+- **Release docs:** `package.json`, `package-lock.json`, roadmap, backlog, timeline e memory sincronizados para `v0.12.0`.
+
+---
 ## 📄 Sessão paralela — Design System Canônico (02/08/2026)
 
 Sessão de documentação/design audit, independente da linha mobile/Android abaixo. **Zero alterações em `src/`.**
@@ -72,7 +110,16 @@ Sessão de documentação/design audit, independente da linha mobile/Android aba
 - Detalhes completos: `docs/plans/BACKLOG_IMPLEMENTACAO.md` item 14.
 
 ---
+## 📄 Sessão de execução — Fechamento DS + 80/20 + Mobile, Sessão 8/8 (07/08/2026)
 
+Execução final do `PLAN_IMPLEMENTACAO_DS_80-20_MOBILE.md` como release local `v0.12.0`.
+
+- **Vitest confiável:** `vitest.config.ts` agora exclui `.aiox-core/**`, então `npm test` não coleta mais templates internos do framework.
+- **Varredura visual final:** greps de dívida visual fora de `src/admin/` corrigidos para spacing/radius/border/text. Sobra registrada: `src/app/main.js` usa `#0f1419`, mas é Electron e ficou fora de escopo.
+- **Architecture graph:** `src/data/architecture-graph.ts` recebeu os arquivos produtivos faltantes (favoritos, privacidade, modais, mobile tab/simulate/mini bar, viewport guard, haptics e storage), com arestas baseadas em imports reais e `metadata.version` em `0.12.0`.
+- **Release docs:** `package.json`, `package-lock.json`, roadmap, backlog, timeline e memory sincronizados para `v0.12.0`.
+
+---
 ## ⚡ RESUMO DA ÚLTIMA SESSÃO (19/04/2026)
 
 **Fases 2 e 3 do Master Plan v2.0 CONCLUÍDAS ✅**
@@ -92,7 +139,16 @@ Sessão de documentação/design audit, independente da linha mobile/Android aba
 - Persistência migrada para modelo híbrido assíncrono ✅
 
 ---
+## 📄 Sessão de execução — Fechamento DS + 80/20 + Mobile, Sessão 8/8 (07/08/2026)
 
+Execução final do `PLAN_IMPLEMENTACAO_DS_80-20_MOBILE.md` como release local `v0.12.0`.
+
+- **Vitest confiável:** `vitest.config.ts` agora exclui `.aiox-core/**`, então `npm test` não coleta mais templates internos do framework.
+- **Varredura visual final:** greps de dívida visual fora de `src/admin/` corrigidos para spacing/radius/border/text. Sobra registrada: `src/app/main.js` usa `#0f1419`, mas é Electron e ficou fora de escopo.
+- **Architecture graph:** `src/data/architecture-graph.ts` recebeu os arquivos produtivos faltantes (favoritos, privacidade, modais, mobile tab/simulate/mini bar, viewport guard, haptics e storage), com arestas baseadas em imports reais e `metadata.version` em `0.12.0`.
+- **Release docs:** `package.json`, `package-lock.json`, roadmap, backlog, timeline e memory sincronizados para `v0.12.0`.
+
+---
 ## 🚀 CONTINUAR AQUI — Próxima Sessão (Fase 4)
 
 A próxima etapa é a **Fase 4: Validação de Campo e Refinamento Nativo**.
@@ -104,13 +160,22 @@ A próxima etapa é a **Fase 4: Validação de Campo e Refinamento Nativo**.
 4. **Splash Screen & Icons:** Personalizar a inicialização nativa (atualmente usando assets padrão do Capacitor).
 
 ---
+## 📄 Sessão de execução — Fechamento DS + 80/20 + Mobile, Sessão 8/8 (07/08/2026)
 
+Execução final do `PLAN_IMPLEMENTACAO_DS_80-20_MOBILE.md` como release local `v0.12.0`.
+
+- **Vitest confiável:** `vitest.config.ts` agora exclui `.aiox-core/**`, então `npm test` não coleta mais templates internos do framework.
+- **Varredura visual final:** greps de dívida visual fora de `src/admin/` corrigidos para spacing/radius/border/text. Sobra registrada: `src/app/main.js` usa `#0f1419`, mas é Electron e ficou fora de escopo.
+- **Architecture graph:** `src/data/architecture-graph.ts` recebeu os arquivos produtivos faltantes (favoritos, privacidade, modais, mobile tab/simulate/mini bar, viewport guard, haptics e storage), com arestas baseadas em imports reais e `metadata.version` em `0.12.0`.
+- **Release docs:** `package.json`, `package-lock.json`, roadmap, backlog, timeline e memory sincronizados para `v0.12.0`.
+
+---
 ## Estado do Projeto
 
 | Item | Valor |
 |------|-------|
 | **Branch** | `main` |
-| **Versão** | `0.11.0` (Capacitor + PWA) |
+| **Versão** | `0.12.0` (DS + 80/20 + Mobile concluído localmente) |
 | **Persistência** | Híbrida (Capacitor Preferences / LocalStorage) |
 | **Mobile** | Rota `/mobile` (HMI Visor + Haptics) |
 | **Offline** | ✅ Ativo via PWA |

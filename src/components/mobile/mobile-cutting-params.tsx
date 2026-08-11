@@ -82,7 +82,7 @@ const SLIDER_VISUAL = [
     equilibrio: 'Combine ap alto com ae baixo para operações de desbaste eficiente.' },
 ];
 
-const BTN_CLS = 'w-10 h-10 rounded-lg bg-black/30 border border-white/12 text-gray-400 active:bg-white/10 transition-all text-sm font-bold flex items-center justify-center';
+const BTN_CLS = 'w-10 h-10 rounded-lg bg-black/30 border border-white/10 text-gray-400 active:bg-white/10 transition-all text-sm font-bold flex items-center justify-center';
 
 /** Maximum number of visible tick marks on the slider track */
 const MAX_TICKS = 20;
@@ -302,7 +302,7 @@ export function MobileCuttingParamsSliders() {
   }, [ajustarParametros]);
 
   return (
-    <div className="flex flex-col gap-5">
+    <div className="flex flex-col gap-4">
       {SLIDER_VISUAL.map(({ key, label, fullLabel, unit, color, desc }) => {
         const { min, max, step, recomendado } = bounds[key];
         const val = parametros[key];

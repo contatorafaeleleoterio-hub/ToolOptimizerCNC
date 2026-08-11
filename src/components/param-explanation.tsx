@@ -21,7 +21,7 @@ export function ParamExplanation({ fullLabel, explanationText }: ParamExplanatio
         onMouseEnter={handleMouseEnter}
         onMouseLeave={handleMouseLeave}
         onClick={handleClick}
-        className="w-full flex items-center justify-center gap-1.5 px-2 py-1 rounded-md
+        className="w-full flex items-center justify-center gap-1.5 px-2 py-1 rounded-lg
                    border border-cyan-400/40 bg-cyan-500/10 text-cyan-400 text-xs
                    hover:bg-cyan-500/20 hover:border-cyan-400/60 transition-all"
       >

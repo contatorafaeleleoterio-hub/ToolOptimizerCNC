@@ -13,16 +13,13 @@ describe('MobileSimulateButton', () => {
     expect(screen.getByText('Simular')).toBeInTheDocument();
   });
 
-  it('disables the button immediately after click (calculating state)', async () => {
+  it('keeps the button interactive and shows immediate confirmation', () => {
     render(<MobileSimulateButton />);
     const btn = screen.getByText('Simular').closest('button')!;
     expect(btn).not.toBeDisabled();
     fireEvent.click(btn);
-    expect(btn).toBeDisabled();
-    await waitFor(
-      () => expect(useMachiningStore.getState().resultado).not.toBeNull(),
-      { timeout: 2500 },
-    );
+    expect(btn).not.toBeDisabled();
+    expect(screen.getByText('Atualizado')).toBeInTheDocument();
   });
 
   it('calls onSimulationStart synchronously on click', () => {
@@ -39,17 +36,7 @@ describe('MobileSimulateButton', () => {
     });
     await waitFor(
       () => expect(useMachiningStore.getState().resultado).not.toBeNull(),
-      { timeout: 2500 },
-    );
-  });
-
-  it('re-enables the button after the animation sequence completes', async () => {
-    render(<MobileSimulateButton />);
-    const btn = screen.getByText('Simular').closest('button')!;
-    await act(async () => { fireEvent.click(btn); });
-    await waitFor(
-      () => expect(btn).not.toBeDisabled(),
-      { timeout: 3500 },
+      { timeout: 500 },
     );
   });
 

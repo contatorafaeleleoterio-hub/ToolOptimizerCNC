@@ -1,5 +1,5 @@
 import { describe, it, expect, beforeEach } from 'vitest';
-import { render, screen, fireEvent, waitFor } from '@testing-library/react';
+import { render, screen, fireEvent, waitFor, act } from '@testing-library/react';
 import { BrowserRouter } from 'react-router-dom';
 import { MobilePage } from '@/pages/mobile-page';
 import { useMachiningStore } from '@/store';
@@ -86,6 +86,18 @@ describe('MobilePage', () => {
     await waitFor(() => {
       expect(screen.getByText(/SEGURO|ALERTA|CRÍTICO|BLOQUEADO/)).toBeInTheDocument();
     }, { timeout: 3000 });
+  });
+
+  it('keeps the active tab when a live input update changes the result', async () => {
+    renderMobile();
+    fireEvent.click(screen.getByRole('button', { name: /simular/i }));
+    await waitFor(() => expect(useMachiningStore.getState().resultado).not.toBeNull());
+    fireEvent.click(screen.getByRole('tab', { name: /ajustar/i }));
+
+    act(() => useMachiningStore.getState().setParametros({ vc: 150 }));
+
+    expect(screen.getByRole('tab', { name: /ajustar/i })).toHaveAttribute('aria-selected', 'true');
+    expect(screen.getAllByLabelText(/Vc value/i).length).toBeGreaterThanOrEqual(1);
   });
 
   it('renders operation type radio buttons', () => {

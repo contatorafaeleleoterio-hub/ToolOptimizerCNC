@@ -70,6 +70,31 @@ describe('machining-store', () => {
     });
   });
 
+  describe('live calculation after explicit simulation', () => {
+    it('stays manual before Simular, recalculates every input after it, and reset disables it', () => {
+      getState().setParametros({ vc: 150 });
+      expect(getState().resultado).toBeNull();
+
+      getState().simular();
+      expect(getState().liveCalculationEnabled).toBe(true);
+      const firstRpm = getState().resultado?.rpm;
+
+      getState().setParametros({ vc: 200 });
+      expect(getState().resultado).not.toBeNull();
+      expect(getState().resultado?.rpm).not.toBe(firstRpm);
+
+      getState().setSafetyFactor(0.7);
+      expect(getState().resultado).not.toBeNull();
+      getState().setFerramenta({ numeroArestas: 6 });
+      expect(getState().resultado).not.toBeNull();
+
+      getState().reset();
+      expect(getState().liveCalculationEnabled).toBe(false);
+      getState().setParametros({ vc: 180 });
+      expect(getState().resultado).toBeNull();
+    });
+  });
+
   describe('setFerramenta', () => {
     it('merges partial ferramenta — changes D, keeps Z', () => {
       getState().setFerramenta({ diametro: 12 });

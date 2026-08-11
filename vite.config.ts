@@ -86,6 +86,13 @@ export default defineConfig({
   },
   build: {
     cssMinify: false,
+    rollupOptions: {
+      output: {
+        manualChunks: {
+          'react-vendor': ['react', 'react-dom', 'react-router-dom', 'zustand'],
+        },
+      },
+    },
   },
   resolve: {
     alias: {

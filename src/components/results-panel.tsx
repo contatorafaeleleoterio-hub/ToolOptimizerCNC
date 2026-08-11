@@ -109,12 +109,10 @@ export function ResultsPanel() {
 
   const [showEditModal, setShowEditModal] = React.useState(false);
 
-  const { triggerPulse, safetyLevel, isRevealing } = useSimulationAnimation();
+  const { triggerPulse, safetyLevel } = useSimulationAnimation();
   const resultado = storeResultado ?? EMPTY_RESULTADO;
 
-  // jackpotFlash helper: animation style with per-card delay
-  const flash = (delayMs: number) =>
-    isRevealing ? { animation: `jackpotFlash 550ms ease-out ${delayMs}ms both` } : undefined;
+  const flash = (_delayMs: number) => undefined;
 
   const latestEntry = historyEntries[0];
 
@@ -190,12 +188,12 @@ export function ResultsPanel() {
         </div>
         {/* SF chip — only when safety factor differs from the 0.80 default (hidden state living in the advanced accordion) */}
         {sfPercent !== 80 && (
-          <span className="font-mono text-[10px] font-bold px-2 py-1 rounded-md bg-primary/10 text-primary border border-primary/25 shrink-0">
+          <span className="font-mono text-[10px] font-bold px-2 py-1 rounded-lg bg-primary/10 text-primary border border-primary/25 shrink-0">
             SF {sfPercent}%
           </span>
         )}
         {/* Safety badge inline — jackpotFlash with 600ms delay (AC-9) */}
-        <div className={`flex items-center gap-1.5 px-2.5 py-1 rounded-lg border text-xs font-bold uppercase tracking-wide shrink-0 ${SEG_BG[nivel]}`}
+        <div className={`flex items-center gap-1.5 px-3 py-1 rounded-lg border text-xs font-bold uppercase tracking-wide shrink-0 ${SEG_BG[nivel]}`}
           style={flash(600)}>
           <span className={`material-symbols-outlined text-sm ${SEG_COLORS[nivel]}`}
             style={{ fontVariationSettings: "'FILL' 1, 'wght' 400" }}>

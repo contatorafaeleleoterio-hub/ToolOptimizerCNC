@@ -76,7 +76,7 @@ export function ArchDataFlow({ onClose }: ArchDataFlowProps) {
       role="presentation"
     >
       <div
-        className="relative w-full max-w-[1100px] rounded-3xl border border-primary/20 bg-surface-dark/95 p-5 shadow-glass"
+        className="relative w-full max-w-[1100px] rounded-2xl border border-primary/20 bg-surface-dark/95 p-5 shadow-glass"
         onClick={(event) => event.stopPropagation()}
       >
         <div className="mb-4 flex items-center justify-between gap-3">

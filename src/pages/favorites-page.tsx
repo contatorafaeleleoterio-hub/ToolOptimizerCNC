@@ -349,7 +349,7 @@ function FavoriteCard({
         </div>
 
         {/* Safety badge */}
-        <span className={`text-[10px] font-bold px-2.5 py-1 rounded-lg border ${SEG_COLORS[nivel]}`}>
+        <span className={`text-[10px] font-bold px-3 py-1 rounded-lg border ${SEG_COLORS[nivel]}`}>
           {SEG_LABELS[nivel]}
         </span>
 

@@ -1,6 +1,5 @@
 import { useMachiningStore } from '@/store';
 import { TipoUsinagem } from '@/types';
-import { useSimulationAnimation } from '@/hooks/use-simulation-animation';
 import { MiniResultBar } from './mobile-mini-result-bar';
 
 const MRR_BENCHMARKS: Record<TipoUsinagem, number> = {
@@ -18,7 +17,6 @@ export function MobileIndicatorsBlock() {
   const resultado = useMachiningStore((s) => s.resultado);
   const limites = useMachiningStore((s) => s.limitesMaquina);
   const tipoOperacao = useMachiningStore((s) => s.tipoOperacao);
-  const { gaugeAnimating } = useSimulationAnimation();
 
   const mrrBenchmark = MRR_BENCHMARKS[tipoOperacao] ?? 20;
   const mrrPct = resultado ? (resultado.mrr / mrrBenchmark) * 100 : 0;
@@ -54,7 +52,6 @@ export function MobileIndicatorsBlock() {
         value={resultado.avanco}
         maxValue={limites.maxAvanco}
         unit="mm/min"
-        animating={gaugeAnimating}
       />
       <MiniResultBar
         label="MRR"
@@ -62,7 +59,6 @@ export function MobileIndicatorsBlock() {
         maxValue={100}
         unit="%"
         badge={`${resultado.mrr.toFixed(1)} cm³/min`}
-        animating={gaugeAnimating}
       />
       <MiniResultBar
         label="Saúde Ferramenta"
@@ -70,7 +66,6 @@ export function MobileIndicatorsBlock() {
         maxValue={100}
         unit="%"
         badge={resultado.healthScore === 0 ? 'BLOQUEADO' : undefined}
-        animating={gaugeAnimating}
       />
     </>
   );

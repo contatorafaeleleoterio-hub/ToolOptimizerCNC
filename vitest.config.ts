@@ -11,7 +11,7 @@ export default defineConfig({
     environment: 'jsdom',
     setupFiles: ['./tests/setup.ts'],
     passWithNoTests: true,
-    exclude: ['Sistema_Desktop_Pen_driver/**', 'node_modules/**', '.claude/**'],
+    exclude: ['Sistema_Desktop_Pen_driver/**', 'node_modules/**', '.claude/**', '.aiox-core/**'],
     coverage: {
       provider: 'v8',
       reporter: ['text', 'html'],

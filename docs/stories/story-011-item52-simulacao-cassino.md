@@ -1,7 +1,7 @@
 ---
 id: story-011
 title: "ITEM-5.2: Simulação Estilo Cassino — Animação Cinematográfica em 4 Fases"
-status: Done
+status: Done (superseded by live calculation revision)
 created: 2026-04-17
 author: "@sm (River)"
 epic: "Grupo A — Dashboard Principal"
@@ -14,6 +14,18 @@ spec_ref: docs/plans/ATUALIZACAO_DASH_APROVADO/ITEM-9-SIMULACAO-ESTILO-CASSINO.m
 ---
 
 # Story-011 — Simulação Estilo Cassino
+
+> **AtualizaÃ§Ã£o de produto (07/08/2026):** o fluxo de cassino foi substituÃ­do por cÃ¡lculo CNC imediato e atualizaÃ§Ã£o viva. A especificaÃ§Ã£o original abaixo fica preservada como histÃ³rico; os requisitos vigentes desta story sÃ£o os seguintes.
+
+## RevisÃ£o vigente â€” CÃ¡lculo ao vivo e feedback profissional
+
+- [x] `Simular` executa o cÃ¡lculo local sem atraso artificial e nÃ£o bloqueia o botÃ£o.
+- [x] Desktop e mobile exibem `Atualizado` com check por 300 ms, depois retornam a `Simular`.
+- [x] Depois da primeira simulaÃ§Ã£o explÃ­cita, todas as alteraÃ§Ãµes relevantes recalculam imediatamente; `reset` retorna ao modo manual inicial.
+- [x] Os gauges interpolam do percentual atual para o novo alvo em 280 ms, sem retorno a zero ou overshoot.
+- [x] AtualizaÃ§Ãµes ao vivo no mobile preservam a aba atual; apenas `Simular` abre Resultados.
+
+**VerificaÃ§Ã£o:** `npm run lint`, `npm run typecheck`, `npm test` (1034 testes) e `npm run build` concluÃ­dos com sucesso em 07/08/2026.
 
 ## User Story
 
@@ -210,6 +222,15 @@ describe('ConfigPanel — botão Simular cassino', () => {
 - [x] `tests/components/config-panel.test.tsx` — modificado (Sessão 2C — 4 testes cassino)
 
 ---
+
+### Arquivos da revisÃ£o ao vivo (07/08/2026)
+
+- [x] `src/store/machining-store.ts`
+- [x] `src/components/mobile/mobile-simulate-button.tsx`
+- [x] `src/components/mobile/mobile-indicators-block.tsx`
+- [x] `tests/components/mobile-simulate-button.test.tsx`
+- [x] `tests/pages/mobile-page.test.tsx`
+- [x] `tests/store/machining-store.test.ts`
 
 ## Change Log
 
