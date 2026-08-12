@@ -7,6 +7,8 @@ interface HalfMoonGaugeProps {
   maxValue: number;
   label?: string;
   badge?: string;
+  /** Tailwind text color for the badge. Default: muted gray (neutral readouts). */
+  badgeClassName?: string;
   /** 'md' = desktop (240×120), 'sm' = mobile (160×80). Default: 'md'. */
   size?: 'sm' | 'md';
   /** When true, animates needle+bars from 0→value via rAF with easeOutBack on value change. */
@@ -46,7 +48,7 @@ function barPct(idx: number): number {
 /**
  * 'centered': 8 RED · 8 ORANGE · 9 GREEN · 8 ORANGE · 8 RED (green mid-scale).
  * 'ascending': red → orange → green, split at 40% and 76% of the arc — the same
- * cutoffs getHealthLevel() uses, so a 0–100 health scale matches its own colors.
+ * cutoffs health-score.ts uses, so a 0–100 health scale matches its own colors.
  */
 function barColor(idx: number, mode: ColorMode): string {
   if (mode === 'ascending') {
@@ -86,6 +88,7 @@ export function HalfMoonGauge({
   maxValue,
   label = 'Indicador',
   badge,
+  badgeClassName = 'text-gray-400',
   size = 'md',
   animateOnMount = false,
   scaleMax = DEFAULT_SCALE,
@@ -237,7 +240,7 @@ export function HalfMoonGauge({
         {badge ? (
           <div className="flex flex-col items-center gap-1">
             <span className="text-3xl font-bold text-white font-mono">{Math.round(displayPct)}</span>
-            <span className="text-xs text-gray-400 text-center max-w-24 leading-tight whitespace-pre-line">{badge}</span>
+            <span className={`text-xs text-center max-w-24 leading-tight whitespace-pre-line ${badgeClassName}`}>{badge}</span>
           </div>
         ) : (
           <div className="flex items-baseline gap-0.5">

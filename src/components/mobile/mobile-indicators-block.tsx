@@ -1,6 +1,7 @@
 import { useMachiningStore } from '@/store';
 import { TipoUsinagem } from '@/types';
 import { MiniResultBar } from './mobile-mini-result-bar';
+import { SEG_COLORS } from '../shared-result-parts';
 
 const MRR_BENCHMARKS: Record<TipoUsinagem, number> = {
   [TipoUsinagem.DESBASTE]: 50,
@@ -65,8 +66,13 @@ export function MobileIndicatorsBlock() {
         value={resultado.healthScore}
         maxValue={100}
         unit="%"
-        badge={resultado.healthScore === 0 ? 'BLOQUEADO' : undefined}
       />
+      {/* Reason line — only when something is off, so it reads as an alarm, not as noise */}
+      {resultado.healthLevel !== 'verde' && (
+        <span className={`text-[9px] uppercase tracking-widest font-semibold -mt-1 px-0.5 ${SEG_COLORS[resultado.healthLevel]}`}>
+          {resultado.healthBadge.replace('\n', ' ')}
+        </span>
+      )}
     </>
   );
 }

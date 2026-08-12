@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import { evaluateHealth, getHealthLevel } from './health-score';
+import { evaluateHealth } from './health-score';
 
 describe('health-score utils', () => {
   describe('evaluateHealth — score', () => {
@@ -99,30 +99,24 @@ describe('health-score utils', () => {
       expect(badge).toContain('Engajamento');
     });
 
+    it('levels the badge by the worst parameter, not by the score', () => {
+      // ae at twice the recommendation scores 0, but weighs only 20%:
+      // the average stays green while the badge must scream red
+      const result = evaluateHealth({ ...ideal, ae: 5.4 });
+      expect(result.score).toBeGreaterThan(75);
+      expect(result.level).toBe('vermelho');
+      expect(result.badge).toContain('Crítico');
+    });
+
+    it('never reports a parameter as bloqueado — only L/D blocks', () => {
+      expect(evaluateHealth({ ...ideal, ap: 20 }).level).toBe('vermelho');
+      expect(evaluateHealth({ ...ideal, ldRatio: 7 }).level).toBe('bloqueado');
+    });
+
     it('breaks ties toward the heaviest parameter (ap)', () => {
       const badge = evaluateHealth({ ...ideal, ap: 9, fz: 0.15 }).badge;
       expect(badge).toContain('Deflexão');
     });
   });
 
-  describe('getHealthLevel', () => {
-    it('returns bloqueado for score 0', () => {
-      expect(getHealthLevel(0)).toBe('bloqueado');
-    });
-
-    it('returns vermelho for score < 40', () => {
-      expect(getHealthLevel(30)).toBe('vermelho');
-    });
-
-    it('returns amarelo for score 40-75', () => {
-      expect(getHealthLevel(40)).toBe('amarelo');
-      expect(getHealthLevel(60)).toBe('amarelo');
-      expect(getHealthLevel(75)).toBe('amarelo');
-    });
-
-    it('returns verde for score > 75', () => {
-      expect(getHealthLevel(76)).toBe('verde');
-      expect(getHealthLevel(100)).toBe('verde');
-    });
-  });
 });

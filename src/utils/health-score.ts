@@ -3,12 +3,15 @@
  * recommended one, as a single 0-100 number plus the reason behind it.
  */
 
+/** Score cutoffs separating the three severities. */
+const RED_CUTOFF   = 40;
+const GREEN_CUTOFF = 75;
+
 /**
  * Anchor curves mapping a value/recomendado ratio to a score.
  * Anchors sit on the cutting zone thresholds used across the app
- * (0.50 / 0.75 / 1.20 / 1.50 — see parameter-health-bar) and on the cutoffs of
- * getHealthLevel (40 = vermelho/amarelo, 76 = amarelo/verde), so score, colors
- * and zone labels always agree.
+ * (0.50 / 0.75 / 1.20 / 1.50 — see parameter-health-bar) and on the cutoffs
+ * above, so score, colors and zone labels always agree.
  */
 const CURVE_VC_FZ: ReadonlyArray<readonly [number, number]> = [
   [0.25, 0], [0.50, 40], [0.75, 76], [1.00, 100], [1.20, 76], [1.50, 40], [2.00, 0],
@@ -56,11 +59,15 @@ export interface HealthScoreInput {
   ldRatio: number;
 }
 
+export type HealthLevel = 'verde' | 'amarelo' | 'vermelho' | 'bloqueado';
+
 export interface HealthResult {
   /** Weighted health [0, 100] */
   score: number;
   /** Why the score is what it is, e.g. "Alerta:\nVibração". Two lines. */
   badge: string;
+  /** Severity of the badge — of the WORST parameter, not of the score. Drives its color. */
+  level: HealthLevel;
 }
 
 /**
@@ -69,7 +76,7 @@ export interface HealthResult {
  * instead of jumping only at zone boundaries.
  */
 export function evaluateHealth(input: HealthScoreInput): HealthResult {
-  if (input.ldRatio > 6) return { score: 0, badge: 'BLOQUEADO:\nL/D > 6' };
+  if (input.ldRatio > 6) return { score: 0, badge: 'BLOQUEADO:\nL/D > 6', level: 'bloqueado' };
 
   const ratio = (value: number, recomendado: number) => (recomendado > 0 ? value / recomendado : 0);
 
@@ -82,20 +89,13 @@ export function evaluateHealth(input: HealthScoreInput): HealthResult {
 
   const score = Math.round(PARAMS.reduce((sum, p) => sum + scores[p] * WEIGHTS[p], 0));
 
+  // Severity comes from the worst single parameter: a 76 average hides an ap
+  // about to snap the tool. Note nothing below is 'bloqueado' — L/D is the only
+  // outright block, and it already returned above.
   const worst = PARAMS.reduce((a, b) => (scores[b] < scores[a] ? b : a));
-  const level = getHealthLevel(scores[worst]);
+  if (scores[worst] > GREEN_CUTOFF) return { score, badge: 'Saudável', level: 'verde' };
 
-  if (level === 'verde') return { score, badge: 'Saudável' };
-  const prefix = level === 'amarelo' ? 'Alerta' : 'Crítico';
-  return { score, badge: `${prefix}:\n${FAILURE_LABELS[worst]}` };
-}
-
-/**
- * Determine health status level from score
- */
-export function getHealthLevel(score: number): 'verde' | 'amarelo' | 'vermelho' | 'bloqueado' {
-  if (score === 0) return 'bloqueado';
-  if (score < 40) return 'vermelho';
-  if (score <= 75) return 'amarelo';
-  return 'verde';
+  const level: HealthLevel = scores[worst] < RED_CUTOFF ? 'vermelho' : 'amarelo';
+  const prefix = level === 'vermelho' ? 'Crítico' : 'Alerta';
+  return { score, badge: `${prefix}:\n${FAILURE_LABELS[worst]}`, level };
 }

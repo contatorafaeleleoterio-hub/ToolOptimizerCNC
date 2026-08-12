@@ -77,6 +77,7 @@ function recalcular(
     powerHeadroom,
     healthScore: health.score,
     healthBadge: health.badge,
+    healthLevel: health.level,
   };
 }
 

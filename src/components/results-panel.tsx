@@ -40,6 +40,7 @@ const EMPTY_RESULTADO: ResultadoUsinagem = {
   powerHeadroom: 100,
   healthScore: 0,
   healthBadge: '',
+  healthLevel: 'verde',
 };
 
 /** Compact tool spec string: "Toroidal Ø6 R1.0 H25 F4" */
@@ -355,6 +356,7 @@ export function ResultsPanel() {
                 maxValue={100}
                 label="Saúde da Ferramenta"
                 badge={resultado.healthBadge}
+                badgeClassName={SEG_COLORS[resultado.healthLevel]}
                 scaleMax={100}
                 colorMode="ascending"
                 animateOnMount

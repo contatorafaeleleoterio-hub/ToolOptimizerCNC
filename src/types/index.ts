@@ -123,6 +123,7 @@ export interface ResultadoUsinagem {
   powerHeadroom: number; // Percentage of available power remaining
   healthScore: number; // Weighted aggregate of Vc/fz/ae/ap zones [0, 100]
   healthBadge: string; // Parameter driving the score, e.g. "Alerta:\nVibração"
+  healthLevel: StatusSeguranca['nivel']; // Severity of healthBadge — drives its color
 }
 
 /** Default machine limits */

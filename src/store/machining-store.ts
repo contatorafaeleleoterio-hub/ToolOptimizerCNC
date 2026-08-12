@@ -410,7 +410,7 @@ export const useMachiningStore = create<MachiningState & MachiningActions>()(
                 ap, apRecomendado: bounds.ap.recomendado,
                 ldRatio: razaoLD,
               })
-            : { score: 0, badge: 'BLOQUEADO:\nsem rotação' };
+            : { score: 0, badge: 'BLOQUEADO:\nsem rotação', level: 'bloqueado' as const };
 
           set({
             baseRPM,
@@ -428,6 +428,7 @@ export const useMachiningStore = create<MachiningState & MachiningActions>()(
               powerHeadroom,
               healthScore: health.score,
               healthBadge: health.badge,
+              healthLevel: health.level,
             },
           });
         },
