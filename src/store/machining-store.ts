@@ -23,7 +23,7 @@ import { getMaterialById } from '@/data/index';
 import { getRecommendedParams } from '@/engine/recommendations';
 import { useHistoryStore } from './history-store';
 import { useUsageStore } from '@/admin/store/usage-store';
-import { calculateHealthScoreFromValues } from '@/utils/health-score';
+import { evaluateHealth } from '@/utils/health-score';
 import { zustandStorageAdapter } from '@/shared/storage-service';
 
 const DEFAULT_FERRAMENTA: Ferramenta = {
@@ -402,15 +402,15 @@ export const useMachiningStore = create<MachiningState & MachiningActions>()(
           const vcParaSaude = (Math.PI * D * rpm) / 1000;
           // fz programmed at the machine, converted back to chip thickness (undo chip thinning)
           const fzParaSaude = avanco / (Z * rpm * chipResult.ctfFactor);
-          const healthScore = rpm > 0
-            ? calculateHealthScoreFromValues({
+          const health = rpm > 0
+            ? evaluateHealth({
                 vc: vcParaSaude, vcRecomendado: bounds.vc.recomendado,
                 fz: fzParaSaude, fzRecomendado: bounds.fz.recomendado,
                 ae, aeRecomendado: bounds.ae.recomendado,
                 ap, apRecomendado: bounds.ap.recomendado,
                 ldRatio: razaoLD,
               })
-            : 0;
+            : { score: 0, badge: 'BLOQUEADO:\nsem rotação' };
 
           set({
             baseRPM,
@@ -426,7 +426,8 @@ export const useMachiningStore = create<MachiningState & MachiningActions>()(
               fzEfetivo: chipResult.fzEfetivo,
               seguranca: { nivel, avisos, razaoLD, ctf: chipResult.ctfFactor },
               powerHeadroom,
-              healthScore,
+              healthScore: health.score,
+              healthBadge: health.badge,
             },
           });
         },

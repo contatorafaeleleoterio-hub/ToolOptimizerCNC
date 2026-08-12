@@ -237,7 +237,7 @@ export function HalfMoonGauge({
         {badge ? (
           <div className="flex flex-col items-center gap-1">
             <span className="text-3xl font-bold text-white font-mono">{Math.round(displayPct)}</span>
-            <span className="text-xs text-gray-400 text-center max-w-24 leading-tight">{badge}</span>
+            <span className="text-xs text-gray-400 text-center max-w-24 leading-tight whitespace-pre-line">{badge}</span>
           </div>
         ) : (
           <div className="flex items-baseline gap-0.5">

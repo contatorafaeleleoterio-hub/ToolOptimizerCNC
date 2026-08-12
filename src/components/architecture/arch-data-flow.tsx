@@ -33,7 +33,7 @@ const PIPELINE_STEPS: PipelineStep[] = [
   { id: 'validate-limits', label: 'validateMachineLimits()', formula: 'rpm, potencia e avanco' },
   { id: 'validate-ld', label: 'validateLDRatio()', formula: 'seguro / alerta / critico / bloqueado' },
   { id: 'slider-bounds', label: 'calcularSliderBounds()', formula: 'ranges dinamicos por material' },
-  { id: 'calc-health', label: 'calculateHealthScore()', formula: 'ap 40 + fz 30 + ae 20 + vc 10' },
+  { id: 'calc-health', label: 'evaluateHealth()', formula: 'ap 40 + fz 30 + ae 20 + vc 10' },
   { id: 'store-result', label: 'set({ resultado })', formula: 'resultado pronto na machining-store' },
   { id: 'save-history', label: 'historyStore.addEntry()', formula: 'persistencia do historico' },
 ];

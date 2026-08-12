@@ -122,6 +122,7 @@ export interface ResultadoUsinagem {
   seguranca: StatusSeguranca;
   powerHeadroom: number; // Percentage of available power remaining
   healthScore: number; // Weighted aggregate of Vc/fz/ae/ap zones [0, 100]
+  healthBadge: string; // Parameter driving the score, e.g. "Alerta:\nVibração"
 }
 
 /** Default machine limits */
