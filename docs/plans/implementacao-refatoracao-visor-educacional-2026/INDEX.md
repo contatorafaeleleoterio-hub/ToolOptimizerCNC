@@ -185,7 +185,6 @@ src/components/
 | `CHECKLIST-IMPLEMENTACAO.md` | Checklist executável com tasks |
 | `../SESSAO7-FIXES-v0.10.1.md` | Fixes anteriores (SGB, Safety, Visor, History) |
 | `../SESSAO8-ADVANCED-FEATURES.md` | Features avançadas (sincronização, ranges) |
-| `../PLAN_Seguranca_Cibernetica.md` | Segurança (CSP, audit, validação) |
 
 ---
 

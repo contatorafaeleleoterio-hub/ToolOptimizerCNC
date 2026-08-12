@@ -13,7 +13,6 @@
 | `CHECKLIST-IMPLEMENTACAO.md` | Checklist executável com tasks | ✅ Criado |
 | `SESSAO7-FIXES-v0.10.1.md` | Plano S7 (referência) | ✅ Copiado |
 | `SESSAO8-ADVANCED-FEATURES.md` | Plano S8 (features avançadas) | ✅ Copiado |
-| `PLAN_Seguranca_Cibernetica.md` | Plano Segurança (v0.5.5) | ✅ Copiado |
 | `SUMARIO-PASTA.md` | Este arquivo | ✅ Criado |
 
 ---

@@ -70,44 +70,24 @@
 - **O que fazer:** Atualizar logo com cores corretas (tokens do projeto) e adicionar letras "CNC"
 - **Status:** ⬜ Sem plano — criar plano na próxima sessão
 
-### P3: Segurança Cibernética (v0.5.5)
-
-- **Tipo:** Security | **Prioridade:** ALTA
-- **Plano:** `docs/plans/PLAN_Seguranca_Cibernetica.md`
-
-| Fase | Ação | Responsável | Status |
-|------|------|-------------|--------|
-| 1 | Repo privado + remover GitHub Pages | Rafael (manual) | ⬜ |
-| 2 | CSP header em `public/_headers` | Claude | ⬜ |
-| 3 | npm audit no CI + Dependabot | Claude | ⬜ |
-| 4 | Validação ranges em importSettings/importHistory | Claude | ⬜ |
-| 5 | Remover script Plausible inativo | Claude | ⬜ |
-| 6 | Bot Fight Mode + Rate Limiting | Rafael (manual) | ⬜ |
-| 7 | Branch protection + Dependabot alerts | Rafael (manual) | ⬜ |
-
-### P4: timeline.html desatualizado
+### P3: timeline.html desatualizado
 
 - **Tipo:** Docs | **Prioridade:** MÉDIA
 - **Arquivos:** `docs/timeline.html`, `public/timeline.html`
 - **Status:** ⬜ Verificar e atualizar para refletir v0.6.0
 
-### P5: Teste fz step mobile
+### P4: Teste fz step mobile
 
 - **Tipo:** Test | **Prioridade:** BAIXA
 - **Arquivo:** `mobile-fine-tune-section.test.tsx`
 - **Status:** ⬜ 1 teste pendente
 
-### P6: Story-008
+### P5: Story-008
 
 - **Tipo:** Feature | **Prioridade:** —
 - **Status:** ⬜ A definir com Rafael
 
-### P7: Landing Page
-
-- **Tipo:** Marketing | **Prioridade:** BAIXA
-- **Status:** ⬜ Cloudflare Pages — setup manual pendente
-
-### P8: Login Google (Firebase)
+### P6: Login Google (Firebase)
 
 - **Tipo:** Feature | **Prioridade:** BAIXA
 - **Planos antigos:** `docs/_archive/superseded/PLANO_LOGIN_GOOGLE.md` (obsoleto)
@@ -132,16 +112,14 @@
 
 ```
 CONCLUÍDO: 29+ itens (Stories 1-7, Auditoria, Gauges, Fixes, Reestruturação)
-PENDENTE:  8 itens priorizados abaixo
+PENDENTE:  6 itens priorizados abaixo
 
   P1  🔴  Bug BugReportModal posicionamento
   P2  🟡  Logo — cores corretas + letras "CNC"
-  P3  🟡  Segurança Cibernética v0.5.5
-  P4  🟡  timeline.html desatualizado
-  P5  ⚪  APP_VERSION hardcoded
-  P6  ⚪  fz step mobile test
-  P7  ⚪  Story-008 (a definir)
-  P8  ⚪  Landing Page / Login Google
+  P3  🟡  timeline.html desatualizado
+  P4  ⚪  fz step mobile test
+  P5  ⚪  Story-008 (a definir)
+  P6  ⚪  Login Google
 ```
 
 ---

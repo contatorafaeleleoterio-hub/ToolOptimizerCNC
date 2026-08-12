@@ -76,22 +76,6 @@ Status: ✅ CONCLUÍDO
 
 ---
 
-## SESSION APP-3 — Store Listing + Landing Page Android
-Data: 21/04/2026
-Status: ✅ CONCLUÍDO
-
-### O que foi feito:
-- Privacy Policy `/privacidade` — rota React + página LGPD-compliant
-- Feature graphic SVG 1024×500 em `public/feature-graphic.svg`
-- `docs/APP3_STORE_LISTING.md` — descrição curta (46 chars) + longa PT-BR + categoria + classificação
-- Landing Page Android (`landing/index.html`) atualizada com botões de download e badges
-- Removido `#app-landing` do `index.html` principal para carregar o app diretamente
-
-
-**Regra:** `[URL_APK]` nos CTAs fica como placeholder até APP-4 (GitHub Release com APK assinado).
-
----
-
 ## SESSION APP-4 — Release + Hospedagem APK + Play Store
 Status: ⏳ [EM PROGRESSO]
 Absorve: S9, S10, S11 do ROTEIRO_EXECUCAO
