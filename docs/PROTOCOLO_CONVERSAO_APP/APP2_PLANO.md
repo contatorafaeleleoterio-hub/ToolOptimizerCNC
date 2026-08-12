@@ -145,8 +145,7 @@ Sem senha. Sem PIN. Sem trava.
 
 ## Sessões seguintes
 
-- **APP-3** — Store Listing: screenshots 1080×1920 capturadas do APK debug, descrição PT-BR, privacy policy em `tooloptimizercnc.com.br/privacidade`, ícone 512×512
-- **APP-4** — Aqui sim: keystore release + GitHub Secrets + workflow `build-android-release.yml` produzindo `.aab` assinado, upload manual ao Play Console (revisão 24-72h)
+- **APP-4** — Keystore release + GitHub Secrets + workflow `build-android-release.yml` produzindo `.aab` assinado, upload manual ao Play Console (revisão 24-72h)
 
 ## O que Rafael precisa fazer pessoalmente nesta sessão
 

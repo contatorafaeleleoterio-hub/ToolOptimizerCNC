@@ -1,0 +1,2955 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>FlowNC — Design System</title>
+<style>
+  @font-face{font-family:"IBM Plex Sans";font-weight:400;font-display:swap;src:url("../../flownc/assets/fonts/IBMPlexSans-Regular.ttf") format("truetype");}
+  @font-face{font-family:"IBM Plex Sans";font-weight:600;font-display:swap;src:url("../../flownc/assets/fonts/IBMPlexSans-SemiBold.ttf") format("truetype");}
+  @font-face{font-family:"IBM Plex Sans";font-weight:700;font-display:swap;src:url("../../flownc/assets/fonts/IBMPlexSans-Bold.ttf") format("truetype");}
+  @font-face{font-family:"IBM Plex Mono";font-weight:500;font-display:swap;src:url("../../flownc/assets/fonts/IBMPlexMono-Medium.ttf") format("truetype");}
+  @font-face{font-family:"IBM Plex Mono";font-weight:600;font-display:swap;src:url("../../flownc/assets/fonts/IBMPlexMono-SemiBold.ttf") format("truetype");}
+  @font-face{font-family:"IBM Plex Mono";font-weight:700;font-display:swap;src:url("../../flownc/assets/fonts/IBMPlexMono-Bold.ttf") format("truetype");}
+
+  :root{
+    /* Escala oficial AUTORITATIVA: 4·8·12·16·24·32·40·48·64 */
+    --sp-4:4px; --sp-8:8px; --sp-12:12px; --sp-16:16px;
+    --sp-24:24px; --sp-32:32px; --sp-40:40px; --sp-48:48px; --sp-64:64px;
+    /* 🔶 ALIASES DE ESPAÇAMENTO CANDIDATOS A REMOÇÃO (Decisão de Auditoria) */
+    --sp-2:4px; --sp-6:8px; --sp-10:12px; --sp-14:16px; --sp-20:24px;
+    --sans:"IBM Plex Sans",system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;
+    --mono:"IBM Plex Mono",ui-monospace,Consolas,monospace;
+    --radius-xs:2px; --radius-sm:4px; --radius-md:8px; --radius-lg:14px; --radius-pill:999px;
+    --h-cta:56px; --h-btn:44px; --h-ghost:34px;
+    /* Layout do painel (do contrato docs/_canonico/01-PAINEL-CONTRATO-VISUAL.html) */
+    --h-top:54px; --h-bottom:72px;
+    --maxw:1240px; --gutter:max(20px, calc((100% - 1240px)/2));
+    --sidebar-w:232px; --sidebar-w-collapsed:60px;
+    --sidepanel-w:clamp(560px, 50vw, 980px); --sidepanel-maxw:94vw;
+    --t-fast:.12s; --t:.18s; --t-slow:.3s;
+    /* MARCA — identidade fixa (azul <-> laranja, par complementar) */
+    --brand-blue:#2E6BE6; --brand-blue-lt:#5AA0FF; --brand-orange:#E85D04; --brand-orange-lt:#FF7A1E;
+    --brand-bg-dark:#0A0E1A;
+    /* texto sobre cor — iguais nos dois temas */
+    --on-accent:#21130A;   /* quase-preto quente sobre laranja: vibrante + legivel (AA) */
+    --on-sec:#FFFFFF;
+  }
+
+  /* ===== TEMA 1 — CLARO ===== */
+  [data-theme="claro"]{
+    --bg:#E8ECF4; --surface:#FFFFFF; --surface-2:#EDF1F8; --rail:#DCE3EF; --zone:#E6EBF3;
+    --border:#C5CFDD; --border-strong:#94A2B8;
+    --tx-1:#18212E; --tx-2:#4A5A70; --tx-3:#536179;
+    --accent:#E85D04; --accent-hv:#CF5204; --accent-ac:#A8430A; --accent-bg:#FFF1E8; --accent-bd:#F4B48C;
+    --sec:#2B3A4A; --sec-hv:#1F2C39; --sec-tint:#E7ECF3;
+    --ok:#1A7A3C; --ok-bg:#E7F5EC; --ok-bd:#9AD3AD;
+    --warn:#97670A; --warn-bg:#FBF1DC; --warn-bd:#E4C273;
+    --err:#C0271E; --err-bg:#FCEBE9; --err-bd:#F0A49C; --on-err:#FFFFFF;
+    --info:#1D5BD6; --info-bg:#E9F0FE; --info-bd:#A9C6F7;
+    --code-bg:#EEF1F7;
+    --scrim:rgba(15,21,33,.50);
+    --ring:0 0 0 3px rgba(46,107,230,.45);
+    --shadow:0 5px 16px rgba(20,28,38,.13);
+    --shadow-2:0 16px 40px rgba(20,28,40,.18);
+  }
+  /* ===== TEMA 2 — ESCURO ===== */
+  [data-theme="escuro"]{
+    --bg:#0E1421; --surface:#161E2C; --surface-2:#1E2838; --rail:#0C1320; --zone:#222D3D;
+    --border:#2A3543; --border-strong:#3C4A5C;
+    --tx-1:#E9EEF6; --tx-2:#A6B3C6; --tx-3:#7E8DA3;
+    --accent:#F26511; --accent-hv:#FF7A2E; --accent-ac:#D2530A; --accent-bg:#2A1E14; --accent-bd:#5A3A1E;
+    --sec:#2A3543; --sec-hv:#384556; --sec-tint:#1D2733;
+    --ok:#62D27D; --ok-bg:#15251C; --ok-bd:#2E5A38;
+    --warn:#ECC25A; --warn-bg:#2A2414; --warn-bd:#5A4A1E;
+    --err:#FB7065; --err-bg:#2A1816; --err-bd:#5A2A26; --on-err:#2A0E0B;
+    --info:#5AA0FF; --info-bg:#11223A; --info-bd:#244A70;
+    --code-bg:#0B111B;
+    --scrim:rgba(4,7,13,.64);
+    --ring:0 0 0 3px rgba(90,160,255,.50);
+    --shadow:0 6px 20px rgba(0,0,0,.45);
+    --shadow-2:0 18px 44px rgba(0,0,0,.58);
+  }
+
+  /* ===== TEMA 3 — SITE VC (Vendas & Criativos) ===== */
+  [data-theme="vc"]{
+    --bg:#F4F7FB; --surface:#FFFFFF; --surface-2:#EDF1F8; --rail:#DCE4F0; --zone:#E9EFFA;
+    --border:#DCE4F0; --border-strong:#B9C6DA;
+    --tx-1:#0F172A; --tx-2:#334155; --tx-3:#64748B;
+    --accent:#E85D04; --accent-hv:#FF7A2F; --accent-ac:#D05103; --accent-bg:rgba(46,107,230,.07); --accent-bd:#B9C6DA;
+    --sec:#2E6BE6; --sec-hv:#1D58CD; --sec-tint:#E9EFFA;
+    --ok:#10B981; --ok-bg:rgba(16,185,129,.1); --ok-bd:rgba(16,185,129,.2);
+    --warn:#F59E0B; --warn-bg:rgba(245,158,11,.1); --warn-bd:rgba(245,158,11,.2);
+    --err:#EF4444; --err-bg:rgba(239,68,68,.1); --err-bd:rgba(239,68,68,.2); --on-err:#FFFFFF;
+    --info:#3B82F6; --info-bg:rgba(59,130,246,.1); --info-bd:rgba(59,130,246,.2);
+    --code-bg:#EEF1F7;
+    --scrim:rgba(15,21,33,.50);
+    --ring:0 0 0 3px rgba(46,107,230,.45);
+    --shadow:0 5px 16px rgba(20,28,38,.13);
+    --shadow-2:0 16px 40px rgba(20,28,40,.18);
+  }
+
+
+  *{box-sizing:border-box}
+  body{margin:0;font-family:var(--sans);background:var(--brand-bg-dark);color:#fff;}
+
+  /* Layout do Manual da Marca */
+  .layout-root {
+    display: flex;
+    min-height: 100vh;
+  }
+
+  .sidebar-nav {
+    position: fixed;
+    inset: 0 auto 0 0;
+    width: 264px;
+    background: var(--brand-bg-dark);
+    color: #9DAABC;
+    display: flex;
+    flex-direction: column;
+    z-index: 100;
+    border-right: 1px solid #1c2531;
+  }
+  .sidebar-nav .nav-brand {
+    padding: 22px 20px 18px;
+    border-bottom: 1px solid #1c2531;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+  .sidebar-nav .nav-brand img {
+    height: 26px;
+    display: block;
+  }
+  .sidebar-nav .nav-brand .nb-txt {
+    font-family: var(--sans);
+    font-size: 11px;
+    letter-spacing: .14em;
+    text-transform: uppercase;
+    color: var(--brand-blue-lt);
+    font-weight: 700;
+    margin-top: 2px;
+  }
+  .sidebar-nav .nav-scroll {
+    overflow-y: auto;
+    flex: 1;
+    padding: 14px 0 24px;
+  }
+  .sidebar-nav .nav-scroll::-webkit-scrollbar {
+    width: 6px;
+  }
+  .sidebar-nav .nav-scroll::-webkit-scrollbar-thumb {
+    background: #1c2531;
+    border-radius: 3px;
+  }
+  .sidebar-nav .nav-group {
+    font-size: 10px;
+    letter-spacing: .16em;
+    text-transform: uppercase;
+    color: #52637a;
+    padding: 16px 20px 6px;
+    font-weight: 700;
+  }
+  .sidebar-nav a {
+    display: flex;
+    align-items: baseline;
+    gap: 10px;
+    padding: 8px 20px;
+    color: #9DAABC;
+    text-decoration: none;
+    font-size: 13.5px;
+    border-left: 3px solid transparent;
+    transition: .15s ease;
+  }
+  .sidebar-nav a .n {
+    font-family: var(--mono);
+    font-size: 11px;
+    color: #52637a;
+    min-width: 20px;
+  }
+  .sidebar-nav a:hover {
+    color: #fff;
+    background: rgba(255,255,255,.02);
+  }
+  .sidebar-nav a.active {
+    color: #fff;
+    border-left-color: var(--brand-orange);
+    background: linear-gradient(90deg, rgba(232,93,4,.08), transparent 70%);
+  }
+  .sidebar-nav a.active .n {
+    color: var(--brand-orange);
+  }
+  .sidebar-nav .nav-foot {
+    padding: 14px 20px;
+    border-top: 1px solid #1c2531;
+    font-size: 11px;
+    color: #52637a;
+    font-family: var(--mono);
+  }
+
+  .main-content {
+    margin-left: 264px;
+    flex: 1;
+    background: var(--brand-bg-dark);
+    min-width: 0;
+  }
+
+  .view { display: block; }
+  .view.on { display: block; }
+
+
+  /* área temática */
+  .stage{background:var(--bg);color:var(--tx-1);padding:var(--sp-32);min-height:80vh;}
+  .wrap{max-width:1120px;margin:0 auto;}
+  .stage h1{font:700 22px/1.2 var(--sans);margin:0 0 var(--sp-4);}
+  .stage .lead{color:var(--tx-2);margin:0 0 var(--sp-32);max-width:760px;}
+  section{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-md);
+    padding:var(--sp-24);margin-bottom:var(--sp-24);}
+  section h2{font:700 14px/1.2 var(--sans);text-transform:uppercase;letter-spacing:.05em;margin:0 0 var(--sp-4);}
+  .hint{font:600 12px/1.4 var(--sans);color:var(--tx-3);margin:0 0 var(--sp-16);}
+
+  .grid{display:grid;gap:var(--sp-12);}
+  .cols{grid-template-columns:repeat(auto-fill,minmax(170px,1fr));}
+  .swatch{border:1px solid var(--border);border-radius:var(--radius-sm);overflow:hidden;background:var(--surface);cursor:pointer;transition:var(--t-fast);position:relative;}
+  .sw-chip{height:56px;}
+  .swatch .meta{padding:var(--sp-8);}
+  .swatch .name{font:600 13px/1 var(--sans);}
+  .swatch .hex{font:600 12px/1.4 var(--mono);color:var(--tx-2);}
+
+  /* botoes do produto */
+  .btnrow{display:flex;flex-wrap:wrap;gap:var(--sp-12);align-items:center;}
+  .btn{font:600 13px/1 var(--sans);border-radius:var(--radius-md);border:1px solid transparent;cursor:pointer;
+    height:var(--h-btn);padding:0 18px;display:inline-flex;align-items:center;gap:8px;transition:.15s;}
+  .btn .ic{width:15px;height:15px;display:inline-block;}
+  .cta{background:var(--accent);color:var(--on-accent);height:var(--h-cta);padding:0 22px;font-size:15px;
+    box-shadow:inset 0 0 0 2px rgba(33,19,10,.18);}
+  .cta:hover{background:var(--accent-hv);}
+  .cta:active{background:var(--accent-ac);}
+  /* CTA porte 44px (ação principal de cartão/modal, sem contorno interno) — reserva o 56px só p/ Executar terminal */
+  .cta.md{height:var(--h-btn);padding:0 18px;font-size:13px;box-shadow:none;}
+  .sec{background:var(--sec);color:var(--on-sec);}
+  .sec:hover{background:var(--sec-hv);}
+  .ghost{background:transparent;border-color:var(--border-strong);color:var(--tx-1);height:var(--h-ghost);}
+  .ghost:hover{background:var(--sec-tint);}
+  .danger{background:var(--err);color:var(--on-err);}
+  .disabled{background:var(--sec-tint);color:var(--tx-3);cursor:not-allowed;}
+  .focusring{background:var(--sec);color:var(--on-sec);box-shadow:var(--ring);}
+  .btn:focus-visible{outline:none;border-color:var(--sec);box-shadow:var(--ring);}
+  /* botoes — variantes adicionais (bloco 1) */
+  .btn.danger-text{background:transparent;border-color:var(--err-bd);color:var(--err);}
+  .btn.danger-text:hover{background:var(--err-bg);}
+  .btn.iconly{width:var(--h-btn);padding:0;justify-content:center;background:transparent;
+    border-color:var(--border-strong);color:var(--tx-1);}
+  .btn.iconly:hover{background:var(--sec-tint);}
+  .btn.iconly.foc{border-color:var(--sec);box-shadow:var(--ring);}
+  .btn.iconly.sm{width:32px;height:32px;padding:0;justify-content:center;}
+  /* fantasma compacto (28px) — fechar/dispensar inline em espaço denso (ex.: detalhe de chip) */
+  .btn.ghost.xs{height:28px;padding:0 12px;font-size:11px;}
+  .cta.two{height:auto;padding:12px 22px;gap:12px;}
+  .cta.two .col{display:flex;flex-direction:column;align-items:flex-start;gap:2px;}
+  .cta.two .t1{font:700 15px/1.1 var(--sans);}
+  .cta.two .t2{font:600 12px/1 var(--sans);opacity:.85;}
+  .btn.tgl{background:var(--surface);border-color:var(--border-strong);color:var(--tx-1);}
+  .btn.tgl:hover{background:var(--sec-tint);}
+  .btn.tgl.on{background:var(--accent);border-color:var(--accent);color:var(--on-accent);}
+  .split{display:inline-flex;}
+  .split .btn{border-radius:0;}
+  .split .btn:first-child{border-top-left-radius:var(--radius-md);border-bottom-left-radius:var(--radius-md);}
+  .split .btn:last-child{border-top-right-radius:var(--radius-md);border-bottom-right-radius:var(--radius-md);
+    width:auto;padding:0 12px;border-left:1px solid var(--sec-hv);}
+  .fab{width:56px;height:56px;border-radius:50%;background:var(--accent);color:var(--on-accent);border:0;
+    display:inline-flex;align-items:center;justify-content:center;cursor:pointer;box-shadow:var(--shadow-2);
+    font-size:24px;line-height:1;}
+  .fab:hover{background:var(--accent-hv);}
+  /* Ações de linha (lista de programas) — par canônico Editar/Excluir */
+  .rowact{display:inline-flex;gap:8px;}
+  .btn-rowedit{width:32px;height:32px;border-radius:var(--radius-md);border:1px solid var(--border-strong);
+    background:var(--surface);color:var(--tx-1);display:inline-flex;align-items:center;justify-content:center;
+    cursor:pointer;transition:.15s;}
+  .btn-rowedit:hover{background:var(--info-bg);color:var(--info);border-color:var(--info-bd);}
+  .btn-rowedit:focus-visible{outline:none;box-shadow:var(--ring);}
+  .btn-rowdel{width:32px;height:32px;border-radius:var(--radius-md);border:1px solid var(--border-strong);
+    background:var(--surface);color:var(--tx-2);display:inline-flex;align-items:center;justify-content:center;
+    cursor:pointer;transition:.15s;}
+  .btn-rowdel:hover{background:var(--warn-bg);color:var(--warn);border-color:var(--warn-bd);}
+  .btn-rowdel:focus-visible{outline:none;box-shadow:var(--ring);}
+  .btn-rowedit .ic,.btn-rowdel .ic{width:15px;height:15px;display:inline-block;}
+  /* Trilho lateral de gavetas — aba com rótulo HORIZONTAL (nunca vertical) + variante só-ícone */
+  .railtabs{display:inline-flex;gap:10px;align-items:flex-start;}
+  .railtab{min-width:64px;border:1px solid var(--border-strong);border-radius:var(--radius-md);
+    background:var(--surface);color:var(--tx-2);cursor:pointer;padding:8px 12px;
+    display:inline-flex;flex-direction:column;align-items:center;gap:6px;transition:.15s;}
+  .railtab .ic{width:18px;height:18px;display:inline-block;}
+  .railtab .railtab__lbl{font:600 11px/1 var(--sans);letter-spacing:.02em;}
+  .railtab:hover{background:var(--sec-tint);color:var(--tx-1);}
+  .railtab:focus-visible{outline:none;box-shadow:var(--ring);}
+  .railtab.active{background:var(--info-bg);color:var(--info);border-color:var(--info-bd);}
+  .railtab.iconly{padding:9px;min-width:0;}
+
+  /* ===== DS v2.4.0 — Edições em Lote + Seletor de Máquina ===== */
+  /* C1 — Seletor de Máquina (dropdown com rodapé "+ Adicionar máquina") */
+  .machine-select{position:relative;display:inline-block;}
+  .machine-select__btn{display:inline-flex;align-items:center;gap:10px;height:40px;
+    border:1px solid var(--border-strong);border-radius:var(--radius-sm);background:var(--surface);
+    color:var(--tx-1);padding:0 12px;font:600 13px/1 var(--sans);cursor:pointer;transition:var(--t-fast);}
+  .machine-select__btn .ic{width:16px;height:16px;color:var(--tx-3);}
+  .machine-select__btn .chev{margin-left:2px;color:var(--tx-3);transition:transform var(--t-fast);}
+  .machine-select__btn:hover{background:var(--sec-tint);border-color:var(--sec);}
+  .machine-select__btn:focus-visible{outline:none;border-color:var(--sec);box-shadow:var(--ring);}
+  .machine-select.open .machine-select__btn{border-color:var(--sec);box-shadow:var(--ring);}
+  .machine-select.open .machine-select__btn .chev{transform:rotate(180deg);}
+  .machine-select__menu{position:absolute;top:calc(100% + 6px);left:0;min-width:230px;
+    background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-md);
+    box-shadow:var(--shadow-2);padding:6px;z-index:80;display:none;}
+  .machine-select.open .machine-select__menu{display:block;}
+  .machine-select__opt{display:flex;align-items:center;gap:10px;width:100%;border:0;background:none;
+    text-align:left;padding:9px 10px;border-radius:var(--radius-sm);cursor:pointer;
+    font:600 13px/1 var(--sans);color:var(--tx-1);transition:var(--t-fast);}
+  .machine-select__opt:hover{background:var(--sec-tint);}
+  .machine-select__opt.sel{color:var(--info);background:var(--info-bg);}
+  .machine-select__opt .ck{margin-left:auto;color:var(--info);display:inline-flex;}
+  .machine-select__add{border-top:1px solid var(--border);margin-top:4px;padding-top:10px;
+    color:var(--accent-ac);font-weight:700;}
+  .machine-select__add:hover{background:var(--accent-bg);}
+
+  /* C2 — Abas independentes com quebra de linha fluida (flex-wrap) */
+  .tabs-wrap{display:flex;flex-wrap:wrap;gap:8px;}
+  .tabs-wrap .twtab{font:600 13px/1 var(--sans);background:var(--surface);color:var(--tx-2);
+    border:1px solid var(--border-strong);border-radius:var(--radius-md);padding:9px 16px;cursor:pointer;
+    transition:var(--t-fast);}
+  .tabs-wrap .twtab:hover{background:var(--sec-tint);color:var(--tx-1);}
+  .tabs-wrap .twtab:focus-visible{outline:none;box-shadow:var(--ring);}
+  .tabs-wrap .twtab.on{background:var(--accent);color:var(--on-accent);border-color:var(--accent);}
+
+  /* C3 — Botão recolher menu: só-seta, circular (override do Mestre 2026-06-29; antes era composto c/ rótulo).
+     No painel fica fixo na borda direita da sidebar, centralizado na vertical (top:50%). */
+  .sbnav-toggle{display:inline-flex;align-items:center;justify-content:center;width:26px;height:26px;padding:0;
+    border:1px solid var(--border-strong);border-radius:50%;background:var(--surface);box-shadow:var(--shadow);
+    color:var(--tx-2);cursor:pointer;transition:background var(--t),color var(--t);}
+  .sbnav-toggle svg{width:14px;height:14px;transition:transform var(--t);}
+  .sbnav-toggle:hover{background:var(--sec-tint);color:var(--tx-1);}
+  .sbnav-toggle:focus-visible{outline:none;box-shadow:var(--ring);}
+  .sbnav-toggle.is-collapsed svg{transform:rotate(180deg);}
+
+  /* C4 — Par Editar/Excluir com rótulo (ícone + texto) */
+  .btn-rowedit.lbl,.btn-rowdel.lbl{width:auto;gap:7px;padding:0 12px;height:32px;font:600 12px/1 var(--sans);}
+
+  /* C5 — Icon-button do header (tb-ic) */
+  .tb-ic{width:36px;height:36px;border-radius:var(--radius-md);border:1px solid var(--border-strong);
+    background:var(--surface);color:var(--tx-2);display:inline-flex;align-items:center;justify-content:center;
+    cursor:pointer;transition:var(--t-fast);}
+  .tb-ic .ic{width:18px;height:18px;}
+  .tb-ic:hover{background:var(--sec-tint);color:var(--tx-1);border-color:var(--sec);}
+  .tb-ic:focus-visible{outline:none;box-shadow:var(--ring);}
+
+  /* C8 — Seletor de modelos salvos (34px) */
+  .model-select{display:inline-flex;align-items:center;gap:8px;height:34px;
+    border:1px solid var(--border-strong);border-radius:var(--radius-sm);background:var(--surface);
+    color:var(--tx-1);padding:0 12px;font:600 12px/1 var(--sans);cursor:pointer;}
+  .model-select .chev{color:var(--tx-3);margin-left:4px;}
+  .model-select:hover{background:var(--sec-tint);border-color:var(--sec);}
+  .model-select:focus-visible{outline:none;border-color:var(--sec);box-shadow:var(--ring);}
+
+  /* C6 — Gerenciar paleta de snippets (.snippanel.managing) + ações stub */
+  .snip-mng{display:none;gap:6px;margin-left:auto;}
+  .snippanel.managing .snip-mng{display:inline-flex;}
+  .snip-mng .smbtn{width:26px;height:26px;border-radius:var(--radius-sm);border:1px solid var(--border-strong);
+    background:var(--surface);color:var(--tx-2);display:inline-flex;align-items:center;justify-content:center;
+    cursor:pointer;transition:var(--t-fast);}
+  .snip-mng .smbtn .ic{width:13px;height:13px;}
+  .snip-mng .smbtn.edit:hover{background:var(--info-bg);color:var(--info);border-color:var(--info-bd);}
+  .snip-mng .smbtn.del:hover{background:var(--warn-bg);color:var(--warn);border-color:var(--warn-bd);}
+  .snip-addbtn{display:none;align-items:center;gap:6px;font:600 12px/1 var(--sans);color:var(--accent-ac);
+    background:var(--accent-bg);border:1px solid var(--accent-bd);border-radius:var(--radius-sm);
+    padding:6px 10px;cursor:pointer;width:100%;justify-content:center;margin-bottom:8px;}
+  .snippanel.managing .snip-addbtn{display:inline-flex;}
+
+  /* layout exemplo: lista */
+  .avatar{width:32px;height:32px;border-radius:50%;background:var(--sec);flex:none;}
+
+  /* lista de itens */
+  .list{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-md);overflow:hidden;}
+  .lhead,.lrow{display:grid;grid-template-columns:22px 1fr 70px 80px;gap:12px;align-items:center;
+    padding:11px 14px;}
+  .lhead{font:600 11px/1 var(--sans);color:var(--tx-3);text-transform:uppercase;letter-spacing:.04em;
+    border-bottom:1px solid var(--border);}
+  .lrow{border-bottom:1px solid var(--border);font:400 13px/1 var(--sans);cursor:pointer;transition:.12s;}
+  .lrow:last-child{border-bottom:0;}
+  .lrow:hover{background:var(--sec-tint);}
+  .lrow .id{font:600 13px/1 var(--mono);}
+  .lrow .m{font:600 12px/1 var(--mono);color:var(--tx-2);text-align:right;}
+  .chk{width:18px;height:18px;border-radius:var(--radius-sm);border:1.5px solid var(--border-strong);
+    display:inline-flex;align-items:center;justify-content:center;}
+  .chk.on{background:var(--accent);border-color:var(--accent);color:var(--on-accent);font-size:11px;}
+
+  /* indicadores (stat tiles) */
+  .tiles{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:var(--sp-12);}
+  .tile{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-md);padding:var(--sp-16);}
+  .tile .lbl{font:600 11px/1 var(--sans);color:var(--tx-3);text-transform:uppercase;letter-spacing:.04em;margin-bottom:8px;}
+  .tile .val{font:700 22px/1 var(--mono);}
+
+  /* secao recolhivel */
+  .acc{border:1px solid var(--border);border-radius:var(--radius-md);overflow:hidden;}
+  .acc-h{display:flex;align-items:center;justify-content:space-between;padding:13px 16px;background:var(--surface);
+    font:700 13px/1 var(--sans);}
+  .acc-h .chev{color:var(--tx-3);}
+  .field{display:grid;grid-template-columns:190px 24px 190px;gap:10px;align-items:center;justify-content:start;padding:16px;}
+  .inp{height:40px;border:1px solid var(--border);border-radius:var(--radius-sm);background:var(--bg);
+    color:var(--tx-1);padding:0 12px;font:600 13px/1 var(--mono);display:flex;align-items:center;}
+  .arrow{text-align:center;color:var(--tx-3);}
+
+  /* feedback */
+  .feedback{display:flex;flex-wrap:wrap;gap:var(--sp-12);}
+  .pill{border-radius:var(--radius-sm);padding:9px 13px;font:600 12px/1 var(--sans);border:1px solid;}
+  .pill.ok{background:var(--ok-bg);border-color:var(--ok-bd);color:var(--ok);}
+  .pill.warn{background:var(--warn-bg);border-color:var(--warn-bd);color:var(--warn);}
+  .pill.err{background:var(--err-bg);border-color:var(--err-bd);color:var(--err);}
+  .pill.acc{background:var(--accent-bg);border-color:var(--accent-bd);color:var(--accent);}
+
+  /* tipografia rows */
+  .typerow{display:flex;align-items:baseline;gap:16px;padding:9px 0;border-bottom:1px dashed var(--border);}
+  .typerow:last-child{border-bottom:0;}
+  .typerow .tag{font:600 12px/1 var(--mono);color:var(--tx-3);width:130px;flex:none;}
+
+  /* NAO USAR */
+  .dont{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:var(--sp-12);}
+  .dont .x{border:1px solid var(--err-bd);background:var(--err-bg);border-radius:var(--radius-md);padding:14px;
+    font:600 13px/1.4 var(--sans);color:var(--tx-1);}
+  .dont .x b{color:var(--err);}
+
+  /* swatch clicavel */
+  .swatch:hover{border-color:var(--border-strong);transform:translateY(-1px);}
+  .swatch.copied::after{content:"copiado ✓";position:absolute;top:6px;right:6px;background:var(--accent);
+    color:var(--on-accent);font:600 10px/1 var(--sans);padding:4px 6px;border-radius:var(--radius-sm);}
+  .swatch.copyfail::after{content:"copie manual";position:absolute;top:6px;right:6px;background:var(--err);
+    color:var(--on-err);font:600 10px/1 var(--sans);padding:4px 6px;border-radius:var(--radius-sm);}
+
+  /* fundacoes */
+  .foundlabel{font:700 11px/1 var(--sans);text-transform:uppercase;letter-spacing:.05em;color:var(--tx-3);
+    margin:18px 0 10px;}
+  .scalerow,.radrow,.elevrow{display:flex;flex-wrap:wrap;gap:18px;align-items:flex-end;}
+  .scaleitem,.raditem,.elevitem{display:flex;flex-direction:column;align-items:center;gap:8px;}
+  .scaleitem .box{background:var(--accent);border-radius:var(--radius-xs);}
+  .scaleitem .t,.raditem .t,.elevitem .t{font:600 11px/1 var(--mono);color:var(--tx-2);}
+  .raditem .rad{width:48px;height:48px;background:var(--sec-tint);border:1px solid var(--border-strong);}
+  .elevitem .elev{width:90px;height:54px;background:var(--surface);border-radius:var(--radius-md);}
+
+  /* campos */
+  .formgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(190px,1fr));gap:16px;}
+  .fld{display:flex;flex-direction:column;gap:6px;}
+  .flbl{font:600 11px/1 var(--sans);color:var(--tx-3);text-transform:uppercase;letter-spacing:.04em;}
+  .fin{height:40px;border:1px solid var(--border);border-radius:var(--radius-sm);background:var(--surface);
+    color:var(--tx-1);padding:0 12px;font:600 13px/1 var(--mono);display:flex;align-items:center;}
+  .fin.foc{border-color:var(--sec);box-shadow:var(--ring);}
+  .fin.err{border-color:var(--err);}
+  .fin.ok{border-color:var(--ok);}
+  .fin.dis{background:var(--sec-tint);color:var(--tx-3);}
+  .fin .unit{font:600 12px/1 var(--sans);color:var(--tx-3);}
+  .fnote{font:600 11px/1.3 var(--sans);}
+  .fnote.err{color:var(--err);} .fnote.ok{color:var(--ok);}
+
+  /* campos — CodeCombo, numérico e barra de busca (portados do contrato 01-PAINEL-CONTRATO-VISUAL.html) */
+  /* CodeCombo (.cc) — campo de código editável + dropdown pesquisável */
+  .cc{position:relative;display:inline-flex;flex-direction:column;}
+  .cc-field{display:flex;align-items:stretch;height:40px;border:1px solid var(--border);
+    border-radius:var(--radius-sm);background:var(--bg);transition:border-color var(--t),box-shadow var(--t);}
+  .cc-field.focus{border-color:var(--brand-blue);box-shadow:var(--ring);}
+  .cc-inp{border:0;background:transparent;outline:none;color:var(--tx-1);padding:0 8px 0 11px;
+    font:600 13px/1 var(--mono);min-width:96px;width:100%;}
+  .cc-caret{width:30px;border:0;border-left:1px solid var(--border);background:transparent;
+    color:var(--tx-3);cursor:pointer;display:flex;align-items:center;justify-content:center;flex:none;
+    border-radius:0 var(--radius-sm) var(--radius-sm) 0;}
+  .cc-caret:hover{background:var(--sec-tint);color:var(--tx-1);}
+  .cc-caret svg{width:11px;height:7px;stroke:currentColor;fill:none;stroke-width:1.6;transition:transform var(--t-fast);}
+  .cc.open .cc-caret svg{transform:rotate(180deg);}
+  .cc-list{position:absolute;top:calc(100% + 4px);left:0;right:0;min-width:150px;background:var(--surface);
+    border:1px solid var(--border-strong);border-radius:var(--radius-md);box-shadow:var(--shadow-2);
+    z-index:80;max-height:208px;overflow-y:auto;padding:4px;display:none;}
+  .cc.open .cc-list{display:block;animation:slideDown var(--t-fast) ease-out;}
+  .cc-list::-webkit-scrollbar{width:6px;}
+  .cc-list::-webkit-scrollbar-thumb{background:var(--border);border-radius:99px;}
+  .cc-opt{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:7px 10px;
+    border-radius:var(--radius-sm);cursor:pointer;font:600 12px/1 var(--mono);color:var(--tx-1);}
+  .cc-opt:hover,.cc-opt.hi{background:var(--accent-bg);}
+  .cc-opt .desc{font:400 12px/1 var(--sans);color:var(--tx-3);}
+  .cc-grp{font:700 11px/1 var(--sans);text-transform:uppercase;letter-spacing:.06em;color:var(--tx-3);
+    padding:8px 10px 4px;}
+  .cc-empty{padding:10px;font:400 12px/1.4 var(--sans);color:var(--tx-3);text-align:center;}
+  /* Favoritos do CodeCombo — mesma estrela funcional dos snippets (.snip-favbtn), fixa a opção no topo da lista */
+  .cc-opt .desc{margin-left:auto;}
+  .cc-favbtn{width:20px;height:20px;border:0;background:none;cursor:pointer;color:var(--tx-3);border-radius:var(--radius-xs);flex:none;padding:0;display:inline-flex;align-items:center;justify-content:center;transition:var(--t-fast);}
+  .cc-favbtn svg{width:13px;height:13px;stroke:currentColor;fill:none;stroke-width:1.6;stroke-linecap:round;stroke-linejoin:round;}
+  .cc-favbtn:hover{color:var(--accent);background:var(--sec-tint);}
+  .cc-favbtn.on{color:var(--accent);}
+  .cc-favbtn.on svg{fill:currentColor;}
+  .cc-opt.fav{background:var(--accent-bg);}
+  .cc-grp-fav{color:var(--accent-ac);}
+  .cc-empty .linkbtn{appearance:none;background:none;border:0;padding:0;color:var(--accent);cursor:pointer;
+    text-decoration:underline;font:inherit;}
+  .cc-empty .linkbtn:focus-visible{outline:none;box-shadow:var(--ring);border-radius:var(--radius-xs);}
+  /* numérico (passo ▲▼) */
+  .spin{display:inline-flex;align-items:stretch;height:40px;border:1px solid var(--border);
+    border-radius:var(--radius-sm);background:var(--surface);overflow:hidden;width:fit-content;}
+  .spin .num{display:flex;align-items:center;padding:0 12px;font:600 13px/1 var(--mono);color:var(--tx-1);min-width:44px;}
+  .spin .steps{display:flex;flex-direction:column;border-left:1px solid var(--border);}
+  .spin .steps button{flex:1;border:0;background:var(--surface);color:var(--tx-2);cursor:pointer;
+    font-size:8px;padding:0 8px;line-height:1;}
+  .spin .steps button:hover{background:var(--sec-tint);color:var(--tx-1);}
+  .spin .steps button:focus-visible{outline:none;background:var(--sec-tint);color:var(--tx-1);}
+  .spin .steps button:first-child{border-bottom:1px solid var(--border);}
+  /* barra de busca / substituição do Editor (.findbar) */
+  .findbar{display:flex;align-items:center;gap:var(--sp-8);padding:var(--sp-10) var(--sp-12);
+    border-bottom:1px solid var(--border);background:var(--surface);flex:none;flex-wrap:wrap;}
+  .find-inp{height:32px;flex:1;min-width:80px;border:1px solid var(--border);border-radius:var(--radius-sm);
+    background:var(--bg);color:var(--tx-1);padding:0 9px;font:600 12px/1 var(--mono);outline:none;transition:border-color var(--t);}
+  .find-inp:focus{border-color:var(--brand-blue);box-shadow:var(--ring);}
+  .find-sep{color:var(--tx-3);font:600 12px/1 var(--mono);}
+  .find-count{font:600 11px/1 var(--mono);color:var(--tx-3);min-width:30px;text-align:center;}
+  .fbtn{width:32px;height:32px;border:1px solid var(--border-strong);border-radius:var(--radius-sm);
+    background:var(--surface);color:var(--tx-2);display:flex;align-items:center;justify-content:center;
+    cursor:pointer;transition:background var(--t-fast);flex:none;font:700 10px/1 var(--mono);}
+  .fbtn svg{width:15px;height:15px;stroke:currentColor;fill:none;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round;}
+  .fbtn:hover{background:var(--sec-tint);color:var(--tx-1);}
+
+  /* controles */
+  .ctrlrow{display:flex;align-items:center;gap:10px;flex-wrap:wrap;}
+  .ctlcap{font:600 13px/1 var(--sans);color:var(--tx-2);margin-right:16px;}
+  .toggle{width:42px;height:24px;border-radius:var(--radius-pill);background:var(--border-strong);position:relative;
+    display:inline-block;transition:var(--t);cursor:pointer;}
+  .toggle .knob{position:absolute;top:3px;left:3px;width:18px;height:18px;border-radius:50%;background:#fff;
+    border:1px solid var(--border-strong);transition:var(--t);box-shadow:0 1px 3px rgba(0,0,0,.35);}
+  .toggle.on{background:var(--accent);}
+  .toggle.on .knob{left:21px;}
+  .seg{display:inline-flex;border:1px solid var(--border-strong);border-radius:var(--radius-md);overflow:hidden;}
+  .segb{font:600 13px/1 var(--sans);background:var(--surface);color:var(--tx-2);border:0;
+    border-right:1px solid var(--border);padding:9px 18px;cursor:pointer;transition:.12s;}
+  .segb:last-child{border-right:0;}
+  .segb:hover{background:var(--sec-tint);color:var(--tx-1);}
+  .segb.on{background:var(--accent);color:var(--on-accent);}
+  .segb:focus-visible{outline:none;box-shadow:var(--ring);position:relative;z-index:1;}
+  .select{display:inline-flex;align-items:center;gap:10px;height:40px;border:1px solid var(--border-strong);
+    border-radius:var(--radius-sm);background:var(--surface);color:var(--tx-1);padding:0 14px;
+    font:600 13px/1 var(--sans);cursor:pointer;}
+  .select .chev{color:var(--tx-3);margin-left:6px;}
+  .select:focus-visible{outline:none;border-color:var(--sec);box-shadow:var(--ring);}
+
+  /* selecao — radio, checkbox, chip removivel (bloco 3) */
+  .radio{display:inline-flex;align-items:center;gap:9px;font:600 13px/1 var(--sans);color:var(--tx-1);cursor:pointer;}
+  .radio .rdot{width:18px;height:18px;border-radius:50%;border:1.5px solid var(--border-strong);
+    display:inline-flex;align-items:center;justify-content:center;flex:none;transition:var(--t-fast);}
+  .radio:hover .rdot{border-color:var(--sec);}
+  .radio.on .rdot{border-color:var(--accent);}
+  .radio.on .rdot::after{content:"";width:9px;height:9px;border-radius:50%;background:var(--accent);}
+  .radio.foc .rdot{box-shadow:var(--ring);}
+  .radio.dis{color:var(--tx-3);cursor:not-allowed;}
+  .radio.dis .rdot{border-color:var(--border);background:var(--sec-tint);}
+  .cbox{display:inline-flex;align-items:center;gap:9px;font:600 13px/1 var(--sans);color:var(--tx-1);cursor:pointer;}
+  .cbox .cmk{width:18px;height:18px;border-radius:var(--radius-sm);border:1.5px solid var(--border-strong);
+    display:inline-flex;align-items:center;justify-content:center;flex:none;font-size:11px;transition:var(--t-fast);}
+  .cbox:hover .cmk{border-color:var(--sec);}
+  .cbox.on .cmk{background:var(--accent);border-color:var(--accent);color:var(--on-accent);}
+  .cbox.foc .cmk{box-shadow:var(--ring);}
+  .cbox.dis{color:var(--tx-3);cursor:not-allowed;}
+  .cbox.dis .cmk{border-color:var(--border);background:var(--sec-tint);}
+  .rmchip{display:inline-flex;align-items:center;gap:8px;background:var(--sec-tint);border:1px solid var(--border);
+    border-radius:var(--radius-pill);padding:5px 8px 5px 12px;font:600 12px/1 var(--mono);color:var(--tx-1);}
+  .rmchip:focus-visible{outline:none;box-shadow:var(--ring);}
+  .rmchip .rx{width:16px;height:16px;border-radius:50%;display:inline-flex;align-items:center;justify-content:center;
+    background:var(--border);color:var(--tx-2);font:700 9px/1 var(--mono);letter-spacing:.04em;cursor:pointer;transition:var(--t-fast);}
+  .rmchip .rx:hover{background:var(--err);color:var(--on-err);}
+  .rmchip.sub{background:var(--accent-bg);border-color:var(--accent-bd);color:var(--accent);}
+  .rmchip.ins{background:var(--ok-bg);border-color:var(--ok-bd);color:var(--ok);}
+  .rmchip.ren{background:var(--info-bg);border-color:var(--info-bd);color:var(--info);}
+  .rmchip.rem{background:var(--err-bg);border-color:var(--err-bd);color:var(--err);}
+  .rmchip.warn{background:var(--warn-bg);border-color:var(--warn-bd);color:var(--warn);}
+
+  /* badges / progresso / toast */
+  .badge{display:inline-flex;align-items:center;border-radius:var(--radius-pill);padding:5px 12px;
+    font:600 12px/1 var(--sans);background:var(--sec-tint);color:var(--tx-2);border:1px solid var(--border);}
+  .badge.ok{background:var(--ok-bg);border-color:var(--ok-bd);color:var(--ok);}
+  .badge.warn{background:var(--warn-bg);border-color:var(--warn-bd);color:var(--warn);}
+  .badge.err{background:var(--err-bg);border-color:var(--err-bd);color:var(--err);}
+  .prog{height:10px;border-radius:var(--radius-pill);background:var(--sec-tint);overflow:hidden;}
+  .prog span{display:block;height:100%;background:var(--accent);border-radius:var(--radius-pill);transition:width var(--t-slow);}
+  .toast{display:inline-flex;align-items:center;gap:12px;background:var(--surface);border:1px solid var(--border);
+    border-left:3px solid var(--ok);border-radius:var(--radius-md);padding:14px 18px;box-shadow:var(--shadow);}
+  .toast .ic{width:26px;height:26px;border-radius:50%;background:var(--ok-bg);color:var(--ok);
+    display:flex;align-items:center;justify-content:center;font-weight:700;flex:none;}
+  .toast .tt1{font:700 13px/1.2 var(--sans);color:var(--tx-1);}
+  .toast .tt2{font:400 12px/1.3 var(--sans);color:var(--tx-2);margin-top:3px;}
+  /* ITEM-06: snackbar = toast com ação (ex.: Desfazer, 5s) */
+  .snack-act{background:transparent;border:0;color:var(--accent);font:700 12px/1 var(--sans);text-transform:uppercase;letter-spacing:.03em;cursor:pointer;padding:4px 6px;margin-left:8px;border-radius:var(--radius-xs);}
+  .snack-act:hover{color:var(--accent-hv);text-decoration:underline;}
+  .snack-act:focus-visible{outline:none;box-shadow:var(--ring);}
+
+  /* ====== VENDAS / CRIATIVOS ====== */
+  .vbg{background:#0A0E1A;color:#fff;padding:var(--sp-48) var(--sp-32);}
+  .vhero{max-width:1120px;margin:0 auto;}
+  .vkicker{font:700 12px/1 var(--sans);letter-spacing:.14em;text-transform:uppercase;color:var(--brand-orange-lt);}
+  .vh1{font:800 clamp(40px,7vw,76px)/0.98 var(--sans);letter-spacing:-.03em;margin:14px 0 16px;}
+  .vh1 .or{color:var(--brand-orange);}
+  .vsub{font:400 19px/1.5 var(--sans);color:#A9B6C8;max-width:560px;margin:0 0 28px;}
+  .vcta{display:inline-flex;align-items:center;gap:10px;background:var(--brand-orange);color:#fff;
+    font:700 16px/1 var(--sans);border:0;border-radius:var(--radius-md);padding:18px 28px;cursor:pointer;
+    box-shadow:0 10px 30px rgba(232,93,4,.35);}
+  .vfeatures{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:20px;
+    max-width:1120px;margin:48px auto 0;}
+  .vfeat{background:#10182690;border:1px solid #1d2735;border-radius:var(--radius-lg);padding:24px;}
+  .vfeat .fi{width:40px;height:40px;border-radius:10px;background:#1a2230;border:1px solid #2a3545;
+    display:flex;align-items:center;justify-content:center;color:var(--brand-orange-lt);margin-bottom:14px;}
+  .vfeat h3{font:700 17px/1.2 var(--sans);margin:0 0 6px;}
+  .vfeat p{font:400 14px/1.5 var(--sans);color:#9aa7b8;margin:0;}
+  .vscale{display:flex;flex-direction:column;gap:8px;max-width:1120px;margin:40px auto 0;}
+  .vscale span{font-weight:800;letter-spacing:-.02em;line-height:1;}
+  .vrules{max-width:1120px;margin:32px auto 0;display:grid;grid-template-columns:1fr 1fr;gap:16px;}
+  .vrule{border-radius:var(--radius-md);padding:18px;}
+  .vrule.allow{background:#0f2418;border:1px solid #1f5a38;}
+  .vrule.allow h4{color:#5FD27A;}
+  .vrule.deny{background:#2a1817;border:1px solid #5a2a28;}
+  .vrule.deny h4{color:#FF6A5E;}
+  .vrule h4{margin:0 0 8px;font:700 13px/1 var(--sans);text-transform:uppercase;letter-spacing:.05em;}
+  .vrule ul{margin:0;padding-left:18px;color:#c5cfdc;font:400 14px/1.7 var(--sans);}
+
+  /* criativos promocionais */
+  .creative-wall { display: flex; gap: 24px; flex-wrap: wrap; max-width: 1120px; margin: 24px auto 0; }
+  .creative-card { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius-md); padding: 20px; width: 100%; max-width: 440px; box-shadow: var(--shadow); }
+  .creative-card h4 { font: 700 13px/1 var(--sans); text-transform: uppercase; letter-spacing: .05em; color: var(--tx-2); margin: 0 0 10px; }
+  .creative-card p { font: 400 12px/1.4 var(--sans); color: var(--tx-3); margin: 0 0 14px; }
+  
+  /* linkedin post (proporcao 1:3 baseada em 1200x628) -> 400px de largura por 210px de altura */
+  .lk-post-mockup { width: 400px; height: 210px; background: #0A0E1A; border: 1px solid #1c2531; border-radius: 6px; overflow: hidden; position: relative; padding: 20px; display: flex; flex-direction: column; justify-content: space-between; }
+  .lk-post-mockup::before { content: ""; position: absolute; top: 0; left: 0; right: 0; bottom: 0; background: radial-gradient(circle at 80% 20%, rgba(46,107,230,0.15) 0%, transparent 60%); pointer-events: none; }
+  .lk-post-kicker { font: 700 10px/1 var(--sans); letter-spacing: .12em; text-transform: uppercase; color: var(--brand-orange-lt); }
+  .lk-post-title { font: 800 22px/1.1 var(--sans); color: #fff; margin-top: 8px; max-width: 260px; letter-spacing: -.02em; }
+  .lk-post-footer { display: flex; justify-content: space-between; align-items: center; }
+  .lk-post-logo { height: 18px; opacity: 0.85; }
+  .lk-post-cta { background: var(--brand-orange); color: #fff; font: 700 10px/1 var(--sans); border: 0; border-radius: var(--radius-sm); padding: 8px 12px; box-shadow: 0 4px 10px rgba(232,93,4,0.3); cursor: pointer; }
+
+  /* email header banner (proporcao 3:1 baseada em 600x200) -> 400px de largura por 133px de altura */
+  .em-banner-mockup { width: 400px; height: 133px; background: linear-gradient(135deg, #101c36 0%, #050a12 100%); border: 1px solid #1c2531; border-radius: 6px; overflow: hidden; position: relative; padding: 16px; display: flex; align-items: center; justify-content: space-between; }
+  .em-banner-content { max-width: 240px; }
+  .em-banner-logo { height: 14px; opacity: 0.75; margin-bottom: 6px; display: block; }
+  .em-banner-title { font: 800 16px/1.2 var(--sans); color: #fff; letter-spacing: -.01em; }
+  .em-banner-desc { font: 400 10px/1.3 var(--sans); color: #A9B6C8; margin-top: 4px; }
+  .em-banner-action { flex-shrink: 0; text-align: right; }
+  .em-banner-badge { display: inline-block; background: rgba(232,93,4,0.15); border: 1px solid var(--brand-orange); border-radius: var(--radius-pill); padding: 4px 8px; font: 700 8px/1 var(--sans); color: var(--brand-orange-lt); text-transform: uppercase; margin-bottom: 12px; letter-spacing: .05em; }
+  .em-banner-btn { display: inline-block; background: var(--brand-blue); color: #fff; font: 700 9px/1 var(--sans); border: 0; border-radius: var(--radius-sm); padding: 6px 10px; box-shadow: 0 4px 8px rgba(46,107,230,0.25); cursor: pointer; }
+
+  /* ====== MARCA / FAVICON ====== */
+  .mwrap{max-width:1120px;margin:0 auto;padding:var(--sp-32);background:var(--brand-bg-dark);}
+  .logobox{border:1px solid #1d2735;border-radius:var(--radius-md);padding:40px;display:flex;
+    align-items:center;justify-content:center;}
+  .mgrid{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:16px;}
+  .mcap{font:600 12px/1.4 var(--sans);color:#8A99AD;margin-top:10px;text-align:center;}
+  .favrow{display:flex;align-items:flex-end;gap:20px;flex-wrap:wrap;}
+  .fav{background:#0A0E1A;border-radius:22%;display:flex;align-items:center;justify-content:center;
+    color:#fff;font-style:italic;font-weight:800;}
+  .mcolors{display:flex;gap:16px;flex-wrap:wrap;}
+  .mcolor{text-align:center;}
+  .mcolor .ball{width:70px;height:70px;border-radius:50%;border:1px solid #1d2735;}
+  .mcolor .nm{font:600 12px/1.4 var(--sans);color:#cdd6e2;margin-top:8px;}
+  .mcolor .hx{font:600 11px/1 var(--mono);color:#8A99AD;}
+  .brand-clearspace{position:relative;border:1px dashed #34414f;border-radius:var(--radius-md);padding:40px;display:inline-block;}
+  .mwrap h2{font:700 14px/1 var(--sans);text-transform:uppercase;letter-spacing:.05em;color:#cdd6e2;margin:40px 0 14px;}
+  .mwrap p.note{color:#8A99AD;font:400 14px/1.6 var(--sans);max-width:720px;}
+  /* logo oficial (imagem fiel — ver docs/logo/) */
+  .brandimg{display:block;height:auto;width:auto;max-width:100%;}
+  .canon{border:1px solid var(--brand-orange);background:rgba(232,93,4,.08);border-radius:var(--radius-md);padding:16px 18px;margin:8px 0 6px;color:#e7ecf3;font:400 13.5px/1.6 var(--sans);max-width:900px;}
+  .canon b{color:#fff;}
+  .canon code{font:600 12px/1 var(--mono);color:var(--brand-blue-lt);}
+  .gradrow{display:flex;gap:16px;flex-wrap:wrap;}
+  .grad{width:120px;height:54px;border-radius:10px;border:1px solid #1d2735;}
+  .gcap{font:600 12px/1.4 var(--sans);color:#cdd6e2;margin-top:8px;}
+  .gcap span{display:block;font:600 11px/1.5 var(--mono);color:#8A99AD;}
+  .manual-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));gap:16px;margin-top:16px;}
+  .manual-card{border:1px solid #1d2735;border-radius:var(--radius-md);background:#101826;padding:16px;}
+  .manual-card h3{margin:0 0 10px;color:#fff;font:700 13px/1.3 var(--sans);}
+  .manual-card p{margin:0;color:#aeb9cc;font:400 13px/1.6 var(--sans);}
+  .manual-list{display:grid;gap:12px;margin-top:14px;}
+  .manual-item{display:flex;gap:12px;align-items:flex-start;border:1px solid #1d2735;border-radius:var(--radius-md);background:#101826;padding:14px 16px;}
+  .manual-item .mark{width:24px;height:24px;border-radius:50%;display:flex;align-items:center;justify-content:center;flex:none;
+    font:700 12px/1 var(--mono);border:1px solid currentColor;}
+  .manual-item.ok{color:#79d49a;}
+  .manual-item.no{color:#ff9a8e;}
+  .manual-item b{display:block;color:#fff;font:700 13px/1.3 var(--sans);margin-bottom:4px;}
+  .manual-item span{display:block;color:#aeb9cc;font:400 13px/1.55 var(--sans);}
+  .split-note{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:16px;margin-top:14px;}
+  .rulebox{border:1px solid #1d2735;border-radius:var(--radius-md);padding:16px;background:#101826;}
+  .rulebox b{display:block;color:#fff;font:700 13px/1.3 var(--sans);margin-bottom:8px;}
+  .rulebox p{margin:0;color:#aeb9cc;font:400 13px/1.6 var(--sans);}
+
+  /* ====== B4 · NAVEGAÇÃO (bloco 4) ====== */
+  /* gaveta retrátil canônica — handle no meio da divisão, colapsa a ícones */
+  .sbnav-demo{position:relative;height:480px;border:1px solid var(--border);border-radius:var(--radius-md);
+    overflow:hidden;background:var(--bg);}
+  .sbnav{position:absolute;top:0;left:0;bottom:0;width:var(--sidebar-w);z-index:2;background:var(--rail);
+    border-right:1px solid var(--border);display:flex;flex-direction:column;padding:12px 8px;
+    overflow-y:auto;overflow-x:hidden;transition:width var(--t-slow) cubic-bezier(.4,0,.2,1);}
+  .sbnav::-webkit-scrollbar{width:4px;}
+  .sbnav::-webkit-scrollbar-track{background:transparent;}
+  .sbnav::-webkit-scrollbar-thumb{background:var(--border);border-radius:99px;}
+  .sbnav-demo.is-collapsed .sbnav{width:var(--sidebar-w-collapsed);}
+  /* brand */
+  .sbnav__brand{padding:10px 6px 12px;display:flex;align-items:center;gap:8px;white-space:nowrap;overflow:hidden;}
+  .sbnav__logo{flex:none;display:flex;align-items:center;}
+  .sbnav__tag{font:600 11px/1 var(--sans);color:var(--tx-3);transition:opacity var(--t),visibility var(--t);}
+  .sbnav-demo.is-collapsed .sbnav__tag{opacity:0;visibility:hidden;width:0;}
+  /* lista */
+  .sbnav__list{list-style:none;flex:1;display:flex;flex-direction:column;margin:0;padding:0;}
+  .sbnav__list ul{list-style:none;margin:0;padding:0;}
+  .sbnav__grp{font:700 10px/1.4 var(--sans);letter-spacing:.08em;text-transform:uppercase;color:var(--tx-3);
+    padding:8px 10px 4px;display:block;user-select:none;white-space:nowrap;}
+  .sbnav-demo.is-collapsed .sbnav__grp{display:none;}
+  .sbnav__sep{height:1px;background:var(--border);margin:6px 0;border:none;}
+  .sbnav-demo.is-collapsed .sbnav__sep{margin:6px 8px;}
+  /* item */
+  .sbnav__item{display:flex;align-items:center;gap:10px;padding:9px 12px;border-radius:var(--radius-md);
+    min-height:40px;cursor:pointer;color:var(--tx-2);text-decoration:none;position:relative;
+    transition:background var(--t),color var(--t);margin-bottom:2px;width:100%;border:none;
+    background:transparent;text-align:left;font:600 13px/1 var(--sans);}
+  .sbnav__item:hover{background:var(--sec-tint);color:var(--tx-1);}
+  .sbnav__item:focus-visible{outline:none;box-shadow:var(--ring);}
+  .sbnav-demo.is-collapsed .sbnav__item{padding:0;width:40px;height:40px;margin:0 auto 2px;justify-content:center;}
+  .sbnav__item.active{background:var(--accent);color:var(--on-accent);}
+  .sbnav__item.active:hover{background:var(--accent-hv);}
+  .sbnav__item.soon{opacity:.45;cursor:not-allowed;pointer-events:none;}
+  /* ícone */
+  .sbnav__ic{font:700 10px/1 var(--mono);color:var(--tx-3);width:20px;height:20px;display:flex;
+    align-items:center;justify-content:center;flex:none;letter-spacing:.04em;text-transform:uppercase;
+    transition:color var(--t);}
+  .sbnav__ic svg{width:18px;height:18px;display:block;stroke:currentColor;fill:none;
+    stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round;}
+  .sbnav__item:hover .sbnav__ic{color:var(--tx-1);}
+  .sbnav__item.active .sbnav__ic{color:var(--on-accent);}
+  /* rótulo */
+  .sbnav__lbl{white-space:nowrap;overflow:hidden;text-overflow:ellipsis;flex:1;
+    transition:opacity var(--t),visibility var(--t);}
+  .sbnav-demo.is-collapsed .sbnav__lbl{opacity:0;visibility:hidden;width:0;pointer-events:none;}
+  .sbnav__item.active .sbnav__lbl{font-weight:700;}
+  /* dot de status */
+  .sbnav__dot{width:7px;height:7px;border-radius:50%;background:var(--accent);flex:none;margin-left:auto;}
+  .sbnav-demo.is-collapsed .sbnav__dot{position:absolute;top:6px;right:6px;margin-left:0;}
+  /* seta de submenu */
+  .sbnav__arrow{font:700 9px/1 var(--mono);color:var(--tx-3);margin-left:auto;transition:transform var(--t);flex:none;}
+  .sbnav__item[aria-expanded="true"] .sbnav__arrow{transform:rotate(90deg);}
+  .sbnav-demo.is-collapsed .sbnav__arrow{display:none;}
+  .sbnav__sub{overflow:hidden;}
+  .sbnav__sub[hidden]{display:none;}
+  .sbnav__sub .sbnav__item{padding-left:32px;font-weight:400;}
+  .sbnav-demo.is-collapsed .sbnav__sub{display:none;}
+  /* rodapé / perfil */
+  .sbnav__foot{margin-top:auto;display:flex;align-items:center;gap:10px;padding:12px 10px;border-top:1px solid var(--border);}
+  .sbnav__avatar{width:32px;height:32px;border-radius:50%;background:var(--sec);flex:none;display:flex;
+    align-items:center;justify-content:center;font:700 10px/1 var(--mono);color:var(--tx-3);}
+  .sbnav__finfo{display:flex;flex-direction:column;gap:2px;overflow:hidden;transition:opacity var(--t),visibility var(--t);}
+  .sbnav__fname{font:600 12px/1 var(--sans);color:var(--tx-1);white-space:nowrap;}
+  .sbnav__frole{font:400 11px/1 var(--sans);color:var(--tx-3);white-space:nowrap;}
+  .sbnav-demo.is-collapsed .sbnav__foot{justify-content:center;padding:12px 0;}
+  .sbnav-demo.is-collapsed .sbnav__finfo{opacity:0;visibility:hidden;width:0;pointer-events:none;}
+  /* conteúdo demo (anima junto) */
+  .sbnav-main{margin-left:220px;height:100%;overflow:auto;padding:24px;
+    transition:margin-left var(--t-slow) cubic-bezier(.4,0,.2,1);}
+  .sbnav-demo.is-collapsed .sbnav-main{margin-left:56px;}
+  .sbnav-main h3{font:700 16px/1.2 var(--sans);color:var(--tx-1);margin:0 0 8px;}
+  .sbnav-main p{font:400 13px/1.6 var(--sans);color:var(--tx-3);margin:0;}
+  /* handle de toggle — no meio da divisão */
+  .sbnav-toggle{position:absolute;top:50%;transform:translateY(-50%);left:220px;z-index:3;
+    width:16px;height:48px;background:var(--surface);border:1px solid var(--border-strong);border-left:none;
+    border-radius:0 var(--radius-md) var(--radius-md) 0;box-shadow:var(--shadow);display:flex;
+    align-items:center;justify-content:center;cursor:pointer;padding:0;
+    transition:left var(--t-slow) cubic-bezier(.4,0,.2,1),background var(--t);}
+  .sbnav-toggle:hover{background:var(--sec-tint);}
+  .sbnav-toggle:focus-visible{outline:none;box-shadow:var(--ring),var(--shadow);}
+  .sbnav-toggle:active{background:var(--border);}
+  .sbnav-toggle::before{content:"◄";font:700 8px/1 var(--mono);color:var(--tx-3);transition:color var(--t);}
+  .sbnav-toggle:hover::before{color:var(--tx-1);}
+  .sbnav-demo.is-collapsed .sbnav-toggle{left:56px;}
+  .sbnav-demo.is-collapsed .sbnav-toggle::before{content:"►";}
+  /* top bar do produto */
+  .topbar{display:flex;align-items:center;gap:var(--sp-12);height:48px;
+    background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-md);padding:0 var(--sp-16);}
+  .tbrand{font:800 16px/1 var(--sans);font-style:italic;letter-spacing:-.02em;flex:none;display:flex;align-items:center;}
+  .tfile{font:600 13px/1 var(--sans);color:var(--tx-2);display:flex;align-items:center;flex:1;min-width:0;}
+  .tfile .tsep{color:var(--border-strong);margin:0 6px;}
+  .tactions{display:inline-flex;align-items:center;gap:var(--sp-8);margin-left:auto;flex:none;
+    padding:4px;background:var(--surface-2);border:1px solid var(--border);border-radius:var(--radius-md);}
+  .topbar .btn{height:36px;}
+  .topbar .btn.iconly{width:36px;}
+  .topbar .btn.ghost{padding:0 14px;}
+  /* abas com sublinhado — agnóstico de largura: o contêiner encolhe ao conteúdo;
+     quem usa decide a largura (auto, fixa ou 100%) no contexto do painel */
+  .tabset{display:inline-block;max-width:100%;vertical-align:top;}
+  .tabs{display:flex;border-bottom:2px solid var(--border);}
+  .tab{font:600 13px/1 var(--sans);color:var(--tx-2);background:transparent;border:0;
+    border-bottom:2px solid transparent;padding:10px 18px;cursor:pointer;transition:.15s;margin-bottom:-2px;}
+  .tab:hover{color:var(--tx-1);background:var(--sec-tint);}
+  .tab.on{color:var(--tx-1);border-bottom-color:var(--accent);}
+  .tab.dis{color:var(--tx-3);cursor:not-allowed;}
+  .tab:focus-visible{outline:none;box-shadow:var(--ring);border-radius:var(--radius-sm);}
+  .tabpanel{background:var(--surface-2);border:1px solid var(--border);border-top:0;
+    border-radius:0 0 var(--radius-md) var(--radius-md);padding:var(--sp-16);}
+  .phtext{font:600 13px/1.4 var(--sans);color:var(--tx-3);}
+  /* menu de contexto */
+  .ctx{background:var(--surface);border:1px solid var(--border-strong);border-radius:var(--radius-md);
+    box-shadow:var(--shadow-2);min-width:210px;padding:4px 0;display:inline-block;}
+  .ctx-item{display:flex;align-items:center;gap:10px;padding:10px 14px;
+    min-height:40px;font:600 13px/1.2 var(--sans);color:var(--tx-1);cursor:pointer;transition:.1s;}
+  .ctx-ic{width:20px;text-align:center;color:var(--tx-3);flex:none;font:700 10px/1 var(--mono);letter-spacing:.04em;}
+  .ctx-short{margin-left:auto;font:600 11px/1 var(--mono);color:var(--tx-3);}
+  .ctx-item:hover{background:var(--sec-tint);}
+  .ctx-item.danger{color:var(--err);background:var(--err-bg);}
+  .ctx-item.danger .ctx-ic{color:var(--err);}
+  .ctx-item.danger:hover{background:#f7d8d4;}
+  .ctx-item.dis{color:var(--tx-3);cursor:not-allowed;}
+  .ctx-item.dis:hover{background:transparent;}
+  .ctx-sep{height:1px;background:var(--border);margin:4px 0;}
+
+  /* ====== B5 · LISTAS, CARTOES, FEEDBACK, EDITOR, ICONES ====== */
+  .focusdemo{box-shadow:var(--ring);}
+  .explorer{border:1px solid var(--border);border-radius:var(--radius-md);overflow:hidden;background:var(--surface);}
+  .exphead,.exprow{display:grid;grid-template-columns:28px minmax(0,1fr) 60px 80px 116px 76px;gap:10px;align-items:center;padding:12px 14px;}
+  .exphead{background:var(--surface-2);border-bottom:1px solid var(--border);font:700 10px/1 var(--sans);text-transform:uppercase;letter-spacing:.06em;color:var(--tx-3);}
+  .exprow{border-bottom:1px solid var(--border);font:600 13px/1 var(--sans);color:var(--tx-1);transition:var(--t-fast);}
+  .exprow:last-child{border-bottom:0;}
+  .exprow:hover{background:var(--sec-tint);}
+  .exprow.foc{box-shadow:inset 0 0 0 2px rgba(46,107,230,.22);}
+  .exprow.sel{background:var(--accent-bg);}
+  .exprow .nm{display:flex;align-items:center;flex-wrap:wrap;gap:8px;min-width:0;}
+  .exprow .nm .mono{font:600 13px/1 var(--mono);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;min-width:120px;}
+  .col-tp{font:600 12px/1 var(--mono);color:var(--tx-2);text-transform:uppercase;white-space:nowrap;text-align:center;}
+  .col-act{text-align:right;}
+  .exprow .dt{font:600 12px/1 var(--sans);color:var(--tx-2);}
+  .exprow .sz{font:600 12px/1 var(--mono);color:var(--tx-2);text-align:right;}
+  .exprow .act{display:flex;justify-content:flex-end;gap:6px;}
+  
+  /* Chips compactos de ação para o loteamento */
+  .chip {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--sp-4);
+    padding: 3px var(--sp-8);
+    border-radius: var(--radius-sm);
+    font: 600 12px/1 var(--sans);
+    border: 1px solid transparent;
+    user-select: none;
+    white-space: nowrap;
+  }
+  .chip.sub { background: var(--accent-bg); border-color: var(--accent-bd); color: var(--accent-ac); }
+  .chip.ins { background: var(--ok-bg); border-color: var(--ok-bd); color: var(--ok); }
+  .chip.ren { background: var(--info-bg); border-color: var(--info-bd); color: var(--info); }
+  .chip.rem { background: var(--err-bg); border-color: var(--err-bd); color: var(--err); }
+  .chip.warn { background: var(--warn-bg); border-color: var(--warn-bd); color: var(--warn); }
+  .chip.applied { background: var(--ok-bg); border-color: var(--ok-bd); color: var(--ok); }
+  .chip.chip-editing, .aviso.chip-editing {
+    opacity: 0.65;
+    border: 1px dashed var(--accent) !important;
+    background: var(--accent-bg) !important;
+    box-shadow: 0 0 4px rgba(232, 93, 4, 0.15);
+    pointer-events: none;
+  }
+
+  /* Contêiner dos chips na linha do programa (espelha o contrato 01). */
+  .chips-cell { display: inline-flex; flex-wrap: nowrap; gap: 5px; align-items: center; min-width: 0; overflow: hidden; }
+
+  /* ITEM-02 — overflow de chips (+N) e popover flutuante */
+  .chip-more{display:inline-flex;align-items:center;padding:4px 9px;border-radius:var(--radius-sm);
+    font:600 12px/1 var(--sans);background:var(--sec-tint);border:1px solid var(--border);
+    color:var(--tx-2);cursor:pointer;}
+  .chip-more:hover{background:var(--border);}
+  .chips-popover {
+    display: flex !important;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 6px;
+    padding: 8px;
+    background: var(--surface);
+    border: 1px solid var(--border-strong);
+    border-radius: var(--radius-md);
+    box-shadow: var(--shadow-2);
+    position: absolute;
+    z-index: 350;
+  }
+  .chips-popover .chip, .chips-popover .aviso {
+    margin: 0;
+    width: 100%;
+    box-sizing: border-box;
+  }
+
+  /* ITEM-01 — anatomia padronizada do chip: ícone + resumo (<=20, ellipsis) + ações on-hover + tooltip 500ms.
+     1 alteração = 1 chip. Altura fixa 24px. ✎ corrige os dados; ✕ remove; corpo abre a gaveta (stopPropagation). */
+  .chip { position: relative; height: 24px; padding: 0 var(--sp-8); cursor: pointer; }
+  .chip .chip-tx { max-width: 150px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .chip .chip-acts { display: none; align-items: center; gap: 2px; margin-left: 2px; }
+  .chip:hover .chip-acts, .chip:focus-within .chip-acts, .chip.kbd .chip-acts { display: inline-flex; }
+  .chip .chip-btn { display: inline-flex; align-items: center; justify-content: center; width: 16px; height: 16px;
+    padding: 0; border: none; background: transparent; color: currentColor; cursor: pointer; border-radius: 3px; opacity: .75; }
+  .chip .chip-btn:hover { opacity: 1; background: rgba(0,0,0,.10); }
+  .chip .chip-btn:focus-visible { opacity: 1; outline: 2px solid var(--focus, #2563eb); outline-offset: 1px; }
+  .chip .chip-btn svg { width: 11px; height: 11px; stroke: currentColor; fill: none; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+  .chip[data-tip]::after { content: attr(data-tip); position: absolute; bottom: calc(100% + 6px); left: 0; z-index: 40;
+    background: var(--tx-1); color: #fff; font: 600 11px/1.3 var(--sans); white-space: nowrap;
+    padding: 5px 8px; border-radius: 6px; box-shadow: 0 4px 14px rgba(0,0,0,.18);
+    opacity: 0; transform: translateY(2px); pointer-events: none; transition: opacity .12s; transition-delay: 0s; }
+  .chip[data-tip]:hover::after, .chip[data-tip]:focus-visible::after { opacity: 1; transform: translateY(0); transition-delay: .5s; }
+  @media (prefers-reduced-motion: reduce) { .chip[data-tip]::after { transition: none; } }
+
+  /* Aviso — estados de atenção da alteração (ITEM-13): não encontrada / conflito / órfã.
+     Distinto do chip: o chip diz o que VAI acontecer (pendente/aplicada); o aviso pede ATENÇÃO. */
+  .aviso{display:inline-flex;align-items:center;gap:6px;padding:4px var(--sp-8);border-radius:var(--radius-sm);
+    font:600 12px/1 var(--sans);border:1px solid transparent;white-space:nowrap;}
+  .aviso .ai{font:700 12px/1 var(--sans);}
+  .aviso.warn{background:var(--warn-bg);border-color:var(--warn-bd);color:var(--warn);} /* nao_encontrada, orfa */
+  .aviso.err{background:var(--err-bg);border-color:var(--err-bd);color:var(--err);}      /* conflito — bloqueia */
+  /* ITEM-03 — aviso herda a anatomia do chip (altura, acoes on-hover, tooltip 500ms) */
+  .aviso{position:relative;height:24px;cursor:pointer;transition:filter var(--t-fast);}
+  .aviso:hover{filter:brightness(.97);}
+  .aviso .chip-tx{max-width:150px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+  .aviso .chip-acts{display:none;align-items:center;gap:2px;margin-left:2px;}
+  .aviso:hover .chip-acts,.aviso:focus-within .chip-acts,.aviso.kbd .chip-acts{display:inline-flex;}
+  .aviso .chip-btn{display:inline-flex;align-items:center;justify-content:center;width:16px;height:16px;padding:0;border:none;background:transparent;color:currentColor;cursor:pointer;border-radius:3px;opacity:.75;}
+  .aviso .chip-btn:hover{opacity:1;background:rgba(0,0,0,.10);}
+  .aviso .chip-btn:focus-visible{opacity:1;outline:2px solid var(--focus,#2563eb);outline-offset:1px;}
+  .aviso .chip-btn svg{width:11px;height:11px;stroke:currentColor;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;}
+  .aviso[data-tip]::after{content:attr(data-tip);position:absolute;bottom:calc(100% + 6px);left:0;z-index:40;background:var(--tx-1);color:#fff;font:600 11px/1.3 var(--sans);white-space:nowrap;padding:5px 8px;border-radius:6px;box-shadow:0 4px 14px rgba(0,0,0,.18);opacity:0;transform:translateY(2px);pointer-events:none;transition:opacity .12s;transition-delay:0s;}
+  .aviso[data-tip]:hover::after,.aviso[data-tip]:focus-visible::after{opacity:1;transform:translateY(0);transition-delay:.5s;}
+  @media (prefers-reduced-motion: reduce) { .aviso[data-tip]::after { transition: none; } }
+  .rmchip.err{background:var(--err-bg);border-color:var(--err-bd);color:var(--err);}
+
+  /* Estados nomeados do Editor de Lote (contrato do refinado) */
+  .ds-editor-hint{display:inline-flex;align-items:center;gap:7px;font:600 12px/1 var(--sans);color:var(--warn);
+    background:var(--warn-bg);border:1px solid var(--warn-bd);border-radius:var(--radius-pill);padding:6px 12px;width:fit-content;}
+  .ds-editor-hint .ic{font:700 12px/1 var(--sans);}
+  .ds-blocker-banner{display:flex;align-items:flex-start;gap:12px;padding:12px var(--sp-16);
+    background:var(--err-bg);border:1px solid var(--err-bd);border-radius:var(--radius-md);}
+  .ds-blocker-banner .bic{width:28px;height:28px;border-radius:50%;background:var(--surface);
+    border:1.5px solid var(--err);color:var(--err);display:flex;align-items:center;justify-content:center;
+    font:700 14px/1 var(--sans);flex:none;}
+  .ds-blocker-banner .btitle{font:700 13px/1.2 var(--sans);color:var(--err);margin-bottom:3px;}
+  .ds-blocker-banner .bdesc{font:400 12px/1.4 var(--sans);color:var(--tx-2);}
+
+  /* Detalhe inline expansível para linhas do explorer */
+  .exprow-expand {
+    grid-column: 1 / -1;
+    background: var(--surface-2);
+    border-bottom: 1px solid var(--border);
+    padding: var(--sp-12) var(--sp-16) var(--sp-12) 48px;
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--sp-8);
+    align-items: center;
+    animation: expSlideDown var(--t) ease-out;
+  }
+  @keyframes expSlideDown {
+    from { opacity: 0; transform: translateY(-4px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+  .cardgrid{display:grid;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));gap:16px;}
+  .card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-md);padding:16px;box-shadow:var(--shadow);}
+  .card.editing{border-color:var(--accent-bd);background:var(--accent-bg);}
+  .card.warn{border-color:var(--warn-bd);background:var(--warn-bg);}
+  .card.danger{border-color:var(--err-bd);background:var(--err-bg);}
+  .card .eyebrow{font:700 10px/1 var(--sans);text-transform:uppercase;letter-spacing:.06em;color:var(--tx-3);margin-bottom:10px;}
+  .card .title{font:700 14px/1.2 var(--sans);color:var(--tx-1);margin:0 0 8px;}
+  .card .copy{font:400 13px/1.5 var(--sans);color:var(--tx-2);margin:0;}
+  .sumcard{border:1px solid var(--border);border-radius:var(--radius-md);background:var(--surface);overflow:hidden;box-shadow:var(--shadow);}
+  .sumtop{display:flex;align-items:center;gap:12px;padding:14px 16px;border-bottom:1px solid var(--border);}
+  .sumidx{width:34px;height:34px;border-radius:var(--radius-pill);background:var(--sec-tint);border:1px solid var(--border);display:flex;align-items:center;justify-content:center;font:700 12px/1 var(--mono);color:var(--tx-2);flex:none;}
+  .sumtxt{min-width:0;display:flex;flex-direction:column;gap:4px;}
+  .sumtxt .t1{font:700 13px/1.2 var(--sans);color:var(--tx-1);}
+  .sumtxt .t2{font:400 12px/1.4 var(--sans);color:var(--tx-2);}
+  .sumscope{margin-left:auto;display:inline-flex;align-items:center;gap:8px;padding:6px 10px;border-radius:var(--radius-pill);background:var(--sec-tint);border:1px solid var(--border);font:600 12px/1 var(--sans);color:var(--tx-2);}
+  .sumbar{display:flex;gap:8px;padding:12px 16px;flex-wrap:wrap;}
+  .banner{display:flex;align-items:flex-start;gap:14px;padding:14px 16px;border:1px solid var(--border);border-radius:var(--radius-md);background:var(--surface);}
+  .banner.warn{background:var(--warn-bg);border-color:var(--warn-bd);}
+  .banner.info{background:var(--info-bg);border-color:var(--info-bd);}
+  .banner .bic{width:28px;height:28px;border-radius:50%;display:flex;align-items:center;justify-content:center;background:var(--surface);border:1px solid currentColor;color:inherit;flex:none;font:700 13px/1 var(--sans);}
+  .banner.warn{color:var(--warn);}
+  .banner.info{color:var(--info);}
+  .banner .bcopy{display:flex;flex-direction:column;gap:4px;min-width:0;}
+  .banner .btitle{font:700 13px/1.2 var(--sans);color:var(--tx-1);}
+  .banner .btext{font:400 12px/1.5 var(--sans);color:var(--tx-2);}
+  .banner .bactions{display:flex;gap:8px;flex-wrap:wrap;margin-left:auto;align-self:center;}
+  .toaststack{display:flex;flex-wrap:wrap;gap:12px;}
+  .toast.warn{border-left-color:var(--warn);}
+  .toast.warn .ic{background:var(--warn-bg);color:var(--warn);}
+  .toast.err{border-left-color:var(--err);}
+  .toast.err .ic{background:var(--err-bg);color:var(--err);}
+  .toast.info{border-left-color:var(--info);}
+  .toast.info .ic{background:var(--info-bg);color:var(--info);}
+  .modaldemo{position:relative;min-height:300px;border-radius:var(--radius-md);overflow:hidden;border:1px solid var(--border);background:var(--surface-2);}
+  .modaldemo .underlay{position:absolute;inset:0;padding:20px;background:
+    linear-gradient(180deg,rgba(255,255,255,.04),rgba(255,255,255,0)),
+    repeating-linear-gradient(180deg,transparent 0 38px,rgba(0,0,0,.03) 38px 39px);}
+  .scrim{position:absolute;inset:0;background:var(--scrim);}
+  .modal{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);width:min(460px,calc(100% - 40px));
+    background:var(--surface);border:1px solid var(--border-strong);border-radius:var(--radius-md);box-shadow:var(--shadow-2);overflow:hidden;}
+  .modal-h{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:16px 18px;border-bottom:1px solid var(--border);}
+  .modal-h .mh{font:700 14px/1.2 var(--sans);color:var(--tx-1);}
+  .modal-b{padding:16px 18px;font:400 13px/1.6 var(--sans);color:var(--tx-2);}
+  .modal-f{display:flex;justify-content:flex-end;gap:8px;padding:14px 18px;border-top:1px solid var(--border);background:var(--surface-2);}
+  .stategrid{display:grid;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));gap:16px;}
+  .empty{border:1px dashed var(--border-strong);border-radius:var(--radius-md);background:var(--surface-2);padding:28px 20px;display:flex;flex-direction:column;align-items:center;text-align:center;gap:10px;}
+  .empty .eic{width:48px;height:48px;border-radius:14px;background:var(--surface);border:1px solid var(--border);display:flex;align-items:center;justify-content:center;color:var(--tx-2);font:700 18px/1 var(--sans);}
+  .empty .et1{font:700 14px/1.2 var(--sans);color:var(--tx-1);}
+  .empty .et2{font:400 12px/1.5 var(--sans);color:var(--tx-2);max-width:220px;}
+  .dropzone{border:2px dashed var(--border-strong);border-radius:var(--radius-md);background:var(--surface);padding:22px 18px;display:flex;flex-direction:column;gap:8px;align-items:center;text-align:center;}
+  .dropzone.drag{background:var(--info-bg);border-color:var(--info);}
+  .dropzone.drop{background:var(--accent-bg);border-color:var(--accent);}
+  .dropzone .dz1{font:700 13px/1.2 var(--sans);color:var(--tx-1);}
+  .dropzone .dz2{font:400 12px/1.5 var(--sans);color:var(--tx-2);}
+  .toolrow{display:flex;gap:14px;flex-wrap:wrap;align-items:flex-start;}
+  .tooltipdemo{display:flex;flex-direction:column;gap:10px;align-items:flex-start;}
+  .tip{display:inline-flex;max-width:280px;padding:10px 12px;border-radius:var(--radius-sm);background:var(--tx-1);color:var(--surface);box-shadow:var(--shadow);font:600 12px/1.4 var(--sans);}
+  .tip.multi{max-width:320px;font-weight:400;}
+  .editor-shell{border:1px solid var(--border);border-radius:var(--radius-md);overflow:hidden;background:var(--surface);}
+  .editor-main{display:grid;grid-template-columns:64px 1fr;min-height:220px;}
+  .gutter{background:var(--surface-2);border-right:1px solid var(--border);padding:14px 10px;font:600 12px/1.9 var(--mono);color:var(--tx-3);text-align:right;}
+  .ecode{padding:14px 16px;background:var(--code-bg);font:600 13px/1.9 var(--mono);color:var(--tx-1);}
+  .eline{display:block;padding:0 8px;border-radius:var(--radius-sm);}
+  .eline.hit{background:rgba(232,93,4,.12);}
+  .eline.current{background:rgba(46,107,230,.16);box-shadow:inset 2px 0 0 var(--accent);}
+  
+  /* Realce de sintaxe (Syntax Highlighting) para G-code */
+  .nc-g { color: var(--info); font-weight: 600; }        /* G (Preparatórios) - Azul */
+  .nc-m { color: var(--accent); font-weight: 600; }      /* M (Auxiliares) - Laranja */
+  .nc-coord { color: var(--ok); }                        /* Coordenadas (X, Y, Z, A, B, C) - Verde */
+  .nc-param { color: var(--warn); }                      /* Parâmetros (F, S, T, D, H) - Dourado/Âmbar */
+  .nc-comment { color: var(--tx-3); font-style: italic; } /* Comentários - Cinza */
+
+  /* Customização do CodeMirror 6 para o tema FlowNC */
+  .cm-editor {
+    height: 100%;
+    font-family: var(--mono) !important;
+    font-size: 13px !important;
+    background: var(--code-bg) !important;
+    color: var(--tx-1) !important;
+  }
+  .cm-editor .cm-scroller {
+    font-family: var(--mono) !important;
+    line-height: 2em !important;
+    outline: none !important;
+  }
+  .cm-editor .cm-content {
+    padding: 16px 18px !important;
+  }
+  .cm-editor .cm-gutters {
+    background: var(--surface-2) !important;
+    border-right: 1px solid var(--border) !important;
+    color: var(--tx-3) !important;
+    padding: 16px 0 !important;
+    user-select: none !important;
+  }
+  .cm-editor .cm-gutterElement {
+    padding: 0 10px !important;
+    text-align: right !important;
+  }
+  .cm-editor .cm-activeLine {
+    background: rgba(46, 107, 230, 0.10) !important;
+  }
+  .cm-editor .cm-activeLineGutter {
+    background: rgba(46, 107, 230, 0.15) !important;
+    color: var(--tx-1) !important;
+  }
+  .cm-editor .cm-cursor {
+    border-left: 2px solid var(--brand-blue) !important;
+  }
+
+  /* Tokens de realce de sintaxe do G-code mapeados do StreamLanguage */
+  .cm-g-code-g { color: var(--info) !important; font-weight: 600 !important; }
+  .cm-g-code-m { color: var(--accent) !important; font-weight: 600 !important; }
+  .cm-g-code-coord { color: var(--ok) !important; }
+  .cm-g-code-param { color: var(--warn) !important; }
+  .cm-g-code-comment { color: var(--tx-3) !important; font-style: italic !important; }
+  .cm-g-code-plain { color: var(--tx-1) !important; }
+
+  .stripdemo{display:grid;grid-template-columns:220px 1fr;gap:16px;align-items:start;}
+  .strip{border:1px solid var(--border);border-radius:var(--radius-md);background:var(--surface);padding:10px;}
+  .striprow{display:flex;align-items:center;gap:10px;padding:10px 12px;border-radius:var(--radius-sm);color:var(--tx-2);cursor:pointer;transition:var(--t-fast);}
+  .striprow:hover{background:var(--sec-tint);color:var(--tx-1);}
+  .striprow.active{background:var(--accent-bg);color:var(--tx-1);}
+  .striprow.foc{box-shadow:var(--ring);}
+  .striprow .sdot{width:8px;height:8px;border-radius:50%;background:transparent;flex:none;}
+  .striprow.dirty .sdot{background:var(--accent);}
+  .separator{height:1px;background:var(--border);width:100%;}
+  .iconwall{display:grid;grid-template-columns:repeat(auto-fit,minmax(110px,1fr));gap:12px;}
+  .iconcard{border:1px solid var(--border);border-radius:var(--radius-md);background:var(--surface);padding:14px 10px;display:flex;flex-direction:column;align-items:center;gap:10px;text-align:center;}
+  .glyph{width:34px;height:34px;border-radius:10px;border:1px solid var(--border);background:var(--surface-2);display:flex;align-items:center;justify-content:center;color:var(--tx-1);font:700 13px/1 var(--mono);}
+  .glyph.brand{background:var(--info-bg);color:var(--info);border-color:var(--info-bd);}
+  .glabel{font:600 11px/1.3 var(--sans);color:var(--tx-2);}
+  /* ícones recomendados (pictogramas SVG monocromáticos) */
+  .glyph svg{width:20px;height:20px;display:block;stroke:currentColor;fill:none;
+    stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round;}
+  .gcode{font:600 10px/1 var(--mono);color:var(--tx-3);letter-spacing:.04em;
+    border:1px solid var(--border);border-radius:var(--radius-sm);padding:3px 5px;}
+
+  /* ===== COMPONENTES DO EDITOR 2D ===== */
+  .editwrap {
+    flex: 1; min-width: 0; display: flex; position: relative; background: var(--bg);
+    opacity: 0; transform: translateX(26px); pointer-events: none;
+    transition: opacity var(--t) ease, transform var(--t-slow) var(--ease);
+  }
+  .editing .editwrap {
+    opacity: 1; transform: none; pointer-events: auto;
+  }
+  .editor-col {
+    flex: 1; min-width: 0; display: flex; flex-direction: column;
+  }
+  .ed-top {
+    flex: none; display: flex; flex-direction: column; gap: var(--sp-8);
+    padding: var(--sp-8) var(--sp-16); background: var(--surface); border-bottom: 1px solid var(--border);
+  }
+  .ed-top-row {
+    width: 100%; display: flex; align-items: center; justify-content: space-between; gap: var(--sp-8);
+  }
+  .ed-row-right {
+    display: flex; align-items: center; gap: 6px; margin-left: auto;
+  }
+  .ed-file { font: 700 13px/1 var(--mono); }
+  .ed-actions { margin-left: auto; display: flex; align-items: center; gap: 6px; }
+  .ed-body { flex: 1; overflow: auto; padding: var(--sp-16) var(--sp-24); min-height: 0; }
+  .tok { cursor: pointer; border-radius: var(--radius-xs); padding: 0 1px; transition: var(--t-fast); }
+  .tok:hover { background: var(--sec-tint); }
+  .tok.hit { background: rgba(232, 93, 4, 0.18); box-shadow: 0 0 0 1.5px var(--accent-bd); }
+  .ins-caret { display: inline-block; width: 2px; height: 1.05em; background: var(--brand-blue); vertical-align: text-bottom; margin: 0 1px; animation: blink 1.05s step-end infinite; }
+  @keyframes blink { 50% { opacity: 0; } }
+
+  /* Barra-guia (rodapé instrutivo) */
+  .guidebar { flex: none; min-height: var(--h-bottom); background: var(--surface-2); border-top: 1px solid var(--border); padding: 10px 16px; display: flex; flex-direction: column; gap: 4px; justify-content: center; }
+  .gb-cur { display: flex; align-items: center; gap: 10px; }
+  .gb-ic { width: 24px; height: 24px; border-radius: var(--radius-sm); background: var(--surface); border: 1px solid var(--border); display: flex; align-items: center; justify-content: center; font: 700 12px/1 var(--mono); color: var(--tx-2); flex: none; }
+  .gb-msg { font: 600 12.5px/1.35 var(--sans); color: var(--tx-1); }
+  .gb-msg code { font: 600 12px/1 var(--mono); color: var(--info); background: var(--info-bg); border: 1px solid var(--info-bd); padding: 1px 5px; border-radius: var(--radius-xs); }
+  .gb-msg .kbd { font: 700 11px/1 var(--mono); color: var(--tx-2); background: var(--surface); border: 1px solid var(--border-strong); border-radius: var(--radius-xs); padding: 2px 5px; }
+  .gb-more { margin-left: auto; font: 600 11px/1 var(--sans); color: var(--tx-3); background: none; border: 0; cursor: pointer; }
+  .gb-more:hover { color: var(--tx-1); text-decoration: underline; }
+  .gb-hist { display: none; flex-direction: column; gap: 2px; padding-left: 34px; }
+  .gb-hist.show { display: flex; }
+  .gb-hist div { font: 500 11.5px/1.4 var(--sans); color: var(--tx-3); }
+
+  /* Tira de ícones de ferramenta (tool-rail / paleta colapsável) */
+  .toolrail { width: 52px; flex: none; background: var(--surface); border-left: 1px solid var(--border); display: flex; flex-direction: column; align-items: center; gap: 6px; padding: 10px 0; }
+  .tr-item { width: 36px; height: 36px; border-radius: var(--radius-md); display: flex; align-items: center; justify-content: center; font: 700 10px/1 var(--mono); color: var(--tx-3); cursor: pointer; border: 1px solid transparent; background: transparent; transition: var(--t-fast); }
+  .tr-item:hover { background: var(--sec-tint); color: var(--tx-1); }
+  .tr-item:focus-visible { outline: none; box-shadow: var(--ring); }
+  .tr-item.active { background: var(--surface-2); color: var(--tx-1); border-color: var(--border); box-shadow: inset 2px 0 0 var(--brand-blue); }
+  .tr-sep { width: 24px; height: 1px; background: var(--border); margin: 2px 0; }
+
+  /* Painel de snippets deslizante */
+  .snippanel { position: absolute; top: 0; right: 52px; bottom: 0; width: 300px; background: var(--surface); border-left: 1px solid var(--border); box-shadow: var(--shadow-2); display: flex; flex-direction: column; transform: translateX(16px); opacity: 0; pointer-events: none; transition: transform var(--t), opacity var(--t); z-index: 60; }
+  .snippanel.open { transform: none; opacity: 1; pointer-events: auto; }
+  .sp-head { display: flex; align-items: center; gap: 8px; padding: 12px 12px 8px; }
+  .sp-title { font: 700 12px/1 var(--sans); text-transform: uppercase; letter-spacing: .05em; color: var(--tx-2); flex: 1; }
+  .sp-search { padding: 0 12px 10px; }
+  .sp-search input { width: 100%; height: 34px; border: 1px solid var(--border); border-radius: var(--radius-sm); background: var(--bg); color: var(--tx-1); padding: 0 10px; font: 600 12px/1 var(--sans); outline: none; }
+  .sp-search input:focus { border-color: var(--brand-blue); box-shadow: var(--ring); }
+  .sp-list { flex: 1; overflow-y: auto; padding: 4px 8px 12px; }
+
+  /* Item de snippet */
+  .snip { padding: 9px 10px; border-radius: var(--radius-sm); cursor: pointer; border: 1px solid transparent; transition: var(--t-fast); }
+  .snip:hover { background: var(--sec-tint); border-color: var(--border); }
+  .snip:focus-visible { outline: none; box-shadow: var(--ring); }
+  .snip .t { display: flex; align-items: center; justify-content: space-between; gap: 8px; }
+  .snip .t b { font: 700 12.5px/1.2 var(--sans); color: var(--tx-1); }
+  .snip .t .tag { font: 600 9px/1 var(--sans); text-transform: uppercase; color: var(--tx-3); border: 1px solid var(--border); border-radius: var(--radius-pill); padding: 2px 6px; }
+  .snip .d { font: 500 11px/1.3 var(--sans); color: var(--tx-3); margin-top: 2px; }
+  .snip .p { font: 500 11px/1.4 var(--mono); color: var(--tx-3); margin-top: 4px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+
+  /* Vazio Meus Snippets */
+  .sp-empty { padding: 30px 18px; display: flex; flex-direction: column; align-items: center; text-align: center; gap: 10px; border: 1px dashed var(--border-strong); border-radius: var(--radius-md); background: var(--surface-2); margin: 8px; }
+  .sp-empty .eic { width: 46px; height: 46px; border-radius: 12px; background: var(--surface); border: 1px solid var(--border); display: flex; align-items: center; justify-content: center; color: var(--tx-2); font: 700 18px/1 var(--sans); }
+  .sp-empty .et1 { font: 700 13px/1.2 var(--sans); color: var(--tx-1); }
+  .sp-empty .et2 { font: 400 12px/1.5 var(--sans); color: var(--tx-2); max-width: 200px; }
+
+  /* Ficha-letra de edição colapsada */
+  .chipdot { display: inline-flex; width: 18px; height: 18px; border-radius: var(--radius-xs); font: 700 10px/1 var(--mono); align-items: center; justify-content: center; border: 1px solid transparent; }
+  .chipdot.sub { background: var(--accent-bg); border-color: var(--accent-bd); color: var(--accent-ac); }
+  .chipdot.ins { background: var(--ok-bg); border-color: var(--ok-bd); color: var(--ok); }
+  .chipdot.ren { background: var(--info-bg); border-color: var(--info-bd); color: var(--info); }
+  .chipdot.rem { background: var(--err-bg); border-color: var(--err-bd); color: var(--err); }
+
+  /* Botão de AÇÃO compacto (primário ~34px) — Confirmar / Incluir / Substituir (usado na barra-guia) */
+  .btn-act { height: 34px; padding: 0 14px; display: inline-flex; align-items: center; gap: 7px; border: 0; border-radius: var(--radius-md); background: var(--accent); color: var(--on-accent); font: 700 12px/1 var(--sans); cursor: pointer; box-shadow: inset 0 0 0 2px rgba(33,19,10,.18); transition: background var(--t-fast); }
+  .btn-act:hover { background: var(--accent-hv); }
+  .btn-act:active { background: var(--accent-ac); }
+  .btn-act:focus-visible { outline: none; box-shadow: var(--ring); }
+  .btn-act.is-sec { background: var(--sec); color: var(--on-sec); box-shadow: none; }
+  /* Botão SALVAR — estados: salvo (neutro) / a salvar (aceso/laranja quando há edição) */
+  .ed-save { height: 34px; padding: 0 16px; border: 1px solid var(--border-strong); border-radius: var(--radius-md); background: var(--surface); color: var(--tx-2); font: 700 12px/1 var(--sans); cursor: pointer; display: inline-flex; align-items: center; gap: 7px; transition: background var(--t-fast), color var(--t-fast); }
+  .ed-save.dirty { background: var(--accent); color: var(--on-accent); border-color: var(--accent); box-shadow: inset 0 0 0 2px rgba(33,19,10,.18); }
+  .ed-save:focus-visible { outline: none; box-shadow: var(--ring); }
+  /* Item de snippet — estado COPIADO (clique copia, não insere) */
+  .snip.copied { border-color: var(--accent-bd); background: var(--accent-bg); }
+  /* Favoritos de snippet — estrela fixa o item no topo da lista, em bloco destacado.
+     Ícone segue o padrão funcional do DS: SVG inline traço único, currentColor (como .smbtn). */
+  .snip-favbtn { width: 22px; height: 22px; border: 0; background: none; cursor: pointer; color: var(--tx-3); border-radius: var(--radius-xs); flex: none; padding: 0; display: inline-flex; align-items: center; justify-content: center; transition: var(--t-fast); }
+  .snip-favbtn svg { width: 14px; height: 14px; stroke: currentColor; fill: none; stroke-width: 1.6; stroke-linecap: round; stroke-linejoin: round; }
+  .snip-favbtn:hover { color: var(--accent); background: var(--sec-tint); }
+  .snip-favbtn.on { color: var(--accent); }
+  .snip-favbtn.on svg { fill: currentColor; }
+  .snip.fav { background: var(--accent-bg); border-color: var(--accent-bd); }
+  .sp-favhead { padding: 8px 10px 4px; font: 700 10px/1 var(--sans); text-transform: uppercase; letter-spacing: .05em; color: var(--accent-ac); }
+  .sp-favsep { height: 1px; background: var(--border); margin: 6px 10px; }
+  /* Campo "salvar código" (Meus snippets) + dica */
+  .sp-add { display: flex; gap: 6px; padding: 0 8px 8px; }
+  .sp-add input { flex: 1; height: 32px; border: 1px solid var(--border); border-radius: var(--radius-sm); background: var(--bg); color: var(--tx-1); padding: 0 9px; font: 600 12px/1 var(--mono); outline: none; }
+  .sp-add input:focus { border-color: var(--brand-blue); box-shadow: var(--ring); }
+  .sp-hint2 { padding: 16px 12px; font: 400 12px/1.5 var(--sans); color: var(--tx-3); text-align: center; }
+  .sp-hint2 code { font: 600 11px/1 var(--mono); color: var(--info); background: var(--info-bg); border: 1px solid var(--info-bd); padding: 1px 5px; border-radius: var(--radius-xs); }
+  /* Indicador de menu deslizante (#navInd): bloco laranja posicionado por JS no item ativo do rail (top/left/width/height); itens com z-index:1 e .active sem fundo próprio. */
+  /* Linha de programa: aberto / com edição não salva (lista como navegador no Editor 2D) */
+  .exprow.open { background: var(--accent-bg); box-shadow: inset 3px 0 0 var(--accent); }
+  .edit-dot { width: 7px; height: 7px; border-radius: 50%; background: var(--accent); display: inline-block; flex: none; }
+  .edited-mark { display: inline-flex; align-items: center; justify-content: center; min-width: 16px; height: 16px; padding: 0 4px; border-radius: 8px; font: 700 11px/1 var(--sans); margin-left: 6px; flex: none; user-select: none; }
+  .edited-mark.planned { background: var(--zone); border: 1px solid var(--border); color: var(--tx-3); font-family: var(--mono); }
+  .edited-mark.done { background: var(--ok-bg); border: 1px solid var(--ok-bd); color: var(--ok); }
+  .edited-mark.partial { background: var(--warn-bg); border: 1px solid var(--warn-bd); color: var(--warn); font-family: var(--mono); }
+  .warn-badge { display: inline-flex; align-items: center; justify-content: center; min-width: 16px; height: 16px; padding: 0 4px; border-radius: 8px; font: 700 11px/1 var(--sans); margin-left: 6px; flex: none; user-select: none; background: var(--warn-bg); border: 1px solid var(--warn-bd); color: var(--warn); }
+
+  /* Breakpoints do contrato (docs/_canonico/01-PAINEL-CONTRATO-VISUAL.html): 1500 · 1280 · 1080 */
+  @media (max-width:1280px){
+    .exphead,.exprow{grid-template-columns:28px minmax(0,1fr) 60px 80px 116px;}
+    .exphead .sz, .exprow .sz, .exphead .col-sz{display:none;}
+  }
+  @media (max-width:1080px){
+    .exphead,.exprow{grid-template-columns:28px minmax(0,1fr) 60px 80px;}
+    .exphead .dt, .exprow .dt, .exphead .col-dt{display:none;}
+  }
+  @media (max-width:900px){
+    .stripdemo{grid-template-columns:1fr;}
+    .editor-main{grid-template-columns:52px 1fr;}
+  }
+
+  /* Barra de Controle de Temas */
+  .theme-bar {
+    position: sticky;
+    top: 0;
+    z-index: 90;
+    background: var(--brand-bg-dark);
+    border-bottom: 1px solid #1c2531;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 12px 24px;
+  }
+  .theme-bar .tb-title {
+    font-family: var(--sans);
+    font-size: 13px;
+    font-weight: 700;
+    color: #9DAABC;
+  }
+  .theme-toggles {
+    display: flex;
+    gap: 8px;
+  }
+  .theme-btn {
+    font-family: var(--sans);
+    font-size: 12px;
+    font-weight: 600;
+    color: #9DAABC;
+    background: #141b25;
+    border: 1px solid #232d3a;
+    border-radius: var(--radius-pill);
+    padding: 6px 14px;
+    cursor: pointer;
+    transition: .15s;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    outline: none;
+    user-select: none;
+  }
+  .theme-btn:hover {
+    color: #fff;
+    border-color: #34414f;
+  }
+  .theme-btn.active {
+    color: #fff;
+    background: var(--brand-orange);
+    border-color: var(--brand-orange);
+  }
+
+  /* Contraste WCAG nos Swatches */
+  .swatch .contrast {
+    font-family: var(--mono);
+    font-size: 10px;
+    font-weight: 600;
+    color: var(--tx-3);
+    margin-top: 3px;
+    display: inline-block;
+    padding: 1px 4px;
+    border-radius: var(--radius-xs);
+    background: var(--surface-2);
+  }
+  .swatch .contrast.pass-aa {
+    color: var(--ok);
+    background: var(--ok-bg);
+  }
+  .swatch .contrast.pass-aaa {
+    color: var(--info);
+    background: var(--info-bg);
+  }
+
+  /* Barra de Ações do Explorer (Lote) */
+  .explorer-actions-bar {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    flex-wrap: wrap;
+    padding: 8px 12px;
+    background: var(--surface-2);
+    border: 1px solid var(--border);
+    border-bottom: none;
+    border-radius: var(--radius-md) var(--radius-md) 0 0;
+  }
+  .explorer-actions-bar .btn {
+    height: 32px;
+    padding: 0 var(--sp-12);
+    font: 600 12px/1 var(--sans);
+  }
+  .explorer-actions-bar__quick svg {
+    width: 10px;
+    height: 6px;
+    stroke: currentColor;
+    fill: none;
+    stroke-width: 1.5;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+  }
+  .explorer-actions-bar .btn.ghost.danger {
+    border-color: var(--err-bd);
+    color: var(--err);
+  }
+  .explorer-actions-bar .btn.ghost.danger:hover {
+    background: var(--err-bg);
+    border-color: var(--err-bd);
+  }
+  .explorer-actions-demo {
+    display: grid;
+    gap: 12px;
+    margin-bottom: 16px;
+  }
+  .explorer-actions-state {
+    border: 1px solid var(--border);
+    border-radius: var(--radius-md);
+    background: var(--surface);
+    overflow: hidden;
+  }
+  .explorer-actions-state__meta {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    padding: 10px 12px;
+    border-bottom: 1px solid var(--border);
+    background: var(--surface);
+    flex-wrap: wrap;
+  }
+  .explorer-actions-state__name {
+    font: 700 12px/1 var(--sans);
+    letter-spacing: .04em;
+    text-transform: uppercase;
+    color: var(--tx-2);
+  }
+  .explorer-actions-state__desc {
+    font: 500 12px/1.4 var(--sans);
+    color: var(--tx-3);
+  }
+  .explorer-actions-state .ctx {
+    position: relative;
+    margin: 0 0 0 12px;
+  }
+  .explorer-actions-state.is-idle .btn:not(.explorer-actions-bar__quick) {
+    opacity: .55;
+  }
+
+  /* Badge de Sincronização de Pasta ao Vivo */
+  .folder-sync-status {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    font: 600 12px/1 var(--sans);
+    color: var(--tx-3);
+    padding: 4px 10px;
+    background: var(--surface-2);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-pill);
+    user-select: none;
+  }
+  .folder-sync-status .dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: var(--ok);
+  }
+  .folder-sync-status.pulse .dot {
+    animation: pulse-sync 1.5s infinite;
+  }
+  @keyframes pulse-sync {
+    0% { transform: scale(1); opacity: 1; }
+    50% { transform: scale(1.3); opacity: 0.5; }
+    100% { transform: scale(1); opacity: 1; }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .folder-sync-status.pulse .dot { animation: none; }
+  }
+
+  /* Marquee Selection Box */
+  .marquee-box {
+    position: absolute;
+    border: 1px dashed var(--accent);
+    background: rgba(232, 93, 4, 0.08);
+    pointer-events: none;
+    z-index: 100;
+  }
+</style>
+</head>
+<body>
+
+<div class="layout-root">
+  <div class="sidebar-nav">
+    <div class="nav-brand">
+      <img src="../logo/logo_flownc.png" alt="FlowNC">
+      <div class="nb-txt">Brand Guide</div>
+    </div>
+    <div class="nav-scroll">
+      <div class="nav-group">Marca</div>
+      <a href="#sec-apresentacao" class="active"><span class="n">00</span>Apresentação</a>
+      <a href="#sec-logomarca"><span class="n">01</span>Logomarca</a>
+      
+      <div class="nav-group">Fundamentos App</div>
+      <a href="#sec-cores-app"><span class="n">02</span>Cores e Temas</a>
+      <a href="#sec-tipografia"><span class="n">03</span>Tipografia</a>
+      <a href="#sec-espacamento"><span class="n">04</span>Grid e Layout</a>
+      
+      <div class="nav-group">Componentes App</div>
+      <a href="#sec-botoes"><span class="n">05</span>Botões e Ações</a>
+      <a href="#sec-chips"><span class="n">06</span>Chips de Lote</a>
+      <a href="#sec-editor"><span class="n">07</span>Editor 2D</a>
+      <a href="#sec-gavetas"><span class="n">08</span>Gavetas & Modais</a>
+      <a href="#sec-icones"><span class="n">09</span>Ícones e Foco</a>
+      
+      <div class="nav-group">Site e Vendas</div>
+      <a href="#sec-vendas"><span class="n">10</span>Página de Vendas</a>
+      
+      <div class="nav-group">Uso e Regras</div>
+      <a href="#sec-changelog"><span class="n">11</span>Changelog</a>
+    </div>
+    <div class="nav-foot">
+      © 2026 FlowNC®
+    </div>
+  </div>
+  <div class="main-content">
+    <div class="theme-bar">
+      <div class="tb-title">Ambiente de Auditoria</div>
+      <div class="theme-toggles">
+        <button type="button" class="theme-btn active" data-theme="claro">☀️ App Claro</button>
+        <button type="button" class="theme-btn" data-theme="escuro">🌙 App Escuro</button>
+        <button type="button" class="theme-btn" data-theme="vc">🎨 Site VC</button>
+      </div>
+    </div>
+
+    <!-- ===================== APRESENTAÇÃO DA MARCA (00) ===================== -->
+    <div class="mwrap" id="sec-apresentacao">
+      <h1 style="color:#fff;font:800 22px/1.2 var(--sans);margin:0 0 6px">Manual identidade visual</h1>
+      <p class="note">Esta aba consolida o manual oficial da marca dentro do design system. A base visual é a seção já aprovada deste HTML: wordmark FlowNC com <b style="color:var(--brand-blue-lt)">Flow</b> em azul, <b style="color:var(--brand-orange)">NC</b> em laranja, inclinação itálica e marca de velocidade com 3 barras.</p>
+
+      <div class="canon">
+        <b>ATIVO OFICIAL DA MARCA.</b> Toda aplicação da marca deve partir exclusivamente dos arquivos em <code>docs/logo/</code>. As imagens exibidas nesta seção são as únicas referências visuais válidas para a marca no projeto. É <b>proibido recriar, redesenhar, vetorizar, aproximar ou reinterpretar</b> a logo por IA, HTML/CSS, vetor alternativo ou qualquer outro processo paralelo. Antes de usar a marca em tela, documento, landing ou material interno, copie o ativo oficial (arquivo ou <code>data:</code> de <code>logo_flownc.b64.txt</code>). Regras, tokens e proibições detalhadas: <code>docs/logo/README.md</code>.
+      </div>
+
+      <h2 id="sec-logomarca">Composição da marca</h2>
+      <p class="note">A assinatura visual do FlowNC combina tipografia inclinada, contraste cromático e um símbolo de velocidade simples. O conjunto comunica fluxo contínuo, ação técnica e ritmo operacional sem depender de ornamentos extras.</p>
+      <div class="manual-grid">
+        <div class="manual-card">
+          <h3>Wordmark oficial</h3>
+          <p>A marca principal é sempre a wordmark completa. O itálico reforça movimento, continuidade e senso de processo em curso, sem perder leitura em contexto industrial.</p>
+        </div>
+        <div class="manual-card">
+          <h3>Flow em azul</h3>
+          <p>O bloco “Flow” ancora a ideia de fluxo, estabilidade e estrutura do sistema. O azul expressa confiança e organização visual dentro do universo da marca.</p>
+        </div>
+        <div class="manual-card">
+          <h3>NC em laranja</h3>
+          <p>O bloco “NC” concentra energia e a conexão com ação técnica. O laranja reforça presença, destaque sem competir com a leitura geral da assinatura.</p>
+        </div>
+        <div class="manual-card">
+          <h3>3 barras de velocidade</h3>
+          <p>As três barras à direita são parte da identidade aprovada e não um detalhe opcional. Elas sintetizam velocidade, avanço e resposta rápida, inclusive no uso reduzido do favicon.</p>
+        </div>
+      </div>
+
+      <h2>Ativo oficial e origem</h2>
+      <div class="split-note">
+        <div class="rulebox">
+          <b>Origem obrigatória</b>
+          <p>A marca exibida aqui deriva pixel-a-pixel da arte aprovada. Não existe permissão para redesenho manual, vetor “equivalente”, logo HTML/CSS, monograma alternativo ou interpretação livre.</p>
+        </div>
+        <div class="rulebox">
+          <b>Fluxo correto de uso</b>
+          <p>Sempre puxar a marca de <code>docs/logo/</code>, preservando arquivo, proporção, recorte e aparência. Se for necessário regenerar formatos, isso só acontece pelos artefatos e scripts canônicos já definidos no projeto.</p>
+        </div>
+      </div>
+
+      <h2>Logo principal</h2>
+      <p class="note">A apresentação preferencial da marca usa a wordmark completa. Fundo escuro é o cenário prioritário; fundo claro é aceito quando a legibilidade da arte oficial permanece preservada; a marca de velocidade aparece como símbolo derivado para reduções e usos compactos.</p>
+      <div class="mgrid">
+        <div>
+          <div class="logobox" style="background:#0A0E1A">
+            <img class="brandimg" src="../logo/logo_flownc.png" alt="FlowNC" style="max-height:52px">
+          </div>
+          <div class="mcap">Fundo escuro (preferencial)</div>
+        </div>
+        <div>
+          <div class="logobox" style="background:#FFFFFF">
+            <img class="brandimg" src="../logo/logo_flownc.png" alt="FlowNC" style="max-height:52px">
+          </div>
+          <div class="mcap">Fundo claro</div>
+        </div>
+        <div>
+          <div class="logobox" style="background:#0A0E1A">
+            <img class="brandimg" src="../logo/marca_velocidade.png" alt="Marca de velocidade FlowNC" style="max-height:48px">
+          </div>
+          <div class="mcap">Marca de velocidade (símbolo)</div>
+        </div>
+      </div>
+
+      <h2>Área de proteção</h2>
+      <div class="brand-clearspace" style="background:#0A0E1A">
+        <img class="brandimg" src="../logo/logo_flownc.png" alt="FlowNC" style="max-height:40px">
+      </div>
+      <p class="note" style="margin-top:12px">O respiro mínimo ao redor da marca equivale à altura de uma letra da própria assinatura. Nenhum texto, borda, ilustração, ícone ou limite visual deve invadir essa zona. A função desse espaço é proteger a leitura da wordmark e manter a presença da marca mesmo em composições densas.</p>
+
+      <h2>Tamanho mínimo</h2>
+      <p class="note">Para uso digital, a largura mínima recomendada da wordmark é de aproximadamente <b>110 px</b>. Abaixo disso, a leitura da composição completa perde consistência, especialmente nas barras de velocidade. A proporção da arte deve permanecer intacta em qualquer escala: aproximadamente <b>6,45 : 1</b> (1200 × 186 px).</p>
+
+      <h2>Cores da logomarca (medidas da arte)</h2>
+      <div class="gradrow">
+        <div><div class="grad" style="background:linear-gradient(90deg,#1B4DC0,#57B3FC)"></div><div class="gcap">“Flow” — azul<span>#1B4DC0 → #57B3FC</span></div></div>
+        <div><div class="grad" style="background:linear-gradient(90deg,#C15511,#FA943A)"></div><div class="gcap">“NC” — laranja<span>#C15511 → #FA943A</span></div></div>
+        <div><div class="grad" style="background:linear-gradient(90deg,#194AB5,#56B4F9)"></div><div class="gcap">Barras (velocidade)<span>#194AB5 → #56B4F9</span></div></div>
+        <div><div class="grad" style="background:#090911"></div><div class="gcap">Fundo da arte<span>#090911</span></div></div>
+      </div>
+      <p class="note" style="margin-top:10px">Estas são as cores <b>da logomarca</b>, medidas a partir da própria arte oficial. Elas descrevem o ativo visual da marca e não substituem a paleta funcional da interface do produto.</p>
+
+      <h2>Cores da logomarca x cores da interface</h2>
+      <p class="note">A marca e a interface compartilham famílias cromáticas, mas cumprem papéis diferentes. A logomarca preserva seus gradientes originais; a interface usa tokens próprios para navegação, destaque e estados. O laranja de ação do produto continua sendo <code>#E85D04</code>, que não deve ser confundido com os gradientes internos da wordmark.</p>
+      <div class="mcolors">
+        <div class="mcolor"><div class="ball" style="background:#2E6BE6"></div><div class="nm">Azul marca</div><div class="hx">#2E6BE6</div></div>
+        <div class="mcolor"><div class="ball" style="background:#5AA0FF"></div><div class="nm">Azul claro</div><div class="hx">#5AA0FF</div></div>
+        <div class="mcolor"><div class="ball" style="background:#E85D04"></div><div class="nm">Laranja (ação)</div><div class="hx">#E85D04</div></div>
+        <div class="mcolor"><div class="ball" style="background:#FF7A1E"></div><div class="nm">Laranja claro</div><div class="hx">#FF7A1E</div></div>
+        <div class="mcolor"><div class="ball" style="background:#0A0E1A"></div><div class="nm">Fundo escuro</div><div class="hx">#0A0E1A</div></div>
+      </div>
+
+      <h2>Usos permitidos</h2>
+      <div class="manual-list">
+        <div class="manual-item ok">
+          <div class="mark">OK</div>
+          <div><b>Usar o arquivo oficial sem alteração</b><span>A aplicação correta da marca parte do bitmap oficial ou de seus derivados canônicos, preservando enquadramento, cores e proporção.</span></div>
+        </div>
+        <div class="manual-item ok">
+          <div class="mark">OK</div>
+          <div><b>Priorizar fundo escuro</b><span>O fundo escuro é o ambiente preferencial da marca porque valoriza os gradientes originais e entrega o melhor contraste visual.</span></div>
+        </div>
+        <div class="manual-item ok">
+          <div class="mark">OK</div>
+          <div><b>Usar a marca de velocidade em redução</b><span>Quando a wordmark completa perde leitura, a redução oficial deve usar apenas a marca de velocidade já aprovada.</span></div>
+        </div>
+      </div>
+
+      <h2>Usos proibidos</h2>
+      <div class="manual-list">
+        <div class="manual-item no">
+          <div class="mark">NO</div>
+          <div><b>Não recriar a logo</b><span>Fica proibida qualquer versão desenhada em CSS, HTML, vetor alternativo, IA, tipografia aproximada ou reconstrução manual da marca.</span></div>
+        </div>
+        <div class="manual-item no">
+          <div class="mark">NO</div>
+          <div><b>Não inverter, recolorir ou estilizar</b><span>Não trocar azul por laranja, não adicionar sombra, contorno, glow, textura, relevo ou efeitos que alterem a aparência do ativo oficial.</span></div>
+        </div>
+        <div class="manual-item no">
+          <div class="mark">NO</div>
+          <div><b>Não distorcer proporção nem espaçamento</b><span>A wordmark não pode ser achatada, esticada, rotacionada, recortada de forma arbitrária ou ter as barras removidas/adaptadas.</span></div>
+        </div>
+        <div class="manual-item no">
+          <div class="mark">NO</div>
+          <div><b>Não criar símbolos alternativos</b><span>Nesta etapa não existe versão monocromática nova, monograma “NC”, app icon alternativo ou qualquer outro símbolo fora dos assets já aprovados.</span></div>
+        </div>
+      </div>
+
+      <h2>Favícon e redução</h2>
+      <p class="note">Em tamanhos pequenos a wordmark perde leitura. O favícon oficial usa somente a <b>marca de velocidade</b>, a partir dos arquivos <code>marca_velocidade.png</code> e <code>flownc.ico</code>. O uso reduzido deve preservar o mesmo símbolo aprovado, sem redesenhos, monogramas ou composições novas.</p>
+      <div class="favrow" style="margin-top:16px">
+        <div><div class="fav" style="width:64px;height:64px;padding:12px"><img src="../logo/marca_velocidade.png" alt="" style="max-width:100%;max-height:100%;display:block"></div><div class="mcap">64</div></div>
+        <div><div class="fav" style="width:48px;height:48px;padding:9px"><img src="../logo/marca_velocidade.png" alt="" style="max-width:100%;max-height:100%;display:block"></div><div class="mcap">48</div></div>
+        <div><div class="fav" style="width:32px;height:32px;padding:6px"><img src="../logo/marca_velocidade.png" alt="" style="max-width:100%;max-height:100%;display:block"></div><div class="mcap">32</div></div>
+        <div><div class="fav" style="width:16px;height:16px;padding:3px"><img src="../logo/marca_velocidade.png" alt="" style="max-width:100%;max-height:100%;display:block"></div><div class="mcap">16</div></div>
+      </div>
+      <p class="note" style="margin-top:12px">As miniaturas acima ilustram a redução oficial em 64, 48, 32 e 16 px. Elas existem para mostrar legibilidade e comportamento do mesmo ativo aprovado, não para abrir espaço a novas variações.</p>
+    </div>
+
+    <!-- ===================== APP (1 e 2) ===================== -->
+    <div class="view" id="v-app">
+  <div class="stage" id="stage" data-theme="claro">
+    <div class="wrap">
+      <h1>App · Componentes</h1>
+      <p class="lead">Linguagem visual do produto, extraída da identidade FlowNC. Alterne <b>App Claro</b> / <b>App Escuro</b> no topo. Laranja = única cor de ação · azul-ardósia = estrutura. Tudo abaixo nasce de tokens (fonte única da verdade).</p>
+      <p class="lead" style="font:600 12px/1.5 var(--sans);color:var(--tx-2);background:var(--surface-2);border-left:3px solid var(--accent);padding:10px 14px;border-radius:var(--radius-sm)"><strong>Tema do contrato:</strong> o painel <code>docs/_canonico/01-PAINEL-CONTRATO-VISUAL.html</code> é <em>claro-only</em>. O tema <strong>claro</strong> é o do contrato; o <strong>escuro</strong> é camada aditiva derivada dele (não conflita). Onde DS e mockup divergirem, o mockup vence — corrigir aqui.</p>
+
+      <section id="sec-cores-app">
+        <h2>Cores</h2>
+        <p class="hint">Estrutura neutra + uma só cor de ação. Mudam por tema; o significado não muda. <b>Clique em qualquer cor para copiar o HEX.</b></p>
+        <div class="grid cols" id="swatches">
+          <div class="swatch" data-token="--bg" data-against="--tx-1"><div class="sw-chip" style="background:var(--bg)"></div><div class="meta"><div class="name">Fundo</div><div class="hex"></div><div class="contrast"></div></div></div>
+          <div class="swatch" data-token="--surface" data-against="--tx-1"><div class="sw-chip" style="background:var(--surface);border-bottom:1px solid var(--border)"></div><div class="meta"><div class="name">Superfície</div><div class="hex"></div><div class="contrast"></div></div></div>
+          <div class="swatch" data-token="--surface-2" data-against="--tx-1"><div class="sw-chip" style="background:var(--surface-2);border-bottom:1px solid var(--border)"></div><div class="meta"><div class="name">Superfície 2</div><div class="hex"></div><div class="contrast"></div></div></div>
+          <div class="swatch" data-token="--rail" data-against="--tx-1"><div class="sw-chip" style="background:var(--rail)"></div><div class="meta"><div class="name">Rail / menu</div><div class="hex"></div><div class="contrast"></div></div></div>
+          <div class="swatch" data-token="--accent" data-against="--bg"><div class="sw-chip" style="background:var(--accent)"></div><div class="meta"><div class="name">Ação</div><div class="hex"></div><div class="contrast"></div></div></div>
+          <div class="swatch" data-token="--info" data-against="--bg"><div class="sw-chip" style="background:var(--info)"></div><div class="meta"><div class="name">Info</div><div class="hex"></div><div class="contrast"></div></div></div>
+          <div class="swatch" data-token="--sec" data-against="--bg"><div class="sw-chip" style="background:var(--sec)"></div><div class="meta"><div class="name">Secundário</div><div class="hex"></div><div class="contrast"></div></div></div>
+          <div class="swatch" data-token="--tx-1" data-against="--bg"><div class="sw-chip" style="background:var(--tx-1)"></div><div class="meta"><div class="name">Texto forte</div><div class="hex"></div><div class="contrast"></div></div></div>
+          <div class="swatch" data-token="--tx-2" data-against="--bg"><div class="sw-chip" style="background:var(--tx-2)"></div><div class="meta"><div class="name">Texto médio</div><div class="hex"></div><div class="contrast"></div></div></div>
+          <div class="swatch" data-token="--border" data-against="--bg"><div class="sw-chip" style="background:var(--border)"></div><div class="meta"><div class="name">Borda</div><div class="hex"></div><div class="contrast"></div></div></div>
+        </div>
+        <div style="height:16px"></div>
+        <div class="feedback">
+          <span class="pill ok">OK Sucesso</span>
+          <span class="pill warn">AV Atenção</span>
+          <span class="pill err">EX Perigo</span>
+          <span class="pill acc">AC Ação</span>
+        </div>
+      </section>
+
+      <section id="sec-espacamento">
+        <h2>Fundações · espaçamento, raio e elevação</h2>
+        <p class="hint">Tudo no app usa estes degraus. Sem valores "no olho": só os tokens abaixo.</p>
+        <div class="foundlabel">Espaçamento (px)</div>
+        <div class="scalerow">
+          <div class="scaleitem"><span class="box" style="width:4px;height:4px"></span><span class="t">4</span></div>
+          <div class="scaleitem"><span class="box" style="width:8px;height:8px"></span><span class="t">8</span></div>
+          <div class="scaleitem"><span class="box" style="width:12px;height:12px"></span><span class="t">12</span></div>
+          <div class="scaleitem"><span class="box" style="width:16px;height:16px"></span><span class="t">16</span></div>
+          <div class="scaleitem"><span class="box" style="width:24px;height:24px"></span><span class="t">24</span></div>
+          <div class="scaleitem"><span class="box" style="width:32px;height:32px"></span><span class="t">32</span></div>
+          <div class="scaleitem"><span class="box" style="width:40px;height:40px"></span><span class="t">40</span></div>
+          <div class="scaleitem"><span class="box" style="width:48px;height:48px"></span><span class="t">48</span></div>
+          <div class="scaleitem"><span class="box" style="width:64px;height:64px"></span><span class="t">64</span></div>
+        </div>
+        <div class="foundlabel">Raio de canto</div>
+        <div class="radrow">
+          <div class="raditem"><span class="rad" style="border-radius:var(--radius-xs)"></span><span class="t">2 · xs</span></div>
+          <div class="raditem"><span class="rad" style="border-radius:4px"></span><span class="t">4 · sm</span></div>
+          <div class="raditem"><span class="rad" style="border-radius:8px"></span><span class="t">8 · md</span></div>
+          <div class="raditem"><span class="rad" style="border-radius:14px"></span><span class="t">14 · lg</span></div>
+          <div class="raditem"><span class="rad" style="border-radius:var(--radius-pill)"></span><span class="t">pill</span></div>
+        </div>
+        <div class="foundlabel">Elevação</div>
+        <div class="elevrow">
+          <div class="elevitem"><span class="elev" style="box-shadow:none;border:1px solid var(--border)"></span><span class="t">0 · plano</span></div>
+          <div class="elevitem"><span class="elev" style="box-shadow:var(--shadow)"></span><span class="t">1 · cartão flutuante</span></div>
+          <div class="elevitem"><span class="elev" style="box-shadow:var(--shadow-2)"></span><span class="t">2 · modal/menu</span></div>
+        </div>
+      </section>
+
+      <section id="sec-tipografia">
+        <h2>Tipografia</h2>
+        <p class="hint">IBM Plex Sans = interface · IBM Plex Mono = números/código.</p>
+        
+        <div class="canon" style="background:var(--surface-2); border-color:var(--border); margin-bottom:16px;">
+          <b>DIRETRIZES DE USO.</b> As fontes são embarcadas localmente em <code>flownc/assets/fonts/</code> com carregamento assíncrono (<code>font-display: swap</code>) para garantir que a interface funcione 100% offline em computadores industriais.
+          <ul style="margin:8px 0 0; padding-left:20px; line-height:1.6; font-size:12px; color:var(--tx-2)">
+            <li><b>IBM Plex Sans:</b> Usada para todos os elementos de interface, controles, menus e rótulos. Pesos: 400 (Regular), 600 (SemiBold), 700 (Bold).</li>
+            <li><b>IBM Plex Mono:</b> Reservada estritamente para números, coordenadas, comandos G-Code e visualizações de código. Pesos: 500 (Medium), 600 (SemiBold), 700 (Bold).</li>
+          </ul>
+        </div>
+
+        <div class="typerow"><span class="tag">display</span><span style="font:700 24px/1 var(--mono)">N1234 · 24</span></div>
+        <div class="typerow"><span class="tag">heading</span><span style="font:700 16px/1 var(--sans)">Título de seção · 16</span></div>
+        <div class="typerow"><span class="tag">body</span><span style="font:400 14px/1.5 var(--sans)">Texto corrido · 14</span></div>
+        <div class="typerow"><span class="tag">ui</span><span style="font:600 13px/1 var(--sans)">Texto de botão · 13</span></div>
+        <div class="typerow"><span class="tag">caption</span><span style="font:600 12px/1.4 var(--sans)">Legenda · 12</span></div>
+        <div class="typerow"><span class="tag">label</span><span style="font:700 10px/1.4 var(--sans);text-transform:uppercase;letter-spacing:.06em">Rótulo · 10</span></div>
+        <div class="typerow"><span class="tag">mono</span><span style="font:600 14px/1 var(--mono);background:var(--code-bg);color:var(--tx-1);padding:6px 10px;border-radius:var(--radius-sm)">G01 X10.5 Y-3.2</span></div>
+      </section>
+
+      <section id="sec-botoes">
+        <h2>Botões · formas e estados</h2>
+        <p class="hint">Cantos arredondados (8px), ícone + rótulo, peso único. Uma ação principal por contexto.</p>
+        <div class="btnrow">
+          <button class="btn cta"><span class="ic">GO</span> Ação principal</button>
+          <button class="btn cta md">Primária 44px</button>
+          <button class="btn sec">Secundário</button>
+          <button class="btn ghost"><span class="ic">+</span> Fantasma</button>
+          <button class="btn danger">Destrutivo</button>
+          <button class="btn disabled" disabled>Desabilitado</button>
+        </div>
+        <div style="height:14px"></div>
+        <div class="btnrow">
+          <button class="btn sec">Normal</button>
+          <button class="btn focusring">Foco (teclado)</button>
+        </div>
+      </section>
+
+      <section>
+        <h2>Botões · variantes adicionais</h2>
+        <p class="hint">Mesma régua dos botões base (raio 8px, laranja só na ação). Cada variante resolve um caso específico — área de clique sempre ≥ 40px.</p>
+        <div class="btnrow">
+          <button class="btn danger-text"><span class="ic">EX</span> Excluir</button>
+          <button class="btn iconly" title="Editar"><span class="ic">ED</span></button>
+          <button class="btn iconly foc" title="Mesmo botão-ícone com foco de teclado"><span class="ic">ED</span></button>
+          <button class="btn tgl on">Quebra de linha</button>
+          <button class="btn tgl">Quebra de linha</button>
+          <button class="btn ghost xs">Fechar</button>
+          <div class="split">
+            <button class="btn sec">Exportar</button>
+            <button class="btn sec"><span class="ic">CV</span></button>
+          </div>
+          <span style="display:inline-flex;flex-direction:column;align-items:center;gap:4px;opacity:.5">
+            <button class="fab" title="FAB descontinuado" disabled style="text-decoration:line-through">+</button>
+            <span style="font:700 9px/1 var(--sans);text-transform:uppercase;letter-spacing:.06em;color:var(--err)">descontinuado</span>
+          </span>
+        </div>
+        <div style="height:14px"></div>
+        <div class="btnrow">
+          <button class="btn cta two"><span class="ic">→</span><span class="col"><span class="t1">EXECUTAR</span><span class="t2">grava na pasta original</span></span></button>
+        </div>
+        <div style="height:14px"></div>
+        <div class="foundlabel">Ações de linha · par canônico Editar / Excluir (lista de programas)</div>
+        <div class="btnrow">
+          <span class="rowact">
+            <button class="btn-rowedit lbl" title="Editar no Editor 2D" aria-label="Editar">Editor2D</button>
+            <button class="btn-rowdel" title="Remover da área de trabalho" aria-label="Excluir"><span class="ic"><svg viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 2l10 10M12 2L2 12"/></svg></span></button>
+          </span>
+        </div>
+        <p class="hint" style="margin:12px 0 0"><strong>Editar / Excluir</strong> = par 32px só-ícone fixo no fim de cada linha de programa; mesma borda neutra, hover azul (info) para editar e âmbar (warn) para excluir. Use sempre o par junto, nessa ordem. · Texto-vermelho = perigo leve ao lado de uma ação neutra · botão-ícone = ação repetida sem espaço pra rótulo · alternável fica laranja quando ligado · dividido = ação + caret de menu · <strong>Executar</strong> = CTA terminal 56px (única ação que grava). <strong>FAB descontinuado</strong> — não usar no painel (substituído pelo botão-fantasma "Adicionar programas"). · <strong>Primária 44px</strong> (<code>.cta.md</code>) = ação principal de um cartão/modal (ex.: "Adicionar edição", "Confirmar e executar"); o <strong>CTA 56px</strong> (<code>.cta</code>) fica só para o <strong>Executar</strong> terminal que grava. · <strong>Fantasma compacto</strong> (<code>.ghost.xs</code>, 28px) = fechar/dispensar inline em espaço denso (ex.: "Fechar" do detalhe de chip).</p>
+      </section>
+
+      <section>
+        <h2>Lista (estrutura e seleção)</h2>
+        <p class="hint">Linha selecionada = caixinha laranja com check · hover ilumina. (O menu de navegação canônico fica na seção "Navegação". Sem conteúdo real — só forma.)</p>
+        <div>
+            <div class="tiles" style="margin-bottom:16px">
+              <div class="tile"><div class="lbl">Indicador</div><div class="val">50</div></div>
+              <div class="tile"><div class="lbl">Indicador</div><div class="val">125.430</div></div>
+              <div class="tile"><div class="lbl">Indicador</div><div class="val">8</div></div>
+              <div class="tile"><div class="lbl">Indicador</div><div class="val">04:32:15</div></div>
+            </div>
+            <div class="list">
+              <div class="lhead"><span></span><span>Rótulo</span><span style="text-align:right">Meta</span><span style="text-align:right">Meta</span></div>
+              <div class="lrow"><span class="chk on">✓</span><span class="id">N1010</span><span class="m">2.45</span><span class="m">ok</span></div>
+              <div class="lrow"><span class="chk on">✓</span><span class="id">N1020</span><span class="m">2.37</span><span class="m">ok</span></div>
+              <div class="lrow"><span class="chk"></span><span class="id">N1030</span><span class="m">2.41</span><span class="m">ok</span></div>
+              <div class="lrow"><span class="chk on">✓</span><span class="id">N1040</span><span class="m">2.38</span><span class="m">ok</span></div>
+            </div>
+        </div>
+      </section>
+
+      <section>
+        <h2>Seção recolhível + campos</h2>
+        <p class="hint">Cabeçalho com seta · campos com transição "de → para".</p>
+        <div class="acc">
+          <div class="acc-h">Seção <span class="chev">CV</span></div>
+          <div class="field"><span class="inp">valor atual</span><span class="arrow">→</span><span class="inp">novo valor</span></div>
+        </div>
+      </section>
+
+      <section>
+        <h2>Campos de formulário · estados</h2>
+        <p class="hint">Mesma altura (40px), mesma borda. O estado se lê pela cor da borda + nota, nunca por cor de fundo gritante.</p>
+        <div class="formgrid">
+          <label class="fld"><span class="flbl">Padrão</span><span class="fin">N1234</span></label>
+          <label class="fld"><span class="flbl">Foco</span><span class="fin foc">N1234</span></label>
+          <label class="fld"><span class="flbl">Erro</span><span class="fin err">G0X</span><span class="fnote err">Código inválido</span></label>
+          <label class="fld"><span class="flbl">Sucesso</span><span class="fin ok">N1234</span><span class="fnote ok">Encontrado</span></label>
+          <label class="fld"><span class="flbl">Desabilitado</span><span class="fin dis">—</span></label>
+          <label class="fld"><span class="flbl">Com unidade</span><span class="fin"><span style="flex:1">2.45</span><span class="unit">mm</span></span></label>
+        </div>
+      </section>
+
+      <section>
+        <h2>Campos · CodeCombo, número e barra de busca</h2>
+        <p class="hint">Mesma altura (40px) e borda dos campos de formulário. CodeCombo: campo de código (mono) + seta que abre a lista pesquisável; número com passo ▲▼; barra de busca/substituição do Editor.</p>
+        <div class="formgrid" style="grid-template-columns:repeat(auto-fill,minmax(220px,1fr))">
+          <div class="fld"><span class="flbl">CodeCombo (vazio)</span><div class="cc"><div class="cc-field"><input class="cc-inp" placeholder="Código…"><button class="cc-caret"><svg viewBox="0 0 11 7"><path d="M1 1l4.5 4.5L10 1"/></svg></button></div></div></div>
+          <div class="fld"><span class="flbl">CodeCombo (foco)</span><div class="cc"><div class="cc-field focus"><input class="cc-inp" value="M09"><button class="cc-caret"><svg viewBox="0 0 11 7"><path d="M1 1l4.5 4.5L10 1"/></svg></button></div></div></div>
+          <div class="fld"><span class="flbl">Campo numérico</span><div class="spin"><span class="num">12</span><span class="steps"><button class="up">▲</button><button class="dn">▼</button></span></div></div>
+        </div>
+        <div class="foundlabel">Barra de busca / substituição (Editor)</div>
+        <div class="findbar">
+          <input class="find-inp" value="M09">
+          <span class="find-count">2/7</span>
+          <button class="fbtn" title="Anterior">PV</button>
+          <button class="fbtn" title="Próxima">NX</button>
+          <span class="find-sep">·</span>
+          <input class="find-inp" placeholder="Substituir por…">
+          <button class="btn sec">Substituir</button>
+          <button class="btn ghost">Substituir todos</button>
+        </div>
+        <div class="foundlabel">CodeCombo aberto · lista pesquisável e estado vazio</div>
+        <div style="display:flex;gap:24px;flex-wrap:wrap;align-items:flex-start;margin-bottom:210px">
+          <div class="cc open" style="width:240px">
+            <div class="cc-field focus"><input class="cc-inp" value="M0"><button class="cc-caret"><svg viewBox="0 0 11 7"><path d="M1 1l4.5 4.5L10 1"/></svg></button></div>
+            <div class="cc-list">
+              <div class="cc-grp cc-grp-fav">★ Favoritos</div>
+              <div class="cc-opt fav">M08 <span class="desc">Refrigeração ligada</span><button class="cc-favbtn on" type="button" title="Remover dos favoritos" aria-pressed="true"><svg viewBox="0 0 18 18" aria-hidden="true"><path d="M9 2.5l2 4.1 4.5.6-3.3 3.1.8 4.5L9 12.7l-4 2.1.8-4.5-3.3-3.1 4.5-.6L9 2.5Z"/></svg></button></div>
+              <div class="cc-grp">Refrigeração</div>
+              <div class="cc-opt">M09 <span class="desc">Refrigeração desligada</span><button class="cc-favbtn" type="button" title="Favoritar (fixa no topo da lista)" aria-pressed="false"><svg viewBox="0 0 18 18" aria-hidden="true"><path d="M9 2.5l2 4.1 4.5.6-3.3 3.1.8 4.5L9 12.7l-4 2.1.8-4.5-3.3-3.1 4.5-.6L9 2.5Z"/></svg></button></div>
+              <div class="cc-grp">Programa</div>
+              <div class="cc-opt">M00 <span class="desc">Parada programada</span><button class="cc-favbtn" type="button" title="Favoritar (fixa no topo da lista)" aria-pressed="false"><svg viewBox="0 0 18 18" aria-hidden="true"><path d="M9 2.5l2 4.1 4.5.6-3.3 3.1.8 4.5L9 12.7l-4 2.1.8-4.5-3.3-3.1 4.5-.6L9 2.5Z"/></svg></button></div>
+              <div class="cc-opt">M03 <span class="desc">Liga eixo-árvore</span><button class="cc-favbtn" type="button" title="Favoritar (fixa no topo da lista)" aria-pressed="false"><svg viewBox="0 0 18 18" aria-hidden="true"><path d="M9 2.5l2 4.1 4.5.6-3.3 3.1.8 4.5L9 12.7l-4 2.1.8-4.5-3.3-3.1 4.5-.6L9 2.5Z"/></svg></button></div>
+            </div>
+          </div>
+          <div class="cc open" style="width:240px">
+            <div class="cc-field focus"><input class="cc-inp" value="XYZ"><button class="cc-caret"><svg viewBox="0 0 11 7"><path d="M1 1l4.5 4.5L10 1"/></svg></button></div>
+            <div class="cc-list"><div class="cc-empty">Nada encontrado · <button type="button" class="linkbtn">salvar "XYZ" na biblioteca?</button></div></div>
+          </div>
+        </div>
+      </section>
+
+      <section>
+        <h2>Controles · liga/desliga, segmentado, seletor</h2>
+        <p class="hint">Estado ligado = laranja. Um controle por decisão.</p>
+        <div class="ctrlrow">
+          <span class="toggle on"><span class="knob"></span></span><span class="ctlcap">Ligado</span>
+          <span class="toggle"><span class="knob"></span></span><span class="ctlcap">Desligado</span>
+        </div>
+        <div style="height:14px"></div>
+        <div class="seg">
+          <button class="segb on">Substituir</button>
+          <button class="segb">Inserir</button>
+          <button class="segb">Renomear</button>
+          <button class="segb">Remover</button>
+        </div>
+        <div style="height:14px"></div>
+        <div class="select">Selecionar código <span class="chev">CV</span></div>
+      </section>
+
+      <section>
+        <h2>Seleção · radio, checkbox e chip</h2>
+        <p class="hint">Escolha única (radio), marcação (checkbox) e itens removíveis (chip). Caixa de 18px; o rótulo inteiro é clicável. Selecionado/marcado = laranja.</p>
+        <div class="ctrlrow" style="gap:20px">
+          <label class="radio on"><span class="rdot"></span> Abaixo da 1ª ocorrência</label>
+          <label class="radio"><span class="rdot"></span> Abaixo da linha Nº</label>
+          <label class="radio foc"><span class="rdot"></span> Foco (teclado)</label>
+          <label class="radio dis"><span class="rdot"></span> Desabilitado</label>
+        </div>
+        <div style="height:14px"></div>
+        <div class="ctrlrow" style="gap:20px">
+          <label class="cbox on"><span class="cmk">✓</span> Marcado</label>
+          <label class="cbox"><span class="cmk"></span> Desmarcado</label>
+          <label class="cbox foc"><span class="cmk"></span> Foco (teclado)</label>
+          <label class="cbox dis"><span class="cmk"></span> Desabilitado</label>
+        </div>
+        <div class="foundlabel">Chips removíveis (códigos a verificar)</div>
+        <div class="ctrlrow" style="gap:8px">
+          <span class="rmchip">M08 <span class="rx">EX</span></span>
+          <span class="rmchip">M09 <span class="rx">EX</span></span>
+          <span class="rmchip">G54 <span class="rx">EX</span></span>
+          <span class="rmchip">T01 <span class="rx">EX</span></span>
+        </div>
+      </section>
+
+      <section id="sec-gavetas">
+        <h2>Navegação · gaveta, barra superior, abas e menu</h2>
+        <p class="hint">Gaveta retrátil interativa: clique no handle (◄) no meio da divisão para colapsar a ícones (rótulos somem, tooltips surgem) — o estado persiste via localStorage. Top bar ancora a marca + ações globais; abas distinguem-se do segmentado pelo sublinhado (não preenchimento); menu de contexto flutua sobre o conteúdo com sombra nível 2.</p>
+
+        <div class="foundlabel">Gaveta retrátil canônica (clique no handle para recolher)</div>
+        <div class="sbnav-demo" id="sbnav-demo">
+
+          <aside class="sbnav" role="navigation" aria-label="Navegação principal">
+            <div class="sbnav__brand">
+              <span class="sbnav__logo"><img src="../logo/logo_flownc.png" alt="FlowNC" style="height:18px;width:auto;display:block"></span>
+              <span class="sbnav__tag">v1.0</span>
+            </div>
+
+            <ul class="sbnav__list" role="list">
+
+              <li role="none">
+                <a href="#" class="sbnav__item" title="Dashboard">
+                  <span class="sbnav__ic" aria-hidden="true"><svg viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="3" width="7" height="7" rx="1.5"/><rect x="3" y="14" width="7" height="7" rx="1.5"/><rect x="14" y="14" width="7" height="7" rx="1.5"/></svg></span>
+                  <span class="sbnav__lbl">Dashboard</span>
+                </a>
+              </li>
+
+              <hr class="sbnav__sep" aria-hidden="true" />
+
+              <li role="none">
+                <span class="sbnav__grp" aria-hidden="true">Edição</span>
+                <ul role="list">
+                  <li role="none">
+                    <a href="#" class="sbnav__item active" aria-current="page" title="Edições em Lote">
+                      <span class="sbnav__ic" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M12 3 3 7.5 12 12l9-4.5L12 3Z"/><path d="M3 12l9 4.5L21 12"/><path d="M3 16.5 12 21l9-4.5"/></svg></span>
+                      <span class="sbnav__lbl">Edições em Lote</span>
+                    </a>
+                  </li>
+                  <li role="none">
+                    <a href="#" class="sbnav__item" title="Editor 2D">
+                      <span class="sbnav__ic" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M4 20h4L19 9a2 2 0 0 0-3-3L5 17v3Z"/><path d="M14.5 6.5 17.5 9.5"/></svg></span>
+                      <span class="sbnav__lbl">Editor 2D</span>
+                      <span class="sbnav__dot" role="status" aria-label="Editor 2D — atividade em andamento"></span>
+                    </a>
+                  </li>
+                  <li role="none">
+                    <a href="#" class="sbnav__item" title="Verificador em Lote">
+                      <span class="sbnav__ic" aria-hidden="true"><svg viewBox="0 0 24 24"><rect x="4" y="3" width="16" height="18" rx="2"/><path d="M8 11l3 3 5-6"/></svg></span>
+                      <span class="sbnav__lbl">Verificador em Lote</span>
+                    </a>
+                  </li>
+                </ul>
+              </li>
+
+              <hr class="sbnav__sep" aria-hidden="true" />
+
+              <li role="none">
+                <span class="sbnav__grp" aria-hidden="true">Ferramentas</span>
+                <ul role="list">
+                  <li role="none">
+                    <span class="sbnav__item soon" aria-disabled="true" tabindex="-1" title="Calc. Massa — Disponível em breve">
+                      <span class="sbnav__ic" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M12 4v3"/><path d="M5 8h14l-3 7H8L5 8Z"/><path d="M9 20h6"/><path d="M12 15v5"/></svg></span>
+                      <span class="sbnav__lbl">Calc. Massa</span>
+                    </span>
+                  </li>
+                  <li role="none">
+                    <span class="sbnav__item soon" aria-disabled="true" tabindex="-1" title="Calc. Trig. — Disponível em breve">
+                      <span class="sbnav__ic" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M5 19h14L5 5v14Z"/><path d="M9 19a4 4 0 0 0-4-4"/></svg></span>
+                      <span class="sbnav__lbl">Calc. Trig.</span>
+                    </span>
+                  </li>
+                  <li role="none">
+                    <span class="sbnav__item soon" aria-disabled="true" tabindex="-1" title="Calc. de Parâmetros — Disponível em breve">
+                      <span class="sbnav__ic" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M4 7h10"/><path d="M18 7h2"/><circle cx="16" cy="7" r="2"/><path d="M4 17h2"/><path d="M10 17h10"/><circle cx="8" cy="17" r="2"/></svg></span>
+                      <span class="sbnav__lbl">Calc. de Parâmetros</span>
+                    </span>
+                  </li>
+                  <li role="none">
+                    <span class="sbnav__item soon" aria-disabled="true" tabindex="-1" title="Conversão de Arquivo — Disponível em breve">
+                      <span class="sbnav__ic" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M14 3H7a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V8l-5-5Z"/><path d="M9 13h6"/><path d="M13 11l2 2-2 2"/></svg></span>
+                      <span class="sbnav__lbl">Conversão de Arquivo</span>
+                    </span>
+                  </li>
+                </ul>
+              </li>
+
+              <hr class="sbnav__sep" aria-hidden="true" />
+
+              <li role="none">
+                <span class="sbnav__grp" aria-hidden="true">Referência</span>
+                <ul role="list">
+                  <li role="none">
+                    <span class="sbnav__item soon" aria-disabled="true" tabindex="-1" title="Biblioteca de Código ISO — Disponível em breve">
+                      <span class="sbnav__ic" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M4 5a2 2 0 0 1 2-2h13v16H6a2 2 0 0 0-2 2V5Z"/><path d="M4 19a2 2 0 0 1 2-2h13"/></svg></span>
+                      <span class="sbnav__lbl">Biblioteca de Código ISO</span>
+                    </span>
+                  </li>
+                  <li role="none">
+                    <button class="sbnav__item" type="button" aria-expanded="false" aria-controls="sbnav-sub-tabelas" title="Tabelas">
+                      <span class="sbnav__ic" aria-hidden="true"><svg viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="16" rx="2"/><path d="M3 9h18"/><path d="M9 9v11"/><path d="M3 14.5h18"/></svg></span>
+                      <span class="sbnav__lbl">Tabelas</span>
+                      <span class="sbnav__arrow" aria-hidden="true">►</span>
+                    </button>
+                    <ul id="sbnav-sub-tabelas" class="sbnav__sub" role="list" hidden>
+                      <li role="none">
+                        <a href="#" class="sbnav__item" title="Materiais">
+                          <span class="sbnav__lbl">Materiais</span>
+                        </a>
+                      </li>
+                      <li role="none">
+                        <a href="#" class="sbnav__item" title="Roscas">
+                          <span class="sbnav__lbl">Roscas</span>
+                        </a>
+                      </li>
+                    </ul>
+                  </li>
+                </ul>
+              </li>
+
+            </ul>
+
+            <footer class="sbnav__foot">
+              <span class="sbnav__avatar" role="img" aria-label="Usuário não conectado">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="width:16px;height:16px;"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+              </span>
+              <span class="sbnav__finfo">
+                <span class="sbnav__fname">Convidado</span>
+                <span class="sbnav__frole">Não conectado</span>
+              </span>
+            </footer>
+          </aside>
+
+          <button class="sbnav-toggle" id="sbnav-toggle" type="button"
+                  aria-expanded="true" aria-controls="sbnav-demo"
+                  aria-label="Recolher menu de navegação" title="Recolher menu"></button>
+
+          <div class="sbnav-main">
+            <h3>Edições em Lote</h3>
+            <p>Área de conteúdo. O menu lateral recolhe/expande pelo handle (◄) na borda direita da gaveta; o conteúdo acompanha a animação.</p>
+          </div>
+        </div>
+
+        <div class="foundlabel" style="margin-top:24px">Barra superior do app</div>
+        <div class="topbar">
+          <span class="tbrand"><img src="../logo/logo_flownc.png" alt="FlowNC" style="height:22px;width:auto;display:block"></span>
+        </div>
+
+        <div class="foundlabel" style="margin-top:24px">Abas com sublinhado (padrão — largura livre)</div>
+        <p class="hint">Padrão visual, não layout. O contêiner abaixo encolhe ao conteúdo; aplique a largura que o painel pedir (automática, fixa ou 100%). As abas de exemplo são ilustrativas — use os rótulos e a quantidade que o contexto exigir.</p>
+        <div class="tabset">
+          <div class="tabs">
+            <button class="tab on">Aba ativa</button>
+            <button class="tab">Aba</button>
+            <button class="tab">Aba</button>
+          </div>
+          <div class="tabpanel"><span class="phtext">Conteúdo da aba ativa</span></div>
+        </div>
+
+        <div class="foundlabel" style="margin-top:24px">Trilho lateral de gavetas · abas com rótulo horizontal</div>
+        <p class="hint">Abas do trilho fixo (borda direita) que abrem as gavetas. <strong>Rótulo sempre horizontal</strong> — nunca texto vertical. Quando o espaço for crítico, use a variante <strong>só-ícone</strong> (rótulo no <code>title</code>/<code>aria-label</code>). Ativa = realce azul (info). Esconda a aba cuja ação não existe no estado atual (ex.: "Editor" sem programas na área).</p>
+        <div class="railtabs">
+          <button class="railtab active" title="Editor de G-code" aria-label="Editor">
+            <span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 20h4L19 9a2 2 0 0 0-3-3L5 17v3Z"/><path d="M14.5 6.5 17.5 9.5"/></svg></span>
+            <span class="railtab__lbl">Editor</span>
+          </button>
+          <button class="railtab" title="Adicionar pasta" aria-label="Adicionar pasta">
+            <span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 7a2 2 0 012-2h4l2 2h8a2 2 0 012 2v8a2 2 0 01-2 2H5a2 2 0 01-2-2V7z"/></svg></span>
+            <span class="railtab__lbl">Adicionar pasta</span>
+          </button>
+        </div>
+        <div style="height:14px"></div>
+        <div class="foundlabel">Variante só-ícone (espaço crítico)</div>
+        <div class="railtabs">
+          <button class="railtab iconly" title="Editor de G-code" aria-label="Editor"><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 20h4L19 9a2 2 0 0 0-3-3L5 17v3Z"/><path d="M14.5 6.5 17.5 9.5"/></svg></span></button>
+          <button class="railtab iconly" title="Adicionar pasta" aria-label="Adicionar pasta"><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 7a2 2 0 012-2h4l2 2h8a2 2 0 012 2v8a2 2 0 01-2 2H5a2 2 0 01-2-2V7z"/></svg></span></button>
+        </div>
+
+        <div class="foundlabel" style="margin-top:24px">Menu de contexto (aberto)</div>
+        <div class="ctx">
+          <div class="ctx-item"><span class="ctx-ic">ED</span> Editar alteração <span class="ctx-short">E</span></div>
+          <div class="ctx-item"><span class="ctx-ic">DP</span> Duplicar <span class="ctx-short">D</span></div>
+          <div class="ctx-item dis"><span class="ctx-ic">UP</span> Mover acima</div>
+          <div class="ctx-sep"></div>
+          <div class="ctx-item"><span class="ctx-ic">SV</span> Configurações salvas…</div>
+          <div class="ctx-sep"></div>
+          <div class="ctx-item danger"><span class="ctx-ic">EX</span> Excluir <span class="ctx-short">Del</span></div>
+        </div>
+      </section>
+
+      <section>
+        <h2>Listas e cartões · estrutura reaproveitável</h2>
+        <p class="hint">Bloco visual para a proposta nova: tabela Explorer com colunas fixas, cartão genérico com estados estáveis e cartão-resumo read-only com barra de ações. Sem regras de negócio.</p>
+
+        <div class="foundlabel">Barra de Ações do Explorer · estados nomeados</div>
+        <div class="explorer-actions-demo">
+          <div class="explorer-actions-state is-idle">
+            <div class="explorer-actions-state__meta">
+              <div class="explorer-actions-state__name">Sem seleção</div>
+              <div class="explorer-actions-state__desc">A barra aparece acima da tabela, mas Copiar, Renomear, Duplicar e Apagar ficam bloqueados até haver seleção.</div>
+            </div>
+            <div class="explorer-actions-bar">
+              <button class="btn ghost explorer-actions-bar__quick" style="display:inline-flex;align-items:center;gap:4px;">
+                Acesso rápido <svg viewBox="0 0 10 6"><path d="m1 1 4 4 4-4"/></svg>
+              </button>
+              <button class="btn ghost" disabled>Copiar</button>
+              <button class="btn ghost" disabled>Renomear</button>
+              <button class="btn ghost" disabled>Duplicar</button>
+              <button class="btn ghost danger" disabled>Apagar</button>
+            </div>
+          </div>
+          <div class="explorer-actions-state">
+            <div class="explorer-actions-state__meta">
+              <div class="explorer-actions-state__name">Seleção pronta</div>
+              <div class="explorer-actions-state__desc">Com um ou mais programas marcados, todas as ações de lote ficam disponíveis e compartilham a mesma altura compacta de 32px.</div>
+            </div>
+            <div class="explorer-actions-bar">
+              <button class="btn ghost explorer-actions-bar__quick" style="display:inline-flex;align-items:center;gap:4px;">
+                Acesso rápido <svg viewBox="0 0 10 6"><path d="m1 1 4 4 4-4"/></svg>
+              </button>
+              <button class="btn ghost">Copiar</button>
+              <button class="btn ghost">Renomear</button>
+              <button class="btn ghost">Duplicar</button>
+              <button class="btn ghost danger">Apagar</button>
+            </div>
+          </div>
+          <div class="explorer-actions-state">
+            <div class="explorer-actions-state__meta">
+              <div class="explorer-actions-state__name">Acesso rápido aberto</div>
+              <div class="explorer-actions-state__desc">O botão Acesso rápido usa chevron e pode abrir um menu contextual curto sem deslocar a tabela; Apagar mantém destaque destrutivo leve.</div>
+            </div>
+            <div class="explorer-actions-bar" style="position:relative;">
+              <button class="btn ghost explorer-actions-bar__quick foc" style="display:inline-flex;align-items:center;gap:4px;">
+                Acesso rápido <svg viewBox="0 0 10 6"><path d="m1 1 4 4 4-4"/></svg>
+              </button>
+              <button class="btn ghost">Copiar</button>
+              <button class="btn ghost">Renomear</button>
+              <button class="btn ghost">Duplicar</button>
+              <button class="btn ghost danger">Apagar</button>
+            </div>
+            <div class="ctx" style="margin-top:-1px;">
+              <div class="ctx-item on"><span class="ctx-ic">AQ</span> Acesso rápido</div>
+              <div class="ctx-item"><span class="ctx-ic">CP</span> Copiar seleção</div>
+              <div class="ctx-item"><span class="ctx-ic">RN</span> Renomear em lote</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="foundlabel">Tabela estilo Explorer (com Barra de Ações e Status de Sincronia)</div>
+        <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 8px; flex-wrap: wrap; gap: 8px;">
+          <div class="explorer-actions-bar" style="border-bottom: 1px solid var(--border); border-radius: var(--radius-md); padding: 4px 8px;">
+            <button class="btn ghost explorer-actions-bar__quick" style="display: inline-flex; align-items: center; gap: 4px;">
+              Acesso rápido <svg viewBox="0 0 10 6"><path d="m1 1 4 4 4-4"/></svg>
+            </button>
+            <button class="btn ghost">Copiar</button>
+            <button class="btn ghost">Renomear</button>
+            <button class="btn ghost">Duplicar</button>
+            <button class="btn ghost danger">Apagar</button>
+          </div>
+          <div class="folder-sync-status pulse">
+            <span class="dot"></span>
+            <span>Lista atualizada · Última verificação: 18:34:10</span>
+          </div>
+        </div>
+        
+        <div class="foundlabel" style="margin-top:16px; margin-bottom: 8px;">Seleção Marquee (Arraste para seleção múltipla)</div>
+        <div style="position:relative; width: 100%; height: 80px; border: 1px dashed var(--border); border-radius: var(--radius-sm); background: var(--surface-2); display: flex; align-items: center; justify-content: center; overflow: hidden; user-select: none; margin-bottom: 16px;">
+          <span style="font: 500 12px var(--sans); color: var(--tx-3)">Arraste o cursor sobre a área de arquivos (simulação)</span>
+          <div class="marquee-box" style="left: 20px; top: 15px; width: 120px; height: 50px;"></div>
+        </div>
+
+        <div class="foundlabel">Explorer Grid</div>
+        <div class="explorer">
+          <div class="exphead"><span></span><span>Nome</span><span class="col-tp">Tipo</span><span class="col-act" style="text-align:right">Ação</span><span class="col-dt">Modificado</span><span class="col-sz" style="text-align:right">Tamanho</span></div>
+          <div class="exprow">
+            <span class="chk"></span>
+            <span class="nm"><span class="mono">PROG_0008.NC</span><span class="chips-cell" role="list" aria-label="Alterações de PROG_0008.NC"><span class="chip sub" tabindex="0" role="listitem" data-tip="Substituir: G54 → G55" aria-label="Substituir: G54 → G55"><span class="ci">⇄</span><span class="chip-tx">G54 → G55</span><span class="chip-acts"><button type="button" class="chip-btn edit" tabindex="-1" title="Corrigir dados" aria-label="Corrigir dados da alteração"><svg viewBox="0 0 18 18"><path d="M3 15h3l9-9a1.5 1.5 0 0 0-3-3l-9 9v3Z"/><path d="M11 5l2 2"/></svg></button><button type="button" class="chip-btn del" tabindex="-1" title="Remover" aria-label="Remover alteração"><svg viewBox="0 0 14 14"><path d="M2 2l10 10M12 2L2 12"/></svg></button></span></span></span></span>
+            <span class="col-tp">CNC</span>
+            <span class="act"><button class="btn-rowedit lbl" title="Editar no Editor 2D">Editor2D</button><button class="btn-rowdel" title="Remover da área de trabalho"><svg viewBox="0 0 14 14"><path d="M2 2l10 10M12 2L2 12"/></svg></button></span>
+            <span class="dt col-dt">20/06/2026 09:41</span>
+            <span class="sz col-sz">18.4 KB</span>
+          </div>
+          <div class="exprow sel">
+            <span class="chk on">✓</span>
+            <span class="nm"><span class="mono">PROG_0012.NC</span><span class="chips-cell" role="list" aria-label="Alterações de PROG_0012.NC"><span class="chip sub" tabindex="0" role="listitem" data-tip="Substituir: G54 → G55" aria-label="Substituir: G54 → G55"><span class="ci">⇄</span><span class="chip-tx">G54 → G55</span><span class="chip-acts"><button type="button" class="chip-btn edit" tabindex="-1" title="Corrigir dados" aria-label="Corrigir dados da alteração"><svg viewBox="0 0 18 18"><path d="M3 15h3l9-9a1.5 1.5 0 0 0-3-3l-9 9v3Z"/><path d="M11 5l2 2"/></svg></button><button type="button" class="chip-btn del" tabindex="-1" title="Remover" aria-label="Remover alteração"><svg viewBox="0 0 14 14"><path d="M2 2l10 10M12 2L2 12"/></svg></button></span></span><span class="chip ins" tabindex="0" role="listitem" data-tip="Inserir: M08 · no final" aria-label="Inserir: M08 · no final"><span class="ci">+</span><span class="chip-tx">M08 · no final</span><span class="chip-acts"><button type="button" class="chip-btn edit" tabindex="-1" title="Corrigir dados" aria-label="Corrigir dados da alteração"><svg viewBox="0 0 18 18"><path d="M3 15h3l9-9a1.5 1.5 0 0 0-3-3l-9 9v3Z"/><path d="M11 5l2 2"/></svg></button><button type="button" class="chip-btn del" tabindex="-1" title="Remover" aria-label="Remover alteração"><svg viewBox="0 0 14 14"><path d="M2 2l10 10M12 2L2 12"/></svg></button></span></span><span class="chip-more" tabindex="0" role="button">+1</span></span></span>
+            <span class="col-tp">CNC</span>
+            <span class="act"><button class="btn-rowedit lbl" title="Editar no Editor 2D">Editor2D</button><button class="btn-rowdel" title="Remover da área de trabalho"><svg viewBox="0 0 14 14"><path d="M2 2l10 10M12 2L2 12"/></svg></button></span>
+            <span class="dt col-dt">20/06/2026 09:48</span>
+            <span class="sz col-sz">22.1 KB</span>
+          </div>
+          <!-- EXEMPLO DE EXPANSÃO INLINE PADRONIZADO -->
+          <div class="exprow-expand">
+            <span class="rmchip sub">
+              Substituir G54 ➔ G55 <span class="rx">✕</span>
+            </span>
+            <span class="rmchip ins">
+              Inserir M08 <span class="rx">✕</span>
+            </span>
+          </div>
+          <div class="exprow foc">
+            <span class="chk"></span>
+            <span class="nm"><span class="warn-badge">⚠ 1</span><span class="mono">PROG_0042.NC</span><span class="chips-cell" role="list" aria-label="Alterações de PROG_0042.NC"><span class="chip sub chip-editing" tabindex="0" role="listitem" data-tip="[Editando] Substituir: T1 → T2" aria-label="Substituir: T1 → T2"><span class="ci">⇄</span><span class="chip-tx">T1 → T2</span></span><span class="aviso warn"><span class="ai">⚠</span> G54 não encontrado</span></span></span>
+            <span class="col-tp">NC</span>
+            <span class="act"><button class="btn-rowedit lbl" title="Editar no Editor 2D">Editor2D</button><button class="btn-rowdel" title="Remover da área de trabalho"><svg viewBox="0 0 14 14"><path d="M2 2l10 10M12 2L2 12"/></svg></button></span>
+            <span class="dt col-dt">20/06/2026 10:03</span>
+            <span class="sz col-sz">17.9 KB</span>
+          </div>
+          <div class="exprow">
+            <span class="chk on">✓</span>
+            <span class="nm"><span class="mono">PROG_0110.NC</span><span class="chips-cell" role="list" aria-label="Alterações de PROG_0110.NC"><span class="chip rem" tabindex="0" role="listitem" data-tip="Remover: M09" aria-label="Remover: M09"><span class="ci">−</span><span class="chip-tx">M09</span><span class="chip-acts"><button type="button" class="chip-btn edit" tabindex="-1" title="Corrigir dados" aria-label="Corrigir dados da alteração"><svg viewBox="0 0 18 18"><path d="M3 15h3l9-9a1.5 1.5 0 0 0-3-3l-9 9v3Z"/><path d="M11 5l2 2"/></svg></button><button type="button" class="chip-btn del" tabindex="-1" title="Remover" aria-label="Remover alteração"><svg viewBox="0 0 14 14"><path d="M2 2l10 10M12 2L2 12"/></svg></button></span></span></span></span>
+            <span class="col-tp">CNC</span>
+            <span class="act"><button class="btn-rowedit lbl" title="Editar no Editor 2D">Editor2D</button><button class="btn-rowdel" title="Remover da área de trabalho"><svg viewBox="0 0 14 14"><path d="M2 2l10 10M12 2L2 12"/></svg></button></span>
+            <span class="dt col-dt">20/06/2026 10:11</span>
+            <span class="sz col-sz">9.7 KB</span>
+          </div>
+        </div>
+
+        <div class="foundlabel">Cartão genérico · estados visuais</div>
+        <div class="cardgrid">
+          <article class="card">
+            <div class="eyebrow">Normal</div>
+            <h3 class="title">Pronto para compor</h3>
+            <p class="copy">Usado para conteúdo estável, sem alerta e sem foco especial de ação.</p>
+          </article>
+          <article class="card editing">
+            <div class="eyebrow">Editando</div>
+            <h3 class="title">Alteração em edição</h3>
+            <p class="copy">Estado de atenção leve para o item que reabriu no compositor.</p>
+          </article>
+          <article class="card warn">
+            <div class="eyebrow">Atenção / órfão</div>
+            <h3 class="title">Escopo pendente</h3>
+            <p class="copy">Cartão precisa de intervenção antes de liberar a ação principal.</p>
+          </article>
+          <article class="card danger">
+            <div class="eyebrow">Perigo</div>
+            <h3 class="title">Conflito bloqueante</h3>
+            <p class="copy">Usado para colisão de nome, publicação inválida ou outra falha crítica.</p>
+          </article>
+        </div>
+
+        <div class="foundlabel">Cartão de resumo / registro</div>
+        <article class="sumcard">
+          <div class="sumtop">
+            <span class="sumidx">03</span>
+            <div class="sumtxt">
+              <span class="t1">Substituir M08 por M09</span>
+              <span class="t2">Resumo read-only da alteração, com linguagem curta e direta.</span>
+            </div>
+            <span class="sumscope">12 programas</span>
+          </div>
+          <div class="sumbar">
+            <button class="btn ghost">Editar</button>
+            <button class="btn ghost">Duplicar</button>
+            <button class="btn danger-text">Excluir</button>
+          </div>
+        </article>
+      </section>
+
+      <section>
+        <h2>Feedback e estados de tela</h2>
+        <p class="hint">Feedback persistente e estados de superfície que tendem a sobreviver ao redesign: toast em variantes, banner inline, modal com scrim, vazio, drop zone e tooltip.</p>
+
+        <div class="foundlabel">Toast · variantes</div>
+        <div class="toaststack">
+          <div class="toast"><span class="ic">OK</span><div><div class="tt1">Alteração publicada</div><div class="tt2">12 arquivos salvos na pasta de saída.</div></div></div>
+          <div class="toast warn"><span class="ic">AV</span><div><div class="tt1">Publicação parcial</div><div class="tt2">1 item precisa de revisão antes de seguir.</div></div></div>
+          <div class="toast err"><span class="ic">ER</span><div><div class="tt1">Conflito detectado</div><div class="tt2">Existe um nome repetido no lote atual.</div></div></div>
+          <div class="toast info"><span class="ic">IN</span><div><div class="tt1">Lista atualizada</div><div class="tt2">A pasta foi relida e os arquivos mudaram.</div></div></div>
+        </div>
+
+        <div class="foundlabel">Banner inline</div>
+        <div class="banner warn" style="margin-bottom:12px">
+          <span class="bic">AV</span>
+          <div class="bcopy">
+            <span class="btitle">Alteração órfã bloqueia o executar</span>
+            <span class="btext">A alteração existe, mas ainda não recebeu escopo. Ela precisa ser atribuída ou removida antes de seguir.</span>
+          </div>
+          <div class="bactions">
+            <button class="btn ghost">Atribuir marcados</button>
+            <button class="btn danger-text">Remover</button>
+          </div>
+        </div>
+        <div class="banner info">
+          <span class="bic">IN</span>
+          <div class="bcopy">
+            <span class="btitle">Arquivo alterado fora do FlowNC</span>
+            <span class="btext">Aviso persistente com ação explícita para recarregar do disco ou manter o buffer atual.</span>
+          </div>
+          <div class="bactions">
+            <button class="btn sec">Recarregar</button>
+            <button class="btn ghost">Ignorar</button>
+          </div>
+        </div>
+
+        <div class="foundlabel">Modal / diálogo com scrim</div>
+        <div class="modaldemo">
+          <div class="underlay"></div>
+          <div class="scrim"></div>
+          <div class="modal" role="dialog" aria-modal="true" aria-labelledby="modal-title">
+            <div class="modal-h">
+              <span class="mh" id="modal-title">Conferir alterações do lote</span>
+              <button class="btn iconly sm" title="Fechar"><span class="ic">FC</span></button>
+            </div>
+            <div class="modal-b">Shell visual para conferência, publicação, adicionar código e outros diálogos bloqueantes. O scrim pertence ao contexto do modal, não existe como demo isolada.</div>
+            <div class="modal-f">
+              <button class="btn ghost">Cancelar</button>
+              <button class="btn cta">Publicar</button>
+            </div>
+          </div>
+        </div>
+
+        <div class="foundlabel">Modal de Reporte de Bugs (Offline-First)</div>
+        <div class="modaldemo" style="margin-bottom:24px">
+          <div class="underlay"></div>
+          <div class="scrim"></div>
+          <div class="modal" role="dialog" aria-modal="true" aria-labelledby="modal-bug-title">
+            <div class="modal-h">
+              <span class="mh" id="modal-bug-title">Reportar Bug / Falha</span>
+              <button class="btn iconly sm" title="Fechar"><span class="ic">FC</span></button>
+            </div>
+            <div class="modal-b" style="display:grid; gap:12px">
+              <div>
+                <label class="ds-lbl" for="bug-desc" style="display:block; margin-bottom:4px; font-weight:600;">Descrição do problema</label>
+                <textarea id="bug-desc" class="field" style="width:100%; height:80px; padding:8px; border:1px solid var(--border); border-radius:var(--radius-sm); font:400 13px var(--sans); resize:none; box-sizing:border-box;" placeholder="O que aconteceu? Descreva o passo a passo..."></textarea>
+              </div>
+              <div class="ds-bug-context" style="background:var(--surface-2); padding:10px; border-radius:var(--radius-sm); border:1px solid var(--border); font:600 11px var(--mono); color:var(--tx-2); display:grid; gap:4px; box-sizing:border-box;">
+                <div>Versão: FlowNC® v4.0 (Trial)</div>
+                <div>Máquina Ativa: MAQ-01 (torno-nardini)</div>
+                <div>Tela: Edições em Lote (Lote)</div>
+              </div>
+            </div>
+            <div class="modal-f">
+              <button class="btn ghost">Cancelar</button>
+              <button class="btn cta md">Enviar Reporte</button>
+            </div>
+          </div>
+        </div>
+
+        <div class="foundlabel">Estado vazio e drop zone</div>
+        <div class="stategrid">
+          <div class="empty">
+            <span class="eic">EM</span>
+            <span class="et1">Nenhum programa carregado</span>
+            <span class="et2">Use este estado para telas, listas ou bibliotecas vazias com uma CTA clara.</span>
+            <button class="btn sec">Adicionar programas</button>
+          </div>
+          <div style="display:grid;gap:12px">
+            <div class="dropzone">
+              <span class="dz1">Repouso</span>
+              <span class="dz2">Área pronta para receber arquivos arrastados.</span>
+            </div>
+            <div class="dropzone drag">
+              <span class="dz1">Arrasto ativo</span>
+              <span class="dz2">Realce azul informa que a área aceita a operação.</span>
+            </div>
+            <div class="dropzone drop">
+              <span class="dz1">Soltando</span>
+              <span class="dz2">Confirmação breve antes da atualização da lista.</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="foundlabel">Tooltip</div>
+        <div class="toolrow">
+          <div class="tooltipdemo">
+            <button class="btn ghost">Ajuda curta</button>
+            <div class="tip">Duplicar esta alteração</div>
+          </div>
+          <div class="tooltipdemo">
+            <button class="btn ghost">Prévia multilinha</button>
+            <div class="tip multi">PROG_0042.NC<br>G54 G90 G17<br>M08 S2500<br>Prévia curta para lista, rail ou contexto do editor.</div>
+          </div>
+        </div>
+      </section>
+
+      <section id="sec-editor">
+        <h2>Editor e utilitários visuais</h2>
+        <p class="hint">Estruturas do editor que valem como contrato visual: faixa lateral, gutter monoespaçado, linha atual, realce de ocorrência e separador reutilizável.</p>
+
+        <div class="foundlabel">Faixa lateral + editor monoespaçado</div>
+        <div class="stripdemo">
+          <div class="strip">
+            <div class="striprow active"><span class="sdot"></span><span>PROG_0008.NC</span></div>
+            <div class="striprow dirty"><span class="sdot"></span><span>PROG_0012.NC</span></div>
+            <div class="striprow foc"><span class="sdot"></span><span>PROG_0042.NC</span></div>
+            <div class="striprow"><span class="sdot"></span><span>PROG_0110.NC</span></div>
+          </div>
+          <div class="editor-shell">
+            <div class="editor-main">
+              <div class="gutter">101<br>102<br>103<br>104<br>105<br>106</div>
+              <div class="ecode">
+                <span class="eline">N101 <span class="nc-g">G54</span> <span class="nc-g">G90</span> <span class="nc-g">G17</span></span>
+                <span class="eline hit">N102 <span class="nc-param">T01</span> <span class="nc-m">M06</span> <span class="nc-comment">(TROCA DE FERRAMENTA)</span></span>
+                <span class="eline current">N103 <span class="nc-m">M08</span> <span class="nc-param">S2500</span></span>
+                <span class="eline">N104 <span class="nc-g">G00</span> <span class="nc-coord">X0</span> <span class="nc-coord">Y0</span></span>
+                <span class="eline hit">N105 <span class="nc-m">M08</span></span>
+                <span class="eline">N106 <span class="nc-m">M30</span></span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="foundlabel">Separador</div>
+        <div class="separator"></div>
+
+        <div class="foundlabel">Estados nomeados do Editor de Lote</div>
+        <p class="hint">Componentes-contrato do refinado: dica âmbar de espera, corpo atenuado e banner de colisão bloqueante (não destrói a linha — só sinaliza).</p>
+        <div style="display:flex;flex-direction:column;gap:12px">
+          <span class="ds-editor-hint"><span class="ic" aria-hidden="true">⚠</span> Importe programas para começar</span>
+          <div class="ds-blocker-banner">
+            <span class="bic">!</span>
+            <div>
+              <div class="btitle">Colisão de Renomear</div>
+              <div class="bdesc">Dois programas receberiam o mesmo nome — ajuste antes de executar. A linha não é descartada.</div>
+            </div>
+          </div>
+          <p class="hint" style="margin:0"><strong>await-import:</strong> quando a fila está vazia, o corpo do Editor de Lote vai a <code>opacity:.5; pointer-events:none</code> e exibe a dica âmbar acima.</p>
+        </div>
+
+        <div class="foundlabel">Novos Componentes do Editor 2D (Fase 2)</div>
+        <p class="hint">Elementos estruturais e de interface do Editor 2D: barra-guia, tira de ferramentas, painel de snippets, realce de token, cursor inteligente e ficha-letra colapsada.</p>
+        
+        <div style="display:flex; flex-direction:column; gap:20px; border:1px solid var(--border); border-radius:var(--radius-md); padding:20px; background:var(--bg)">
+          
+          <!-- Tira de ferramentas + snippets (simulação lado a lado) -->
+          <div style="display:flex; height:280px; position:relative; border:1px solid var(--border); border-radius:var(--radius-md); overflow:hidden; background:var(--surface)">
+            
+            <div style="flex:1; padding:12px; display:flex; flex-direction:column; justify-content:space-between">
+              <div>
+                <span class="ed-file" style="font-family:var(--mono)">O1002.NC</span>
+                <div style="margin-top:10px; font-family:var(--mono); font-size:13px; line-height:1.6">
+                  <span>N101 <span class="nc-g">G00</span> <span class="tok hit">G54</span> X0 Y0</span><br>
+                  <span>N102 T02 <span class="nc-m">M06</span> <span class="ins-caret"></span></span>
+                </div>
+              </div>
+              
+              <!-- Barra-guia -->
+              <div class="guidebar" style="margin:-12px; margin-top:20px">
+                <div class="gb-cur">
+                  <span class="gb-ic">⌨</span>
+                  <span class="gb-msg">Substituir <code>G54</code> por <code>G00</code>? <button class="btn-act">✓ Confirmar</button></span>
+                </div>
+              </div>
+            </div>
+
+            <!-- Tira de ferramentas (toolrail) -->
+            <div class="toolrail">
+              <button class="tr-item active" title="Buscar">⌕</button>
+              <div class="tr-sep"></div>
+              <button class="tr-item" title="Código G">G</button>
+              <button class="tr-item" title="Código M">M</button>
+            </div>
+
+            <!-- Painel de snippets (snippanel) -->
+            <div class="snippanel open" style="position:relative; right:0; border-left:1px solid var(--border); height:100%">
+              <div class="sp-head">
+                <span class="sp-title">Código G</span>
+                <button class="btn quiet iconly sm" title="Fechar">✕</button>
+              </div>
+              <div class="sp-search">
+                <input type="text" placeholder="Buscar..." value="G54" readonly style="pointer-events:none">
+              </div>
+              <div class="sp-list">
+                <div class="snip">
+                  <div class="t"><b>G54</b><span class="tag">G</span></div>
+                  <div class="d">Origem do sistema de coordenadas 1</div>
+                  <div class="p">G54</div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Fichas colapsadas -->
+          <div style="display:flex; gap:10px; align-items:center">
+            <span class="glabel">Fichas de edição colapsadas na lista estreitada:</span>
+            <span class="chipdot sub" title="Substituir">S</span>
+            <span class="chipdot ins" title="Inserir">I</span>
+            <span class="chipdot ren" title="Renomear">R</span>
+            <span class="chipdot rem" title="Remover">X</span>
+          </div>
+
+          <!-- Botão de ação compacto (barra-guia) + Salvar (salvo / a salvar) -->
+          <div style="display:flex; gap:12px; align-items:center; flex-wrap:wrap">
+            <span class="glabel">Ação (barra-guia):</span>
+            <button class="btn-act">✓ Confirmar</button>
+            <button class="btn-act">Substituir</button>
+            <button class="btn-act">Inserir</button>
+            <span class="glabel" style="margin-left:16px">Salvar:</span>
+            <button class="ed-save">Salvo ✓</button>
+            <button class="ed-save dirty">Salvar</button>
+          </div>
+
+          <!-- Item de snippet: normal e copiado -->
+          <div style="display:flex; gap:12px; align-items:flex-start; flex-wrap:wrap">
+            <div class="snip" style="width:200px"><div class="t"><b>G00</b><span class="tag">G</span></div><div class="d">Posicionamento rápido</div><div class="p">G00</div></div>
+            <div class="snip copied" style="width:200px"><div class="t"><b>G00</b><span class="tag" style="color:var(--accent-ac);border-color:var(--accent-bd)">copiado ✓</span></div><div class="d">Posicionamento rápido</div><div class="p">G00</div></div>
+          </div>
+
+          <!-- Favoritos: estrela por item + bloco fixo no topo da lista -->
+          <div class="foundlabel" style="margin-top:16px">Favoritos de snippet (.snip-favbtn / .snip.fav / .sp-favhead)</div>
+          <div style="width:260px">
+            <div class="sp-favhead">★ Favoritos</div>
+            <div class="snip fav"><div class="t"><b>G81</b><button class="snip-favbtn on" type="button" title="Remover dos favoritos" aria-pressed="true"><svg viewBox="0 0 18 18" aria-hidden="true"><path d="M9 2.5l2 4.1 4.5.6-3.3 3.1.8 4.5L9 12.7l-4 2.1.8-4.5-3.3-3.1 4.5-.6L9 2.5Z"/></svg></button></div><div class="d">Ciclo de furação simples</div><div class="p">G81</div></div>
+            <div class="sp-favsep"></div>
+            <div class="snip"><div class="t"><b>G00</b><button class="snip-favbtn" type="button" title="Favoritar (fixa no topo da lista)" aria-pressed="false"><svg viewBox="0 0 18 18" aria-hidden="true"><path d="M9 2.5l2 4.1 4.5.6-3.3 3.1.8 4.5L9 12.7l-4 2.1.8-4.5-3.3-3.1 4.5-.6L9 2.5Z"/></svg></button></div><div class="d">Posicionamento rápido</div><div class="p">G00</div></div>
+          </div>
+
+        </div>
+      </section>
+
+      <section id="sec-icones">
+        <h2>Ícones & Acessibilidade Visual</h2>
+        <p class="hint">Pictogramas canônicos baseados em traço único monocromático (<code>currentColor</code>), caixa 24×24px. Herdam a cor de estado do contexto (laranja para ação, azul para informação, etc.).</p>
+
+        <div class="foundlabel">Menu de navegação e ferramentas</div>
+        <div class="iconwall">
+          <div class="iconcard">
+            <span class="glyph"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="3" width="7" height="7" rx="1.5"/><rect x="3" y="14" width="7" height="7" rx="1.5"/><rect x="14" y="14" width="7" height="7" rx="1.5"/></svg></span>
+            <span class="glabel">Dashboard</span><span class="gcode">DB</span>
+          </div>
+          <div class="iconcard">
+            <span class="glyph"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3 3 7.5 12 12l9-4.5L12 3Z"/><path d="M3 12l9 4.5L21 12"/><path d="M3 16.5 12 21l9-4.5"/></svg></span>
+            <span class="glabel">Edições em Lote</span><span class="gcode">LT</span>
+          </div>
+          <div class="iconcard">
+            <span class="glyph"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 20h4L19 9a2 2 0 0 0-3-3L5 17v3Z"/><path d="M14.5 6.5 17.5 9.5"/></svg></span>
+            <span class="glabel">Editor 2D</span><span class="gcode">ED</span>
+          </div>
+          <div class="iconcard">
+            <span class="glyph"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="4" y="3" width="16" height="18" rx="2"/><path d="M8 11l3 3 5-6"/></svg></span>
+            <span class="glabel">Verificador em Lote</span><span class="gcode">VL</span>
+          </div>
+          <div class="iconcard">
+            <span class="glyph"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 4v3"/><path d="M5 8h14l-3 7H8L5 8Z"/><path d="M9 20h6"/><path d="M12 15v5"/></svg></span>
+            <span class="glabel">Calc. Massa</span><span class="gcode">CM</span>
+          </div>
+          <div class="iconcard">
+            <span class="glyph"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 19h14L5 5v14Z"/><path d="M9 19a4 4 0 0 0-4-4"/></svg></span>
+            <span class="glabel">Calc. Trig.</span><span class="gcode">CT</span>
+          </div>
+          <div class="iconcard">
+            <span class="glyph"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 7h10"/><path d="M18 7h2"/><circle cx="16" cy="7" r="2"/><path d="M4 17h2"/><path d="M10 17h10"/><circle cx="8" cy="17" r="2"/></svg></span>
+            <span class="glabel">Calc. de Parâmetros</span><span class="gcode">CP</span>
+          </div>
+          <div class="iconcard">
+            <span class="glyph"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M14 3H7a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V8l-5-5Z"/><path d="M9 13h6"/><path d="M13 11l2 2-2 2"/></svg></span>
+            <span class="glabel">Conversão de Arquivo</span><span class="gcode">CA</span>
+          </div>
+          <div class="iconcard">
+            <span class="glyph"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 5a2 2 0 0 1 2-2h13v16H6a2 2 0 0 0-2 2V5Z"/><path d="M4 19a2 2 0 0 1 2-2h13"/></svg></span>
+            <span class="glabel">Biblioteca de Código ISO</span><span class="gcode">BI</span>
+          </div>
+          <div class="iconcard">
+            <span class="glyph"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="4" width="18" height="16" rx="2"/><path d="M3 9h18"/><path d="M9 9v11"/><path d="M3 14.5h18"/></svg></span>
+            <span class="glabel">Tabelas</span><span class="gcode">TB</span>
+          </div>
+        </div>
+
+        <div class="foundlabel">Foco e leitura além da cor</div>
+        <p class="hint" style="margin-bottom:10px">Elementos interativos devem fornecer indicação de foco claro por meio de anel visível (<code>outline</code> / <code>--ring</code>). Status de sucesso, atenção ou erro devem sempre combinar cor com ícone ou rótulo explicativo.</p>
+        <div class="btnrow">
+          <button class="btn ghost focusdemo">Botão com foco</button>
+          <label class="radio foc"><span class="rdot"></span> Radio com foco</label>
+          <label class="cbox foc"><span class="cmk"></span> Checkbox com foco</label>
+          <span class="rmchip">M08 <span class="rx">EX</span></span>
+        </div>
+      </section>
+
+      <section id="sec-chips">
+        <h2>Chips & Componentes de Lote</h2>
+        <p class="hint">Componentes utilizados no compositor de Edições em Lote e no Explorer de arquivos. Laranja é reservado exclusivamente para ações principais; azul sinaliza status ativo ou informação neutra; estados críticos usam convenção de forma + ícone + cor.</p>
+
+        <div class="foundlabel">Seletor de Máquina (.machine-select)</div>
+        <div class="btnrow">
+          <div class="machine-select open">
+            <button class="machine-select__btn" type="button">
+              <span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="13" rx="2"/><path d="M8 20h8M12 17v3"/></svg></span>
+              Torno Nardini
+              <span class="chev"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9l6 6 6-6"/></svg></span>
+            </button>
+            <div class="machine-select__menu">
+              <button class="machine-select__opt sel" type="button">Torno Nardini <span class="ck"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg></span></button>
+              <button class="machine-select__opt" type="button">Centro Romi D800</button>
+              <button class="machine-select__opt machine-select__add" type="button">+ Adicionar máquina</button>
+            </div>
+          </div>
+        </div>
+
+        <div class="foundlabel">Abas com quebra de linha (.tabs-wrap)</div>
+        <div class="tabs-wrap" style="max-width:320px">
+          <button class="twtab on" type="button">Substituir</button>
+          <button class="twtab" type="button">Inserir bloco</button>
+          <button class="twtab" type="button">Renomear</button>
+          <button class="twtab" type="button">Remover</button>
+        </div>
+
+        <div class="foundlabel">Recolher menu lateral (.sbnav-toggle)</div>
+        <div class="btnrow">
+          <button class="sbnav-toggle" type="button" title="Recolher menu" aria-label="Recolher menu"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 6l-6 6 6 6"/></svg></button>
+          <button class="sbnav-toggle is-collapsed" type="button" title="Expandir menu" aria-label="Expandir menu"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 6l-6 6 6 6"/></svg></button>
+        </div>
+
+        <div class="foundlabel">Ações de Linha (.btn-rowedit.lbl / .btn-rowdel.lbl)</div>
+        <div class="rowact">
+          <button class="btn-rowedit lbl" type="button"><span class="ic"><svg viewBox="0 0 18 18" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 15h3l9-9a1.5 1.5 0 0 0-3-3l-9 9v3Z"/><path d="M11 5l2 2"/></svg></span> Editar</button>
+          <button class="btn-rowdel lbl" type="button"><span class="ic"><svg viewBox="0 0 18 18" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 5h12M7 5V3h4v2M6 5l1 10h4l1-10"/></svg></span> Excluir</button>
+        </div>
+
+        <div class="foundlabel">Icon-buttons de Ferramentas (.tb-ic) e Modelos (.model-select)</div>
+        <div class="btnrow" style="align-items:center">
+          <button class="tb-ic" type="button" title="Ajuda" aria-label="Ajuda"><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M9.5 9a2.5 2.5 0 1 1 3.5 2.3c-.8.4-1 .9-1 1.7M12 17h.01"/></svg></span></button>
+          <button class="tb-ic" type="button" title="Em breve" aria-label="Relatar bug"><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M8 6a4 4 0 0 1 8 0M5 11h14M12 8v11M9 11v8M15 11v8M6 14H3M6 18l-3 1M18 14h3M18 18l3 1M6 9 3 7M18 9l3-2"/></svg></span></button>
+          <span class="model-select">Modelo salvo: nenhum <span class="chev"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9l6 6 6-6"/></svg></span></span>
+        </div>
+
+        <div class="foundlabel">Gerenciar snippets (.snippanel.managing)</div>
+        <div class="snippanel managing open" style="position:relative; right:0; width:300px; height:auto; border:1px solid var(--border); border-radius:var(--radius-md); padding:12px; margin-bottom:16px">
+          <button class="snip-addbtn" type="button">+ Adicionar snippet</button>
+          <div class="snip" style="display:flex;align-items:center;gap:8px;padding:8px;border:1px solid var(--border);border-radius:var(--radius-sm);margin-bottom:6px">
+            <span class="mono" style="font:600 12px/1 var(--mono)">G54 G90 G17</span>
+            <span class="snip-mng">
+              <button class="smbtn edit" type="button" title="Editar"><span class="ic"><svg viewBox="0 0 18 18" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 15h3l9-9a1.5 1.5 0 0 0-3-3l-9 9v3Z"/></svg></span></button>
+              <button class="smbtn del" type="button" title="Excluir"><span class="ic"><svg viewBox="0 0 18 18" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 5h12M7 5V3h4v2M6 5l1 10h4l1-10"/></svg></span></button>
+            </span>
+          </div>
+          <div class="snip" style="display:flex;align-items:center;gap:8px;padding:8px;border:1px solid var(--border);border-radius:var(--radius-sm)">
+            <span class="mono" style="font:600 12px/1 var(--mono)">M08 S2500</span>
+            <span class="snip-mng">
+              <button class="smbtn edit" type="button" title="Editar"><span class="ic"><svg viewBox="0 0 18 18" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 15h3l9-9a1.5 1.5 0 0 0-3-3l-9 9v3Z"/></svg></span></button>
+              <button class="smbtn del" type="button" title="Excluir"><span class="ic"><svg viewBox="0 0 18 18" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 5h12M7 5V3h4v2M6 5l1 10h4l1-10"/></svg></span></button>
+            </span>
+          </div>
+        </div>
+        
+        <div class="modaldemo" style="margin-bottom:24px">
+          <div class="scrim"></div>
+          <div class="modal" role="dialog" aria-modal="true" aria-labelledby="snip-modal-title">
+            <div class="modal-h">
+              <span class="mh" id="snip-modal-title">Novo snippet</span>
+              <button class="btn iconly sm" title="Fechar"><span class="ic">FC</span></button>
+            </div>
+            <div class="modal-b" style="display:grid;gap:10px">
+              <input class="field" placeholder="Rótulo (ex.: Cabeçalho padrão)">
+              <textarea class="field" rows="3" placeholder="G54 G90 G17&#10;M08 S2500"></textarea>
+            </div>
+            <div class="modal-f">
+              <button class="btn ghost">Cancelar</button>
+              <button class="btn cta md">Salvar snippet</button>
+            </div>
+          </div>
+        </div>
+
+        <div class="foundlabel">Chips e Avisos de Alteração (5 Estados)</div>
+        <p class="note">Apresenta o status de conformidade de cada alteração em lote no Explorer. Chips e avisos são mutuamente exclusivos (tabela única de renderização).</p>
+        <div class="btnrow" style="gap:8px;flex-wrap:wrap;margin-bottom:12px">
+          <span class="chip" tabindex="0" role="listitem" data-tip="Pendente: G54 ➔ G55" aria-label="Pendente: G54 ➔ G55"><span class="chip-tx">G54 ➔ G55</span><span class="chip-acts"><button type="button" class="chip-btn edit" tabindex="-1" title="Corrigir dados"><svg viewBox="0 0 18 18"><path d="M3 15h3l9-9a1.5 1.5 0 0 0-3-3l-9 9v3Z"/><path d="M11 5l2 2"/></svg></button><button type="button" class="chip-btn del" tabindex="-1" title="Remover"><svg viewBox="0 0 14 14"><path d="M2 2l10 10M12 2L2 12"/></svg></button></span></span>
+          <span class="chip applied" tabindex="0" role="listitem" data-tip="Aplicada: M03 ➔ M04" aria-label="Aplicada: M03 ➔ M04"><span class="ci">✓</span><span class="chip-tx">M03 ➔ M04</span></span>
+          <span class="aviso warn" tabindex="0" role="listitem" data-tip="M03 não encontrado no programa" aria-label="Aviso: M03 não encontrado"><span class="ai">⚠</span><span class="chip-tx">M03 não encontrado</span><span class="chip-acts"><button type="button" class="chip-btn edit" tabindex="-1" title="Corrigir dados"><svg viewBox="0 0 18 18"><path d="M3 15h3l9-9a1.5 1.5 0 0 0-3-3l-9 9v3Z"/><path d="M11 5l2 2"/></svg></button><button type="button" class="chip-btn del" tabindex="-1" title="Remover"><svg viewBox="0 0 14 14"><path d="M2 2l10 10M12 2L2 12"/></svg></button></span></span>
+          <span class="aviso err" tabindex="0" role="listitem" data-tip="M03 com 2 destinos ➔ resolva o conflito" aria-label="Aviso: M03 com 2 destinos"><span class="ai">⚠</span><span class="chip-tx">M03 com 2 destinos</span><span class="chip-acts"><button type="button" class="chip-btn edit" tabindex="-1" title="Corrigir dados"><svg viewBox="0 0 18 18"><path d="M3 15h3l9-9a1.5 1.5 0 0 0-3-3l-9 9v3Z"/><path d="M11 5l2 2"/></svg></button><button type="button" class="chip-btn del" tabindex="-1" title="Remover"><svg viewBox="0 0 14 14"><path d="M2 2l10 10M12 2L2 12"/></svg></button></span></span>
+          <span class="aviso warn" tabindex="0" role="listitem" data-tip="Programa removido da área ➔ alteração órfã" aria-label="Aviso: sem programa marcado"><span class="ai">⚠</span><span class="chip-tx">sem programa marcado</span><span class="chip-acts"><button type="button" class="chip-btn edit" tabindex="-1" title="Corrigir dados"><svg viewBox="0 0 18 18"><path d="M3 15h3l9-9a1.5 1.5 0 0 0-3-3l-9 9v3Z"/><path d="M11 5l2 2"/></svg></button><button type="button" class="chip-btn del" tabindex="-1" title="Remover"><svg viewBox="0 0 14 14"><path d="M2 2l10 10M12 2L2 12"/></svg></button></span></span>
+        </div>
+        <ul class="hint" style="margin:0 0 20px;padding-left:18px;line-height:1.7;font-size:12px;color:var(--tx-2)">
+          <li><b>Pendente:</b> Chip com cor indicando substituição/inserção/renomeação/remoção. Copia e edita.</li>
+          <li><b>Aplicada:</b> Chip verde com ícone de verificação (✓). Sem interações inline.</li>
+          <li><b>Não Encontrada:</b> Aviso âmbar (`.warn`) para sinalizar zero ocorrências do bloco buscado.</li>
+          <li><b>Conflito:</b> Aviso vermelho (`.err`) para múltiplos destinos ou inconsistência crítica (bloqueia o executar).</li>
+          <li><b>Órfã:</b> Aviso âmbar (`.warn`) quando o programa relacionado foi removido.</li>
+        </ul>
+
+        <div class="foundlabel">Badges de Conclusão por Programa</div>
+        <p class="note">Exibidos na lista do explorer ao lado do nome de cada programa para separar visualmente o planejamento da execução.</p>
+        <div class="btnrow" style="gap:14px;flex-wrap:wrap;margin-bottom:12px;align-items:center">
+          <span class="mono" style="font:600 13px/1 var(--mono)">PROG_0008.NC <span class="edited-mark planned" title="3 alterações planejadas">3</span></span>
+          <span class="mono" style="font:600 13px/1 var(--mono)">PROG_0012.NC <span class="edited-mark done" title="Executado com sucesso">✓</span></span>
+          <span class="mono" style="font:600 13px/1 var(--mono)">PROG_0042.NC <span class="edited-mark partial" title="Executado com avisos">2/3</span><span class="warn-badge" title="1 aviso neste programa">⚠ 1</span></span>
+        </div>
+        <ul class="hint" style="margin:0 0 20px;padding-left:18px;line-height:1.7;font-size:12px;color:var(--tx-2)">
+          <li><b>Planejado:</b> Pílula cinza/neutra (`.planned`) contendo o contador de alterações pendentes.</li>
+          <li><b>Executado:</b> Check verde (`.done`) indicando sucesso síncrono total no disco.</li>
+          <li><b>Parcial:</b> Fração âmbar (`.partial`) indicando que parte das alterações gerou avisos de não-conformidade.</li>
+          <li><b>Avisos:</b> Badge circular `.warn-badge` com a contagem total de avisos daquele programa.</li>
+        </ul>
+
+        <div class="foundlabel">Tabela Explorer com Overflow Controlado (C7)</div>
+        <p class="note">A tabela exibe a listagem dos programas e badges. O grid de colunas é calibrado para <code>28px · 1fr · 116px · 76px · 176px</code> para evitar lacunas vazias à direita. Em caso de transbordamento de chips na horizontal, o sistema adiciona dinamicamente o botão <code>+N</code>, cujo clique abre um popover vertical com as ações completas.</p>
+      </section>
+
+      <section>
+        <h2>O que NÃO usar</h2>
+        <div class="dont">
+          <div class="x"><b>✕ Roxo / múltiplas cores de ação.</b> Só laranja age.</div>
+          <div class="x"><b>✕ Gradientes aleatórios e glow.</b> Sem cara de IA.</div>
+          <div class="x"><b>✕ Sombras pesadas / neon.</b> Acabamento sóbrio.</div>
+          <div class="x"><b>✕ Emojis e glifos decorativos.</b> Só ícones funcionais.</div>
+          <div class="x"><b>✕ Raios de canto inconsistentes.</b> Sempre a mesma escala.</div>
+          <div class="x"><b>✕ Brilho 3D de marketing dentro do app.</b> Isso é só pra criativos.</div>
+        </div>
+      </section>
+    </div>
+  </div>
+</div>
+
+<!-- ===================== VENDAS / CRIATIVOS (3) ===================== -->
+<div class="view" id="sec-vendas">
+  <div class="vbg">
+    <div class="vhero">
+      <span class="vkicker">FlowNC · Linguagem comercial</span>
+      <div class="vh1">Sistema visual de <span class="or">vendas</span> e criativos</div>
+      <p class="vsub">Aqui o tom é expressivo: títulos grandes, contraste forte, glow e profundidade são permitidos — o oposto da sobriedade do app. Mesma marca, energia comercial de alta conversão.</p>
+      <button class="vcta" style="margin-bottom: 24px;">Botão de campanha →</button>
+    </div>
+
+    <!-- Swatches de Marketing (Tokens da Página de Vendas) -->
+    <div class="foundlabel" style="max-width: 1120px; margin: 32px auto 8px; color: #fff;">Paleta Comercial (Página de Vendas Claro - VC)</div>
+    <div class="mcolors" style="max-width: 1120px; margin: 0 auto 32px; display: flex; gap: 16px; flex-wrap: wrap;">
+      <div class="mcolor">
+        <div class="ball" style="background:#2E6BE6; border: 1px solid #1D58CD;"></div>
+        <div class="nm">Primária Azul</div>
+        <div class="hx">#2E6BE6</div>
+      </div>
+      <div class="mcolor">
+        <div class="ball" style="background:#E85D04; border: 1px solid #D05103;"></div>
+        <div class="nm">Conversão (CTA)</div>
+        <div class="hx">#E85D04</div>
+      </div>
+      <div class="mcolor">
+        <div class="ball" style="background:#F4F7FB; border: 1px solid #DCE4F0;"></div>
+        <div class="nm">Fundo Claro</div>
+        <div class="hx">#F4F7FB</div>
+      </div>
+      <div class="mcolor">
+        <div class="ball" style="background:#FFFFFF; border: 1px solid #DCE4F0;"></div>
+        <div class="nm">Superfície</div>
+        <div class="hx">#FFFFFF</div>
+      </div>
+      <div class="mcolor">
+        <div class="ball" style="background:#0A0E1A; border: 1px solid #2A384A;"></div>
+        <div class="nm">Marca Escuro</div>
+        <div class="hx">#0A0E1A</div>
+      </div>
+    </div>
+
+    <div class="vfeatures">
+      <div class="vfeat"><div class="fi">▤</div><h3>Bloco de benefício</h3><p>Título curto + frase de apoio. Cartão com leve translucidez.</p></div>
+      <div class="vfeat"><div class="fi">◎</div><h3>Bloco de benefício</h3><p>Ícone funcional em destaque laranja sobre superfície escura.</p></div>
+      <div class="vfeat"><div class="fi">⚡</div><h3>Bloco de benefício</h3><p>Hierarquia clara, respiro generoso, foco na promessa.</p></div>
+    </div>
+
+    <div class="vscale">
+      <span style="font-size:64px;color:#fff">Aa — Display 64</span>
+      <span style="font-size:40px;color:#cfd8e4">Aa — Título 40</span>
+      <span style="font-size:22px;color:#9aa7b8;font-weight:400">Aa — Apoio 22</span>
+    </div>
+
+    <div class="vrules">
+      <div class="vrule allow"><h4>Permitido (só criativos)</h4>
+        <ul><li>Gradientes e glow controlados</li><li>Fundos escuros cinematográficos</li><li>Mockups com profundidade/3D</li><li>Tipografia display gigante</li></ul></div>
+      <div class="vrule deny"><h4>Mesmo aqui, evitar</h4>
+        <ul><li>Roxo ou cores fora da marca</li><li>Mais de uma cor de ação</li><li>Stock genérico com "cara de IA"</li><li>Excesso de efeitos competindo</li></ul></div>
+    </div>
+  </div>
+</div>
+
+<!-- ===================== CRIATIVOS PUBLICITÁRIOS ===================== -->
+<div class="mwrap" id="sec-criativos" style="border-top:1px solid #1c2531; padding-top:40px; margin-top:40px;">
+  <h2>Criativos de Campanha</h2>
+  <p class="note">Placeholders e mockups das peças promocionais. Layouts expressivos seguindo o manual comercial claro e escuro para mídias e campanhas.</p>
+  
+  <div class="creative-wall">
+    <div class="creative-card">
+      <h4>Post LinkedIn (1200x628)</h4>
+      <p>Mockup em escala 1:3. Usado para chamadas orgânicas e anúncios patrocinados. Tipografia display marcante e contraste com o fundo escuro da marca.</p>
+      <div class="lk-post-mockup">
+        <div class="lk-post-kicker">Lançamento oficial</div>
+        <div class="lk-post-title">O novo padrão para verificação de códigos CNC.</div>
+        <div class="lk-post-footer">
+          <img class="lk-post-logo" src="../logo/logo_flownc.png" alt="FlowNC logo">
+          <button class="lk-post-cta" type="button">Conheça o FlowNC</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="creative-card">
+      <h4>Banner de E-mail (600x200)</h4>
+      <p>Mockup em escala 1:1.5. Utilizado no topo das comunicações e e-mails de produto. Gradiente característico da marca e chamada com botão de ação.</p>
+      <div class="em-banner-mockup">
+        <div class="em-banner-content">
+          <img class="em-banner-logo" src="../logo/logo_flownc.png" alt="FlowNC logo">
+          <div class="em-banner-title">Nova versão v4.0 disponível</div>
+          <div class="em-banner-desc">Edição em lote otimizada para centros de usinagem Romi e tornos Nardini.</div>
+        </div>
+        <div class="em-banner-action">
+          <span class="em-banner-badge">Nova UI</span><br>
+          <button class="em-banner-btn" type="button">Atualizar agora</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+    <!-- ===================== GOVERNANÇA & CHANGELOG ===================== -->
+    <div class="mwrap" id="sec-changelog" style="border-top:1px solid #1c2531; padding-top:40px; margin-top:40px;">
+      <h2>Governança & Changelog</h2>
+      <p class="note">Histórico de alterações e controle de versões do Manual da Marca e Design System do FlowNC.</p>
+      <div class="canon" style="background:#101826; border-color:#1c2531; margin-bottom:12px">
+        <b>v4.0.0 (2026-07-04)</b> — Reestruturação do Design System para layout de Menu Lateral Fixo e Manual da Marca institucional.
+      </div>
+      <div class="canon" style="background:#101826; border-color:#1c2531; margin-bottom:12px">
+        <b>v3.0.0 (2026-06)</b> — Implementação dos 5 estados de alteração em lote (ITEM-13) e Badges de Conclusão por programa (ITEM-05) para desambiguar planejamento de execução real.
+      </div>
+      <div class="canon" style="background:#101826; border-color:#1c2531;">
+        <b>v2.4.0 (2026-05)</b> — Lançamento das Edições em Lote com Seletor de Máquina (.machine-select), Abas dinâmicas, recolhimento do menu lateral e controle de snippets.
+      </div>
+    </div>
+
+  </div> <!-- main-content -->
+</div> <!-- layout-root -->
+
+<script>
+  // Lógica de navegação lateral com scroll suave e IntersectionObserver
+  const navLinks = document.querySelectorAll('.sidebar-nav a');
+  const sections = Array.from(navLinks).map(link => document.querySelector(link.getAttribute('href'))).filter(Boolean);
+
+  // Scroll suave ao clicar
+  navLinks.forEach(link => {
+    link.addEventListener('click', e => {
+      e.preventDefault();
+      const targetId = link.getAttribute('href');
+      const targetEl = document.querySelector(targetId);
+      if (targetEl) {
+        targetEl.scrollIntoView({ behavior: 'smooth' });
+        navLinks.forEach(l => l.classList.remove('active'));
+        link.classList.add('active');
+      }
+    });
+  });
+
+  // IntersectionObserver para atualizar menu ativo no scroll
+  const observerOptions = {
+    root: null,
+    rootMargin: '-20% 0px -60% 0px',
+    threshold: 0
+  };
+
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        const id = entry.target.getAttribute('id');
+        const activeLink = document.querySelector(`.sidebar-nav a[href="#${id}"]`);
+        if (activeLink) {
+          navLinks.forEach(l => l.classList.remove('active'));
+          activeLink.classList.add('active');
+        }
+      }
+    });
+  }, observerOptions);
+
+  sections.forEach(sec => observer.observe(sec));
+
+  // Toggle de Temas dinâmico
+  const themeBtns = document.querySelectorAll('.theme-btn');
+  const stage = document.getElementById('stage');
+
+  themeBtns.forEach(btn => {
+    btn.addEventListener('click', () => {
+      themeBtns.forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+
+      const theme = btn.dataset.theme;
+
+      document.body.classList.remove('theme-light', 'theme-dark', 'theme-vc');
+
+      if (theme === 'claro') {
+        document.body.classList.add('theme-light');
+        stage.setAttribute('data-theme', 'claro');
+      } else if (theme === 'escuro') {
+        document.body.classList.add('theme-dark');
+        stage.setAttribute('data-theme', 'escuro');
+      } else if (theme === 'vc') {
+        document.body.classList.add('theme-vc');
+        stage.setAttribute('data-theme', 'vc');
+      }
+
+      refreshHex();
+    });
+  });
+
+  // Função para obter a luminância relativa de uma cor RGB/HEX
+  function getLuminance(hex) {
+    if (!hex) return 0;
+    let cleanHex = hex.trim().replace('#', '');
+    if (cleanHex.length === 3) {
+      cleanHex = cleanHex.split('').map(c => c + c).join('');
+    }
+    if (hex.startsWith('rgb')) {
+      const parts = hex.match(/\d+/g);
+      if (parts && parts.length >= 3) {
+        return getLuminanceFromRgb(parseInt(parts[0]), parseInt(parts[1]), parseInt(parts[2]));
+      }
+    }
+    const num = parseInt(cleanHex, 16);
+    if (isNaN(num)) return 0;
+    const r = (num >> 16) & 255;
+    const g = (num >> 8) & 255;
+    const b = num & 255;
+    return getLuminanceFromRgb(r, g, b);
+  }
+
+  function getLuminanceFromRgb(r, g, b) {
+    const a = [r, g, b].map(v => {
+      v /= 255;
+      return v <= 0.03928 ? v / 12.92 : Math.pow((v + 0.055) / 1.055, 2.4);
+    });
+    return a[0] * 0.2126 + a[1] * 0.7152 + a[2] * 0.0722;
+  }
+
+  function getContrastRatio(hex1, hex2) {
+    const l1 = getLuminance(hex1);
+    const l2 = getLuminance(hex2);
+    const brightest = Math.max(l1, l2);
+    const darkest = Math.min(l1, l2);
+    return ((brightest + 0.05) / (darkest + 0.05)).toFixed(1);
+  }
+
+  // HEX visivel + copiar (le o valor computado, atualiza ao trocar de tema)
+  function refreshHex(){
+    const cs=getComputedStyle(stage);
+    document.querySelectorAll('#swatches .swatch').forEach(s => {
+      const v=cs.getPropertyValue(s.dataset.token).trim();
+      const el=s.querySelector('.hex'); if(el) el.textContent=v.toUpperCase();
+
+      const againstToken = s.dataset.against;
+      const againstVal = againstToken ? cs.getPropertyValue(againstToken).trim() : null;
+      const contrastEl = s.querySelector('.contrast');
+      if (contrastEl && againstVal) {
+        const ratio = getContrastRatio(v, againstVal);
+        contrastEl.textContent = ratio + ':1';
+        contrastEl.className = 'contrast'; // Limpa classes
+        
+        const rVal = parseFloat(ratio);
+        if (rVal >= 7.0) {
+          contrastEl.classList.add('pass-aaa');
+          contrastEl.title = 'Passa no nível WCAG AAA (≥7.0:1)';
+        } else if (rVal >= 4.5) {
+          contrastEl.classList.add('pass-aa');
+          contrastEl.title = 'Passa no nível WCAG AA (≥4.5:1)';
+        } else {
+          contrastEl.title = 'Contraste abaixo do nível recomendado (4.5:1)';
+        }
+      }
+    });
+  }
+  function copyText(t){
+    if(navigator.clipboard && window.isSecureContext){return navigator.clipboard.writeText(t);}
+    return new Promise((res,rej)=>{
+      const ta=document.createElement('textarea');
+      ta.value=t; ta.style.position='fixed'; ta.style.opacity='0';
+      document.body.appendChild(ta); ta.focus(); ta.select();
+      try{ document.execCommand('copy') ? res() : rej(); }catch(err){ rej(err); }
+      finally{ ta.remove(); }
+    });
+  }
+  document.getElementById('swatches').addEventListener('click',e=>{
+    const s=e.target.closest('.swatch'); if(!s) return;
+    const v=s.querySelector('.hex').textContent; if(!v) return;
+    copyText(v)
+      .then(()=>{ s.classList.add('copied'); setTimeout(()=>s.classList.remove('copied'),900); })
+      .catch(()=>{ s.classList.add('copyfail'); setTimeout(()=>s.classList.remove('copyfail'),1400); });
+  });
+  refreshHex();
+  document.querySelectorAll('.toggle').forEach(t=>t.addEventListener('click',()=>t.classList.toggle('on')));
+
+  // ===== Gaveta retrátil canônica (.sbnav) =====
+  (function(){
+    const demo=document.getElementById('sbnav-demo');
+    const tgl=document.getElementById('sbnav-toggle');
+    if(!demo||!tgl) return;
+    const KEY='flownc-sbnav-collapsed';
+
+    function setCollapsed(collapsed){
+      demo.classList.toggle('is-collapsed',collapsed);
+      tgl.setAttribute('aria-expanded',String(!collapsed));
+      tgl.setAttribute('aria-label',collapsed?'Expandir menu de navegação':'Recolher menu de navegação');
+      tgl.title=collapsed?'Expandir menu':'Recolher menu';
+      try{localStorage.setItem(KEY,String(collapsed));}catch(e){}
+    }
+    let saved=false; try{saved=localStorage.getItem(KEY)==='true';}catch(e){}
+    setCollapsed(saved);
+
+    tgl.addEventListener('click',()=>setCollapsed(!demo.classList.contains('is-collapsed')));
+
+    // Itens ativos: clique sem navegar
+    demo.querySelectorAll('.sbnav__item.active').forEach(el=>el.addEventListener('click',e=>e.preventDefault()));
+
+    // Submenu expansível
+    demo.querySelectorAll('.sbnav__item[aria-controls]').forEach(btn=>{
+      btn.addEventListener('click',()=>{
+        const sub=document.getElementById(btn.getAttribute('aria-controls'));
+        if(!sub) return;
+        const open=btn.getAttribute('aria-expanded')==='true';
+        btn.setAttribute('aria-expanded',String(!open));
+        sub.hidden=open;
+      });
+    });
+  })();
+</script>
+</body>
+</html>

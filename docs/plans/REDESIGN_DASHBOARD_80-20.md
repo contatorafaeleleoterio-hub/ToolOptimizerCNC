@@ -1,71 +1,84 @@
-# Redesign Dashboard — Calculadora 80/20
+# Redesign Dashboard — Calculadora 80/20 (v3 consolidado — pronto para execução)
+
+> **Versão:** v3 (18/07/2026) — consolida o plano original (12/07) + "Revisão UX — Refinamentos v2" em uma versão única executável.
+> Versões anteriores preservadas no git (commit `0fca280`).
+> **Status:** executado e absorvido pelo plano `PLAN_IMPLEMENTACAO_DS_80-20_MOBILE.md` (release local v0.12.0 em 07/08/2026).
+
+## Índice de etapas
+1. S0 — Preparação — restaurar design system na main + registrar plano no backlog/roadmap — **Modelo pequeno**
+2. S1 — Config Panel enxuto — 5 inputs essenciais + toggle "Ajuste avançado" + Simular no rodapé — **Modelo intermediário**
+3. S2 — Results Panel 4 zonas — herói de verdade, estado vazio honesto, remover torque, "Detalhes e fórmulas ▾" — **Modelo avançado**
+4. S3 — Navegação + polish — nav no header com contadores, acessibilidade, ajuste de testes, bump MINOR — **Modelo intermediário**
 
 ## Contexto
-O dashboard principal (`/`) tem ~45-50 elementos visuais simultâneos (8 sliders, 3 gauges, ~12 cards, 5 FormulaCards, 6 badges). Rafael quer: menos poluição, navegação fluida, calculadora enxuta com só inputs de alto impacto (80/20), automação de Vc/fz, manter indicadores como diferencial para operadores inexperientes.
 
-## Diagnóstico (fatos do código)
+Revisão feita contra o código atual (commit `0fca280`). O dashboard principal tem ~45-50 elementos visuais simultâneos. Objetivo: calculadora enxuta 80/20 — fluxo Material → Ferramenta → Simular em < 10s, mantendo os diferenciais para operadores inexperientes.
 
-**O que a exploração confirmou:**
-1. **Vc/fz/ae/ap JÁ são 100% automáticos** — `src/engine/recommendations.ts` popula tudo por material+operação+diâmetro com interpolação. O problema não é falta de automação, é que a UI *expõe* tudo de uma vez.
-2. **maxTorque não é validado em lugar nenhum** — só serve de escala visual no FormulaCard de torque. Corte limpo.
-3. **Nenhum limite de máquina altera os parâmetros de corte** — maxRPM/maxPotencia/maxAvanco/eficiencia só geram avisos/escalas. Podem virar constantes internas com defaults sensatos.
-4. **safetyFactor é o único input que muda outputs** (potência/torque) — manter, mas simplificado.
-5. Benchmark (FSWizard/HSMAdvisor): o padrão da indústria é **3 passos: Material → Ferramenta → Resultado**, com tudo o mais escondido em "advanced". FSWizard mostra RPM+Feed gigantes no topo e o resto em lista secundária.
+**Problemas confirmados no código:**
+- 4 seções de config (com 4 sliders de Ajuste Fino abertos por default), 8 zonas no results, 5 FormulaCards, lista de ferramentas expandida.
+- O "herói" (RPM/Avanço) usa `fontSize: 2rem` (`results-panel.tsx` Zona 4) — não domina a tela; é mais um card entre iguais. Design system exige Big Numbers `text-6xl/7xl font-mono` com glow.
+- Estado vazio mente: `EMPTY_RESULTADO` renderiza **0 RPM / 0 mm/min** como se fosse resultado real, e mostra timestamp `Date.now()` sem simulação (`results-panel.tsx:151`).
+- **Torque aparece em 2 lugares (Data Row + FormulaCard) mas não é validado em nenhum cálculo** — só escala visual. Ruído puro.
+- Vc/fz/ae/ap **já são 100% automáticos** via `recommendations.ts` — o problema é a UI expor tudo de uma vez, não falta de automação.
+- Nenhum limite de máquina altera parâmetros de corte (só avisos/escalas); `safetyFactor` é o único input que muda outputs (potência).
+- Ações de ferramentas salvas dependem de hover (`config-panel.tsx:162`); botões Z e ± com ~28px (abaixo de 40px para luvas); navegação Favoritos/Histórico escondida no SidebarFooter.
+- Benchmark (FSWizard/HSMAdvisor): padrão da indústria é 3 passos — Material → Ferramenta → Resultado — com o resto em "advanced".
 
-## Proposta — Fluxo em 3 passos (wizard horizontal implícito)
+**Resultado esperado:** de ~45-50 para ~15-18 elementos visíveis (-65%), mantendo LCD "AÇÃO:", gauges, sliders de override e fórmulas educacionais (colapsadas).
 
-### Inputs essenciais (o que fica visível) — 5 inputs
-| # | Input | Como fica |
-|---|-------|-----------|
-| 1 | Material | select (mantém) |
-| 2 | Operação | 3 botões Desbaste/Semi/Acab. (mantém) |
-| 3 | Tipo de fresa | 3 botões (mantém) |
-| 4 | Diâmetro + Z | linha única (diâmetro input + Z botões) |
-| 5 | Balanço (altura fixação) | input — necessário p/ L/D (segurança) |
+## Etapas
 
-→ Botão **SIMULAR** grande logo abaixo. Tudo pré-preenchido com defaults; usuário troca 2-3 campos e clica. Tempo alvo: <10s.
+### S0 — Preparação (pré-requisito)
+- Copiar `.claude/worktrees/quirky-goldberg/.interface-design/system.md` → `.interface-design/system.md` na raiz (arquivo não existe na main; é a referência de tokens do redesign).
+- Registrar o plano em `docs/plans/BACKLOG_IMPLEMENTACAO.md` + tabela PRIORIDADE 1 de `docs/ROADMAP_SESSAO_ATUAL.md` (regra crítica 9).
 
-### O que sai da tela principal (vai para "Modo Avançado" colapsado)
-- **4 sliders do Ajuste Fino (Vc, fz, ae, ap)** → colapsados atrás de um toggle "⚙ Ajuste avançado" (fechado por default). Valores recomendados aparecem read-only no resultado; quem quiser mexe.
-- **Raio da ponta (toroidal)** → aparece só quando toroidal selecionado, dentro do avançado (default 1.0).
-- **safetyFactor** → move para o avançado (default 0.80 já é conservador).
-- **Lista de ferramentas salvas** → vira dropdown compacto "Usar ferramenta salva ▾" no topo da seção ferramenta, não lista expandida.
+### S1 — Config Panel enxuto (`src/components/config-panel.tsx`)
+Visível (5 inputs): Material (select) · Operação (3 botões) · Tipo de fresa (3 botões) · Diâmetro + Z (linha única) · Balanço. Tudo pré-preenchido com defaults.
+- **Toggle "⚙ Ajuste avançado"** (fechado por default, estado persistido em localStorage): 4 sliders do Ajuste Fino (`fine-tune-panel.tsx`), Raio da ponta (só toroidal, default 1.0), slider de Segurança/safetyFactor (default 0.80).
+- **Ferramentas salvas** viram dropdown compacto "Usar ferramenta salva ▾" — ações editar/remover **sempre visíveis** (sem hover-only; hover não existe em touch e falha com luvas).
+- **Botão Simular sticky no rodapé** do painel (fluxo top-down termina na ação), não mais no topo.
+- Alvos ≥ 40px: botões Z, botões ± do safety; ícones de ação ≥ 24px com padding.
+- Seções default: Configuração Base e Ferramenta abertas; Ajuste avançado e Segurança fechadas.
 
-### O que sai do sistema (remoção/constante)
-- **maxTorque**: remover da UI e do FormulaCard (só escala visual, zero validação). Fica no engine como constante para quem usar API futura.
-- **FormulaCard de Torque (Zona 8)**: remover — torque some do dia a dia do operador.
-- **Torque na Data Row (Zona 6)**: remover.
-- **maxPotencia/eficiencia**: já são fixos na UI — manter como constantes internas (sem mudança).
-- **maxRPM/maxAvanco**: continuam editáveis em `/settings` (avisos úteis), fora da tela principal — sem mudança.
+### S2 — Results Panel 8→4 zonas (`src/components/results-panel.tsx`)
 
-### Results Panel — de 8 zonas para 4
-| Zona nova | Conteúdo |
-|-----------|----------|
-| 1. **Herói** | RPM + Avanço gigantes (font-mono) + badge semáforo integrado. Sliders bidirecionais mantidos (override é valioso), mas visual mais limpo |
-| 2. **Ação** | LCD reduzido a 1-2 linhas: alerta + "AÇÃO:" (mantém — é o diferencial p/ inexperientes) |
-| 3. **Indicadores** | 3 HalfMoon Gauges mantidos (Avanço, MRR, Saúde) + L/D e CTF como chips coloridos. **Este é o diferencial — fica.** |
-| 4. **Detalhes ▾** | Colapsado por default: params (Vc/fz/ap/ae), Potência, Vc Real, MRR numérico, e os 4 FormulaCards restantes (RPM, Avanço, MRR, Potência) |
+| Zona | Conteúdo |
+|------|----------|
+| 1. Herói | RPM + Avanço em **text-6xl mínimo** font-mono com glow (≥40% da altura visível) + semáforo integrado + BidirectionalSliders mantidos com visual mais leve |
+| 2. Ação | LCD 1-2 linhas: alerta + "AÇÃO:" (diferencial — fica) |
+| 3. Indicadores | 3 HalfMoonGauges (Avanço, MRR, Saúde) + L/D e CTF como chips `text-sm font-mono` + ícone (segurança legível à distância) |
+| 4. "Detalhes e fórmulas ▾" | Colapsado por default: Vc/fz/ap/ae, Potência, Vc Real, MRR + 4 FormulaCards (RPM, Avanço, MRR, Potência) |
 
-Resultado: de ~45-50 elementos para **~15-18 visíveis** — corte de ~65%.
+- **Estado vazio honesto:** sem resultado (ou `resultado=null` após mudança de parâmetro) → herói mostra `—` + CTA "Configure e clique em Simular"; nunca zeros; ocultar timestamp.
+- **Remover torque:** FormulaCard Torque, célula Torque da Data Row, e atualizar copy do safety para "Aplicado à Potência estimada" (`config-panel.tsx:494`). `maxTorque` fica no engine como constante.
+- Chip discreto "SF 70%" no Console Header quando safetyFactor ≠ 0.80 (visibilidade de estado escondido no avançado).
+- Badge âmbar "manual" nos valores de Detalhes quando Vc/fz/ae/ap foram alterados no avançado (prevenção de erro).
+- Preservar `data-testid="tool-summary"` e demais testids/labels/aria existentes; listar arquivos de teste afetados antes de editar.
 
-### Navegação
-- Header ganha nav simples: **Calcular · Favoritos · Histórico · Config** (hoje escondido no SidebarFooter — descoberta ruim).
-- Fluxo auto-explicativo: numeração visual sutil nas seções do config ("1 Material → 2 Ferramenta → Simular").
+### S3 — Navegação + polish
+- Nav no header (`src/App.tsx` + `sidebar-footer.tsx`): **Calcular · Favoritos · Histórico · Config**, migrando os badges de contagem junto (link vazio sem badge parece feature morta).
+- Numeração sutil do fluxo no config ("1 Material → 2 Ferramenta → Simular") com ✓ de completude quando o valor difere do default.
+- Contraste: texto informativo mínimo `white/60` sobre `#0F1419` (WCAG AA); `white/30` só em decorativo.
+- Teclado nos sliders: `BidirectionalSlider`/`StyledSlider` com setas + `aria-valuenow/min/max` + focus ring visível.
+- Ajustar testes quebrados, bump MINOR no `package.json`, commit.
 
-## Arquivos a modificar
-- `src/components/config-panel.tsx` — reorganizar em essencial + avançado colapsado
-- `src/components/fine-tune-panel.tsx` — mover para dentro do toggle avançado
-- `src/components/results-panel.tsx` — 8→4 zonas, seção Detalhes colapsável
-- `src/components/formula-card.tsx` / dados — remover card Torque
-- `src/App.tsx` + `src/components/sidebar-footer.tsx` — nav no header
-- Reusar: `recommendations.ts`, `slider-bounds.ts`, `SegmentedGradientBar`, `HalfMoonGauge`, `BidirectionalSlider` (tudo existente — zero engine novo)
-- Testes: ajustar testes de results-panel/config-panel afetados (suite atual: 1052 testes)
+## O que NÃO muda (decidido na revisão UX)
+- LCD com linha "AÇÃO:" — único elemento que diz *o que fazer*, não só *o que está errado*.
+- Semáforo com ícone + texto + cor (redundante à cor, atende daltônicos).
+- BidirectionalSlider de override no herói — máquina real difere do cálculo; valioso no chão de fábrica.
+- Automação via `recommendations.ts` e `calcularSliderBounds()` — redesign é só de exposição, zero engine novo.
+- Regra "store não auto-recalcula" — clicar Simular é o momento de comprometimento consciente do operador.
+- Disclaimer "o sistema recomenda, o operador decide" (regra crítica 6).
 
-## Fases sugeridas (sessões)
-1. **S1 — Config Panel enxuto**: essencial + toggle avançado + dropdown ferramentas salvas
-2. **S2 — Results Panel 4 zonas**: herói + ação + indicadores + detalhes colapsados; remover torque
-3. **S3 — Navegação + polish**: nav header, numeração do fluxo, ajuste de testes, bump MINOR
+## Arquivos críticos
+- `src/components/config-panel.tsx` (502 linhas) — S1
+- `src/components/fine-tune-panel.tsx` — S1 (move para dentro do toggle)
+- `src/components/results-panel.tsx` (541 linhas) — S2
+- `src/App.tsx` + `src/components/sidebar-footer.tsx` — S3
+- Reusar (zero engine novo): `recommendations.ts`, `slider-bounds.ts`, `HalfMoonGauge`, `BidirectionalSlider`, `CollapsibleSection`, `SEG_*` de `shared-result-parts`
+- Testes: suite atual 1052 testes / 62 arquivos
 
 ## Verificação
-- `npm run build` + `npm test` + typecheck (quality gates)
-- Verificar em `npm run dev`: fluxo completo material→simular <10s, toggle avançado funciona, mobile intacto (redesign é desktop-only nesta fase)
+- Quality gates por sessão: `npx vitest run tests/` (**não** `npm test` — roda .aiox-core/) + `npx tsc --noEmit` + `npx vite build`
+- `npm run dev`: fluxo material→simular < 10s; toggle avançado abre/fecha e persiste; estado vazio mostra `—`; torque ausente; mobile intacto (redesign desktop-only nesta fase)
+- Fim de cada sessão: reportar e aguardar "pode seguir" (regra global)

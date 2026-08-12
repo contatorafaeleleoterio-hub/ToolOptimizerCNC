@@ -1,0 +1,289 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="pt-BR"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>CNC Precision Console - Machinist Mode</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&amp;family=JetBrains+Mono:wght@500;700&amp;family=Space+Grotesk:wght@500;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "surface-container": "#1b2025",
+                        "inverse-primary": "#006875",
+                        "surface-variant": "#30353b",
+                        "primary-fixed-dim": "#00daf3",
+                        "surface-container-low": "#171c21",
+                        "on-secondary-fixed-variant": "#454747",
+                        "inverse-on-surface": "#2c3136",
+                        "surface-dim": "#0f1419",
+                        "primary-fixed": "#9cf0ff",
+                        "outline": "#849396",
+                        "secondary": "#c6c6c7",
+                        "on-surface-variant": "#bac9cc",
+                        "on-background": "#dee3ea",
+                        "on-primary": "#00363d",
+                        "tertiary": "#2ECC71",
+                        "tertiary-container": "#56eb8c",
+                        "on-tertiary-fixed-variant": "#005228",
+                        "on-primary-fixed": "#001f24",
+                        "on-tertiary-fixed": "#00210c",
+                        "surface-container-lowest": "#0a0f14",
+                        "tertiary-fixed-dim": "#4ae183",
+                        "on-error-container": "#ffdad6",
+                        "tertiary-fixed": "#6bfe9c",
+                        "error-container": "#93000a",
+                        "surface": "#0f1419",
+                        "on-tertiary": "#003919",
+                        "primary": "#00E5FF",
+                        "secondary-fixed": "#e2e2e2",
+                        "on-primary-container": "#00626e",
+                        "on-surface": "#dee3ea",
+                        "surface-tint": "#00daf3",
+                        "on-secondary-fixed": "#1a1c1c",
+                        "error": "#ffb4ab",
+                        "on-secondary": "#2f3131",
+                        "surface-container-high": "#252a30",
+                        "background": "#0f1419",
+                        "inverse-surface": "#dee3ea",
+                        "secondary-fixed-dim": "#c6c6c7",
+                        "on-error": "#690005",
+                        "secondary-container": "#454747",
+                        "primary-container": "#00e5ff",
+                        "on-secondary-container": "#b4b5b5",
+                        "surface-bright": "#353a3f",
+                        "outline-variant": "#3b494c",
+                        "on-tertiary-container": "#006733",
+                        "on-primary-fixed-variant": "#004f58"
+                    },
+                    fontFamily: {
+                        "headline": ["Space Grotesk"],
+                        "body": ["Inter"],
+                        "label": ["Inter"],
+                        "mono": ["JetBrains Mono"]
+                    },
+                    borderRadius: { "DEFAULT": "0.125rem", "lg": "0.25rem", "xl": "0.5rem", "full": "0.75rem" },
+                },
+            },
+        }
+    </script>
+<style type="text/tailwindcss">
+        .glass-panel {
+            background: rgba(23, 28, 33, 0.85);
+            backdrop-filter: blur(8px);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+        }
+        .console-bezel {
+            background: #0f1419;
+            border: 1px solid #3b494c;
+        }
+        .digital-display {
+            background: #05070a;
+            border: 1px solid rgba(0, 229, 255, 0.1);
+        }
+        .led-text {
+            color: #00E5FF;
+            text-shadow: 0 0 5px rgba(0, 229, 255, 0.3);
+        }
+        .led-text-critical {
+            color: #ffb4ab;
+            text-shadow: 0 0 5px rgba(255, 180, 171, 0.3);
+        }
+        input[type=range] {
+            -webkit-appearance: none;
+            background: transparent;
+        }
+        input[type=range]::-webkit-slider-runnable-track {
+            height: 2px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 2px;
+        }
+        input[type=range]::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            height: 12px;
+            width: 12px;
+            border-radius: 50%;
+            background: currentColor;
+            margin-top: -5px;
+            box-shadow: 0 0 10px currentColor;
+        }
+        .gauge-ring {
+            stroke-dasharray: 2 1;
+        }
+    </style>
+</head>
+<body class="bg-[#05070a] text-on-surface font-body p-4 min-h-screen flex items-center justify-center overflow-hidden">
+<div class="w-full max-w-[1200px] flex flex-col gap-3">
+<!-- Top Header -->
+<header class="console-bezel flex items-stretch rounded overflow-hidden">
+<div class="flex-1 border-r border-white/5 p-2 flex flex-col">
+<span class="text-[8px] text-white/40 font-headline tracking-widest uppercase">TIMESTAMP</span>
+<span class="font-mono text-xs text-primary">2023-10-27 14:45:12</span>
+</div>
+<div class="flex-1 border-r border-white/5 p-2 flex flex-col">
+<span class="text-[8px] text-white/40 font-headline tracking-widest uppercase">MATERIAL</span>
+<span class="font-bold text-xs text-on-surface">AÇO 1045</span>
+</div>
+<div class="flex-1 border-r border-white/5 p-2 flex flex-col">
+<span class="text-[8px] text-white/40 font-headline tracking-widest uppercase">OPERAÇÃO</span>
+<span class="font-bold text-xs text-on-surface uppercase">Desbaste</span>
+</div>
+<div class="flex items-center px-4 bg-error-container/5">
+<div class="border border-error/50 px-3 py-1 rounded-sm animate-pulse">
+<span class="text-error font-bold text-[10px] tracking-widest uppercase">CRÍTICO</span>
+</div>
+</div>
+<div class="flex items-center px-3 border-l border-white/5">
+<button class="text-primary hover:text-white transition-colors">
+<span class="material-symbols-outlined text-lg fill-1">star</span>
+</button>
+</div>
+</header>
+<!-- Alerts Section -->
+<section class="digital-display rounded p-2.5 flex flex-col gap-1.5">
+<div class="flex items-center gap-3">
+<span class="material-symbols-outlined text-error text-base">emergency_home</span>
+<div class="font-mono text-xs font-bold led-text-critical uppercase">ALERTA: RPM ALTO (9.337) | AVANÇO CRÍTICO (8.635)</div>
+</div>
+<div class="flex items-center gap-3">
+<span class="material-symbols-outlined text-primary text-base">info</span>
+<div class="font-mono text-xs led-text">AÇÃO: REDUZIR AVANÇO. VERIFICAR SAÚDE DA FERRAMENTA.</div>
+</div>
+<div class="flex items-center gap-3 border-t border-white/5 pt-1.5">
+<span class="material-symbols-outlined text-white/20 text-base">settings_suggest</span>
+<div class="font-mono text-[10px] text-white/40 uppercase">SISTEMA OPERANDO EM MODO DE ALTA PRECISÃO V2.4</div>
+</div>
+</section>
+<!-- Primary Zone: Tool & Sliders -->
+<main class="flex flex-col gap-3">
+<div class="glass-panel p-2.5 flex items-center gap-3 rounded">
+<span class="material-symbols-outlined text-primary text-xl">precision_manufacturing</span>
+<span class="text-[10px] text-white/50 font-headline tracking-widest uppercase">FERRAMENTA:</span>
+<span class="text-lg font-mono text-white tracking-tight">Toroidal Ø6 R1 H25 F4</span>
+</div>
+<div class="flex gap-3">
+<!-- RPM Card with Slider -->
+<div class="glass-panel flex-1 flex flex-col gap-4 rounded py-2.5 px-4 items-center">
+<div class="flex justify-between items-start flex justify-between items-start w-full">
+<span class="text-[9px] text-white/60 font-headline tracking-widest uppercase">ROTAÇÃO (RPM)</span>
+<span class="material-symbols-outlined text-yellow-500 text-lg">speed</span>
+</div>
+<div class="flex items-baseline gap-1">
+<span class="text-5xl font-mono text-primary font-bold">9.337</span>
+<span class="text-[10px] text-white/30 font-mono">rev/min</span>
+</div>
+<div class="flex flex-col gap-2 mt-auto w-full">
+<div class="flex justify-between text-[9px] font-mono text-white/30 uppercase">
+<span>-150%</span>
+<span class="text-primary">0% Offset</span>
+<span>+150%</span>
+</div>
+<div class="relative flex items-center text-primary">
+<button class="text-white/40 hover:text-white"><span class="material-symbols-outlined text-sm">remove</span></button>
+<input class="flex-1 mx-2" max="150" min="-150" type="range" value="0"/>
+<button class="text-white/40 hover:text-white"><span class="material-symbols-outlined text-sm">add</span></button>
+</div>
+</div>
+</div>
+<!-- AVANÇO Card with Slider -->
+<div class="glass-panel flex-1 flex flex-col gap-4 rounded border-l-2 border-l-error py-2.5 px-4 items-center">
+<div class="flex justify-between items-start flex justify-between items-start w-full">
+<span class="text-[9px] text-white/60 font-headline tracking-widest uppercase">AVANÇO (MM/MIN)</span>
+<span class="material-symbols-outlined text-error text-lg">trending_up</span>
+</div>
+<div class="flex items-baseline gap-1">
+<span class="text-5xl font-mono text-error font-bold">8.635</span>
+<span class="text-[10px] text-white/30 font-mono">mm/min</span>
+</div>
+<div class="flex flex-col gap-2 mt-auto w-full">
+<div class="flex justify-between text-[9px] font-mono text-white/30 uppercase">
+<span>-150%</span>
+<span class="text-error">0% Offset</span>
+<span>+150%</span>
+</div>
+<div class="relative flex items-center text-error">
+<button class="text-white/40 hover:text-white"><span class="material-symbols-outlined text-sm">remove</span></button>
+<input class="flex-1 mx-2" max="150" min="-150" type="range" value="0"/>
+<button class="text-white/40 hover:text-white"><span class="material-symbols-outlined text-sm">add</span></button>
+</div>
+</div>
+</div>
+</div>
+<!-- Secondary Zone: Input Parameters -->
+<div class="grid grid-cols-4 gap-3">
+<div class="glass-panel p-2.5 flex flex-col gap-0.5 rounded">
+<span class="text-[8px] text-white/50 font-headline tracking-widest uppercase">Vc (Vel. Corte)</span>
+<div class="flex items-baseline gap-1">
+<span class="text-lg font-mono text-white">176</span>
+<span class="text-[9px] text-white/30">m/min</span>
+</div>
+</div>
+<div class="glass-panel p-2.5 flex flex-col gap-0.5 rounded">
+<span class="text-[8px] text-white/50 font-headline tracking-widest uppercase">fz (Av. Dente)</span>
+<div class="flex items-baseline gap-1">
+<span class="text-lg font-mono text-white">0.14</span>
+<span class="text-[9px] text-white/30">mm</span>
+</div>
+</div>
+<div class="glass-panel p-2.5 flex flex-col gap-0.5 rounded">
+<span class="text-[8px] text-white/50 font-headline tracking-widest uppercase">ap (Prof. Axial)</span>
+<div class="flex items-baseline gap-1">
+<span class="text-lg font-mono text-white">4.2</span>
+<span class="text-[9px] text-white/30">mm</span>
+</div>
+</div>
+<div class="glass-panel p-2.5 flex flex-col gap-0.5 rounded">
+<span class="text-[8px] text-white/50 font-headline tracking-widest uppercase">ae (Prof. Radial)</span>
+<div class="flex items-baseline gap-1">
+<span class="text-lg font-mono text-white">2.2</span>
+<span class="text-[9px] text-white/30">mm</span>
+</div>
+</div>
+</div>
+<!-- Calculated Data Row -->
+<div class="flex gap-3">
+<div class="glass-panel flex-1 py-1.5 px-3 flex items-center justify-between rounded border-t border-primary/20 py-2.5 px-4 items-center">
+<span class="text-[8px] text-white/40 uppercase">Potência</span>
+<span class="text-xs font-mono text-on-surface">3.39 <span class="text-[8px] opacity-40">kW</span></span>
+</div>
+<div class="glass-panel flex-1 py-1.5 px-3 flex items-center justify-between rounded border-t border-primary/20 py-2.5 px-4 items-center">
+<span class="text-[8px] text-white/40 uppercase">Torque</span>
+<span class="text-xs font-mono text-on-surface">3.46 <span class="text-[8px] opacity-40">Nm</span></span>
+</div>
+<div class="glass-panel flex-1 py-1.5 px-3 flex items-center justify-between rounded border-t border-primary/20">
+<span class="text-[8px] text-white/40 uppercase">Vc Real</span>
+<span class="text-xs font-mono text-on-surface">176 <span class="text-[8px] opacity-40">m/m</span></span>
+</div>
+<div class="glass-panel flex-1 py-1.5 px-3 flex items-center justify-between rounded border-t border-error/20">
+<span class="text-[8px] text-error/60 uppercase">L/D</span>
+<span class="text-xs font-mono text-error">4.2</span>
+</div>
+<div class="glass-panel flex-1 py-1.5 px-3 flex items-center justify-between rounded border-t border-primary/20">
+<span class="text-[8px] text-white/40 uppercase">CTF</span>
+<span class="text-xs font-mono text-on-surface">1.65</span>
+</div>
+<div class="glass-panel flex-1 py-1.5 px-3 flex items-center justify-between rounded border-t border-primary/20">
+<span class="text-[8px] text-white/40 uppercase">Correção</span>
+<span class="text-xs font-mono text-primary">1.65</span>
+</div>
+</div>
+</main>
+<!-- Footer -->
+<footer class="flex justify-between items-center px-2 py-1">
+<div class="flex items-center gap-2 text-[9px] text-white/20 uppercase tracking-widest font-mono">
+<span class="material-symbols-outlined text-xs">terminal</span>
+            PRECISION_ENGINE_V1.0.44
+        </div>
+<div class="flex items-center gap-3">
+<div class="flex items-center gap-1.5 border border-tertiary/20 px-2 py-0.5 rounded-full">
+<div class="w-1.5 h-1.5 rounded-full bg-tertiary animate-pulse"></div>
+<span class="text-[9px] text-tertiary uppercase font-bold tracking-tighter">Live Monitor</span>
+</div>
+</div>
+</footer>
+</div>
+</body></html>
