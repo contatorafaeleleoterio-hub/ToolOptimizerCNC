@@ -354,6 +354,8 @@ export function ResultsPanel() {
                 maxValue={100}
                 label="Saúde da Ferramenta"
                 badge={resultado.healthScore === 0 ? 'BLOQUEADO' : undefined}
+                scaleMax={100}
+                colorMode="ascending"
                 animateOnMount
               />
             </div>

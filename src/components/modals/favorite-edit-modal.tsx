@@ -8,7 +8,7 @@ import {
   calculatePower, calculateTorque, validateLDRatio, validateInputs,
   validateMachineLimits, calcularSliderBounds,
 } from '@/engine/index';
-import { calculateHealthScore, getVcZone, getFzZone, getAeZone, getApZone } from '@/utils/health-score';
+import { calculateHealthScoreFromValues } from '@/utils/health-score';
 import { Modal } from '../ui/modal';
 
 interface FavoriteEditModalProps {
@@ -56,12 +56,13 @@ function recalcular(
   const powerHeadroom = Math.max(0, ((lim.maxPotencia - potenciaMotor) / lim.maxPotencia) * 100);
 
   const bounds = calcularSliderBounds(material, fav.ferramenta, fav.tipoOperacao);
-  const healthScore = calculateHealthScore(
-    getVcZone(vc, bounds.vc.recomendado),
-    getFzZone(chipResult.fzEfetivo, bounds.fz.recomendado),
-    getAeZone(ae, bounds.ae.recomendado),
-    getApZone(ap, bounds.ap.recomendado, D, balanco),
-  );
+  const healthScore = calculateHealthScoreFromValues({
+    vc, vcRecomendado: bounds.vc.recomendado,
+    fz, fzRecomendado: bounds.fz.recomendado,
+    ae, aeRecomendado: bounds.ae.recomendado,
+    ap, apRecomendado: bounds.ap.recomendado,
+    ldRatio: razaoLD,
+  });
 
   return {
     rpm: baseRPM,

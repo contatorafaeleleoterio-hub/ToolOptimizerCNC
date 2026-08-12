@@ -2,6 +2,7 @@ import { describe, it, expect } from 'vitest';
 import {
   zoneToScore,
   calculateHealthScore,
+  calculateHealthScoreFromValues,
   getHealthBadge,
   getHealthLevel,
   getVcZone,
@@ -61,6 +62,52 @@ describe('health-score utils', () => {
       // = 24 + 18 + 20 + 10 = 72
       const score = calculateHealthScore('verde', 'amarelo', 'verde', 'amarelo');
       expect(score).toBe(72);
+    });
+  });
+
+  describe('calculateHealthScoreFromValues', () => {
+    // Every parameter exactly at its recommended value
+    const ideal = {
+      vc: 200, vcRecomendado: 200,
+      fz: 0.1, fzRecomendado: 0.1,
+      ae: 2.7, aeRecomendado: 2.7,
+      ap: 6, apRecomendado: 6,
+      ldRatio: 4,
+    };
+
+    it('returns 100 when every parameter is at the recommendation', () => {
+      expect(calculateHealthScoreFromValues(ideal)).toBe(100);
+    });
+
+    it('returns 0 when L/D > 6', () => {
+      expect(calculateHealthScoreFromValues({ ...ideal, ldRatio: 6.5 })).toBe(0);
+    });
+
+    it('reacts to a small change inside the green zone', () => {
+      // Vc 5% above the recommendation is still "verde", but the score must move
+      const slightlyOff = calculateHealthScoreFromValues({ ...ideal, vc: 210 });
+      expect(slightlyOff).toBeLessThan(100);
+      expect(slightlyOff).toBeGreaterThan(95);
+    });
+
+    it('degrades monotonically as fz moves away from the recommendation', () => {
+      const scores = [0.10, 0.12, 0.14, 0.16, 0.18].map((fz) =>
+        calculateHealthScoreFromValues({ ...ideal, fz }),
+      );
+      for (let i = 1; i < scores.length; i++) {
+        expect(scores[i]).toBeLessThan(scores[i - 1]);
+      }
+    });
+
+    it('scores the zone boundaries at the getHealthLevel cutoffs', () => {
+      // Vc weighs 10%: at ratio 1.50 its score is 40, so total = 90 + 4 = 94
+      expect(calculateHealthScoreFromValues({ ...ideal, vc: 300 })).toBe(94);
+      // ap weighs 40%: at ratio 1.50 its score is 40, so total = 60 + 16 = 76
+      expect(calculateHealthScoreFromValues({ ...ideal, ap: 9 })).toBe(76);
+    });
+
+    it('floors each parameter score at 0 beyond twice the recommendation', () => {
+      expect(calculateHealthScoreFromValues({ ...ideal, ap: 20 })).toBe(60);
     });
   });
 

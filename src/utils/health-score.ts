@@ -58,6 +58,68 @@ export function calculateHealthScore(
   return Math.round(healthScore);
 }
 
+// ─── Continuous scoring ──────────────────────────────────────────────────────
+
+/**
+ * Anchor curves mapping a value/recomendado ratio to a score.
+ * Anchors sit on the same ratio thresholds used by the zone functions below
+ * (0.50 / 0.75 / 1.20 / 1.50) and on the cutoffs of getHealthLevel
+ * (40 = vermelho/amarelo, 76 = amarelo/verde), so score and zone always agree.
+ */
+const CURVE_VC_FZ: ReadonlyArray<readonly [number, number]> = [
+  [0.25, 0], [0.50, 40], [0.75, 76], [1.00, 100], [1.20, 76], [1.50, 40], [2.00, 0],
+];
+
+/** ae/ap have no lower critical zone — cutting less than recommended is conservative, not risky. */
+const CURVE_AE_AP: ReadonlyArray<readonly [number, number]> = [
+  [0, 40], [0.50, 76], [1.00, 100], [1.20, 76], [1.50, 40], [2.00, 0],
+];
+
+/** Linear interpolation over an ascending (ratio, score) curve. Clamps at both ends. */
+function scoreFromCurve(ratio: number, curve: ReadonlyArray<readonly [number, number]>): number {
+  if (ratio <= curve[0][0]) return curve[0][1];
+  for (let i = 0; i < curve.length - 1; i++) {
+    const [r0, s0] = curve[i];
+    const [r1, s1] = curve[i + 1];
+    if (ratio <= r1) return s0 + ((ratio - r0) / (r1 - r0)) * (s1 - s0);
+  }
+  return curve[curve.length - 1][1];
+}
+
+export interface HealthScoreInput {
+  /** Real cutting speed at the current RPM (m/min) */
+  vc: number;
+  vcRecomendado: number;
+  /** Real chip thickness per tooth at the current feed (mm) — nominal fz, chip thinning undone */
+  fz: number;
+  fzRecomendado: number;
+  ae: number;
+  aeRecomendado: number;
+  ap: number;
+  apRecomendado: number;
+  /** balanco / diametro — L/D > 6 is blocked in the MVP */
+  ldRatio: number;
+}
+
+/**
+ * Health score [0, 100] from the actual cutting values.
+ * Same weights and thresholds as calculateHealthScore, but interpolated inside each
+ * zone so the gauge reacts to every slider move, not only at zone boundaries.
+ */
+export function calculateHealthScoreFromValues(input: HealthScoreInput): number {
+  if (input.ldRatio > 6) return 0;
+
+  const ratio = (value: number, recomendado: number) => (recomendado > 0 ? value / recomendado : 0);
+
+  const vcScore = scoreFromCurve(ratio(input.vc, input.vcRecomendado), CURVE_VC_FZ);
+  const fzScore = scoreFromCurve(ratio(input.fz, input.fzRecomendado), CURVE_VC_FZ);
+  const aeScore = scoreFromCurve(ratio(input.ae, input.aeRecomendado), CURVE_AE_AP);
+  const apScore = scoreFromCurve(ratio(input.ap, input.apRecomendado), CURVE_AE_AP);
+
+  // Weighted average: ap(40%) + fz(30%) + ae(20%) + Vc(10%)
+  return Math.round(apScore * 0.4 + fzScore * 0.3 + aeScore * 0.2 + vcScore * 0.1);
+}
+
 /**
  * Get health status badge message
  * Shows which parameter is most critical

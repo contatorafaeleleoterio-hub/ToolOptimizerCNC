@@ -23,9 +23,7 @@ import { getMaterialById } from '@/data/index';
 import { getRecommendedParams } from '@/engine/recommendations';
 import { useHistoryStore } from './history-store';
 import { useUsageStore } from '@/admin/store/usage-store';
-import {
-  calculateHealthScore, getVcZone, getFzZone, getAeZone, getApZone,
-} from '@/utils/health-score';
+import { calculateHealthScoreFromValues } from '@/utils/health-score';
 import { zustandStorageAdapter } from '@/shared/storage-service';
 
 const DEFAULT_FERRAMENTA: Ferramenta = {
@@ -398,13 +396,21 @@ export const useMachiningStore = create<MachiningState & MachiningActions>()(
           // Calculate power headroom (%)
           const powerHeadroom = Math.max(0, ((limitesMaquina.maxPotencia - potenciaMotor) / limitesMaquina.maxPotencia) * 100);
 
-          // Calculate health score from parameter zones
+          // Health score from the REAL cutting condition (after manual RPM/feed overrides),
+          // so the gauge tracks the sliders instead of only the nominal parameters.
           const bounds = calcularSliderBounds(material, ferramenta, tipoOperacao);
-          const vcZone = getVcZone(vc, bounds.vc.recomendado);
-          const fzZone = getFzZone(chipResult.fzEfetivo, bounds.fz.recomendado);
-          const aeZone = getAeZone(ae, bounds.ae.recomendado);
-          const apZone = getApZone(ap, bounds.ap.recomendado, D, balanco);
-          const healthScore = calculateHealthScore(vcZone, fzZone, aeZone, apZone);
+          const vcParaSaude = (Math.PI * D * rpm) / 1000;
+          // fz programmed at the machine, converted back to chip thickness (undo chip thinning)
+          const fzParaSaude = avanco / (Z * rpm * chipResult.ctfFactor);
+          const healthScore = rpm > 0
+            ? calculateHealthScoreFromValues({
+                vc: vcParaSaude, vcRecomendado: bounds.vc.recomendado,
+                fz: fzParaSaude, fzRecomendado: bounds.fz.recomendado,
+                ae, aeRecomendado: bounds.ae.recomendado,
+                ap, apRecomendado: bounds.ap.recomendado,
+                ldRatio: razaoLD,
+              })
+            : 0;
 
           set({
             baseRPM,

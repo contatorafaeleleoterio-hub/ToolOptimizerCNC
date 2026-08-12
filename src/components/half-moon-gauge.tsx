@@ -11,13 +11,20 @@ interface HalfMoonGaugeProps {
   size?: 'sm' | 'md';
   /** When true, animates needle+bars from 0→value via rAF with easeOutBack on value change. */
   animateOnMount?: boolean;
+  /** Percentage at the end of the arc. Default: 150 (100% sits mid-scale). */
+  scaleMax?: number;
+  /**
+   * 'centered' = green mid-scale (100% is the target, above it is overload).
+   * 'ascending' = green at the end (higher is better, e.g. health score).
+   */
+  colorMode?: 'centered' | 'ascending';
 }
 
 // ─── Constants ────────────────────────────────────────────────────────────────
 
-const TOTAL_BARS = 41;
-const MAX_PCT    = 150;
-const ANIM_MS    = 280;
+const TOTAL_BARS   = 41;
+const DEFAULT_SCALE = 150;
+const ANIM_MS      = 280;
 
 // Arc: -90° to +90° (180° total), step = 180/40 = 4.5° per bar
 const ARC_START_DEG = -90;
@@ -29,8 +36,25 @@ const SEG_ORANGE = '#FFA500';
 const SEG_GREEN  = '#00E676';
 const SEG_EMPTY  = '#313742';
 
-// Static color map for 41 bars: 8 RED · 8 ORANGE · 9 GREEN · 8 ORANGE · 8 RED
-function barColor(idx: number): string {
+type ColorMode = 'centered' | 'ascending';
+
+/** Position of a bar along the arc, 0–100. */
+function barPct(idx: number): number {
+  return (idx / (TOTAL_BARS - 1)) * 100;
+}
+
+/**
+ * 'centered': 8 RED · 8 ORANGE · 9 GREEN · 8 ORANGE · 8 RED (green mid-scale).
+ * 'ascending': red → orange → green, split at 40% and 76% of the arc — the same
+ * cutoffs getHealthLevel() uses, so a 0–100 health scale matches its own colors.
+ */
+function barColor(idx: number, mode: ColorMode): string {
+  if (mode === 'ascending') {
+    const pct = barPct(idx);
+    if (pct < 40) return SEG_RED;
+    if (pct < 76) return SEG_ORANGE;
+    return SEG_GREEN;
+  }
   if (idx <= 7)  return SEG_RED;
   if (idx <= 15) return SEG_ORANGE;
   if (idx <= 24) return SEG_GREEN;
@@ -38,8 +62,8 @@ function barColor(idx: number): string {
   return SEG_RED;
 }
 
-function barGlow(idx: number): string {
-  const color = barColor(idx);
+function barGlow(idx: number, mode: ColorMode): string {
+  const color = barColor(idx, mode);
   return `0 0 8px ${color}66`;
 }
 
@@ -64,9 +88,11 @@ export function HalfMoonGauge({
   badge,
   size = 'md',
   animateOnMount = false,
+  scaleMax = DEFAULT_SCALE,
+  colorMode = 'centered',
 }: HalfMoonGaugeProps) {
   const sz = SIZES[size];
-  const targetPct = Math.min(maxValue > 0 ? (value / maxValue) * 100 : 0, MAX_PCT);
+  const targetPct = Math.min(maxValue > 0 ? (value / maxValue) * 100 : 0, scaleMax);
 
   const [displayPct, setDisplayPct] = useState(() => (animateOnMount ? 0 : targetPct));
   const rafRef = useRef<number | null>(null);
@@ -107,16 +133,16 @@ export function HalfMoonGauge({
     };
   }, [value, maxValue, animateOnMount, targetPct]);
 
-  const activeCount = Math.round((displayPct / MAX_PCT) * TOTAL_BARS);
-  const needleAngle = ARC_START_DEG + (displayPct / MAX_PCT) * 180;
+  const activeCount = Math.round((displayPct / scaleMax) * TOTAL_BARS);
+  const needleAngle = ARC_START_DEG + (displayPct / scaleMax) * 180;
 
   const bars = useMemo(
     () =>
       Array.from({ length: TOTAL_BARS }, (_, i) => ({
         angle:  ARC_START_DEG + i * ARC_STEP_DEG,
-        isGreen: i >= 16 && i <= 24,
+        isGreen: colorMode === 'ascending' ? barPct(i) >= 76 : i >= 16 && i <= 24,
       })),
-    [],
+    [colorMode],
   );
 
   return (
@@ -162,9 +188,9 @@ export function HalfMoonGauge({
                   width:  isGreen ? '6px' : '5px',
                   height: isGreen ? `${sz.barGreen}px` : `${sz.barNormal}px`,
                   borderRadius: '2px',
-                  background: active ? barColor(i) : SEG_EMPTY,
+                  background: active ? barColor(i, colorMode) : SEG_EMPTY,
                   opacity:    active ? 1 : 0.3,
-                  boxShadow:  active ? barGlow(i) : 'none',
+                  boxShadow:  active ? barGlow(i, colorMode) : 'none',
                 }}
               />
             </div>
