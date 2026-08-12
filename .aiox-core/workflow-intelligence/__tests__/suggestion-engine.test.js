@@ -9,14 +9,16 @@ const path = require('path');
 const fs = require('fs');
 
 // Mock dependencies before requiring SuggestionEngine
-jest.mock('../../core/session/context-loader', () => {
-  return jest.fn().mockImplementation(() => ({
-    loadContext: jest.fn().mockReturnValue({
-      sessionType: 'existing',
-      lastCommands: ['develop'],
-      currentStory: 'docs/stories/test-story.md',
-      workflowActive: 'story_development',
-    }),
+vi.mock('../../core/session/context-loader', () => {
+  const loadContext = vi.fn().mockReturnValue({
+    sessionType: 'existing',
+    lastCommands: ['develop'],
+    currentStory: 'docs/stories/test-story.md',
+    workflowActive: 'story_development',
+  });
+
+  return vi.fn().mockImplementation(() => ({
+    loadContext,
   }));
 });
 
@@ -36,7 +38,7 @@ describe('SuggestionEngine', () => {
   });
 
   afterEach(() => {
-    jest.clearAllMocks();
+    vi.clearAllMocks();
   });
 
   describe('constructor', () => {

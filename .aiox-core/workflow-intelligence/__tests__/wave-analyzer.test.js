@@ -4,7 +4,6 @@
  */
 
 'use strict';
-
 const {
   WaveAnalyzer,
   CircularDependencyError,
@@ -34,7 +33,7 @@ describe('WaveAnalyzer', () => {
     });
 
     it('should accept custom registry', () => {
-      const mockRegistry = { getWorkflow: jest.fn() };
+      const mockRegistry = { getWorkflow: vi.fn() };
       const instance = new WaveAnalyzer({ registry: mockRegistry });
       expect(instance.registry).toBe(mockRegistry);
     });

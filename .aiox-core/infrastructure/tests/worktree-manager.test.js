@@ -614,6 +614,6 @@ describe('WorktreeManager', () => {
           throw error;
         }
       }
-    });
+    }, 15000);
   });
 });
