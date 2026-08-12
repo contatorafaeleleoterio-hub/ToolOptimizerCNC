@@ -1,8 +1,8 @@
 # Backlog de Implementação — ToolOptimizer CNC
 
-> **Última atualização:** 07/08/2026 (sessão de execução — 8/8 sessões do item 15)
-> **Versão atual:** v0.12.0 (Implementação DS + 80/20 + Mobile concluída localmente)
-> **Total de planos pendentes:** 0 — Redesign 80/20 absorvido e concluído pelo item 15
+> **Última atualização:** 12/08/2026 (criação do plano 16 — Gauntlet Calculadora CNC)
+> **Versão atual:** v0.12.1
+> **Total de planos pendentes:** 1 — item 16 (experimento isolado, não altera produção)
 
 Esta lista define a ordem de implementação dos planos criados e ainda não executados.
 A ordem garante estabilidade progressiva: bugs corrigidos antes de features, features antes de polish.
@@ -29,6 +29,7 @@ A ordem garante estabilidade progressiva: bugs corrigidos antes de features, fea
 | 13 | [Redesign Calculadora 80/20](#13-redesign-calculadora-8020) | 🎨 Redesign | MINOR | 5 arquivos + testes, 4 sessões (S0-S3) | 🔁 Absorvido pelo item 15 |
 | 14 | [Design System Canônico](#14-design-system-canônico) | 📄 Docs / Design Audit | — | 1 arquivo HTML, 4 sessões, zero `src/` | ✅ Concluído (`d471895`) |
 | 15 | [Implementação DS + 80/20 + Mobile + Dívida Visual](#15-implementação-ds--8020--mobile--dívida-visual) | 🎨 Redesign + Refactor | v0.12.0 | ~25 arquivos + 9 testes novos, 8 sessões | 🔁 Concluído localmente (8/8 sessões) |
+| 16 | [Gauntlet — Mockup Experimental da Calculadora](#16-gauntlet--mockup-experimental-da-calculadora) | 🧪 Experimento isolado | — (nenhuma) | Pasta `gauntlet-calculadora-cnc/`, **zero `src/`** | 📋 Planejado |
 
 ---
 
@@ -240,6 +241,23 @@ v0.5.3/v0.4.2 — Unificar Indicadores ✅
 - ✅ Sessão 6 — Mobile: Config 80/20 + alvos de toque (`d327529`, corrigido em `e5975c9` — Parâmetros de Corte restaurado com indicadores+sliders após feedback)
 - ✅ Sessão 7 — Mobile: Resultados com indicadores + vazio honesto + torque fora (`31395be`) — resolveu as 8 falhas pré-existentes (bug de `viewMode` duplicando badge de segurança)
 - ✅ Sessão 8 — varredura final de dívida visual + Vitest confiável + architecture graph + docs + bump v0.12.0 (local)
+
+---
+
+### 16. Gauntlet — Mockup Experimental da Calculadora
+
+**Plano:** `docs/plans/PLAN_GAUNTLET_CALCULADORA_CNC.md` | **Versão alvo:** nenhuma (não vai para produção)
+**Status:** 📋 Planejado (12/08/2026)
+
+**Objetivo:** projetar e validar, por mockup HTML isolado, uma arquitetura de calculadora que acomode mais categorias de ferramenta de **fresadora** além da fresa inteiriça de metal duro — cabeçote com pastilhas, brocas (metal duro / HSS / inserto), machos (HSS / metal duro), mandrilar, e um modo de cálculo rápido agnóstico de ferramenta.
+
+**Descoberta que estrutura o plano:** o eixo nunca modelado é o **material da ferramenta** (HSS × metal duro), que muda Vc em 3–5×. Vira multiplicador de primeira classe sobre a faixa do material da peça.
+
+**Método:** Gauntlet Loop — Orchestrator + Builder + Judge cego, testes Playwright isolados, máximo 5 ciclos, aprovação por score ≥ 90 **e** 7 gates.
+
+**Regra absoluta:** zero alteração em `src/`, `package.json`, `node_modules/`, configs ou deploy. Todo o trabalho vive em `gauntlet-calculadora-cnc/`, com Playwright instalado apenas dentro dessa pasta.
+
+**Saída:** mockup navegável + `reports/FINAL_REPORT.md`. Score ≥ 90 **não** autoriza implementação — exige aprovação explícita do Rafael.
 
 ---
 

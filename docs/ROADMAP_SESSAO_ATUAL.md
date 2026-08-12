@@ -68,6 +68,7 @@ npx tsc --noEmit
 | 14 | Redesign Calculadora 80/20 (4 sessões S0-S3) — `docs/plans/REDESIGN_DASHBOARD_80-20.md` | 🎨 Redesign | MINOR | 🔁 Absorvido pelo item 16 |
 | 15 | Design System Canônico (4 sessões, replanejado de 6) — `docs/plans/PLAN_DESIGN_SYSTEM_CANONICO.md` | 📄 Docs / Design Audit | — | ✅ Concluído (`d471895`) |
 | 16 | Implementação DS + 80/20 + Mobile + Dívida Visual (8 sessões) — `docs/plans/PLAN_IMPLEMENTACAO_DS_80-20_MOBILE.md` | 🎨 Redesign + Refactor | v0.12.0 | 🔁 Concluído localmente (8/8) |
+| 17 | Gauntlet — Mockup Experimental da Calculadora — `docs/plans/PLAN_GAUNTLET_CALCULADORA_CNC.md` | 🧪 Experimento isolado (zero `src/`) | — | ⬜ Pendente |
 
 ### ✅ Reestruturação Documental (v0.6.0) — CONCLUÍDA
 
