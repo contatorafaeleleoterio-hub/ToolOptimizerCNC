@@ -1,0 +1,19 @@
+{
+  "name": "gauntlet-calculadora-cnc-v2",
+  "version": "1.0.0",
+  "description": "> **Data de criaÃ§Ã£o:** 2026-08-13 05:50:20   > **Item do backlog:** 17   > **Plano de execuÃ§Ã£o:** [PLAN_GAUNTLET_V2_EXECUCAO.md](../../docs/plans/PLAN_GAUNTLET_V2_EXECUCAO.md)   > **InstÃ¢ncia:** [PLAN_GAUNTLET_CALCULADORA_CNC_V2.md](../../docs/plans/PLAN_GAUNTLET_CALCULADORA_CNC_V2.md)",
+  "main": "index.js",
+  "directories": {
+    "test": "tests"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "devDependencies": {
+    "@playwright/test": "^1.62.1"
+  }
+}

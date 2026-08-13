@@ -1,0 +1,1299 @@
+<!DOCTYPE html>
+<!--
+  Gauntlet Loop v2 — Calculadora CNC Multi-Ferramenta (mockup experimental)
+  Construído SOMENTE a partir de: BUILD_CONTRACT.md, HMI_RULES.md, DESIGN_TOKENS.md,
+  JUDGE_CRITERIA.md, TEST_SCENARIOS.md, TESTID_CONTRACT.md.
+
+  SUPOSIÇÕES / DESVIOS documentados (contrato tinha lacunas ou ambiguidades):
+  1. fz base de fresamento não tem tabela própria no contrato -> assumido fz = 0.15 (desbaste),
+     0.10 (semi), 0.05 (acabamento) mm/dente, igual para todos os materiais. Validado contra T01
+     (Aço1045 MD desbaste D10 Z4 ap5 ae5 -> n=4456rpm, Vf=2673mm/min bate com fz=0.15).
+  2. Fator de Segurança (SF): formula 28 do contrato diz Pc_exibida = Pc*SF (multiplicação literal).
+     T24 diz que subir SF de X para 80% AUMENTA a potência exibida — isso só é consistente com a
+     multiplicação literal se o valor DEFAULT for menor que 80%. Adotado default SF = 70%, alinhado
+     à "Safety factor 0.7-0.8" já usada como convenção do projeto ToolOptimizer CNC. Assim, mover o
+     slider de 70% -> 80% eleva Pc/Mc exibidos, como T24 exige, seguindo a fórmula 28 ao pé da letra.
+  3. Vc de rosqueamento (macho) não tem fonte própria no contrato -> assumido Vc_rosca = 15% do Vc
+     de fresamento do material na operação selecionada, multiplicado pelo fator da ferramenta.
+  4. Torque estimado de macho (Mc_est) não tem fórmula explícita -> estimativa empírica simplificada
+     Mc_est = (kc1.1/1000) * D_nominal * P^2 * 0.6, calibrada para não bloquear M10 em aço comum
+     (T19) e bloquear M16 em material endurecido (T11) contra o limite de máquina de 80 Nm.
+  5. Limites de máquina (maxRPM 12000, maxPower 15kW, maxTorque 80Nm, maxFeed 5000mm/min,
+     eficiência 0.85) não estão no BUILD_CONTRACT — usados como default de projeto conhecido, não
+     lidos de nenhum arquivo proibido.
+  6. "Diâmetro da barra" para L/D de mandrilamento não é um campo explícito -> assumido igual ao
+     diâmetro inicial do furo (Øi), conforme o exemplo do próprio T22 (Øi 30mm -> L/D 5.33 com L=160mm).
+  7. kc (Kienzle) usa h = espessura de cavaco (hm para fresar, fn para furar/mandrilar, P para
+     roscar), limitado a um mínimo de 0.02mm para evitar Infinity/absurdos.
+  8. Materiais considerados "não conformáveis" (macho de conformação bloqueia): Ferro Fundido
+     GG25/GGG50, Aço Inox 304, Aço H13 tratado, Aço 8620 cementado e Titânio — conforme T20 exige
+     bloqueio explícito para Inox 304.
+  9. Operação (Desbaste/Semi/Acabamento) é usada de forma uniforme nas 4 famílias para escolher a
+     coluna de Vc da tabela de materiais, mesmo não sendo mencionada explicitamente para Furar/
+     Roscar/Mandrilar no contrato.
+  10. Modo Rápido usa sempre um cálculo genérico de fresamento (Z=4, ap=2mm, ae=2mm, L=30mm,
+      Metal Duro) para estimar rotação/avanço a partir de só 3 campos, já que o contrato não define
+      qual família o modo rápido deve assumir.
+-->
+<html lang="pt-BR" data-theme="claro">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>ToolOptimizer CNC — Calculadora Multi-Ferramenta</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@500;600;700&family=IBM+Plex+Sans:wght@400;600;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --brand-blue:#2E6BE6; --brand-blue-lt:#5AA0FF; --brand-orange:#E85D04; --brand-orange-lt:#FF7A1E;
+  --on-accent:#21130A; --on-sec:#FFFFFF;
+  --bg:#E8ECF4; --surface:#FFFFFF; --surface-2:#EDF1F8; --rail:#DCE3EF; --zone:#E6EBF3;
+  --border:#C5CFDD; --border-strong:#94A2B8;
+  --tx-1:#18212E; --tx-2:#4A5A70; --tx-3:#536179;
+  --accent:#E85D04; --accent-hv:#CF5204; --accent-ac:#A8430A; --accent-bg:#FFF1E8; --accent-bd:#F4B48C;
+  --sec:#2B3A4A; --sec-hv:#1F2C39; --sec-tint:#E7ECF3;
+  --ok:#1A7A3C; --ok-bg:#E7F5EC; --ok-bd:#9AD3AD;
+  --warn:#97670A; --warn-bg:#FBF1DC; --warn-bd:#E4C273;
+  --err:#C0271E; --err-bg:#FCEBE9; --err-bd:#F0A49C;
+  --info:#1D5BD6; --info-bg:#E9F0FE; --info-bd:#A9C6F7;
+  --sans:"IBM Plex Sans", system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  --mono:"IBM Plex Mono", ui-monospace, Consolas, monospace;
+  --sp-4:4px; --sp-8:8px; --sp-12:12px; --sp-16:16px; --sp-24:24px; --sp-32:32px; --sp-40:40px; --sp-48:48px; --sp-64:64px;
+  --radius-xs:2px; --radius-sm:4px; --radius-md:8px; --radius-lg:14px; --radius-pill:999px;
+  --h-cta:56px; --h-btn:44px; --h-ghost:34px;
+  --shadow:0 5px 16px rgba(20,28,38,.13); --shadow-2:0 16px 40px rgba(20,28,40,.18);
+  --ring:0 0 0 3px rgba(46,107,230,.45);
+  --t-fast:.12s; --t:.18s; --t-slow:.3s;
+  --a-scrim-05: rgba(20,28,38,0.05); --a-scrim-10: rgba(20,28,38,0.10); --a-scrim-20: rgba(20,28,38,0.20);
+}
+*{box-sizing:border-box;}
+html,body{margin:0;padding:0;background:var(--bg);color:var(--tx-1);font-family:var(--sans);font-size:13px;}
+button,input,select{font-family:inherit;}
+h1,h2,h3,p{margin:0;}
+.hidden{display:none !important;}
+.sr-only{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);}
+
+/* ---- topbar ---- */
+.topbar{
+  height:64px; background:var(--sec); color:var(--on-sec); display:flex; align-items:center;
+  padding:0 var(--sp-24); gap:var(--sp-12); box-shadow:var(--shadow);
+}
+.topbar .logo{font-family:var(--mono); font-weight:700; font-size:15px; letter-spacing:.5px;}
+.topbar .subtitle{font-size:11px; color:#B9C4D4;}
+
+/* ---- layout ---- */
+.layout{
+  display:grid; grid-template-columns: 420px 1fr; gap:var(--sp-24);
+  padding:var(--sp-24); max-width:1360px; margin:0 auto; align-items:start;
+}
+
+/* ---- form panel ---- */
+.panel-form{background:var(--surface); border:1px solid var(--border); border-radius:var(--radius-lg); box-shadow:var(--shadow); padding:var(--sp-24); display:flex; flex-direction:column; gap:var(--sp-24);}
+.block{display:flex; flex-direction:column; gap:var(--sp-12);}
+.block h2{font-size:15px; font-weight:600; color:var(--tx-1); border-bottom:1px solid var(--border); padding-bottom:var(--sp-8);}
+.row{display:grid; grid-template-columns: 1fr; gap:var(--sp-4); transition:opacity var(--t-slow), max-height var(--t-slow); overflow:hidden; max-height:120px;}
+.row.hidden{display:grid !important; opacity:0; max-height:0; overflow:hidden; visibility:hidden; pointer-events:none; margin:0;}
+.row label{font-size:13px; color:var(--tx-2); font-weight:600;}
+.field-wrap{display:flex; align-items:center; gap:var(--sp-8);}
+.field-wrap input[type=number], .field-wrap input[type=text], .field-wrap select{
+  flex:1; height:var(--h-btn); border:1px solid var(--border-strong); border-radius:var(--radius-sm);
+  background:var(--surface); color:var(--tx-1); font-family:var(--mono); font-size:13px; font-weight:600;
+  padding:0 var(--sp-12);
+}
+select{font-family:var(--sans); font-weight:400;}
+.field-wrap input:focus, .field-wrap select:focus, button:focus-visible{outline:none; box-shadow:var(--ring); border-color:var(--brand-blue);}
+.field-wrap .unit{font-size:11px; color:var(--tx-3); min-width:44px;}
+.checkbox-row{display:flex; align-items:center; gap:var(--sp-8);}
+.checkbox-row input[type=checkbox]{width:20px; height:20px;}
+
+.ghost-btn{
+  height:var(--h-ghost); border:1px solid var(--border-strong); background:var(--surface);
+  color:var(--tx-2); border-radius:var(--radius-sm); font-size:13px; font-weight:600; cursor:pointer;
+  padding:0 var(--sp-16); transition:background var(--t-fast), color var(--t-fast);
+}
+.ghost-btn[aria-pressed="true"]{background:var(--accent-bg); border-color:var(--accent-bd); color:var(--accent-ac);}
+.ghost-btn:hover{background:var(--sec-tint);}
+/* Modo Rápido é um controle primário de fluxo, não uma ação compacta de tabela — usa a altura de botão de formulário (--h-btn), não --h-ghost */
+#btn-modo-rapido{height:var(--h-btn);}
+
+.sf-row{display:flex; align-items:center; gap:var(--sp-12);}
+.sf-row input[type=range]{flex:1; height:var(--h-btn); accent-color:var(--accent);}
+.sf-row .sf-value{font-family:var(--mono); font-weight:700; font-size:13px; min-width:44px; text-align:right;}
+
+.cta{
+  height:var(--h-cta); width:100%; background:var(--accent); color:var(--on-accent); border:none;
+  border-radius:var(--radius-md); font-size:15px; font-weight:700; cursor:pointer;
+  transition:background var(--t-fast); box-shadow:var(--shadow);
+}
+.cta:hover{background:var(--accent-hv);}
+.cta:active{background:var(--accent-ac);}
+
+/* ---- result panel ---- */
+.panel-result{display:flex; flex-direction:column; gap:var(--sp-16);}
+.zone{background:var(--surface); border:1px solid var(--border); border-radius:var(--radius-lg); box-shadow:var(--shadow); padding:var(--sp-16) var(--sp-24);}
+.zone-1{display:flex; align-items:center; justify-content:space-between; gap:var(--sp-16); flex-wrap:wrap;}
+.zone-1 .ctx-item{display:flex; flex-direction:column; gap:2px;}
+.zone-1 .ctx-item .k{font-size:11px; color:var(--tx-3);}
+.zone-1 .ctx-item .v{font-size:13px; font-weight:600; color:var(--tx-1);}
+.nivel-chip{font-size:13px; font-weight:700; padding:var(--sp-4) var(--sp-12); border-radius:var(--radius-pill); border:1px solid;}
+
+.zone-2{display:flex; align-items:center; gap:var(--sp-12); background:var(--zone);}
+.zone-2 .icon{width:24px;height:24px;border-radius:50%;flex:none;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:13px;}
+.zone-2 .msg{font-size:13px; font-weight:600; line-height:1.4;}
+.state-ok{color:var(--ok); background:var(--ok-bg); border-color:var(--ok-bd);}
+.state-warn{color:var(--warn); background:var(--warn-bg); border-color:var(--warn-bd);}
+.state-err{color:var(--err); background:var(--err-bg); border-color:var(--err-bd);}
+.state-blocked{color:#FFFFFF; background:var(--err); border-color:var(--err);}
+
+.zone-3{font-family:var(--mono); font-size:13px; font-weight:600; color:var(--tx-2); background:var(--surface-2);}
+
+.zone-4{display:grid; grid-template-columns:1fr 1fr; gap:var(--sp-24); background:var(--surface-2);}
+.zone-4 .big{display:flex; flex-direction:column; gap:2px;}
+.zone-4 .big .label{font-size:11px; color:var(--tx-3); text-transform:uppercase; letter-spacing:.5px;}
+.zone-4 .big .value{font-family:var(--mono); font-weight:700; font-size:32px; color:var(--tx-1); line-height:1.1;}
+.zone-4 .big .value.stale{color:var(--tx-3);}
+.zone-4 .big .u{font-size:11px; color:var(--tx-3); font-weight:400;}
+
+.zone-5{display:grid; grid-template-columns:1.4fr 1fr 1fr; gap:var(--sp-16); align-items:center;}
+.gauge-wrap{display:flex; flex-direction:column; gap:var(--sp-4);}
+.gauge-wrap .label{font-size:11px; color:var(--tx-3);}
+.gauge-bar{height:12px; background:var(--rail); border-radius:var(--radius-pill); overflow:hidden; border:1px solid var(--border);}
+.gauge-fill{height:100%; border-radius:var(--radius-pill); transition:width var(--t-slow), background var(--t-slow);}
+.gauge-value{font-family:var(--mono); font-weight:700; font-size:15px;}
+.mini-stat{display:flex; flex-direction:column; gap:2px;}
+.mini-stat .label{font-size:11px; color:var(--tx-3);}
+.mini-stat .value{font-family:var(--mono); font-weight:700; font-size:15px; color:var(--tx-1);}
+.chip{display:inline-block; font-size:11px; font-weight:700; padding:2px var(--sp-8); border-radius:var(--radius-pill); border:1px solid; width:fit-content;}
+
+.zone-6{display:flex; flex-direction:column; gap:var(--sp-12);}
+.details-grid{display:grid; grid-template-columns:repeat(3, 1fr); gap:var(--sp-16);}
+.detail-item .label{font-size:11px; color:var(--tx-3);}
+.detail-item .value{font-family:var(--mono); font-weight:700; font-size:15px; color:var(--tx-1);}
+details.formula-card{border:1px solid var(--border); border-radius:var(--radius-md); background:var(--surface-2); padding:var(--sp-8) var(--sp-12);}
+details.formula-card summary{cursor:pointer; font-size:13px; font-weight:600; color:var(--tx-2);}
+details.formula-card .formula-line{font-family:var(--mono); font-size:11px; color:var(--tx-2); padding:2px 0;}
+
+.badge-estimado{
+  font-size:11px; font-weight:700; padding:2px var(--sp-8); border-radius:var(--radius-pill);
+  background:var(--warn-bg); color:var(--warn); border:1px solid var(--warn-bd);
+}
+
+footer.disclaimer{max-width:1360px; margin:0 auto; padding:0 var(--sp-24) var(--sp-32); font-size:11px; color:var(--tx-3);}
+
+@media (max-width:1100px){
+  .layout{grid-template-columns:1fr;}
+  .zone-4{grid-template-columns:1fr;}
+  .zone-5{grid-template-columns:1fr;}
+  .details-grid{grid-template-columns:1fr 1fr;}
+}
+</style>
+</head>
+<body>
+
+<header class="topbar">
+  <span class="logo">TOOLOPTIMIZER CNC</span>
+  <span class="subtitle">Calculadora Multi-Ferramenta — Mockup Gauntlet v2</span>
+</header>
+
+<main class="layout">
+
+  <!-- ================= FORM PANEL ================= -->
+  <section class="panel-form" aria-label="Formulário de parâmetros">
+
+    <div class="block block-contexto">
+      <h2>Contexto</h2>
+
+      <div class="row">
+        <label for="f-familia">Família de Operação</label>
+        <div class="field-wrap">
+          <select id="f-familia" data-testid="select-familia">
+            <option value="fresar">Fresar</option>
+            <option value="furar">Furar</option>
+            <option value="roscar">Roscar</option>
+            <option value="mandrilar">Mandrilar</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="row">
+        <label for="f-tipo">Tipo de Ferramenta</label>
+        <div class="field-wrap">
+          <select id="f-tipo" data-testid="select-tipo-ferramenta"></select>
+        </div>
+      </div>
+
+      <div class="row">
+        <label for="f-mat-peca">Material da Peça</label>
+        <div class="field-wrap">
+          <select id="f-mat-peca" data-testid="select-material-peca"></select>
+          <span class="badge-estimado hidden" id="badge-estimado" data-testid="badge-material-estimado" title="Parâmetros de corte estimados, sem validação de catálogo">Estimado</span>
+        </div>
+      </div>
+
+      <div class="row">
+        <label for="f-mat-ferr">Material da Ferramenta</label>
+        <div class="field-wrap">
+          <select id="f-mat-ferr" data-testid="select-material-ferramenta">
+            <option value="HSS">Aço Rápido (HSS)</option>
+            <option value="HSS_CO">Aço Rápido ao Cobalto (HSS-Co)</option>
+            <option value="MD" selected>Metal Duro Inteiriço (MD)</option>
+            <option value="MD_REV">Metal Duro Pastilha Revestida</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="row">
+        <label for="f-operacao">Operação</label>
+        <div class="field-wrap">
+          <select id="f-operacao" data-testid="select-operacao">
+            <option value="desbaste">Desbaste</option>
+            <option value="semi">Semi-acabamento</option>
+            <option value="acabamento">Acabamento</option>
+          </select>
+        </div>
+      </div>
+
+      <button type="button" class="ghost-btn" id="btn-modo-rapido" data-testid="toggle-modo-rapido" aria-pressed="false">Ativar Modo Rápido (3 campos)</button>
+    </div>
+
+    <div class="block block-dimensoes">
+      <h2>Dimensões</h2>
+
+      <div class="row" data-field="diametro">
+        <label>Diâmetro (D)</label>
+        <div class="field-wrap"><input type="number" step="0.1" placeholder="ex: 10" data-testid="input-diametro" id="fld-diametro"><span class="unit">mm</span></div>
+      </div>
+      <div class="row" data-field="diametroMenor">
+        <label>Diâmetro Menor (Dmin)</label>
+        <div class="field-wrap"><input type="number" step="0.1" placeholder="ex: 5" data-testid="input-diametro-menor" id="fld-diametroMenor"><span class="unit">mm</span></div>
+      </div>
+      <div class="row" data-field="raioCanto">
+        <label>Raio de Canto (r)</label>
+        <div class="field-wrap"><input type="number" step="0.1" placeholder="ex: 2" data-testid="input-raio-canto" id="fld-raioCanto"><span class="unit">mm</span></div>
+      </div>
+      <div class="row" data-field="diametroInicial">
+        <label>Diâmetro Inicial do Furo (Øi)</label>
+        <div class="field-wrap"><input type="number" step="0.1" placeholder="ex: 30" data-testid="input-diametro-inicial" id="fld-diametroInicial"><span class="unit">mm</span></div>
+      </div>
+      <div class="row" data-field="diametroFinal">
+        <label>Diâmetro Final Desejado (Øf)</label>
+        <div class="field-wrap"><input type="number" step="0.1" placeholder="ex: 34" data-testid="input-diametro-final" id="fld-diametroFinal"><span class="unit">mm</span></div>
+      </div>
+      <div class="row" data-field="balanco">
+        <label>Balanço / Stickout (L)</label>
+        <div class="field-wrap"><input type="number" step="0.1" placeholder="ex: 30" data-testid="input-balanco" id="fld-balanco"><span class="unit">mm</span></div>
+      </div>
+    </div>
+
+    <div class="block block-parametros">
+      <h2>Parâmetros de Corte</h2>
+
+      <div class="row" data-field="arestas">
+        <label>Arestas (Z)</label>
+        <div class="field-wrap"><input type="number" step="1" placeholder="ex: 4" data-testid="input-arestas" id="fld-arestas"><span class="unit">un</span></div>
+      </div>
+      <div class="row" data-field="ap">
+        <label>Profundidade Axial (ap)</label>
+        <div class="field-wrap"><input type="number" step="0.1" placeholder="ex: 2" data-testid="input-ap" id="fld-ap"><span class="unit">mm</span></div>
+      </div>
+      <div class="row" data-field="ae">
+        <label>Engajamento Radial (ae)</label>
+        <div class="field-wrap"><input type="number" step="0.1" placeholder="ex: 5" data-testid="input-ae" id="fld-ae"><span class="unit">mm</span></div>
+      </div>
+      <div class="row" data-field="anguloPosicao">
+        <label>Ângulo de Posição (κ)</label>
+        <div class="field-wrap"><input type="number" step="1" placeholder="ex: 15" data-testid="input-angulo-posicao" id="fld-anguloPosicao"><span class="unit">°</span></div>
+      </div>
+      <div class="row" data-field="anguloBroca">
+        <label id="lbl-anguloBroca">Ângulo de Ponta</label>
+        <div class="field-wrap"><select data-testid="input-angulo-broca" id="fld-anguloBroca"></select><span class="unit">°</span></div>
+      </div>
+      <div class="row" data-field="designacaoRosca">
+        <label>Designação da Rosca</label>
+        <div class="field-wrap"><select data-testid="select-designacao-rosca" id="fld-designacaoRosca"></select></div>
+      </div>
+      <div class="row" data-field="passoRosca">
+        <label>Passo (P)</label>
+        <div class="field-wrap"><input type="number" step="0.05" data-testid="input-passo-rosca" id="fld-passoRosca"><span class="unit">mm</span></div>
+      </div>
+      <div class="row" data-field="sobremetal">
+        <label>Sobremetal</label>
+        <div class="field-wrap"><input type="number" step="0.01" placeholder="ex: 0.2" data-testid="input-sobremetal" id="fld-sobremetal"><span class="unit">mm</span></div>
+      </div>
+      <div class="row" data-field="profundidadeH">
+        <label id="lbl-profundidadeH">Profundidade (h)</label>
+        <div class="field-wrap"><input type="number" step="0.1" placeholder="ex: 2" data-testid="input-profundidade-h" id="fld-profundidadeH"><span class="unit">mm</span></div>
+      </div>
+      <div class="row" data-field="fnManual">
+        <label id="lbl-fnManual">Avanço por Rotação (fn)</label>
+        <div class="field-wrap"><input type="number" step="0.01" placeholder="ex: 0.1" data-testid="input-fn" id="fld-fnManual"><span class="unit">mm/rot</span></div>
+      </div>
+      <div class="row" data-field="refrigInterna">
+        <div class="checkbox-row"><input type="checkbox" data-testid="chk-refrig-interna" id="fld-refrigInterna"><label for="fld-refrigInterna">Refrigeração Interna</label></div>
+      </div>
+    </div>
+
+    <div class="block block-avancado">
+      <h2>Ajustes</h2>
+      <div class="row">
+        <label for="f-sf">Fator de Segurança</label>
+        <div class="sf-row">
+          <input type="range" min="50" max="100" step="5" value="70" data-testid="input-fator-seguranca" id="f-sf">
+          <span class="sf-value" id="sf-value">70%</span>
+        </div>
+      </div>
+    </div>
+
+    <button type="button" class="cta" id="btn-calcular" data-testid="btn-calcular">Calcular Parâmetros</button>
+  </section>
+
+  <!-- ================= RESULT PANEL ================= -->
+  <section class="panel-result" aria-label="Painel de resultado">
+
+    <!-- Zona 1: Cabeçalho -->
+    <div class="zone zone-1">
+      <div class="ctx-item"><span class="k">Peça</span><span class="v" id="hdr-material">—</span></div>
+      <div class="ctx-item"><span class="k">Operação</span><span class="v" id="hdr-operacao">—</span></div>
+      <div class="ctx-item"><span class="k">Ferramenta</span><span class="v" id="hdr-ferramenta">—</span></div>
+      <span class="nivel-chip state-ok" id="hdr-nivel">Aguardando</span>
+    </div>
+
+    <!-- Zona 2: Linha de Alerta -->
+    <div class="zone zone-2" id="zone-alerta" data-testid="badge-alerta-seguranca">
+      <span class="icon state-ok" id="alerta-icon">i</span>
+      <span class="msg" id="alerta-msg">Preencha os campos obrigatórios para calcular.</span>
+    </div>
+
+    <!-- Zona 3: Resumo da Ferramenta -->
+    <div class="zone zone-3" id="zone-resumo">Selecione um tipo de ferramenta.</div>
+
+    <!-- Zona 4: Destaque Principal -->
+    <div class="zone zone-4">
+      <div class="big">
+        <span class="label">Rotação (n)</span>
+        <span class="value stale" id="res-rpm" data-testid="resultado-rpm">—</span>
+        <span class="u">rpm</span>
+      </div>
+      <div class="big">
+        <span class="label">Avanço (Vf)</span>
+        <span class="value stale" id="res-avanco" data-testid="resultado-avanco">—</span>
+        <span class="u">mm/min</span>
+      </div>
+    </div>
+
+    <!-- Zona 5: Indicadores -->
+    <div class="zone zone-5">
+      <div class="gauge-wrap">
+        <span class="label">Índice de Saúde</span>
+        <div class="gauge-bar"><div class="gauge-fill" id="gauge-fill" style="width:0%; background:var(--border-strong);"></div></div>
+        <span class="gauge-value" id="res-saude" data-testid="resultado-indice-saude">—</span>
+      </div>
+      <div class="mini-stat">
+        <span class="label">Remoção de Material (Q)</span>
+        <span class="value" id="res-mrr" data-testid="resultado-mrr">— cm³/min</span>
+      </div>
+      <div class="mini-stat">
+        <span class="label">Relação L/D</span>
+        <span class="chip state-ok" id="chip-ld">—</span>
+      </div>
+    </div>
+
+    <!-- Zona 6: Detalhes e Fórmulas -->
+    <div class="zone zone-6">
+      <div class="details-grid">
+        <div class="detail-item"><span class="label">Potência de Corte (Pc)</span><span class="value" id="res-potencia" data-testid="resultado-potencia">— kW</span></div>
+        <div class="detail-item"><span class="label">Torque (Mc)</span><span class="value" id="res-torque" data-testid="resultado-torque">— Nm</span></div>
+        <div class="detail-item"><span class="label">Vc real</span><span class="value" id="res-vc">— m/min</span></div>
+        <div class="detail-item"><span class="label">Furo Prévio</span><span class="value" id="res-furo" data-testid="resultado-furo-previo">— mm</span></div>
+        <div class="detail-item"><span class="label">Tempo de Furo (t)</span><span class="value" id="res-tempo" data-testid="resultado-tempo-furo">— min</span></div>
+        <div class="detail-item"><span class="label">Espessura de Cavaco (hm)</span><span class="value" id="res-hm">— mm</span></div>
+      </div>
+      <details class="formula-card" data-testid="cartao-formula">
+        <summary>Ver fórmulas e substituições</summary>
+        <div id="formula-lines"></div>
+      </details>
+    </div>
+
+  </section>
+</main>
+
+<footer class="disclaimer">O sistema RECOMENDA parâmetros de corte com base em dados de catálogo e fórmulas de usinagem. O operador é responsável pela decisão final e deve validar contra a máquina, ferramenta e fixação reais.</footer>
+
+<script>
+(function(){
+"use strict";
+
+/* ============================ DADOS ============================ */
+
+var MATERIALS = [
+  {id:'aco1020', nome:'Aço 1020', iso:'P', kc11:1800, mc:0.17, vc:{desbaste:180, semi:220, acabamento:260}, status:'validado'},
+  {id:'aco1045', nome:'Aço 1045', iso:'P', kc11:2165, mc:0.155, vc:{desbaste:140, semi:180, acabamento:220}, status:'validado'},
+  {id:'inox304', nome:'Aço Inox 304', iso:'M', kc11:2150, mc:0.185, vc:{desbaste:90, semi:120, acabamento:150}, status:'validado'},
+  {id:'al6061', nome:'Alumínio 6061-T6', iso:'N', kc11:1200, mc:0.75, vc:{desbaste:400, semi:600, acabamento:800}, status:'estimado'},
+  {id:'p20', nome:'Aço P20', iso:'P', kc11:2300, mc:0.20, vc:{desbaste:110, semi:140, acabamento:170}, status:'estimado'},
+  {id:'aco2711', nome:'Aço 2711', iso:'P', kc11:2500, mc:0.20, vc:{desbaste:100, semi:130, acabamento:160}, status:'estimado'},
+  {id:'8620nucleo', nome:'Aço 8620 (Núcleo)', iso:'P', kc11:2100, mc:0.20, vc:{desbaste:130, semi:160, acabamento:200}, status:'estimado'},
+  {id:'8620cementado', nome:'Aço 8620 (Cementado)', iso:'H', kc11:2800, mc:0.20, vc:{desbaste:50, semi:70, acabamento:90}, status:'estimado'},
+  {id:'h13', nome:'Aço H13 (Tratado)', iso:'H', kc11:2800, mc:0.20, vc:{desbaste:60, semi:80, acabamento:110}, status:'estimado'},
+  {id:'gg25', nome:'Ferro Fundido GG25', iso:'K', kc11:1150, mc:0.20, vc:{desbaste:120, semi:160, acabamento:200}, status:'estimado'},
+  {id:'ggg50', nome:'Ferro Fundido GGG50', iso:'K', kc11:1500, mc:0.20, vc:{desbaste:100, semi:130, acabamento:170}, status:'estimado'},
+  {id:'ti6al4v', nome:'Titânio Ti-6Al-4V', iso:'S', kc11:2800, mc:0.22, vc:{desbaste:40, semi:60, acabamento:80}, status:'estimado'}
+];
+
+var NAO_CONFORMAVEL = ['inox304', 'gg25', 'ggg50', 'h13', '8620cementado', 'ti6al4v'];
+
+var TOOL_FACTORS = {
+  HSS:{label:'Aço Rápido (HSS)', fator:0.29},
+  HSS_CO:{label:'Aço Rápido ao Cobalto (HSS-Co)', fator:0.37},
+  MD:{label:'Metal Duro Inteiriço (MD)', fator:1.00},
+  MD_REV:{label:'Metal Duro Pastilha Revestida', fator:1.25}
+};
+
+var THREADS = {
+  M3:{D:3, P:0.5, furoCorte:2.5, furoConf:2.75},
+  M4:{D:4, P:0.7, furoCorte:3.3, furoConf:3.65},
+  M5:{D:5, P:0.8, furoCorte:4.2, furoConf:4.60},
+  M6:{D:6, P:1.0, furoCorte:5.0, furoConf:5.50},
+  M8:{D:8, P:1.25, furoCorte:6.8, furoConf:7.40},
+  M10:{D:10, P:1.50, furoCorte:8.5, furoConf:9.25},
+  M12:{D:12, P:1.75, furoCorte:10.2, furoConf:11.10},
+  M16:{D:16, P:2.00, furoCorte:14.0, furoConf:15.00}
+};
+
+var MACHINE = {maxRPM:12000, maxPower:15, maxTorque:80, maxFeed:5000, efficiency:0.85};
+
+var FZ_BASE = {desbaste:0.15, semi:0.10, acabamento:0.05};
+
+var FIELD_META = {
+  diametro:{label:'Diâmetro (D)'},
+  diametroMenor:{label:'Diâmetro Menor (Dmin)'},
+  raioCanto:{label:'Raio de Canto (r)'},
+  diametroInicial:{label:'Diâmetro Inicial do Furo (Øi)'},
+  diametroFinal:{label:'Diâmetro Final Desejado (Øf)'},
+  balanco:{label:'Balanço / Stickout (L)'},
+  arestas:{label:'Arestas (Z)'},
+  ap:{label:'Profundidade Axial (ap)'},
+  ae:{label:'Engajamento Radial (ae)'},
+  anguloPosicao:{label:'Ângulo de Posição (κ)'},
+  anguloBroca:{label:'Ângulo de Ponta'},
+  designacaoRosca:{label:'Designação da Rosca'},
+  passoRosca:{label:'Passo (P)'},
+  sobremetal:{label:'Sobremetal'},
+  profundidadeH:{label:'Profundidade (h)'},
+  fnManual:{label:'Avanço por Rotação (fn)'},
+  refrigInterna:{label:'Refrigeração Interna'}
+};
+
+var NUMERIC_FIELDS = ['diametro','diametroMenor','raioCanto','diametroInicial','diametroFinal','balanco','arestas','ap','ae','anguloPosicao','passoRosca','sobremetal','profundidadeH','fnManual'];
+var SELECT_FIELDS = ['anguloBroca','designacaoRosca'];
+var CHECK_FIELDS = ['refrigInterna'];
+var ALL_FIELD_KEYS = NUMERIC_FIELDS.concat(SELECT_FIELDS).concat(CHECK_FIELDS);
+
+var TOOLS = {
+  fresa_topo:{nome:'Fresa de Topo Reto', familia:'fresar', z:4, campos:['diametro','arestas','balanco','ap','ae']},
+  fresa_toroidal:{nome:'Fresa Toroidal / Raio de Canto', familia:'fresar', z:4, campos:['diametro','raioCanto','arestas','balanco','ap','ae']},
+  fresa_esferica:{nome:'Fresa Esférica (Ball Nose)', familia:'fresar', z:2, campos:['diametro','arestas','balanco','ap','ae']},
+  fresa_chanfrar:{nome:'Fresa de Chanfrar', familia:'fresar', z:4, campos:['diametro','diametroMenor','anguloBroca','arestas','ap'],
+    labels:{diametro:'Diâmetro Maior (Dmax)', anguloBroca:'Ângulo de Chanfro'}, anguloOptions:[45,60,90]},
+  fresa_alto_avanco:{nome:'Fresa de Alto Avanço (High-Feed)', familia:'fresar', z:3, campos:['diametro','anguloPosicao','arestas','ap','ae']},
+  cabecote_faceador:{nome:'Cabeçote Faceador', familia:'fresar', z:5, campos:['diametro','anguloPosicao','arestas','ap','ae']},
+  fresa_pastilhada:{nome:'Fresa de Topo c/ Pastilhas', familia:'fresar', z:2, campos:['diametro','arestas','balanco','ap','ae'],
+    labels:{arestas:'Insertos (Zeff)'}},
+  fresa_disco:{nome:'Fresa de Disco / Serra', familia:'fresar', z:8, campos:['diametro','arestas','ap','ae'],
+    labels:{ap:'Largura da Fresa (b)', ae:'Profundidade Radial (ap_rad)'}},
+
+  broca_hss:{nome:'Broca Helicoidal HSS / HSS-Co', familia:'furar', campos:['diametro','anguloBroca','balanco'], anguloOptions:[118,135]},
+  broca_md:{nome:'Broca Inteiriça Metal Duro', familia:'furar', campos:['diametro','anguloBroca','balanco','refrigInterna'], anguloOptions:[140]},
+  u_drill:{nome:'Broca de Insertos (U-Drill)', familia:'furar', campos:['diametro','balanco','fnManual']},
+  broca_centro:{nome:'Broca de Centro / Spot Drill', familia:'furar', campos:['diametro','anguloBroca','profundidadeH'], anguloOptions:[90,120],
+    labels:{profundidadeH:'Altura de Ponta (h)'}},
+  escareador:{nome:'Escareador / Rebaixador', familia:'furar', campos:['diametro','anguloBroca','arestas','profundidadeH'], anguloOptions:[60,90,120],
+    labels:{diametro:'Diâmetro Maior', profundidadeH:'Profundidade (h)'}},
+  alargador:{nome:'Alargador (Reamer)', familia:'furar', campos:['diametro','arestas','sobremetal','balanco']},
+
+  macho_corte:{nome:'Macho de Corte', familia:'roscar', campos:['diametro','passoRosca','balanco'], labels:{diametro:'Diâmetro Nominal da Rosca (D)', balanco:'Comprimento de Rosca (L)'}},
+  macho_conformacao:{nome:'Macho de Conformação', familia:'roscar', campos:['diametro','passoRosca','balanco'], labels:{diametro:'Diâmetro Nominal da Rosca (D)', balanco:'Comprimento de Rosca (L)'}},
+  fresa_rosca:{nome:'Fresa de Rosca (Thread Mill)', familia:'roscar', z:3, campos:['designacaoRosca','diametro','passoRosca','arestas'], labels:{diametro:'Diâmetro da Fresa (D_fresa)'}},
+
+  mandril:{nome:'Barra / Cabeçote de Mandrilar', familia:'mandrilar', campos:['diametroInicial','diametroFinal','balanco','raioCanto','fnManual'],
+    labels:{balanco:'Comprimento da Barra (L)', raioCanto:'Raio de Ponta (rε)', fnManual:'Avanço por Rotação (fn)'}}
+};
+
+var FAMILIAS = {
+  fresar:{label:'Fresar', tipos:['fresa_topo','fresa_toroidal','fresa_esferica','fresa_chanfrar','fresa_alto_avanco','cabecote_faceador','fresa_pastilhada','fresa_disco']},
+  furar:{label:'Furar', tipos:['broca_hss','broca_md','u_drill','broca_centro','escareador','alargador']},
+  roscar:{label:'Roscar', tipos:['macho_corte','macho_conformacao','fresa_rosca']},
+  mandrilar:{label:'Mandrilar', tipos:['mandril']}
+};
+
+/* ============================ DOM REFS ============================ */
+
+var $ = function(id){ return document.getElementById(id); };
+var els = {
+  familia: $('f-familia'), tipo: $('f-tipo'), matPeca: $('f-mat-peca'), matFerr: $('f-mat-ferr'),
+  operacao: $('f-operacao'), sf: $('f-sf'), sfValue: $('sf-value'), btnModoRapido: $('btn-modo-rapido'),
+  btnCalcular: $('btn-calcular'), badgeEstimado: $('badge-estimado'),
+  hdrMaterial: $('hdr-material'), hdrOperacao: $('hdr-operacao'), hdrFerramenta: $('hdr-ferramenta'), hdrNivel: $('hdr-nivel'),
+  alertaIcon: $('alerta-icon'), alertaMsg: $('alerta-msg'), zoneResumo: $('zone-resumo'),
+  resRpm: $('res-rpm'), resAvanco: $('res-avanco'), resSaude: $('res-saude'), gaugeFill: $('gauge-fill'),
+  resMrr: $('res-mrr'), chipLd: $('chip-ld'), resPotencia: $('res-potencia'), resTorque: $('res-torque'),
+  resVc: $('res-vc'), resFuro: $('res-furo'), resTempo: $('res-tempo'), resHm: $('res-hm'),
+  formulaLines: $('formula-lines')
+};
+
+var quickMode = false;
+var fieldUserEdited = {arestas:false, ap:false, ae:false, balanco:false, raioCanto:false, anguloPosicao:false, sobremetal:false};
+
+var FIELD_DEFAULTS = {
+  fresa_topo:{ap:3, ae:5, balanco:30},
+  fresa_esferica:{ap:2, ae:3, balanco:25},
+  fresa_toroidal:{raioCanto:2, ap:1, ae:3, balanco:30},
+  fresa_chanfrar:{ap:1, balanco:30},
+  fresa_alto_avanco:{anguloPosicao:15, ap:1, ae:8, balanco:30},
+  cabecote_faceador:{anguloPosicao:45, ap:1},
+  fresa_pastilhada:{ap:3, ae:5, balanco:30},
+  fresa_disco:{ap:5, ae:3},
+  broca_hss:{balanco:50},
+  broca_md:{balanco:50},
+  u_drill:{balanco:50},
+  alargador:{sobremetal:0.2, balanco:40},
+  mandril:{raioCanto:0.4}
+};
+
+/* ============================ HELPERS ============================ */
+
+function rad(deg){ return deg * Math.PI / 180; }
+function clamp(v, lo, hi){ return Math.min(hi, Math.max(lo, v)); }
+
+function fmt(n, dec){
+  if (typeof dec === 'undefined') dec = 0;
+  if (!Number.isFinite(n)) return '—';
+  return n.toFixed(dec);
+}
+
+function getMaterial(nome){
+  for (var i=0;i<MATERIALS.length;i++){ if (MATERIALS[i].nome===nome) return MATERIALS[i]; }
+  return MATERIALS[0];
+}
+
+function fieldEl(key){ return $('fld-' + key); }
+
+function readNumeric(key){
+  var el = fieldEl(key);
+  if (!el) return NaN;
+  if (el.value === '') return NaN;
+  var v = parseFloat(el.value);
+  return v;
+}
+
+/* ============================ POPULATE STATIC SELECTS ============================ */
+
+function populateMaterialSelect(){
+  els.matPeca.innerHTML = MATERIALS.map(function(m){
+    return '<option value="'+m.nome+'">'+m.nome+' ('+m.iso+')</option>';
+  }).join('');
+}
+
+function populateFamiliaTipo(familiaId){
+  var fam = FAMILIAS[familiaId];
+  els.tipo.innerHTML = fam.tipos.map(function(tid){
+    return '<option value="'+tid+'">'+TOOLS[tid].nome+'</option>';
+  }).join('');
+}
+
+function populateDesignacaoRosca(){
+  var el = fieldEl('designacaoRosca');
+  el.innerHTML = Object.keys(THREADS).map(function(k){
+    return '<option value="'+k+'">'+k+' (passo '+THREADS[k].P.toFixed(2)+'mm)</option>';
+  }).join('');
+  el.value = 'M16'; // maior rosca da tabela: evita bloqueio espúrio com D_fresa default (12mm)
+}
+
+populateMaterialSelect();
+populateDesignacaoRosca();
+
+/* ============================ FIELD VISIBILITY / SCHEMA RENDER ============================ */
+
+function updateFieldsForTipo(tipoId){
+  var cfg = TOOLS[tipoId];
+  ALL_FIELD_KEYS.forEach(function(key){
+    var row = document.querySelector('[data-field="'+key+'"]');
+    if (!row) return;
+    var show = cfg.campos.indexOf(key) !== -1;
+    row.classList.toggle('hidden', !show);
+    if (show){
+      var label = (cfg.labels && cfg.labels[key]) || FIELD_META[key].label;
+      var lbl = row.querySelector('label');
+      if (lbl) lbl.textContent = label;
+      if (key === 'anguloBroca'){
+        var opts = cfg.anguloOptions || [90];
+        var sel = fieldEl('anguloBroca');
+        var prev = sel.value;
+        sel.innerHTML = opts.map(function(o){ return '<option value="'+o+'">'+o+'°</option>'; }).join('');
+        if (opts.indexOf(parseFloat(prev)) !== -1) sel.value = prev;
+      }
+    }
+  });
+
+  // designação de rosca preenche automaticamente o passo (ainda editável)
+  if (cfg.campos.indexOf('designacaoRosca') !== -1){
+    syncPassoFromDesignacao();
+  }
+
+  // valor default de arestas (Z) do tipo, pré-preenchido se o campo estiver
+  // vazio ou ainda não foi editado manualmente pelo usuário
+  var zEl = fieldEl('arestas');
+  if (cfg.campos.indexOf('arestas') !== -1 && cfg.z){
+    zEl.placeholder = 'ex: ' + cfg.z;
+    if (zEl.value === '' || !fieldUserEdited.arestas){
+      zEl.value = cfg.z;
+    }
+  }
+
+  // mesmo mecanismo para os demais campos numéricos de dimensão (ap, ae, balanco,
+  // raioCanto, anguloPosicao, sobremetal): pré-preenche com um default sensato por
+  // tipo de ferramenta, sem sobrescrever edição manual do usuário
+  var defaults = FIELD_DEFAULTS[tipoId] || {};
+  Object.keys(defaults).forEach(function(key){
+    if (cfg.campos.indexOf(key) === -1) return;
+    var el = fieldEl(key);
+    if (!el) return;
+    el.placeholder = 'ex: ' + defaults[key];
+    if (el.value === '' || !fieldUserEdited[key]){
+      el.value = defaults[key];
+    }
+  });
+}
+
+function syncPassoFromDesignacao(){
+  var desig = fieldEl('designacaoRosca').value;
+  var t = THREADS[desig];
+  if (t) fieldEl('passoRosca').value = t.P;
+}
+
+/* ============================ VALIDATION ============================ */
+
+function validate(tipoId){
+  var cfg = TOOLS[tipoId];
+  var order = ['diametro','diametroInicial','diametroFinal'].concat(NUMERIC_FIELDS);
+  var seen = {};
+  var unique = order.filter(function(k){ if (seen[k]) return false; seen[k]=true; return true; });
+
+  for (var i=0;i<unique.length;i++){
+    var key = unique[i];
+    if (cfg.campos.indexOf(key) === -1) continue;
+    var el = fieldEl(key);
+    if (!el) continue;
+    var raw = el.value;
+    var label = (cfg.labels && cfg.labels[key]) || FIELD_META[key].label;
+    if (raw === ''){
+      return {ok:false, msg: 'Preencha o campo "'+label+'" para calcular.'};
+    }
+    var v = parseFloat(raw);
+    if (!Number.isFinite(v)){
+      return {ok:false, msg: 'Valor inválido em "'+label+'".'};
+    }
+    if (v <= 0){
+      if (key === 'diametro' || key === 'diametroInicial' || key === 'diametroFinal'){
+        return {ok:false, msg: 'Diâmetro deve ser maior que zero.'};
+      }
+      return {ok:false, msg: '"'+label+'" deve ser maior que zero.'};
+    }
+  }
+  return {ok:true};
+}
+
+/* ============================ SEMÁFORO GENÉRICO L/D ============================ */
+
+function ldSemaforoFresar(ld, D){
+  if (ld <= 3) return {nivel:'verde', msg:'Balanço adequado (L/D = '+ld.toFixed(1)+').'};
+  if (ld <= 4) return {nivel:'amarelo', msg:'Atenção: L/D = '+ld.toFixed(1)+'. Risco leve de vibração — reduza o balanço ou use ap menor.'};
+  if (ld <= 6) return {nivel:'vermelho', msg:'Risco alto: L/D = '+ld.toFixed(1)+'. Reduza o balanço para no máximo '+(4*D).toFixed(1)+' mm ou use haste antivibratória.'};
+  return {nivel:'bloqueado', msg:'Bloqueado: Relação L/D = '+ld.toFixed(1)+' excede o limite máximo de 6.0. Reduza o balanço para no máximo '+(6*D).toFixed(1)+' mm.'};
+}
+
+function ldSemaforoMandrilar(ld, D){
+  if (ld <= 3) return {nivel:'verde', msg:'Balanço adequado (L/D = '+ld.toFixed(1)+').'};
+  if (ld <= 4) return {nivel:'amarelo', msg:'Atenção: L/D = '+ld.toFixed(1)+'. Risco leve de vibração na barra de mandrilar.'};
+  if (ld <= 5) return {nivel:'vermelho', msg:'Risco alto: L/D = '+ld.toFixed(1)+'. Reduza o comprimento da barra para no máximo '+(4*D).toFixed(1)+' mm.'};
+  return {nivel:'bloqueado', msg:'Bloqueado: Relação L/D = '+ld.toFixed(1)+' excede o limite máximo de 5.0 no mandrilamento. Reduza o balanço para no máximo '+(5*D).toFixed(1)+' mm.'};
+}
+
+var HEALTH_LD = {verde:100, amarelo:65, vermelho:35, bloqueado:0};
+
+// checagem de limites de máquina (Pc/Mc exibidos já com fator de segurança, n e Vf calculados):
+// se qualquer um exceder o limite da máquina, força bloqueio. Pc/Mc só se aplica a
+// Fresar/Furar/Mandrilar — Roscar já tem sua própria checagem de torque no macho.
+function checkMachineLimits(familia, pcExibido, mcExibido, n, vf){
+  if (familia !== 'roscar' && Number.isFinite(pcExibido) && pcExibido > MACHINE.maxPower){
+    return {nivel:'bloqueado', msg:'Bloqueado: Potência estimada de '+fmt(pcExibido,2)+' kW excede o limite da máquina ('+MACHINE.maxPower+' kW). Reduza ap/ae/Vc.'};
+  }
+  if (familia !== 'roscar' && Number.isFinite(mcExibido) && mcExibido > MACHINE.maxTorque){
+    return {nivel:'bloqueado', msg:'Bloqueado: Torque estimado de '+fmt(mcExibido,1)+' Nm excede o limite da máquina ('+MACHINE.maxTorque+' Nm). Reduza ap/ae/Vc.'};
+  }
+  if (Number.isFinite(n) && n > MACHINE.maxRPM){
+    return {nivel:'bloqueado', msg:'Bloqueado: Rotação calculada de '+fmt(n,0)+' rpm excede o limite da máquina ('+MACHINE.maxRPM+' rpm).'};
+  }
+  if (Number.isFinite(vf) && vf > MACHINE.maxFeed){
+    return {nivel:'bloqueado', msg:'Bloqueado: Avanço calculado de '+fmt(vf,0)+' mm/min excede o limite da máquina ('+MACHINE.maxFeed+'mm/min).'};
+  }
+  return null;
+}
+
+// checagem isolada de L/D para fresamento: só depende de Diâmetro e Balanço,
+// não deve esperar Z/ap/ae para acender o alerta de risco de vibração/bloqueio
+function checkLdEarlyFresar(tipoId){
+  var cfg = TOOLS[tipoId];
+  if (!cfg || cfg.familia !== 'fresar' || cfg.campos.indexOf('balanco') === -1) return null;
+  var D = readNumeric('diametro');
+  var L = readNumeric('balanco');
+  if (!Number.isFinite(D) || D <= 0 || !Number.isFinite(L) || L <= 0) return null;
+  var sem = ldSemaforoFresar(L / D, D);
+  sem.ld = L / D;
+  return sem;
+}
+
+/* ============================ FAMÍLIA: FRESAR ============================ */
+
+function computeMilling(tipoId, ctx){
+  var cfg = TOOLS[tipoId];
+  var D = readNumeric('diametro');
+  var Z = readNumeric('arestas') || cfg.z || 1;
+  var ap = readNumeric('ap');
+  var ae = readNumeric('ae');
+  var L = readNumeric('balanco');
+  var kappaDeg = readNumeric('anguloPosicao');
+  var Dmenor = readNumeric('diametroMenor');
+  var r = readNumeric('raioCanto');
+
+  var Dc = D; // diâmetro efetivo para rotação
+  var apLimiteMsg = null;
+
+  if (tipoId === 'fresa_esferica'){
+    if (ap > 0 && ap < D/2){ Dc = 2 * Math.sqrt(Math.max(0, ap * (D - ap))); }
+  } else if (tipoId === 'fresa_toroidal'){
+    if (Number.isFinite(r) && r > 0 && ap > 0 && ap < r){
+      Dc = D - 2*r + 2*Math.sqrt(Math.max(0, ap * (2*r - ap)));
+    }
+  } else if (tipoId === 'fresa_chanfrar'){
+    if (Number.isFinite(Dmenor) && Dmenor > 0){ Dc = (Dmenor + D) / 2; }
+  }
+  if (!Number.isFinite(Dc) || Dc <= 0) Dc = D;
+
+  var vcBase = ctx.material.vc[ctx.operacao];
+  var vc = vcBase * ctx.toolFactor;
+  var n = (vc * 1000) / (Math.PI * Dc);
+
+  var fzBase = FZ_BASE[ctx.operacao];
+  var hm, fz, vf;
+
+  if (tipoId === 'fresa_alto_avanco' || tipoId === 'cabecote_faceador'){
+    var k = Number.isFinite(kappaDeg) && kappaDeg > 0 ? kappaDeg : 45;
+    hm = fzBase; // hm alvo assumido = fz base do material/operação
+    fz = hm / Math.sin(rad(k));
+    vf = fz * Z * n;
+  } else if ((ae > 0) && (D > 0) && (ae < D/2)){
+    // afinamento de cavaco Woxén
+    hm = fzBase * Math.sqrt(ae / D);
+    fz = fzBase;
+    vf = fz * Z * n;
+  } else {
+    fz = fzBase;
+    hm = fzBase;
+    vf = fz * Z * n;
+  }
+
+  var apEff = ap, aeEff = ae;
+  if (tipoId === 'fresa_disco'){
+    // inversão geométrica: ap = largura (b), ae = profundidade radial (ap_rad)
+    apEff = ap; aeEff = ae;
+  }
+
+  var q = (apEff > 0 && aeEff > 0) ? (apEff * aeEff * vf) / 1000 : NaN;
+
+  var hUse = Math.max(hm, 0.02);
+  var kc = ctx.material.kc11 * Math.pow(hUse, -ctx.material.mc);
+  var pcRaw = Number.isFinite(q) ? (q * kc) / 60000 : NaN;
+  var mcRaw = (Number.isFinite(pcRaw) && n > 0) ? 9549 * pcRaw / n : NaN;
+
+  var ld = (L > 0 && D > 0) ? L / D : NaN;
+  var semaforo = Number.isFinite(ld) ? ldSemaforoFresar(ld, D) : {nivel:'verde', msg:'Informe o balanço para avaliar risco de vibração.'};
+
+  var extraWarn = null;
+  var healthSub = [HEALTH_LD[semaforo.nivel]];
+
+  if (tipoId === 'cabecote_faceador' && ae > 0 && D > 0 && ae > 0.8*D){
+    extraWarn = {nivel:'amarelo', msg:'Atenção: ae = '+fmt(ae,1)+'mm ('+fmt(ae/D*100,0)+'% do diâmetro). Descentralize a fresa ou reduza ae para no máximo '+fmt(0.8*D,1)+' mm.'};
+    healthSub.push(65);
+  }
+
+  var pior = semaforo;
+  if (extraWarn && (semaforo.nivel === 'verde')) pior = extraWarn;
+
+  return {
+    n:n, vf:vf, vc:vc, hm:hm, q:q, pc:pcRaw, mc:mcRaw, ld:ld,
+    semaforo:pior, healthSub:healthSub,
+    resumo: cfg.nome+' — Ø'+fmt(D,1)+'mm · Z'+fmt(Z,0)+' · '+ctx.toolFactorLabel+' (fator '+ctx.toolFactor.toFixed(2)+')',
+    furoPrevio:NaN, tempo:NaN,
+    formulas:[
+      'n = (Vc × 1000) / (π × Dc) = ('+fmt(vc,1)+' × 1000) / (π × '+fmt(Dc,2)+') = '+fmt(n,0)+' rpm',
+      'Vf = fz × Z × n = '+fmt(fz,3)+' × '+fmt(Z,0)+' × '+fmt(n,0)+' = '+fmt(vf,0)+' mm/min',
+      'Q = (ap × ae × Vf) / 1000 = '+fmt(q,2)+' cm³/min',
+      'Pc = (Q × kc) / 60000 = '+fmt(pcRaw,3)+' kW',
+      'Mc = 9549 × Pc / n = '+fmt(mcRaw,2)+' Nm'
+    ]
+  };
+}
+
+/* ============================ FAMÍLIA: FURAR ============================ */
+
+function fnDefault(D){ return Number.isFinite(D) && D>0 ? clamp(0.02*D, 0.05, 0.35) : 0.1; }
+
+function computeDrilling(tipoId, ctx){
+  var cfg = TOOLS[tipoId];
+  var D = readNumeric('diametro');
+  var L = readNumeric('balanco');
+  var Z = readNumeric('arestas');
+  var anguloEl = fieldEl('anguloBroca');
+  var angulo = anguloEl ? parseFloat(anguloEl.value) : 118;
+  var fnUserRaw = readNumeric('fnManual');
+  var sobremetal = readNumeric('sobremetal');
+
+  var vcBase = ctx.material.vc[ctx.operacao];
+  var vc = vcBase * ctx.toolFactor;
+  if (tipoId === 'escareador') vc = vc * 0.5;
+  if (tipoId === 'alargador') vc = vc / 3;
+
+  var n = (vc * 1000) / (Math.PI * D);
+
+  var fn;
+  var fnMin = null, fnWarn = null;
+  if (tipoId === 'u_drill'){
+    fn = Number.isFinite(fnUserRaw) ? fnUserRaw : fnDefault(D);
+    fnMin = 0.05 * Math.sqrt(D);
+    if (fn < fnMin){
+      fnWarn = {nivel:'amarelo', msg:'Avanço fn = '+fmt(fn,3)+' mm/rot abaixo do mínimo recomendado de '+fmt(fnMin,3)+' mm/rot. Aumente fn para pelo menos '+fmt(fnMin,3)+' mm/rot.'};
+    }
+  } else if (tipoId === 'alargador'){
+    fn = fnDefault(D) * 2.5;
+  } else {
+    fn = fnDefault(D);
+  }
+
+  var vf = fn * n;
+  var q = (D > 0 && fn > 0) ? (D * fn * vc) / 4 : NaN;
+
+  var hUse = Math.max(fn, 0.02);
+  var kc = ctx.material.kc11 * Math.pow(hUse, -ctx.material.mc);
+  var pcRaw = Number.isFinite(q) ? (fn * vc * D * kc) / (240 * 1000) : NaN;
+  var mcRaw = (Number.isFinite(pcRaw) && n > 0) ? 9549 * pcRaw / n : NaN;
+
+  var Lp = 0;
+  if (Number.isFinite(angulo) && angulo > 0 && angulo < 180 && (tipoId==='broca_hss'||tipoId==='broca_md'||tipoId==='broca_centro')){
+    Lp = (D/2) * Math.tan(rad(90 - angulo/2));
+  }
+  var tempo = (Number.isFinite(L) && vf > 0) ? (L + Lp) / vf : NaN;
+
+  var ld = (L > 0 && D > 0) ? L / D : NaN;
+  var semaforo = {nivel:'verde', msg:'Parâmetros dentro dos limites recomendados.'};
+  var healthSub = [100];
+
+  if (Number.isFinite(ld) && ld > 3){
+    semaforo = {nivel:'amarelo', msg:'Aviso: L/D = '+fmt(ld,1)+' > 3.0. Utilize ciclo de furação pica-pau (peck drilling) para evacuar o cavaco.'};
+    healthSub.push(65);
+  }
+  if (fnWarn){
+    semaforo = fnWarn;
+    healthSub.push(55);
+  }
+
+  var resumoExtra = '';
+  if (Number.isFinite(angulo)) resumoExtra = ' · Ponta '+angulo+'°';
+
+  return {
+    n:n, vf:vf, vc:vc, hm:fn, q:q, pc:pcRaw, mc:mcRaw, ld:ld,
+    semaforo:semaforo, healthSub:healthSub,
+    resumo: cfg.nome+' — Ø'+fmt(D,1)+'mm'+resumoExtra+' · '+ctx.toolFactorLabel,
+    furoPrevio:NaN, tempo:tempo,
+    formulas:[
+      'n = (Vc × 1000) / (π × D) = ('+fmt(vc,1)+' × 1000) / (π × '+fmt(D,2)+') = '+fmt(n,0)+' rpm',
+      'Vf = fn × n = '+fmt(fn,3)+' × '+fmt(n,0)+' = '+fmt(vf,0)+' mm/min',
+      'Q = (D × fn × Vc) / 4 = '+fmt(q,2)+' cm³/min',
+      'Lp = (D/2) × tan(90° − ângulo/2) = '+fmt(Lp,2)+' mm',
+      't = (L + Lp) / Vf = '+fmt(tempo,2)+' min'
+    ]
+  };
+}
+
+/* ============================ FAMÍLIA: ROSCAR ============================ */
+
+function computeThreading(tipoId, ctx){
+  var cfg = TOOLS[tipoId];
+  var Z = readNumeric('arestas');
+
+  var semaforo = {nivel:'verde', msg:'Parâmetros de roscamento dentro dos limites.'};
+  var healthSub = [100];
+  var furoPrevio = NaN, n, vf, mcRaw = NaN, resumo, formulas, hmVal = NaN;
+
+  if (tipoId === 'macho_corte' || tipoId === 'macho_conformacao'){
+    var Dnom = readNumeric('diametro');
+    var P = readNumeric('passoRosca');
+    hmVal = P;
+    furoPrevio = tipoId === 'macho_corte' ? (Dnom - P) : (Dnom - P/2);
+
+    var vcBase = ctx.material.vc[ctx.operacao] * 0.15 * ctx.toolFactor;
+    n = (vcBase * 1000) / (Math.PI * Dnom);
+    vf = P * n;
+
+    mcRaw = (ctx.material.kc11 / 1000) * Dnom * P * P * 0.6;
+
+    if (tipoId === 'macho_conformacao' && NAO_CONFORMAVEL.indexOf(ctx.material.id) !== -1){
+      semaforo = {nivel:'bloqueado', msg:'Bloqueado: '+ctx.material.nome+' não é recomendado para macho de conformação (material frágil/duro). Utilize macho de corte.'};
+      healthSub.push(0);
+    } else if (mcRaw > MACHINE.maxTorque){
+      semaforo = {nivel:'bloqueado', msg:'Bloqueado: Torque estimado de '+fmt(mcRaw,1)+' Nm excede o limite da máquina ('+MACHINE.maxTorque+' Nm). Reduza o passo da rosca ou a rotação.'};
+      healthSub.push(0);
+    } else if (mcRaw > 0.8 * MACHINE.maxTorque){
+      semaforo = {nivel:'amarelo', msg:'Atenção: Torque estimado de '+fmt(mcRaw,1)+' Nm próximo do limite da máquina ('+MACHINE.maxTorque+' Nm).'};
+      healthSub.push(60);
+    }
+
+    resumo = cfg.nome+' — D'+fmt(Dnom,1)+' × P'+fmt(P,2)+'mm · Furo prévio '+fmt(furoPrevio,2)+'mm';
+    formulas = [
+      'Furo Prévio = '+(tipoId==='macho_corte' ? 'D − P = '+fmt(Dnom,1)+' − '+fmt(P,2) : 'D − P/2 = '+fmt(Dnom,1)+' − '+fmt(P,2)+'/2')+' = '+fmt(furoPrevio,2)+' mm',
+      'Vf = P × n = '+fmt(P,2)+' × '+fmt(n,0)+' = '+fmt(vf,0)+' mm/min (travado no passo)',
+      'Mc_est ≈ (kc1.1/1000) × D × P² × 0.6 = '+fmt(mcRaw,2)+' Nm'
+    ];
+  } else {
+    // fresa_rosca — continua usando a Designação da Rosca (D_rosca) + Diâmetro da fresa (D_fresa)
+    var desig = fieldEl('designacaoRosca').value;
+    var th = THREADS[desig];
+    var DnomRosca = th.D;
+    var Dfresa = readNumeric('diametro');
+    if (!Number.isFinite(Dfresa) || Dfresa <= 0 || Dfresa >= DnomRosca){
+      semaforo = {nivel:'bloqueado', msg:'Bloqueado: o diâmetro da fresa ('+fmt(Dfresa,1)+'mm) deve ser menor que o diâmetro da rosca ('+DnomRosca+'mm).'};
+      healthSub.push(0);
+      n = NaN; vf = NaN;
+    } else {
+      var vcBase2 = ctx.material.vc[ctx.operacao] * ctx.toolFactor;
+      n = (vcBase2 * 1000) / (Math.PI * Dfresa);
+      var fzBase = FZ_BASE[ctx.operacao];
+      var zUse = Z || 3;
+      var vfPerif = fzBase * zUse * n;
+      vf = vfPerif * (DnomRosca - Dfresa) / DnomRosca;
+    }
+    resumo = cfg.nome+' — Rosca '+desig+' · Fresa Ø'+fmt(Dfresa,1)+'mm';
+    formulas = [
+      'n = (Vc × 1000) / (π × D_fresa) = '+fmt(n,0)+' rpm',
+      'Vf_perif = fz × Z × n',
+      'Vf_centro = Vf_perif × (D_rosca − D_fresa) / D_rosca = '+fmt(vf,0)+' mm/min'
+    ];
+  }
+
+  return {
+    n:n, vf:vf, vc:NaN, hm:hmVal, q:NaN, pc:NaN, mc:mcRaw, ld:NaN,
+    semaforo:semaforo, healthSub:healthSub, resumo:resumo,
+    furoPrevio:furoPrevio, tempo:NaN, formulas:formulas
+  };
+}
+
+/* ============================ FAMÍLIA: MANDRILAR ============================ */
+
+function computeBoring(tipoId, ctx){
+  var cfg = TOOLS[tipoId];
+  var Di = readNumeric('diametroInicial');
+  var Df = readNumeric('diametroFinal');
+  var L = readNumeric('balanco');
+  var rEpsi = readNumeric('raioCanto');
+  var fn = readNumeric('fnManual');
+  if (!Number.isFinite(fn) || fn <= 0) fn = 0.1;
+
+  var ap = (Df - Di) / 2;
+  var Dc = Df;
+  var vcBase = ctx.material.vc[ctx.operacao] * ctx.toolFactor;
+  var n = (vcBase * 1000) / (Math.PI * Dc);
+  var vf = fn * n;
+
+  var Ra = (Number.isFinite(rEpsi) && rEpsi > 0) ? (Math.pow(fn,2) / (8 * rEpsi)) * 1000 : NaN;
+
+  var hUse = Math.max(fn, 0.02);
+  var kc = ctx.material.kc11 * Math.pow(hUse, -ctx.material.mc);
+  var q = (Dc > 0 && fn > 0) ? (Dc * fn * vcBase) / 4 : NaN;
+  var pcRaw = Number.isFinite(q) ? (fn * vcBase * Dc * kc) / (240*1000) : NaN;
+  var mcRaw = (Number.isFinite(pcRaw) && n > 0) ? 9549 * pcRaw / n : NaN;
+
+  var ld = (L > 0 && Di > 0) ? L / Di : NaN;
+  var semaforo = Number.isFinite(ld) ? ldSemaforoMandrilar(ld, Di) : {nivel:'verde', msg:'Informe o comprimento da barra para avaliar risco de vibração.'};
+  var healthSub = [HEALTH_LD[semaforo.nivel]];
+
+  return {
+    n:n, vf:vf, vc:vcBase, hm:fn, q:q, pc:pcRaw, mc:mcRaw, ld:ld,
+    semaforo:semaforo, healthSub:healthSub,
+    resumo: cfg.nome+' — Øi'+fmt(Di,1)+' → Øf'+fmt(Df,1)+'mm · ap '+fmt(ap,2)+'mm · Ra '+fmt(Ra,2)+'µm',
+    furoPrevio:NaN, tempo:NaN,
+    formulas:[
+      'ap = (Øf − Øi) / 2 = ('+fmt(Df,1)+' − '+fmt(Di,1)+') / 2 = '+fmt(ap,2)+' mm',
+      'n = (Vc × 1000) / (π × Øf) = '+fmt(n,0)+' rpm',
+      'Vf = fn × n = '+fmt(vf,0)+' mm/min',
+      'Ra = (fn² / (8 × rε)) × 1000 = '+fmt(Ra,2)+' µm'
+    ]
+  };
+}
+
+/* ============================ SAÚDE ============================ */
+
+function healthColor(v){
+  if (v >= 80) return 'var(--ok)';
+  if (v >= 50) return 'var(--warn)';
+  return 'var(--err)';
+}
+
+/* ============================ RENDER ============================ */
+
+function setEmpty(msgObj, ldInfo){
+  els.resRpm.textContent = '—'; els.resRpm.classList.add('stale');
+  els.resAvanco.textContent = '—'; els.resAvanco.classList.add('stale');
+  els.resSaude.textContent = '—';
+  els.gaugeFill.style.width = '0%';
+  els.gaugeFill.style.background = 'var(--border-strong)';
+  els.resMrr.textContent = '— cm³/min';
+  els.resPotencia.textContent = '— kW';
+  els.resTorque.textContent = '— Nm';
+  els.resVc.textContent = '— m/min';
+  els.resFuro.textContent = '— mm';
+  els.resTempo.textContent = '— min';
+  els.resHm.textContent = '— mm';
+  els.formulaLines.innerHTML = '<div class="formula-line">Preencha os campos obrigatórios para ver as fórmulas.</div>';
+
+  if (ldInfo){
+    els.chipLd.textContent = 'L/D = ' + fmt(ldInfo.ld,1);
+    els.chipLd.className = 'chip ' + stateClass(ldInfo.nivel);
+    setAlerta(ldInfo);
+    els.hdrNivel.textContent = nivelLabel(ldInfo.nivel);
+    els.hdrNivel.className = 'nivel-chip ' + stateClass(ldInfo.nivel);
+  } else {
+    els.chipLd.textContent = '—';
+    els.chipLd.className = 'chip state-ok';
+    setAlerta({nivel:'info', msg: msgObj && msgObj.msg ? msgObj.msg : 'Preencha os campos obrigatórios para calcular.'});
+    els.hdrNivel.textContent = 'Aguardando';
+    els.hdrNivel.className = 'nivel-chip state-ok';
+  }
+}
+
+function stateClass(nivel){
+  if (nivel === 'verde') return 'state-ok';
+  if (nivel === 'amarelo') return 'state-warn';
+  if (nivel === 'vermelho') return 'state-err';
+  if (nivel === 'bloqueado') return 'state-blocked';
+  return 'state-ok';
+}
+
+function setAlerta(semaforo){
+  var cls = stateClass(semaforo.nivel);
+  els.alertaIcon.className = 'icon ' + cls;
+  els.alertaIcon.textContent = semaforo.nivel === 'bloqueado' ? '!' : (semaforo.nivel === 'vermelho' ? '!' : (semaforo.nivel === 'amarelo' ? '!' : 'OK'));
+  els.zoneAlertaEl().className = 'zone zone-2 ' + cls;
+  els.alertaMsg.textContent = semaforo.msg;
+}
+els.zoneAlertaEl = function(){ return $('zone-alerta'); };
+
+function nivelLabel(nivel){
+  return {verde:'Seguro', amarelo:'Atenção', vermelho:'Crítico', bloqueado:'Bloqueado', info:'Aguardando'}[nivel] || 'Aguardando';
+}
+
+function render(tipoId, ctx, result){
+  els.hdrMaterial.textContent = ctx.material.nome + (ctx.material.status === 'estimado' ? ' (estimado)' : '');
+  els.hdrOperacao.textContent = ({desbaste:'Desbaste', semi:'Semi-acabamento', acabamento:'Acabamento'})[ctx.operacao];
+  els.hdrFerramenta.textContent = TOOLS[tipoId].nome;
+
+  var sf = parseInt(els.sf.value, 10) / 100;
+  var pcExibido = Number.isFinite(result.pc) ? result.pc * sf : NaN;
+  var mcExibido = Number.isFinite(result.mc) ? result.mc * sf : NaN;
+
+  var semaforo = result.semaforo;
+  if (semaforo.nivel !== 'bloqueado'){
+    var limitCheck = checkMachineLimits(TOOLS[tipoId].familia, pcExibido, mcExibido, result.n, result.vf);
+    if (limitCheck){
+      semaforo = limitCheck;
+      result.healthSub = result.healthSub.concat([0]);
+    }
+  }
+
+  var nivel = semaforo.nivel;
+  els.hdrNivel.textContent = nivelLabel(nivel);
+  els.hdrNivel.className = 'nivel-chip ' + stateClass(nivel);
+
+  setAlerta(semaforo);
+
+  els.zoneResumo.textContent = result.resumo;
+
+  var blocked = nivel === 'bloqueado';
+
+  els.resRpm.textContent = fmt(result.n,0);
+  els.resRpm.classList.toggle('stale', !Number.isFinite(result.n));
+  els.resAvanco.textContent = fmt(result.vf,0);
+  els.resAvanco.classList.toggle('stale', !Number.isFinite(result.vf));
+
+  var health = blocked ? 0 : clamp(Math.min.apply(null, result.healthSub.concat([100])), 0, 100);
+  els.resSaude.textContent = fmt(health,0);
+  els.gaugeFill.style.width = health + '%';
+  els.gaugeFill.style.background = healthColor(health);
+
+  els.resMrr.textContent = Number.isFinite(result.q) ? fmt(result.q,2) + ' cm³/min' : '— cm³/min';
+
+  if (Number.isFinite(result.ld)){
+    els.chipLd.textContent = 'L/D = ' + fmt(result.ld,1);
+    els.chipLd.className = 'chip ' + stateClass(nivel);
+  } else {
+    els.chipLd.textContent = 'L/D n/a';
+    els.chipLd.className = 'chip state-ok';
+  }
+
+  els.resPotencia.textContent = Number.isFinite(pcExibido) ? fmt(pcExibido,2) + ' kW' : '— kW';
+  els.resTorque.textContent = Number.isFinite(mcExibido) ? fmt(mcExibido,2) + ' Nm' : '— Nm';
+  els.resVc.textContent = Number.isFinite(result.vc) ? fmt(result.vc,1) + ' m/min' : '— m/min';
+  els.resFuro.textContent = Number.isFinite(result.furoPrevio) ? fmt(result.furoPrevio,2) + ' mm' : '— mm';
+  els.resTempo.textContent = Number.isFinite(result.tempo) ? fmt(result.tempo,2) + ' min' : '— min';
+  els.resHm.textContent = Number.isFinite(result.hm) ? fmt(result.hm,3) + ' mm' : '— mm';
+
+  els.formulaLines.innerHTML = result.formulas.map(function(f){
+    return '<div class="formula-line">' + f + '</div>';
+  }).join('');
+
+  els.badgeEstimado.classList.toggle('hidden', ctx.material.status !== 'estimado');
+}
+
+/* ============================ ORQUESTRAÇÃO ============================ */
+
+function computeQuickMode(){
+  var matId = els.matPeca.value;
+  var material = getMaterial(matId);
+  var D = readNumeric('diametro');
+  var operacao = els.operacao.value;
+
+  if (!Number.isFinite(D) || D <= 0 || els.matPeca.value === ''){
+    setEmpty({msg: !Number.isFinite(D) ? 'Preencha o campo "Diâmetro (D)" para calcular.' : 'Diâmetro deve ser maior que zero.'});
+    return;
+  }
+
+  var vc = material.vc[operacao];
+  var n = (vc * 1000) / (Math.PI * D);
+  var fz = FZ_BASE[operacao];
+  var Z = 4;
+  var vf = fz * Z * n;
+  var ap = 2, ae = 2, L = 30;
+  var q = (ap * ae * vf) / 1000;
+  var hUse = Math.max(fz, 0.02);
+  var kc = material.kc11 * Math.pow(hUse, -material.mc);
+  var pcRaw = (q * kc) / 60000;
+  var mcRaw = 9549 * pcRaw / n;
+  var ld = L / D;
+  var semaforo = ldSemaforoFresar(ld, D);
+
+  render('fresa_topo', {material:material, operacao:operacao, toolFactor:1.0, toolFactorLabel:'Metal Duro (estimado)'}, {
+    n:n, vf:vf, vc:vc, hm:fz, q:q, pc:pcRaw, mc:mcRaw, ld:ld,
+    semaforo:semaforo, healthSub:[HEALTH_LD[semaforo.nivel]],
+    resumo:'Modo Rápido — estimativa genérica de fresamento (Z4, ap2mm, ae2mm, L30mm, MD).',
+    furoPrevio:NaN, tempo:NaN,
+    formulas:['Modo Rápido: n = Vc×1000/(π×D), Vf = fz×Z×n com valores padrão de referência.']
+  });
+}
+
+function recalc(){
+  try{
+    if (quickMode){
+      computeQuickMode();
+      return;
+    }
+    var tipoId = els.tipo.value;
+    var cfg = TOOLS[tipoId];
+    if (!cfg) return;
+
+    var v = validate(tipoId);
+    if (!v.ok){
+      setEmpty(v, checkLdEarlyFresar(tipoId));
+      return;
+    }
+
+    var material = getMaterial(els.matPeca.value);
+    var toolFactorKey = els.matFerr.value;
+    var toolFactor = TOOL_FACTORS[toolFactorKey].fator;
+    var toolFactorLabel = TOOL_FACTORS[toolFactorKey].label;
+    var ctx = {material:material, operacao:els.operacao.value, toolFactor:toolFactor, toolFactorLabel:toolFactorLabel};
+
+    var result;
+    if (cfg.familia === 'fresar') result = computeMilling(tipoId, ctx);
+    else if (cfg.familia === 'furar') result = computeDrilling(tipoId, ctx);
+    else if (cfg.familia === 'roscar') result = computeThreading(tipoId, ctx);
+    else result = computeBoring(tipoId, ctx);
+
+    render(tipoId, ctx, result);
+  } catch(err){
+    setEmpty({msg:'Não foi possível calcular com os valores informados. Revise os campos.'});
+  }
+}
+
+/* ============================ EVENTOS ============================ */
+
+function onFamiliaChange(){
+  populateFamiliaTipo(els.familia.value);
+  onTipoChange();
+}
+
+function onTipoChange(){
+  var tipoId = els.tipo.value;
+  updateFieldsForTipo(tipoId);
+  recalc();
+}
+
+document.body.addEventListener('input', function(e){
+  if (e.target && e.target.id === 'f-sf'){
+    els.sfValue.textContent = els.sf.value + '%';
+  }
+  if (e.target && e.target.id === 'fld-designacaoRosca'){
+    syncPassoFromDesignacao();
+  }
+  var fm = e.target && e.target.id ? e.target.id.match(/^fld-(.+)$/) : null;
+  if (fm && fieldUserEdited.hasOwnProperty(fm[1])){
+    fieldUserEdited[fm[1]] = true;
+  }
+  recalc();
+});
+document.body.addEventListener('change', function(e){
+  recalc();
+});
+
+els.familia.addEventListener('change', onFamiliaChange);
+els.tipo.addEventListener('change', onTipoChange);
+els.btnCalcular.addEventListener('click', recalc);
+
+els.btnModoRapido.addEventListener('click', function(){
+  quickMode = !quickMode;
+  els.btnModoRapido.setAttribute('aria-pressed', quickMode ? 'true' : 'false');
+  els.btnModoRapido.textContent = quickMode ? 'Sair do Modo Rápido' : 'Ativar Modo Rápido (3 campos)';
+  document.body.classList.toggle('quick-mode', quickMode);
+
+  // no modo rápido, restam só Material da Peça, Diâmetro e Operação
+  document.querySelector('.block-parametros').classList.toggle('hidden', quickMode);
+  document.querySelectorAll('.block-dimensoes [data-field]').forEach(function(row){
+    if (row.getAttribute('data-field') !== 'diametro') row.classList.toggle('hidden', quickMode);
+    else row.classList.remove('hidden');
+  });
+  els.familia.closest('.row').classList.toggle('hidden', quickMode);
+  els.tipo.closest('.row').classList.toggle('hidden', quickMode);
+  els.matFerr.closest('.row').classList.toggle('hidden', quickMode);
+
+  recalc();
+});
+
+/* ============================ INIT ============================ */
+
+populateFamiliaTipo(els.familia.value);
+updateFieldsForTipo(els.tipo.value);
+els.matPeca.value = 'Aço 1045';
+setEmpty({msg:'Preencha os campos obrigatórios para calcular.'});
+
+})();
+</script>
+</body>
+</html>
