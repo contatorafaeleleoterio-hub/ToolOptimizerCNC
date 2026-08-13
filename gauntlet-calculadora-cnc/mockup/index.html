@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ToolOptimizer CNC — Mockup Calculadora</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="styles.css">
+</head>
+<body>
+<div class="app">
+
+  <!-- ===== TRILHO DE CONTEXTO ===== -->
+  <header class="context-rail" data-testid="context-rail">
+    <div class="rail-group">
+      <label for="operacao">Operação</label>
+      <select id="operacao" data-testid="operacao">
+        <option value="fresar">Fresar</option>
+        <option value="furar">Furar</option>
+        <option value="roscar">Roscar</option>
+        <option value="mandrilar">Mandrilar</option>
+        <option value="rapido">Cálculo rápido (agnóstico de ferramenta)</option>
+      </select>
+    </div>
+    <div class="rail-group" id="grupo-tipo-ferramenta">
+      <label for="tipo-ferramenta">Tipo de ferramenta</label>
+      <select id="tipo-ferramenta" data-testid="tipo-ferramenta"></select>
+    </div>
+    <div class="rail-group" id="grupo-material-ferramenta">
+      <label for="material-ferramenta">Material da ferramenta</label>
+      <select id="material-ferramenta" data-testid="material-ferramenta">
+        <option value="hss">HSS</option>
+        <option value="hss-co">HSS-Co</option>
+        <option value="metal-duro" selected>Metal duro</option>
+        <option value="md-pastilha">MD c/ pastilha</option>
+      </select>
+    </div>
+    <div class="rail-group">
+      <label for="material-peca">Material da peça</label>
+      <select id="material-peca" data-testid="material-peca"></select>
+      <span class="badge-estimado" id="badge-material-estimado" hidden>⚠ estimado</span>
+    </div>
+    <div class="rail-group rail-diametro">
+      <label for="diametro">Ø <span class="unit">(mm)</span></label>
+      <input type="number" id="diametro" data-testid="diametro" min="0" step="0.1" value="10">
+    </div>
+    <button type="button" id="toggle-modo" data-testid="toggle-modo" class="btn-toggle-modo">
+      Modo: <span id="toggle-modo-label">Avançado</span>
+    </button>
+  </header>
+
+  <!-- ===== CORPO ===== -->
+  <main class="main-grid">
+
+    <!-- Coluna esquerda: parâmetros -->
+    <section class="params-col">
+
+      <div class="panel panel-comum" id="bloco-comum" data-testid="bloco-comum">
+        <h2>Parâmetros comuns</h2>
+        <div class="field-grid">
+          <div class="field" data-field-wrap="z">
+            <label for="param-z">z <span class="unit">arestas/insertos</span></label>
+            <input type="number" id="param-z" data-testid="param-z" min="1" step="1" value="4">
+          </div>
+          <div class="field" data-field-wrap="fz">
+            <label for="param-fz">fz <span class="unit">mm/dente</span></label>
+            <input type="number" id="param-fz" data-testid="param-fz" min="0" step="0.01" value="0.05">
+          </div>
+          <div class="field" data-field-wrap="f">
+            <label for="param-f">f <span class="unit">mm/rotação</span></label>
+            <input type="number" id="param-f" data-testid="param-f" min="0" step="0.01" value="0.10">
+          </div>
+          <div class="field" data-field-wrap="ap">
+            <label for="param-ap">ap <span class="unit">profundidade axial, mm</span></label>
+            <input type="number" id="param-ap" data-testid="param-ap" min="0" step="0.1" value="1.0">
+          </div>
+          <div class="field" data-field-wrap="ae">
+            <label for="param-ae">ae <span class="unit">engajamento radial, mm</span></label>
+            <input type="number" id="param-ae" data-testid="param-ae" min="0" step="0.1" value="5">
+          </div>
+          <div class="field" data-field-wrap="balanco">
+            <label for="param-balanco">L <span class="unit">balanço, mm</span></label>
+            <input type="number" id="param-balanco" data-testid="param-balanco" min="0" step="1" value="30">
+          </div>
+        </div>
+        <p class="origem" data-testid="origem-sugestao"></p>
+      </div>
+
+      <div class="panel panel-especifico" id="bloco-especifico" data-testid="bloco-especifico">
+        <h2>Parâmetros específicos</h2>
+        <div class="field-grid" id="especifico-fields"></div>
+      </div>
+
+      <div class="panel panel-rapido-msg" id="bloco-rapido-msg" hidden>
+        <p>Modo rápido: preencha Operação, Material da peça e Ø. Os demais parâmetros usam valores sugeridos automaticamente.</p>
+      </div>
+
+      <button type="button" id="btn-calcular" data-testid="btn-calcular" class="btn-calcular">Calcular</button>
+    </section>
+
+    <!-- Coluna direita: resultados (persistente) -->
+    <aside class="results-col" data-testid="resultados">
+      <div class="result-primary">
+        <div class="result-tile">
+          <span class="label">RPM</span>
+          <span class="value font-mono" id="resultado-rpm" data-testid="resultado-rpm">—</span>
+        </div>
+        <div class="result-tile">
+          <span class="label">Avanço (Vf)</span>
+          <span class="value font-mono" id="resultado-avanco" data-testid="resultado-avanco">—</span>
+        </div>
+      </div>
+
+      <div class="result-secondary">
+        <div class="result-tile small">
+          <span class="label">MRR</span>
+          <span class="value font-mono" id="resultado-mrr" data-testid="resultado-mrr">—</span>
+        </div>
+        <div class="result-tile small">
+          <span class="label">Potência</span>
+          <span class="value font-mono" id="resultado-potencia" data-testid="resultado-potencia">—</span>
+        </div>
+        <div class="result-tile small">
+          <span class="label">Torque</span>
+          <span class="value font-mono" id="resultado-torque" data-testid="resultado-torque">—</span>
+        </div>
+        <div class="result-tile small ld-tile">
+          <span class="label">L/D</span>
+          <span class="value font-mono" id="resultado-ld-nivel" data-testid="resultado-ld-nivel" data-nivel="">—</span>
+        </div>
+        <div class="result-tile small" id="furo-macho-tile" hidden>
+          <span class="label">Furo prévio (macho)</span>
+          <span class="value font-mono" id="resultado-furo-macho" data-testid="resultado-furo-macho">—</span>
+        </div>
+      </div>
+
+      <div class="avisos" id="avisos" data-testid="avisos"></div>
+    </aside>
+
+  </main>
+</div>
+<script src="script.js"></script>
+</body>
+</html>

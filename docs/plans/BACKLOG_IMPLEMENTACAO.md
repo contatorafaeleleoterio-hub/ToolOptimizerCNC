@@ -1,8 +1,8 @@
 # Backlog de Implementação — ToolOptimizer CNC
 
-> **Última atualização:** 12/08/2026 (criação do plano 16 — Gauntlet Calculadora CNC)
+> **Última atualização:** 13/08/2026 (item 16 concluído; criação do plano 17 — Gauntlet v2, protocolo revisado)
 > **Versão atual:** v0.12.1
-> **Total de planos pendentes:** 1 — item 16 (experimento isolado, não altera produção)
+> **Total de planos pendentes:** 1 — item 17 (experimento isolado, não altera produção, aguardando Fase 0)
 
 Esta lista define a ordem de implementação dos planos criados e ainda não executados.
 A ordem garante estabilidade progressiva: bugs corrigidos antes de features, features antes de polish.
@@ -29,7 +29,8 @@ A ordem garante estabilidade progressiva: bugs corrigidos antes de features, fea
 | 13 | [Redesign Calculadora 80/20](#13-redesign-calculadora-8020) | 🎨 Redesign | MINOR | 5 arquivos + testes, 4 sessões (S0-S3) | 🔁 Absorvido pelo item 15 |
 | 14 | [Design System Canônico](#14-design-system-canônico) | 📄 Docs / Design Audit | — | 1 arquivo HTML, 4 sessões, zero `src/` | ✅ Concluído (`d471895`) |
 | 15 | [Implementação DS + 80/20 + Mobile + Dívida Visual](#15-implementação-ds--8020--mobile--dívida-visual) | 🎨 Redesign + Refactor | v0.12.0 | ~25 arquivos + 9 testes novos, 8 sessões | 🔁 Concluído localmente (8/8 sessões) |
-| 16 | [Gauntlet — Mockup Experimental da Calculadora](#16-gauntlet--mockup-experimental-da-calculadora) | 🧪 Experimento isolado | — (nenhuma) | Pasta `gauntlet-calculadora-cnc/`, **zero `src/`** | 📋 Planejado |
+| 16 | [Gauntlet — Mockup Experimental da Calculadora](#16-gauntlet--mockup-experimental-da-calculadora) | 🧪 Experimento isolado | — (nenhuma) | Pasta `gauntlet-calculadora-cnc/`, **zero `src/`** | ✅ Concluído (score 92/100, 7/7 gates) |
+| 17 | [Gauntlet v2 — Redo com protocolo revisado](#17-gauntlet-v2--redo-com-protocolo-revisado) | 🧪 Experimento isolado | — (nenhuma) | Pasta `gauntlet-calculadora-cnc-v2/` (sugestão), **zero `src/`** | 🟡 Aguardando Fase 0 (objetivo) |
 
 ---
 
@@ -247,7 +248,7 @@ v0.5.3/v0.4.2 — Unificar Indicadores ✅
 ### 16. Gauntlet — Mockup Experimental da Calculadora
 
 **Plano:** `docs/plans/PLAN_GAUNTLET_CALCULADORA_CNC.md` | **Versão alvo:** nenhuma (não vai para produção)
-**Status:** 📋 Planejado (12/08/2026)
+**Status:** ✅ Concluído (13/08/2026) — score final 92/100, 7/7 gates PASS, 2 ciclos (de 5 máx.)
 
 **Objetivo:** projetar e validar, por mockup HTML isolado, uma arquitetura de calculadora que acomode mais categorias de ferramenta de **fresadora** além da fresa inteiriça de metal duro — cabeçote com pastilhas, brocas (metal duro / HSS / inserto), machos (HSS / metal duro), mandrilar, e um modo de cálculo rápido agnóstico de ferramenta.
 
@@ -257,7 +258,29 @@ v0.5.3/v0.4.2 — Unificar Indicadores ✅
 
 **Regra absoluta:** zero alteração em `src/`, `package.json`, `node_modules/`, configs ou deploy. Todo o trabalho vive em `gauntlet-calculadora-cnc/`, com Playwright instalado apenas dentro dessa pasta.
 
-**Saída:** mockup navegável + `reports/FINAL_REPORT.md`. Score ≥ 90 **não** autoriza implementação — exige aprovação explícita do Rafael.
+**Saída:** mockup navegável (13/13 testes PASS) + `reports/FINAL_REPORT.md`. Score ≥ 90 **não** autoriza implementação — exige aprovação explícita do Rafael. **Técnica generalizada** em `central_rafael/protocolos/protocolo-loop-construtor-juiz-cego.md` (agnóstico de projeto) após a execução.
+
+---
+
+### 17. Gauntlet v2 — Redo com protocolo revisado
+
+**Plano:** `docs/plans/PLAN_GAUNTLET_CALCULADORA_CNC_V2.md` | **Versão alvo:** nenhuma (não vai para produção)
+**Status:** 🟡 Aguardando Fase 0 (13/08/2026) — objetivo, escopo e sandbox ainda não definidos
+
+**Objetivo:** reexecutar o exercício do item 16 usando a versão revisada do Gauntlet Loop
+(`protocolo-loop-construtor-juiz-cego.md`), com critério de parada por convergência real
+(guarda melhor ciclo, reverte regressão, estagnação = score parado + mesmos problemas) em vez da
+contagem fixa de ciclos usada na v1. **O objetivo final do que a calculadora deve cobrir desta
+vez está deliberadamente em branco** — só a mecânica do loop e as fronteiras de sandbox são
+herdadas da v1; o escopo do produto é declarado do zero na Fase 0, na sessão em que este plano for
+retomado.
+
+**Não reaproveita automaticamente:** `research/DISCOVERY.md` e `CALCULATOR_SCOPE.md` da v1 —
+servem só de referência de formato/dados já levantados, não de escopo vinculante.
+
+**Reaproveita tal qual:** esqueleto da matriz de 100 pts + 7 gates, receita de setup do Playwright
+isolado, contrato de `data-testid` definido antes do Builder trabalhar, regra de fallback do
+Orchestrator quando um subagente falha por limite técnico (ocorreu na v1, ciclo 2).
 
 ---
 
