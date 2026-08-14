@@ -1,4 +1,13 @@
 ﻿# UI/UX BRANDING SPECIFICATION - ToolOptimizer CNC
+
+> ⚠️ **DOCUMENTO DERIVADO — não define token.** A fonte única do tema claro é
+> [`DS_TEMA_CLARO.md`](DS_TEMA_CLARO.md), que **vence este arquivo em qualquer divergência**.
+> Aqui vale a intenção de marca; os valores de cor abaixo são do tema escuro e não sobrevivem a
+> fundo claro (`#00D9FF` dá 1,5:1 e `#39FF14` dá 1,2:1 — o mínimo legível é 4,5:1).
+> Divergência conhecida: o item 3 da seção "Comportamento dos Componentes" manda os sliders
+> atualizarem os números em tempo real; a Regra Crítica 7 do `CLAUDE.md` manda o contrário e
+> **prevalece** (só recalcula no clique).
+
 **Fonte da Verdade Visual:** Protótipo HTML/Tailwind v1.0 (Fornecido pelo Rafael)
 
 ## 1. ESPECIFICAÇÃO DE CORES (HEX OFICIAL)

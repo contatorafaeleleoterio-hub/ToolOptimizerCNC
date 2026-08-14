@@ -69,6 +69,8 @@ npx tsc --noEmit
 | 15 | Design System Canônico (4 sessões, replanejado de 6) — `docs/plans/PLAN_DESIGN_SYSTEM_CANONICO.md` | 📄 Docs / Design Audit | — | ✅ Concluído (`d471895`) |
 | 16 | Implementação DS + 80/20 + Mobile + Dívida Visual (8 sessões) — `docs/plans/PLAN_IMPLEMENTACAO_DS_80-20_MOBILE.md` | 🎨 Redesign + Refactor | v0.12.0 | 🔁 Concluído localmente (8/8) |
 | 17 | Gauntlet — Mockup Experimental da Calculadora — `docs/plans/PLAN_GAUNTLET_CALCULADORA_CNC.md` | 🧪 Experimento isolado (zero `src/`) | — | ⬜ Pendente |
+| 18 | Gauntlet v2 — Refactor visual da calculadora (DS real, ajuste fino, blindagem anti-trapaça) — `docs/plans/PLAN_GAUNTLET_V2_REFACTOR.md` | 🎨 Redesign (zero `src/`) | — | ⬜ Pendente — plano revisado e instrumentação pronta; execução aguarda aprovação |
+| 19 | Motor da Calculadora Multi-Ferramenta (deflexão, vida de ferramenta, custo, materiais 30+) — `docs/plans/PLAN_MOTOR_CALCULADORA_V2.md` | 📄 Spec / Engine | a definir | ⬜ Pendente |
 
 ### ✅ Reestruturação Documental (v0.6.0) — CONCLUÍDA
 

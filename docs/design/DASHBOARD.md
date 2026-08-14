@@ -1,4 +1,10 @@
-﻿<html lang="en"><head>
+﻿> ⚠️ **DOCUMENTO DERIVADO — não define token.** A fonte única do tema claro é
+> [`DS_TEMA_CLARO.md`](DS_TEMA_CLARO.md), que **vence este arquivo em qualquer divergência**.
+> O que está abaixo é o protótipo HTML de referência de **layout do tema escuro**. A config
+> Tailwind embutida registra `background-light: #F3F4F6`, um token que nunca foi implementado —
+> o tema claro real está definido no documento canônico.
+
+<html lang="en"><head>
 <meta charset="utf-8"/>
 <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
 <script>

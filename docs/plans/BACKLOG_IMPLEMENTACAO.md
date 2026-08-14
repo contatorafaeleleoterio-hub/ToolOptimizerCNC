@@ -1,8 +1,8 @@
 # Backlog de Implementação — ToolOptimizer CNC
 
-> **Última atualização:** 13/08/2026 (item 16 concluído; criação do plano 17 — Gauntlet v2, protocolo revisado)
+> **Última atualização:** 13/08/2026 (item 17 aprovado em 91/100 e em refactor visual; criação do plano 18 — motor da calculadora)
 > **Versão atual:** v0.12.1
-> **Total de planos pendentes:** 1 — item 17 (experimento isolado, não altera produção, aguardando Fase 0)
+> **Total de planos pendentes:** 2 — item 17 (experimento isolado, em refactor visual, não altera produção) e item 18 (especificação de motor, aplicar quando a codificação real começar)
 
 Esta lista define a ordem de implementação dos planos criados e ainda não executados.
 A ordem garante estabilidade progressiva: bugs corrigidos antes de features, features antes de polish.
@@ -30,7 +30,8 @@ A ordem garante estabilidade progressiva: bugs corrigidos antes de features, fea
 | 14 | [Design System Canônico](#14-design-system-canônico) | 📄 Docs / Design Audit | — | 1 arquivo HTML, 4 sessões, zero `src/` | ✅ Concluído (`d471895`) |
 | 15 | [Implementação DS + 80/20 + Mobile + Dívida Visual](#15-implementação-ds--8020--mobile--dívida-visual) | 🎨 Redesign + Refactor | v0.12.0 | ~25 arquivos + 9 testes novos, 8 sessões | 🔁 Concluído localmente (8/8 sessões) |
 | 16 | [Gauntlet — Mockup Experimental da Calculadora](#16-gauntlet--mockup-experimental-da-calculadora) | 🧪 Experimento isolado | — (nenhuma) | Pasta `gauntlet-calculadora-cnc/`, **zero `src/`** | ✅ Concluído (score 92/100, 7/7 gates) |
-| 17 | [Gauntlet v2 — Redo com protocolo revisado](#17-gauntlet-v2--redo-com-protocolo-revisado) | 🧪 Experimento isolado | — (nenhuma) | Pasta `gauntlet-calculadora-cnc-v2/` (sugestão), **zero `src/`** | 🟡 Aguardando Fase 0 (objetivo) |
+| 17 | [Gauntlet v2 — Redo com protocolo revisado](#17-gauntlet-v2--redo-com-protocolo-revisado) | 🧪 Experimento isolado | — (nenhuma) | Pasta `gauntlet-calculadora-cnc-v2/`, **zero `src/`** | 🔁 Construção aprovada (91/100, 8/8); refactor visual planejado e instrumentado, **não executado** |
+| 18 | [Motor da Calculadora Multi-Ferramenta](#18-motor-da-calculadora-multi-ferramenta) | 📄 Spec / Engine | a definir | Especificação — aplicar em `src/engine/` quando a codificação real começar | ⬜ Pendente |
 
 ---
 
@@ -281,6 +282,31 @@ servem só de referência de formato/dados já levantados, não de escopo vincul
 **Reaproveita tal qual:** esqueleto da matriz de 100 pts + 7 gates, receita de setup do Playwright
 isolado, contrato de `data-testid` definido antes do Builder trabalhar, regra de fallback do
 Orchestrator quando um subagente falha por limite técnico (ocorreu na v1, ciclo 2).
+
+**Resultado (13/08/2026):** loop de construção concluído em 3 ciclos — 79 → 80 → **91/100 com 8/8
+gates**. Mockup em `gauntlet-calculadora-cnc-v2/mockup/index.html`, 18 tipos, 4 famílias, 23/23
+cenários Playwright. Em seguida entrou o **refactor visual**
+(`docs/plans/PLAN_GAUNTLET_V2_REFACTOR.md`): troca da paleta placeholder pelo Design System real,
+4 controles de ajuste fino, ajuda contextual, formulário enxuto e blindagem anti-trapaça, com corte
+de aprovação em 95/100. Tudo que exigiria mexer no motor foi separado para o **item 18**.
+
+### 18. Motor da Calculadora Multi-Ferramenta
+
+**Plano:** `docs/plans/PLAN_MOTOR_CALCULADORA_V2.md` | **Versão alvo:** a definir
+**Status:** ⬜ Pendente (13/08/2026) — especificação escrita, aplicar quando a codificação real começar
+
+**Objetivo:** reunir tudo que a calculadora multi-ferramenta precisa **no motor** e que o loop de
+refactor visual congela de propósito. Cada item vem com fórmula, origem do dado e o que ainda falta
+para poder ser implementado sem inventar número.
+
+**Conteúdo:** 5 defeitos de motor encontrados na auditoria (campos lidos e nunca usados, tempo de
+furo saindo `NaN`) · deflexão real em µm no lugar do L/D como comunicação · vida de ferramenta por
+Taylor, na forma relativa que não exige dado novo · custo e tempo por peça · materiais de 12 para
+30+ com procedência por linha · refrigeração interna como fator de verdade · camada de limite duro
+separando recomendação de limite físico · fontes empacotadas no app.
+
+**Fora, com motivo declarado:** análise de chatter (exige dados modais que não temos), catálogo por
+aprendizado de máquina (sem base) e micro-otimização de cálculo (irrelevante nesta escala).
 
 ---
 

@@ -1,0 +1,1082 @@
+[
+  {
+    "tipo": "fresa_topo",
+    "familia": "fresar",
+    "material": "Aço 1045",
+    "ferramenta": "MD",
+    "operacao": "desbaste",
+    "saidas": {
+      "resultado-rpm": "4456",
+      "resultado-avanco": "2674",
+      "resultado-indice-saude": "100",
+      "resultado-mrr": "26.74 cm³/min",
+      "resultado-potencia": "0.91 kW",
+      "resultado-torque": "1.94 Nm",
+      "texto-fonte-vc": "Fonte: catálogo interno validado",
+      "resultado-furo-previo": "— mm",
+      "resultado-tempo-furo": "— min",
+      "badge-alerta-seguranca": "OK Balanço adequado (L/D = 3.0).",
+      "cartao-formula": "Ver fórmulas e substituições n = (Vc × 1000) / (π × Dc) = (140.0 × 1000) / (π × 10.00) = 4456 rpmVf = fz × Z × n = 0.150 × 4 × 4456 = 2674 mm/minQ = (ap × ae × Vf) / 1000 = 26.74 cm³/minPc = (Q × kc) / 60000 = 1.295 kWMc = 9549 × Pc / n = 2.77 Nm"
+    }
+  },
+  {
+    "tipo": "fresa_topo",
+    "familia": "fresar",
+    "material": "Alumínio 6061-T6",
+    "ferramenta": "HSS",
+    "operacao": "acabamento",
+    "saidas": {
+      "resultado-rpm": "7385",
+      "resultado-avanco": "1477",
+      "resultado-indice-saude": "100",
+      "resultado-mrr": "14.77 cm³/min",
+      "resultado-potencia": "1.96 kW",
+      "resultado-torque": "2.53 Nm",
+      "texto-fonte-vc": "Fonte: estimativa interna, sem validação de catálogo",
+      "resultado-furo-previo": "— mm",
+      "resultado-tempo-furo": "— min",
+      "badge-alerta-seguranca": "OK Balanço adequado (L/D = 3.0).",
+      "cartao-formula": "Ver fórmulas e substituições n = (Vc × 1000) / (π × Dc) = (232.0 × 1000) / (π × 10.00) = 7385 rpmVf = fz × Z × n = 0.050 × 4 × 7385 = 1477 mm/minQ = (ap × ae × Vf) / 1000 = 14.77 cm³/minPc = (Q × kc) / 60000 = 2.794 kWMc = 9549 × Pc / n = 3.61 Nm"
+    }
+  },
+  {
+    "tipo": "fresa_topo",
+    "familia": "fresar",
+    "material": "Ferro Fundido GG25",
+    "ferramenta": "MD_REV",
+    "operacao": "semi",
+    "saidas": {
+      "resultado-rpm": "6366",
+      "resultado-avanco": "2546",
+      "resultado-indice-saude": "100",
+      "resultado-mrr": "25.46 cm³/min",
+      "resultado-potencia": "0.54 kW",
+      "resultado-torque": "0.81 Nm",
+      "texto-fonte-vc": "Fonte: estimativa interna, sem validação de catálogo",
+      "resultado-furo-previo": "— mm",
+      "resultado-tempo-furo": "— min",
+      "badge-alerta-seguranca": "OK Balanço adequado (L/D = 3.0).",
+      "cartao-formula": "Ver fórmulas e substituições n = (Vc × 1000) / (π × Dc) = (200.0 × 1000) / (π × 10.00) = 6366 rpmVf = fz × Z × n = 0.100 × 4 × 6366 = 2546 mm/minQ = (ap × ae × Vf) / 1000 = 25.46 cm³/minPc = (Q × kc) / 60000 = 0.774 kWMc = 9549 × Pc / n = 1.16 Nm"
+    }
+  },
+  {
+    "tipo": "fresa_toroidal",
+    "familia": "fresar",
+    "material": "Aço 1045",
+    "ferramenta": "MD",
+    "operacao": "desbaste",
+    "saidas": {
+      "resultado-rpm": "4456",
+      "resultado-avanco": "2674",
+      "resultado-indice-saude": "100",
+      "resultado-mrr": "26.74 cm³/min",
+      "resultado-potencia": "0.91 kW",
+      "resultado-torque": "1.94 Nm",
+      "texto-fonte-vc": "Fonte: catálogo interno validado",
+      "resultado-furo-previo": "— mm",
+      "resultado-tempo-furo": "— min",
+      "badge-alerta-seguranca": "OK Balanço adequado (L/D = 3.0).",
+      "cartao-formula": "Ver fórmulas e substituições n = (Vc × 1000) / (π × Dc) = (140.0 × 1000) / (π × 10.00) = 4456 rpmVf = fz × Z × n = 0.150 × 4 × 4456 = 2674 mm/minQ = (ap × ae × Vf) / 1000 = 26.74 cm³/minPc = (Q × kc) / 60000 = 1.295 kWMc = 9549 × Pc / n = 2.77 Nm"
+    }
+  },
+  {
+    "tipo": "fresa_toroidal",
+    "familia": "fresar",
+    "material": "Alumínio 6061-T6",
+    "ferramenta": "HSS",
+    "operacao": "acabamento",
+    "saidas": {
+      "resultado-rpm": "7385",
+      "resultado-avanco": "1477",
+      "resultado-indice-saude": "100",
+      "resultado-mrr": "14.77 cm³/min",
+      "resultado-potencia": "1.96 kW",
+      "resultado-torque": "2.53 Nm",
+      "texto-fonte-vc": "Fonte: estimativa interna, sem validação de catálogo",
+      "resultado-furo-previo": "— mm",
+      "resultado-tempo-furo": "— min",
+      "badge-alerta-seguranca": "OK Balanço adequado (L/D = 3.0).",
+      "cartao-formula": "Ver fórmulas e substituições n = (Vc × 1000) / (π × Dc) = (232.0 × 1000) / (π × 10.00) = 7385 rpmVf = fz × Z × n = 0.050 × 4 × 7385 = 1477 mm/minQ = (ap × ae × Vf) / 1000 = 14.77 cm³/minPc = (Q × kc) / 60000 = 2.794 kWMc = 9549 × Pc / n = 3.61 Nm"
+    }
+  },
+  {
+    "tipo": "fresa_toroidal",
+    "familia": "fresar",
+    "material": "Ferro Fundido GG25",
+    "ferramenta": "MD_REV",
+    "operacao": "semi",
+    "saidas": {
+      "resultado-rpm": "6366",
+      "resultado-avanco": "2546",
+      "resultado-indice-saude": "100",
+      "resultado-mrr": "25.46 cm³/min",
+      "resultado-potencia": "0.54 kW",
+      "resultado-torque": "0.81 Nm",
+      "texto-fonte-vc": "Fonte: estimativa interna, sem validação de catálogo",
+      "resultado-furo-previo": "— mm",
+      "resultado-tempo-furo": "— min",
+      "badge-alerta-seguranca": "OK Balanço adequado (L/D = 3.0).",
+      "cartao-formula": "Ver fórmulas e substituições n = (Vc × 1000) / (π × Dc) = (200.0 × 1000) / (π × 10.00) = 6366 rpmVf = fz × Z × n = 0.100 × 4 × 6366 = 2546 mm/minQ = (ap × ae × Vf) / 1000 = 25.46 cm³/minPc = (Q × kc) / 60000 = 0.774 kWMc = 9549 × Pc / n = 1.16 Nm"
+    }
+  },
+  {
+    "tipo": "fresa_esferica",
+    "familia": "fresar",
+    "material": "Aço 1045",
+    "ferramenta": "MD",
+    "operacao": "desbaste",
+    "saidas": {
+      "resultado-rpm": "5570",
+      "resultado-avanco": "3342",
+      "resultado-indice-saude": "100",
+      "resultado-mrr": "33.42 cm³/min",
+      "resultado-potencia": "1.13 kW",
+      "resultado-torque": "1.94 Nm",
+      "texto-fonte-vc": "Fonte: catálogo interno validado",
+      "resultado-furo-previo": "— mm",
+      "resultado-tempo-furo": "— min",
+      "badge-alerta-seguranca": "OK Balanço adequado (L/D = 3.0).",
+      "cartao-formula": "Ver fórmulas e substituições n = (Vc × 1000) / (π × Dc) = (140.0 × 1000) / (π × 8.00) = 5570 rpmVf = fz × Z × n = 0.150 × 4 × 5570 = 3342 mm/minQ = (ap × ae × Vf) / 1000 = 33.42 cm³/minPc = (Q × kc) / 60000 = 1.618 kWMc = 9549 × Pc / n = 2.77 Nm"
+    }
+  },
+  {
+    "tipo": "fresa_esferica",
+    "familia": "fresar",
+    "material": "Alumínio 6061-T6",
+    "ferramenta": "HSS",
+    "operacao": "acabamento",
+    "saidas": {
+      "resultado-rpm": "9231",
+      "resultado-avanco": "1846",
+      "resultado-indice-saude": "100",
+      "resultado-mrr": "18.46 cm³/min",
+      "resultado-potencia": "2.44 kW",
+      "resultado-torque": "2.53 Nm",
+      "texto-fonte-vc": "Fonte: estimativa interna, sem validação de catálogo",
+      "resultado-furo-previo": "— mm",
+      "resultado-tempo-furo": "— min",
+      "badge-alerta-seguranca": "OK Balanço adequado (L/D = 3.0).",
+      "cartao-formula": "Ver fórmulas e substituições n = (Vc × 1000) / (π × Dc) = (232.0 × 1000) / (π × 8.00) = 9231 rpmVf = fz × Z × n = 0.050 × 4 × 9231 = 1846 mm/minQ = (ap × ae × Vf) / 1000 = 18.46 cm³/minPc = (Q × kc) / 60000 = 3.492 kWMc = 9549 × Pc / n = 3.61 Nm"
+    }
+  },
+  {
+    "tipo": "fresa_esferica",
+    "familia": "fresar",
+    "material": "Ferro Fundido GG25",
+    "ferramenta": "MD_REV",
+    "operacao": "semi",
+    "saidas": {
+      "resultado-rpm": "7958",
+      "resultado-avanco": "3183",
+      "resultado-indice-saude": "100",
+      "resultado-mrr": "31.83 cm³/min",
+      "resultado-potencia": "0.68 kW",
+      "resultado-torque": "0.81 Nm",
+      "texto-fonte-vc": "Fonte: estimativa interna, sem validação de catálogo",
+      "resultado-furo-previo": "— mm",
+      "resultado-tempo-furo": "— min",
+      "badge-alerta-seguranca": "OK Balanço adequado (L/D = 3.0).",
+      "cartao-formula": "Ver fórmulas e substituições n = (Vc × 1000) / (π × Dc) = (200.0 × 1000) / (π × 8.00) = 7958 rpmVf = fz × Z × n = 0.100 × 4 × 7958 = 3183 mm/minQ = (ap × ae × Vf) / 1000 = 31.83 cm³/minPc = (Q × kc) / 60000 = 0.967 kWMc = 9549 × Pc / n = 1.16 Nm"
+    }
+  },
+  {
+    "tipo": "fresa_chanfrar",
+    "familia": "fresar",
+    "material": "Aço 1045",
+    "ferramenta": "MD",
+    "operacao": "desbaste",
+    "saidas": {
+      "resultado-rpm": "5570",
+      "resultado-avanco": "3342",
+      "resultado-indice-saude": "100",
+      "resultado-mrr": "33.42 cm³/min",
+      "resultado-potencia": "1.13 kW",
+      "resultado-torque": "1.94 Nm",
+      "texto-fonte-vc": "Fonte: catálogo interno validado",
+      "resultado-furo-previo": "— mm",
+      "resultado-tempo-furo": "— min",
+      "badge-alerta-seguranca": "OK Balanço adequado (L/D = 3.0).",
+      "cartao-formula": "Ver fórmulas e substituições n = (Vc × 1000) / (π × Dc) = (140.0 × 1000) / (π × 8.00) = 5570 rpmVf = fz × Z × n = 0.150 × 4 × 5570 = 3342 mm/minQ = (ap × ae × Vf) / 1000 = 33.42 cm³/minPc = (Q × kc) / 60000 = 1.618 kWMc = 9549 × Pc / n = 2.77 Nm"
+    }
+  },
+  {
+    "tipo": "fresa_chanfrar",
+    "familia": "fresar",
+    "material": "Alumínio 6061-T6",
+    "ferramenta": "HSS",
+    "operacao": "acabamento",
+    "saidas": {
+      "resultado-rpm": "9231",
+      "resultado-avanco": "1846",
+      "resultado-indice-saude": "100",
+      "resultado-mrr": "18.46 cm³/min",
+      "resultado-potencia": "2.44 kW",
+      "resultado-torque": "2.53 Nm",
+      "texto-fonte-vc": "Fonte: estimativa interna, sem validação de catálogo",
+      "resultado-furo-previo": "— mm",
+      "resultado-tempo-furo": "— min",
+      "badge-alerta-seguranca": "OK Balanço adequado (L/D = 3.0).",
+      "cartao-formula": "Ver fórmulas e substituições n = (Vc × 1000) / (π × Dc) = (232.0 × 1000) / (π × 8.00) = 9231 rpmVf = fz × Z × n = 0.050 × 4 × 9231 = 1846 mm/minQ = (ap × ae × Vf) / 1000 = 18.46 cm³/minPc = (Q × kc) / 60000 = 3.492 kWMc = 9549 × Pc / n = 3.61 Nm"
+    }
+  },
+  {
+    "tipo": "fresa_chanfrar",
+    "familia": "fresar",
+    "material": "Ferro Fundido GG25",
+    "ferramenta": "MD_REV",
+    "operacao": "semi",
+    "saidas": {
+      "resultado-rpm": "7958",
+      "resultado-avanco": "3183",
+      "resultado-indice-saude": "100",
+      "resultado-mrr": "31.83 cm³/min",
+      "resultado-potencia": "0.68 kW",
+      "resultado-torque": "0.81 Nm",
+      "texto-fonte-vc": "Fonte: estimativa interna, sem validação de catálogo",
+      "resultado-furo-previo": "— mm",
+      "resultado-tempo-furo": "— min",
+      "badge-alerta-seguranca": "OK Balanço adequado (L/D = 3.0).",
+      "cartao-formula": "Ver fórmulas e substituições n = (Vc × 1000) / (π × Dc) = (200.0 × 1000) / (π × 8.00) = 7958 rpmVf = fz × Z × n = 0.100 × 4 × 7958 = 3183 mm/minQ = (ap × ae × Vf) / 1000 = 31.83 cm³/minPc = (Q × kc) / 60000 = 0.967 kWMc = 9549 × Pc / n = 1.16 Nm"
+    }
+  },
+  {
+    "tipo": "fresa_alto_avanco",
+    "familia": "fresar",
+    "material": "Aço 1045",
+    "ferramenta": "MD",
+    "operacao": "desbaste",
+    "saidas": {
+      "resultado-rpm": "4456",
+      "resultado-avanco": "10331",
+      "resultado-indice-saude": "0",
+      "resultado-mrr": "103.31 cm³/min",
+      "resultado-potencia": "3.50 kW",
+      "resultado-torque": "7.50 Nm",
+      "texto-fonte-vc": "Fonte: catálogo interno validado",
+      "resultado-furo-previo": "— mm",
+      "resultado-tempo-furo": "— min",
+      "badge-alerta-seguranca": "! Bloqueado: Avanço calculado de 10331 mm/min excede o limite da máquina (5000mm/min).",
+      "cartao-formula": "Ver fórmulas e substituições n = (Vc × 1000) / (π × Dc) = (140.0 × 1000) / (π × 10.00) = 4456 rpmVf = fz × Z × n = 0.580 × 4 × 4456 = 10331 mm/minQ = (ap × ae × Vf) / 1000 = 103.31 cm³/minPc = (Q × kc) / 60000 = 5.002 kWMc = 9549 × Pc / n = 10.72 Nm"
+    }
+  },
+  {
+    "tipo": "fresa_alto_avanco",
+    "familia": "fresar",
+    "material": "Alumínio 6061-T6",
+    "ferramenta": "HSS",
+    "operacao": "acabamento",
+    "saidas": {
+      "resultado-rpm": "7385",
+      "resultado-avanco": "5707",
+      "resultado-indice-saude": "0",
+      "resultado-mrr": "57.07 cm³/min",
+      "resultado-potencia": "7.56 kW",
+      "resultado-torque": "9.77 Nm",
+      "texto-fonte-vc": "Fonte: estimativa interna, sem validação de catálogo",
+      "resultado-furo-previo": "— mm",
+      "resultado-tempo-furo": "— min",
+      "badge-alerta-seguranca": "! Bloqueado: Avanço calculado de 5707 mm/min excede o limite da máquina (5000mm/min).",
+      "cartao-formula": "Ver fórmulas e substituições n = (Vc × 1000) / (π × Dc) = (232.0 × 1000) / (π × 10.00) = 7385 rpmVf = fz × Z × n = 0.193 × 4 × 7385 = 5707 mm/minQ = (ap × ae × Vf) / 1000 = 57.07 cm³/minPc = (Q × kc) / 60000 = 10.794 kWMc = 9549 × Pc / n = 13.96 Nm"
+    }
+  },
+  {
+    "tipo": "fresa_alto_avanco",
+    "familia": "fresar",
+    "material": "Ferro Fundido GG25",
+    "ferramenta": "MD_REV",
+    "operacao": "semi",
+    "saidas": {
+      "resultado-rpm": "6366",
+      "resultado-avanco": "9839",
+      "resultado-indice-saude": "0",
+      "resultado-mrr": "98.39 cm³/min",
+      "resultado-potencia": "2.09 kW",
+      "resultado-torque": "3.14 Nm",
+      "texto-fonte-vc": "Fonte: estimativa interna, sem validação de catálogo",
+      "resultado-furo-previo": "— mm",
+      "resultado-tempo-furo": "— min",
+      "badge-alerta-seguranca": "! Bloqueado: Avanço calculado de 9839 mm/min excede o limite da máquina (5000mm/min).",
+      "cartao-formula": "Ver fórmulas e substituições n = (Vc × 1000) / (π × Dc) = (200.0 × 1000) / (π × 10.00) = 6366 rpmVf = fz × Z × n = 0.386 × 4 × 6366 = 9839 mm/minQ = (ap × ae × Vf) / 1000 = 98.39 cm³/minPc = (Q × kc) / 60000 = 2.989 kWMc = 9549 × Pc / n = 4.48 Nm"
+    }
+  },
+  {
+    "tipo": "cabecote_faceador",
+    "familia": "fresar",
+    "material": "Aço 1045",
+    "ferramenta": "MD",
+    "operacao": "desbaste",
+    "saidas": {
+      "resultado-rpm": "4456",
+      "resultado-avanco": "10331",
+      "resultado-indice-saude": "0",
+      "resultado-mrr": "103.31 cm³/min",
+      "resultado-potencia": "3.50 kW",
+      "resultado-torque": "7.50 Nm",
+      "texto-fonte-vc": "Fonte: catálogo interno validado",
+      "resultado-furo-previo": "— mm",
+      "resultado-tempo-furo": "— min",
+      "badge-alerta-seguranca": "! Bloqueado: Avanço calculado de 10331 mm/min excede o limite da máquina (5000mm/min).",
+      "cartao-formula": "Ver fórmulas e substituições n = (Vc × 1000) / (π × Dc) = (140.0 × 1000) / (π × 10.00) = 4456 rpmVf = fz × Z × n = 0.580 × 4 × 4456 = 10331 mm/minQ = (ap × ae × Vf) / 1000 = 103.31 cm³/minPc = (Q × kc) / 60000 = 5.002 kWMc = 9549 × Pc / n = 10.72 Nm"
+    }
+  },
+  {
+    "tipo": "cabecote_faceador",
+    "familia": "fresar",
+    "material": "Alumínio 6061-T6",
+    "ferramenta": "HSS",
+    "operacao": "acabamento",
+    "saidas": {
+      "resultado-rpm": "7385",
+      "resultado-avanco": "5707",
+      "resultado-indice-saude": "0",
+      "resultado-mrr": "57.07 cm³/min",
+      "resultado-potencia": "7.56 kW",
+      "resultado-torque": "9.77 Nm",
+      "texto-fonte-vc": "Fonte: estimativa interna, sem validação de catálogo",
+      "resultado-furo-previo": "— mm",
+      "resultado-tempo-furo": "— min",
+      "badge-alerta-seguranca": "! Bloqueado: Avanço calculado de 5707 mm/min excede o limite da máquina (5000mm/min).",
+      "cartao-formula": "Ver fórmulas e substituições n = (Vc × 1000) / (π × Dc) = (232.0 × 1000) / (π × 10.00) = 7385 rpmVf = fz × Z × n = 0.193 × 4 × 7385 = 5707 mm/minQ = (ap × ae × Vf) / 1000 = 57.07 cm³/minPc = (Q × kc) / 60000 = 10.794 kWMc = 9549 × Pc / n = 13.96 Nm"
+    }
+  },
+  {
+    "tipo": "cabecote_faceador",
+    "familia": "fresar",
+    "material": "Ferro Fundido GG25",
+    "ferramenta": "MD_REV",
+    "operacao": "semi",
+    "saidas": {
+      "resultado-rpm": "6366",
+      "resultado-avanco": "9839",
+      "resultado-indice-saude": "0",
+      "resultado-mrr": "98.39 cm³/min",
+      "resultado-potencia": "2.09 kW",
+      "resultado-torque": "3.14 Nm",
+      "texto-fonte-vc": "Fonte: estimativa interna, sem validação de catálogo",
+      "resultado-furo-previo": "— mm",
+      "resultado-tempo-furo": "— min",
+      "badge-alerta-seguranca": "! Bloqueado: Avanço calculado de 9839 mm/min excede o limite da máquina (5000mm/min).",
+      "cartao-formula": "Ver fórmulas e substituições n = (Vc × 1000) / (π × Dc) = (200.0 × 1000) / (π × 10.00) = 6366 rpmVf = fz × Z × n = 0.386 × 4 × 6366 = 9839 mm/minQ = (ap × ae × Vf) / 1000 = 98.39 cm³/minPc = (Q × kc) / 60000 = 2.989 kWMc = 9549 × Pc / n = 4.48 Nm"
+    }
+  },
+  {
+    "tipo": "fresa_pastilhada",
+    "familia": "fresar",
+    "material": "Aço 1045",
+    "ferramenta": "MD",
+    "operacao": "desbaste",
+    "saidas": {
+      "resultado-rpm": "4456",
+      "resultado-avanco": "2674",
+      "resultado-indice-saude": "100",
+      "resultado-mrr": "26.74 cm³/min",
+      "resultado-potencia": "0.91 kW",
+      "resultado-torque": "1.94 Nm",
+      "texto-fonte-vc": "Fonte: catálogo interno validado",
+      "resultado-furo-previo": "— mm",
+      "resultado-tempo-furo": "— min",
+      "badge-alerta-seguranca": "OK Balanço adequado (L/D = 3.0).",
+      "cartao-formula": "Ver fórmulas e substituições n = (Vc × 1000) / (π × Dc) = (140.0 × 1000) / (π × 10.00) = 4456 rpmVf = fz × Z × n = 0.150 × 4 × 4456 = 2674 mm/minQ = (ap × ae × Vf) / 1000 = 26.74 cm³/minPc = (Q × kc) / 60000 = 1.295 kWMc = 9549 × Pc / n = 2.77 Nm"
+    }
+  },
+  {
+    "tipo": "fresa_pastilhada",
+    "familia": "fresar",
+    "material": "Alumínio 6061-T6",
+    "ferramenta": "HSS",
+    "operacao": "acabamento",
+    "saidas": {
+      "resultado-rpm": "7385",
+      "resultado-avanco": "1477",
+      "resultado-indice-saude": "100",
+      "resultado-mrr": "14.77 cm³/min",
+      "resultado-potencia": "1.96 kW",
+      "resultado-torque": "2.53 Nm",
+      "texto-fonte-vc": "Fonte: estimativa interna, sem validação de catálogo",
+      "resultado-furo-previo": "— mm",
+      "resultado-tempo-furo": "— min",
+      "badge-alerta-seguranca": "OK Balanço adequado (L/D = 3.0).",
+      "cartao-formula": "Ver fórmulas e substituições n = (Vc × 1000) / (π × Dc) = (232.0 × 1000) / (π × 10.00) = 7385 rpmVf = fz × Z × n = 0.050 × 4 × 7385 = 1477 mm/minQ = (ap × ae × Vf) / 1000 = 14.77 cm³/minPc = (Q × kc) / 60000 = 2.794 kWMc = 9549 × Pc / n = 3.61 Nm"
+    }
+  },
+  {
+    "tipo": "fresa_pastilhada",
+    "familia": "fresar",
+    "material": "Ferro Fundido GG25",
+    "ferramenta": "MD_REV",
+    "operacao": "semi",
+    "saidas": {
+      "resultado-rpm": "6366",
+      "resultado-avanco": "2546",
+      "resultado-indice-saude": "100",
+      "resultado-mrr": "25.46 cm³/min",
+      "resultado-potencia": "0.54 kW",
+      "resultado-torque": "0.81 Nm",
+      "texto-fonte-vc": "Fonte: estimativa interna, sem validação de catálogo",
+      "resultado-furo-previo": "— mm",
+      "resultado-tempo-furo": "— min",
+      "badge-alerta-seguranca": "OK Balanço adequado (L/D = 3.0).",
+      "cartao-formula": "Ver fórmulas e substituições n = (Vc × 1000) / (π × Dc) = (200.0 × 1000) / (π × 10.00) = 6366 rpmVf = fz × Z × n = 0.100 × 4 × 6366 = 2546 mm/minQ = (ap × ae × Vf) / 1000 = 25.46 cm³/minPc = (Q × kc) / 60000 = 0.774 kWMc = 9549 × Pc / n = 1.16 Nm"
+    }
+  },
+  {
+    "tipo": "fresa_disco",
+    "familia": "fresar",
+    "material": "Aço 1045",
+    "ferramenta": "MD",
+    "operacao": "desbaste",
+    "saidas": {
+      "resultado-rpm": "4456",
+      "resultado-avanco": "2674",
+      "resultado-indice-saude": "100",
+      "resultado-mrr": "26.74 cm³/min",
+      "resultado-potencia": "0.91 kW",
+      "resultado-torque": "1.94 Nm",
+      "texto-fonte-vc": "Fonte: catálogo interno validado",
+      "resultado-furo-previo": "— mm",
+      "resultado-tempo-furo": "— min",
+      "badge-alerta-seguranca": "OK Balanço adequado (L/D = 3.0).",
+      "cartao-formula": "Ver fórmulas e substituições n = (Vc × 1000) / (π × Dc) = (140.0 × 1000) / (π × 10.00) = 4456 rpmVf = fz × Z × n = 0.150 × 4 × 4456 = 2674 mm/minQ = (ap × ae × Vf) / 1000 = 26.74 cm³/minPc = (Q × kc) / 60000 = 1.295 kWMc = 9549 × Pc / n = 2.77 Nm"
+    }
+  },
+  {
+    "tipo": "fresa_disco",
+    "familia": "fresar",
+    "material": "Alumínio 6061-T6",
+    "ferramenta": "HSS",
+    "operacao": "acabamento",
+    "saidas": {
+      "resultado-rpm": "7385",
+      "resultado-avanco": "1477",
+      "resultado-indice-saude": "100",
+      "resultado-mrr": "14.77 cm³/min",
+      "resultado-potencia": "1.96 kW",
+      "resultado-torque": "2.53 Nm",
+      "texto-fonte-vc": "Fonte: estimativa interna, sem validação de catálogo",
+      "resultado-furo-previo": "— mm",
+      "resultado-tempo-furo": "— min",
+      "badge-alerta-seguranca": "OK Balanço adequado (L/D = 3.0).",
+      "cartao-formula": "Ver fórmulas e substituições n = (Vc × 1000) / (π × Dc) = (232.0 × 1000) / (π × 10.00) = 7385 rpmVf = fz × Z × n = 0.050 × 4 × 7385 = 1477 mm/minQ = (ap × ae × Vf) / 1000 = 14.77 cm³/minPc = (Q × kc) / 60000 = 2.794 kWMc = 9549 × Pc / n = 3.61 Nm"
+    }
+  },
+  {
+    "tipo": "fresa_disco",
+    "familia": "fresar",
+    "material": "Ferro Fundido GG25",
+    "ferramenta": "MD_REV",
+    "operacao": "semi",
+    "saidas": {
+      "resultado-rpm": "6366",
+      "resultado-avanco": "2546",
+      "resultado-indice-saude": "100",
+      "resultado-mrr": "25.46 cm³/min",
+      "resultado-potencia": "0.54 kW",
+      "resultado-torque": "0.81 Nm",
+      "texto-fonte-vc": "Fonte: estimativa interna, sem validação de catálogo",
+      "resultado-furo-previo": "— mm",
+      "resultado-tempo-furo": "— min",
+      "badge-alerta-seguranca": "OK Balanço adequado (L/D = 3.0).",
+      "cartao-formula": "Ver fórmulas e substituições n = (Vc × 1000) / (π × Dc) = (200.0 × 1000) / (π × 10.00) = 6366 rpmVf = fz × Z × n = 0.100 × 4 × 6366 = 2546 mm/minQ = (ap × ae × Vf) / 1000 = 25.46 cm³/minPc = (Q × kc) / 60000 = 0.774 kWMc = 9549 × Pc / n = 1.16 Nm"
+    }
+  },
+  {
+    "tipo": "broca_hss",
+    "familia": "furar",
+    "material": "Aço 1045",
+    "ferramenta": "MD",
+    "operacao": "desbaste",
+    "saidas": {
+      "resultado-rpm": "4456",
+      "resultado-avanco": "891",
+      "resultado-indice-saude": "100",
+      "resultado-mrr": "70.00 cm³/min",
+      "resultado-potencia": "2.27 kW",
+      "resultado-torque": "4.86 Nm",
+      "texto-fonte-vc": "Fonte: catálogo interno validado",
+      "resultado-furo-previo": "— mm",
+      "resultado-tempo-furo": "0.04 min",
+      "badge-alerta-seguranca": "OK Parâmetros dentro dos limites recomendados.",
+      "cartao-formula": "Ver fórmulas e substituições n = (Vc × 1000) / (π × D) = (140.0 × 1000) / (π × 10.00) = 4456 rpmVf = fn × n = 0.200 × 4456 = 891 mm/minQ = (D × fn × Vc) / 4 = 70.00 cm³/minLp = (D/2) × tan(90° − ângulo/2) = 3.00 mmt = (L + Lp) / Vf = 0.04 min"
+    }
+  },
+  {
+    "tipo": "broca_hss",
+    "familia": "furar",
+    "material": "Alumínio 6061-T6",
+    "ferramenta": "HSS",
+    "operacao": "acabamento",
+    "saidas": {
+      "resultado-rpm": "7385",
+      "resultado-avanco": "1477",
+      "resultado-indice-saude": "100",
+      "resultado-mrr": "116.00 cm³/min",
+      "resultado-potencia": "5.43 kW",
+      "resultado-torque": "7.02 Nm",
+      "texto-fonte-vc": "Fonte: estimativa interna, sem validação de catálogo",
+      "resultado-furo-previo": "— mm",
+      "resultado-tempo-furo": "0.02 min",
+      "badge-alerta-seguranca": "OK Parâmetros dentro dos limites recomendados.",
+      "cartao-formula": "Ver fórmulas e substituições n = (Vc × 1000) / (π × D) = (232.0 × 1000) / (π × 10.00) = 7385 rpmVf = fn × n = 0.200 × 7385 = 1477 mm/minQ = (D × fn × Vc) / 4 = 116.00 cm³/minLp = (D/2) × tan(90° − ângulo/2) = 3.00 mmt = (L + Lp) / Vf = 0.02 min"
+    }
+  },
+  {
+    "tipo": "broca_hss",
+    "familia": "furar",
+    "material": "Ferro Fundido GG25",
+    "ferramenta": "MD_REV",
+    "operacao": "semi",
+    "saidas": {
+      "resultado-rpm": "6366",
+      "resultado-avanco": "1273",
+      "resultado-indice-saude": "100",
+      "resultado-mrr": "100.00 cm³/min",
+      "resultado-potencia": "1.85 kW",
+      "resultado-torque": "2.78 Nm",
+      "texto-fonte-vc": "Fonte: estimativa interna, sem validação de catálogo",
+      "resultado-furo-previo": "— mm",
+      "resultado-tempo-furo": "0.03 min",
+      "badge-alerta-seguranca": "OK Parâmetros dentro dos limites recomendados.",
+      "cartao-formula": "Ver fórmulas e substituições n = (Vc × 1000) / (π × D) = (200.0 × 1000) / (π × 10.00) = 6366 rpmVf = fn × n = 0.200 × 6366 = 1273 mm/minQ = (D × fn × Vc) / 4 = 100.00 cm³/minLp = (D/2) × tan(90° − ângulo/2) = 3.00 mmt = (L + Lp) / Vf = 0.03 min"
+    }
+  },
+  {
+    "tipo": "broca_md",
+    "familia": "furar",
+    "material": "Aço 1045",
+    "ferramenta": "MD",
+    "operacao": "desbaste",
+    "saidas": {
+      "resultado-rpm": "4456",
+      "resultado-avanco": "891",
+      "resultado-indice-saude": "100",
+      "resultado-mrr": "70.00 cm³/min",
+      "resultado-potencia": "2.27 kW",
+      "resultado-torque": "4.86 Nm",
+      "texto-fonte-vc": "Fonte: catálogo interno validado",
+      "resultado-furo-previo": "— mm",
+      "resultado-tempo-furo": "0.04 min",
+      "badge-alerta-seguranca": "OK Parâmetros dentro dos limites recomendados.",
+      "cartao-formula": "Ver fórmulas e substituições n = (Vc × 1000) / (π × D) = (140.0 × 1000) / (π × 10.00) = 4456 rpmVf = fn × n = 0.200 × 4456 = 891 mm/minQ = (D × fn × Vc) / 4 = 70.00 cm³/minLp = (D/2) × tan(90° − ângulo/2) = 1.82 mmt = (L + Lp) / Vf = 0.04 min"
+    }
+  },
+  {
+    "tipo": "broca_md",
+    "familia": "furar",
+    "material": "Alumínio 6061-T6",
+    "ferramenta": "HSS",
+    "operacao": "acabamento",
+    "saidas": {
+      "resultado-rpm": "7385",
+      "resultado-avanco": "1477",
+      "resultado-indice-saude": "100",
+      "resultado-mrr": "116.00 cm³/min",
+      "resultado-potencia": "5.43 kW",
+      "resultado-torque": "7.02 Nm",
+      "texto-fonte-vc": "Fonte: estimativa interna, sem validação de catálogo",
+      "resultado-furo-previo": "— mm",
+      "resultado-tempo-furo": "0.02 min",
+      "badge-alerta-seguranca": "OK Parâmetros dentro dos limites recomendados.",
+      "cartao-formula": "Ver fórmulas e substituições n = (Vc × 1000) / (π × D) = (232.0 × 1000) / (π × 10.00) = 7385 rpmVf = fn × n = 0.200 × 7385 = 1477 mm/minQ = (D × fn × Vc) / 4 = 116.00 cm³/minLp = (D/2) × tan(90° − ângulo/2) = 1.82 mmt = (L + Lp) / Vf = 0.02 min"
+    }
+  },
+  {
+    "tipo": "broca_md",
+    "familia": "furar",
+    "material": "Ferro Fundido GG25",
+    "ferramenta": "MD_REV",
+    "operacao": "semi",
+    "saidas": {
+      "resultado-rpm": "6366",
+      "resultado-avanco": "1273",
+      "resultado-indice-saude": "100",
+      "resultado-mrr": "100.00 cm³/min",
+      "resultado-potencia": "1.85 kW",
+      "resultado-torque": "2.78 Nm",
+      "texto-fonte-vc": "Fonte: estimativa interna, sem validação de catálogo",
+      "resultado-furo-previo": "— mm",
+      "resultado-tempo-furo": "0.02 min",
+      "badge-alerta-seguranca": "OK Parâmetros dentro dos limites recomendados.",
+      "cartao-formula": "Ver fórmulas e substituições n = (Vc × 1000) / (π × D) = (200.0 × 1000) / (π × 10.00) = 6366 rpmVf = fn × n = 0.200 × 6366 = 1273 mm/minQ = (D × fn × Vc) / 4 = 100.00 cm³/minLp = (D/2) × tan(90° − ângulo/2) = 1.82 mmt = (L + Lp) / Vf = 0.02 min"
+    }
+  },
+  {
+    "tipo": "u_drill",
+    "familia": "furar",
+    "material": "Aço 1045",
+    "ferramenta": "MD",
+    "operacao": "desbaste",
+    "saidas": {
+      "resultado-rpm": "4456",
+      "resultado-avanco": "446",
+      "resultado-indice-saude": "55",
+      "resultado-mrr": "35.00 cm³/min",
+      "resultado-potencia": "1.26 kW",
+      "resultado-torque": "2.71 Nm",
+      "texto-fonte-vc": "Fonte: catálogo interno validado",
+      "resultado-furo-previo": "— mm",
+      "resultado-tempo-furo": "0.07 min",
+      "badge-alerta-seguranca": "! Avanço fn = 0.100 mm/rot abaixo do mínimo recomendado de 0.158 mm/rot. Aumente fn para pelo menos 0.158 mm/rot.",
+      "cartao-formula": "Ver fórmulas e substituições n = (Vc × 1000) / (π × D) = (140.0 × 1000) / (π × 10.00) = 4456 rpmVf = fn × n = 0.100 × 4456 = 446 mm/minQ = (D × fn × Vc) / 4 = 35.00 cm³/minLp = (D/2) × tan(90° − ângulo/2) = 0.00 mmt = (L + Lp) / Vf = 0.07 min"
+    }
+  },
+  {
+    "tipo": "u_drill",
+    "familia": "furar",
+    "material": "Alumínio 6061-T6",
+    "ferramenta": "HSS",
+    "operacao": "acabamento",
+    "saidas": {
+      "resultado-rpm": "7385",
+      "resultado-avanco": "738",
+      "resultado-indice-saude": "55",
+      "resultado-mrr": "58.00 cm³/min",
+      "resultado-potencia": "4.57 kW",
+      "resultado-torque": "5.90 Nm",
+      "texto-fonte-vc": "Fonte: estimativa interna, sem validação de catálogo",
+      "resultado-furo-previo": "— mm",
+      "resultado-tempo-furo": "0.04 min",
+      "badge-alerta-seguranca": "! Avanço fn = 0.100 mm/rot abaixo do mínimo recomendado de 0.158 mm/rot. Aumente fn para pelo menos 0.158 mm/rot.",
+      "cartao-formula": "Ver fórmulas e substituições n = (Vc × 1000) / (π × D) = (232.0 × 1000) / (π × 10.00) = 7385 rpmVf = fn × n = 0.100 × 7385 = 738 mm/minQ = (D × fn × Vc) / 4 = 58.00 cm³/minLp = (D/2) × tan(90° − ângulo/2) = 0.00 mmt = (L + Lp) / Vf = 0.04 min"
+    }
+  },
+  {
+    "tipo": "u_drill",
+    "familia": "furar",
+    "material": "Ferro Fundido GG25",
+    "ferramenta": "MD_REV",
+    "operacao": "semi",
+    "saidas": {
+      "resultado-rpm": "6366",
+      "resultado-avanco": "637",
+      "resultado-indice-saude": "55",
+      "resultado-mrr": "50.00 cm³/min",
+      "resultado-potencia": "1.06 kW",
+      "resultado-torque": "1.59 Nm",
+      "texto-fonte-vc": "Fonte: estimativa interna, sem validação de catálogo",
+      "resultado-furo-previo": "— mm",
+      "resultado-tempo-furo": "0.05 min",
+      "badge-alerta-seguranca": "! Avanço fn = 0.100 mm/rot abaixo do mínimo recomendado de 0.158 mm/rot. Aumente fn para pelo menos 0.158 mm/rot.",
+      "cartao-formula": "Ver fórmulas e substituições n = (Vc × 1000) / (π × D) = (200.0 × 1000) / (π × 10.00) = 6366 rpmVf = fn × n = 0.100 × 6366 = 637 mm/minQ = (D × fn × Vc) / 4 = 50.00 cm³/minLp = (D/2) × tan(90° − ângulo/2) = 0.00 mmt = (L + Lp) / Vf = 0.05 min"
+    }
+  },
+  {
+    "tipo": "broca_centro",
+    "familia": "furar",
+    "material": "Aço 1045",
+    "ferramenta": "MD",
+    "operacao": "desbaste",
+    "saidas": {
+      "resultado-rpm": "4456",
+      "resultado-avanco": "891",
+      "resultado-indice-saude": "65",
+      "resultado-mrr": "70.00 cm³/min",
+      "resultado-potencia": "2.27 kW",
+      "resultado-torque": "4.86 Nm",
+      "texto-fonte-vc": "Fonte: catálogo interno validado",
+      "resultado-furo-previo": "— mm",
+      "resultado-tempo-furo": "0.06 min",
+      "badge-alerta-seguranca": "! Aviso: L/D = 5.0 > 3.0. Utilize ciclo de furação pica-pau (peck drilling) para evacuar o cavaco.",
+      "cartao-formula": "Ver fórmulas e substituições n = (Vc × 1000) / (π × D) = (140.0 × 1000) / (π × 10.00) = 4456 rpmVf = fn × n = 0.200 × 4456 = 891 mm/minQ = (D × fn × Vc) / 4 = 70.00 cm³/minLp = (D/2) × tan(90° − ângulo/2) = 5.00 mmt = (L + Lp) / Vf = 0.06 min"
+    }
+  },
+  {
+    "tipo": "broca_centro",
+    "familia": "furar",
+    "material": "Alumínio 6061-T6",
+    "ferramenta": "HSS",
+    "operacao": "acabamento",
+    "saidas": {
+      "resultado-rpm": "7385",
+      "resultado-avanco": "1477",
+      "resultado-indice-saude": "65",
+      "resultado-mrr": "116.00 cm³/min",
+      "resultado-potencia": "5.43 kW",
+      "resultado-torque": "7.02 Nm",
+      "texto-fonte-vc": "Fonte: estimativa interna, sem validação de catálogo",
+      "resultado-furo-previo": "— mm",
+      "resultado-tempo-furo": "0.04 min",
+      "badge-alerta-seguranca": "! Aviso: L/D = 5.0 > 3.0. Utilize ciclo de furação pica-pau (peck drilling) para evacuar o cavaco.",
+      "cartao-formula": "Ver fórmulas e substituições n = (Vc × 1000) / (π × D) = (232.0 × 1000) / (π × 10.00) = 7385 rpmVf = fn × n = 0.200 × 7385 = 1477 mm/minQ = (D × fn × Vc) / 4 = 116.00 cm³/minLp = (D/2) × tan(90° − ângulo/2) = 5.00 mmt = (L + Lp) / Vf = 0.04 min"
+    }
+  },
+  {
+    "tipo": "broca_centro",
+    "familia": "furar",
+    "material": "Ferro Fundido GG25",
+    "ferramenta": "MD_REV",
+    "operacao": "semi",
+    "saidas": {
+      "resultado-rpm": "6366",
+      "resultado-avanco": "1273",
+      "resultado-indice-saude": "65",
+      "resultado-mrr": "100.00 cm³/min",
+      "resultado-potencia": "1.85 kW",
+      "resultado-torque": "2.78 Nm",
+      "texto-fonte-vc": "Fonte: estimativa interna, sem validação de catálogo",
+      "resultado-furo-previo": "— mm",
+      "resultado-tempo-furo": "0.04 min",
+      "badge-alerta-seguranca": "! Aviso: L/D = 5.0 > 3.0. Utilize ciclo de furação pica-pau (peck drilling) para evacuar o cavaco.",
+      "cartao-formula": "Ver fórmulas e substituições n = (Vc × 1000) / (π × D) = (200.0 × 1000) / (π × 10.00) = 6366 rpmVf = fn × n = 0.200 × 6366 = 1273 mm/minQ = (D × fn × Vc) / 4 = 100.00 cm³/minLp = (D/2) × tan(90° − ângulo/2) = 5.00 mmt = (L + Lp) / Vf = 0.04 min"
+    }
+  },
+  {
+    "tipo": "escareador",
+    "familia": "furar",
+    "material": "Aço 1045",
+    "ferramenta": "MD",
+    "operacao": "desbaste",
+    "saidas": {
+      "resultado-rpm": "2228",
+      "resultado-avanco": "446",
+      "resultado-indice-saude": "65",
+      "resultado-mrr": "35.00 cm³/min",
+      "resultado-potencia": "1.13 kW",
+      "resultado-torque": "4.86 Nm",
+      "texto-fonte-vc": "Fonte: catálogo interno validado",
+      "resultado-furo-previo": "— mm",
+      "resultado-tempo-furo": "0.11 min",
+      "badge-alerta-seguranca": "! Aviso: L/D = 5.0 > 3.0. Utilize ciclo de furação pica-pau (peck drilling) para evacuar o cavaco.",
+      "cartao-formula": "Ver fórmulas e substituições n = (Vc × 1000) / (π × D) = (70.0 × 1000) / (π × 10.00) = 2228 rpmVf = fn × n = 0.200 × 2228 = 446 mm/minQ = (D × fn × Vc) / 4 = 35.00 cm³/minLp = (D/2) × tan(90° − ângulo/2) = 0.00 mmt = (L + Lp) / Vf = 0.11 min"
+    }
+  },
+  {
+    "tipo": "escareador",
+    "familia": "furar",
+    "material": "Alumínio 6061-T6",
+    "ferramenta": "HSS",
+    "operacao": "acabamento",
+    "saidas": {
+      "resultado-rpm": "3692",
+      "resultado-avanco": "738",
+      "resultado-indice-saude": "65",
+      "resultado-mrr": "58.00 cm³/min",
+      "resultado-potencia": "2.72 kW",
+      "resultado-torque": "7.02 Nm",
+      "texto-fonte-vc": "Fonte: estimativa interna, sem validação de catálogo",
+      "resultado-furo-previo": "— mm",
+      "resultado-tempo-furo": "0.07 min",
+      "badge-alerta-seguranca": "! Aviso: L/D = 5.0 > 3.0. Utilize ciclo de furação pica-pau (peck drilling) para evacuar o cavaco.",
+      "cartao-formula": "Ver fórmulas e substituições n = (Vc × 1000) / (π × D) = (116.0 × 1000) / (π × 10.00) = 3692 rpmVf = fn × n = 0.200 × 3692 = 738 mm/minQ = (D × fn × Vc) / 4 = 58.00 cm³/minLp = (D/2) × tan(90° − ângulo/2) = 0.00 mmt = (L + Lp) / Vf = 0.07 min"
+    }
+  },
+  {
+    "tipo": "escareador",
+    "familia": "furar",
+    "material": "Ferro Fundido GG25",
+    "ferramenta": "MD_REV",
+    "operacao": "semi",
+    "saidas": {
+      "resultado-rpm": "3183",
+      "resultado-avanco": "637",
+      "resultado-indice-saude": "65",
+      "resultado-mrr": "50.00 cm³/min",
+      "resultado-potencia": "0.93 kW",
+      "resultado-torque": "2.78 Nm",
+      "texto-fonte-vc": "Fonte: estimativa interna, sem validação de catálogo",
+      "resultado-furo-previo": "— mm",
+      "resultado-tempo-furo": "0.08 min",
+      "badge-alerta-seguranca": "! Aviso: L/D = 5.0 > 3.0. Utilize ciclo de furação pica-pau (peck drilling) para evacuar o cavaco.",
+      "cartao-formula": "Ver fórmulas e substituições n = (Vc × 1000) / (π × D) = (100.0 × 1000) / (π × 10.00) = 3183 rpmVf = fn × n = 0.200 × 3183 = 637 mm/minQ = (D × fn × Vc) / 4 = 50.00 cm³/minLp = (D/2) × tan(90° − ângulo/2) = 0.00 mmt = (L + Lp) / Vf = 0.08 min"
+    }
+  },
+  {
+    "tipo": "alargador",
+    "familia": "furar",
+    "material": "Aço 1045",
+    "ferramenta": "MD",
+    "operacao": "desbaste",
+    "saidas": {
+      "resultado-rpm": "1485",
+      "resultado-avanco": "743",
+      "resultado-indice-saude": "100",
+      "resultado-mrr": "58.33 cm³/min",
+      "resultado-potencia": "1.64 kW",
+      "resultado-torque": "10.55 Nm",
+      "texto-fonte-vc": "Fonte: catálogo interno validado",
+      "resultado-furo-previo": "— mm",
+      "resultado-tempo-furo": "0.04 min",
+      "badge-alerta-seguranca": "OK Parâmetros dentro dos limites recomendados.",
+      "cartao-formula": "Ver fórmulas e substituições n = (Vc × 1000) / (π × D) = (46.7 × 1000) / (π × 10.00) = 1485 rpmVf = fn × n = 0.500 × 1485 = 743 mm/minQ = (D × fn × Vc) / 4 = 58.33 cm³/minLp = (D/2) × tan(90° − ângulo/2) = 0.00 mmt = (L + Lp) / Vf = 0.04 min"
+    }
+  },
+  {
+    "tipo": "alargador",
+    "familia": "furar",
+    "material": "Alumínio 6061-T6",
+    "ferramenta": "HSS",
+    "operacao": "acabamento",
+    "saidas": {
+      "resultado-rpm": "2462",
+      "resultado-avanco": "1231",
+      "resultado-indice-saude": "100",
+      "resultado-mrr": "96.67 cm³/min",
+      "resultado-potencia": "2.28 kW",
+      "resultado-torque": "8.83 Nm",
+      "texto-fonte-vc": "Fonte: estimativa interna, sem validação de catálogo",
+      "resultado-furo-previo": "— mm",
+      "resultado-tempo-furo": "0.02 min",
+      "badge-alerta-seguranca": "OK Parâmetros dentro dos limites recomendados.",
+      "cartao-formula": "Ver fórmulas e substituições n = (Vc × 1000) / (π × D) = (77.3 × 1000) / (π × 10.00) = 2462 rpmVf = fn × n = 0.500 × 2462 = 1231 mm/minQ = (D × fn × Vc) / 4 = 96.67 cm³/minLp = (D/2) × tan(90° − ângulo/2) = 0.00 mmt = (L + Lp) / Vf = 0.02 min"
+    }
+  },
+  {
+    "tipo": "alargador",
+    "familia": "furar",
+    "material": "Ferro Fundido GG25",
+    "ferramenta": "MD_REV",
+    "operacao": "semi",
+    "saidas": {
+      "resultado-rpm": "2122",
+      "resultado-avanco": "1061",
+      "resultado-indice-saude": "100",
+      "resultado-mrr": "83.33 cm³/min",
+      "resultado-potencia": "1.28 kW",
+      "resultado-torque": "5.78 Nm",
+      "texto-fonte-vc": "Fonte: estimativa interna, sem validação de catálogo",
+      "resultado-furo-previo": "— mm",
+      "resultado-tempo-furo": "0.03 min",
+      "badge-alerta-seguranca": "OK Parâmetros dentro dos limites recomendados.",
+      "cartao-formula": "Ver fórmulas e substituições n = (Vc × 1000) / (π × D) = (66.7 × 1000) / (π × 10.00) = 2122 rpmVf = fn × n = 0.500 × 2122 = 1061 mm/minQ = (D × fn × Vc) / 4 = 83.33 cm³/minLp = (D/2) × tan(90° − ângulo/2) = 0.00 mmt = (L + Lp) / Vf = 0.03 min"
+    }
+  },
+  {
+    "tipo": "macho_corte",
+    "familia": "roscar",
+    "material": "Aço 1045",
+    "ferramenta": "MD",
+    "operacao": "desbaste",
+    "saidas": {
+      "resultado-rpm": "668",
+      "resultado-avanco": "1003",
+      "resultado-indice-saude": "100",
+      "resultado-mrr": "— cm³/min",
+      "resultado-potencia": "— kW",
+      "resultado-torque": "20.46 Nm",
+      "texto-fonte-vc": "Fonte: catálogo interno validado",
+      "resultado-furo-previo": "8.50 mm",
+      "resultado-tempo-furo": "— min",
+      "badge-alerta-seguranca": "OK Parâmetros de roscamento dentro dos limites.",
+      "cartao-formula": "Ver fórmulas e substituições Furo Prévio = D − P = 10.0 − 1.50 = 8.50 mmVc rosqueamento ≈ 15% × Vc fresamento × fator ferramenta = 21.0 m/min (estimativa interna)Vf = P × n = 1.50 × 668 = 1003 mm/min (travado no passo)Mc_est ≈ (kc1.1/1000) × D × P² × 0.6 = 29.23 Nm (estimativa interna)"
+    }
+  },
+  {
+    "tipo": "macho_corte",
+    "familia": "roscar",
+    "material": "Alumínio 6061-T6",
+    "ferramenta": "HSS",
+    "operacao": "acabamento",
+    "saidas": {
+      "resultado-rpm": "1108",
+      "resultado-avanco": "1662",
+      "resultado-indice-saude": "100",
+      "resultado-mrr": "— cm³/min",
+      "resultado-potencia": "— kW",
+      "resultado-torque": "11.34 Nm",
+      "texto-fonte-vc": "Fonte: estimativa interna, sem validação de catálogo",
+      "resultado-furo-previo": "8.50 mm",
+      "resultado-tempo-furo": "— min",
+      "badge-alerta-seguranca": "OK Parâmetros de roscamento dentro dos limites.",
+      "cartao-formula": "Ver fórmulas e substituições Furo Prévio = D − P = 10.0 − 1.50 = 8.50 mmVc rosqueamento ≈ 15% × Vc fresamento × fator ferramenta = 34.8 m/min (estimativa interna)Vf = P × n = 1.50 × 1108 = 1662 mm/min (travado no passo)Mc_est ≈ (kc1.1/1000) × D × P² × 0.6 = 16.20 Nm (estimativa interna)"
+    }
+  },
+  {
+    "tipo": "macho_corte",
+    "familia": "roscar",
+    "material": "Ferro Fundido GG25",
+    "ferramenta": "MD_REV",
+    "operacao": "semi",
+    "saidas": {
+      "resultado-rpm": "955",
+      "resultado-avanco": "1432",
+      "resultado-indice-saude": "100",
+      "resultado-mrr": "— cm³/min",
+      "resultado-potencia": "— kW",
+      "resultado-torque": "10.87 Nm",
+      "texto-fonte-vc": "Fonte: estimativa interna, sem validação de catálogo",
+      "resultado-furo-previo": "8.50 mm",
+      "resultado-tempo-furo": "— min",
+      "badge-alerta-seguranca": "OK Parâmetros de roscamento dentro dos limites.",
+      "cartao-formula": "Ver fórmulas e substituições Furo Prévio = D − P = 10.0 − 1.50 = 8.50 mmVc rosqueamento ≈ 15% × Vc fresamento × fator ferramenta = 30.0 m/min (estimativa interna)Vf = P × n = 1.50 × 955 = 1432 mm/min (travado no passo)Mc_est ≈ (kc1.1/1000) × D × P² × 0.6 = 15.52 Nm (estimativa interna)"
+    }
+  },
+  {
+    "tipo": "macho_conformacao",
+    "familia": "roscar",
+    "material": "Aço 1045",
+    "ferramenta": "MD",
+    "operacao": "desbaste",
+    "saidas": {
+      "resultado-rpm": "668",
+      "resultado-avanco": "1003",
+      "resultado-indice-saude": "100",
+      "resultado-mrr": "— cm³/min",
+      "resultado-potencia": "— kW",
+      "resultado-torque": "20.46 Nm",
+      "texto-fonte-vc": "Fonte: catálogo interno validado",
+      "resultado-furo-previo": "9.25 mm",
+      "resultado-tempo-furo": "— min",
+      "badge-alerta-seguranca": "OK Parâmetros de roscamento dentro dos limites.",
+      "cartao-formula": "Ver fórmulas e substituições Furo Prévio = D − P/2 = 10.0 − 1.50/2 = 9.25 mmVc rosqueamento ≈ 15% × Vc fresamento × fator ferramenta = 21.0 m/min (estimativa interna)Vf = P × n = 1.50 × 668 = 1003 mm/min (travado no passo)Mc_est ≈ (kc1.1/1000) × D × P² × 0.6 = 29.23 Nm (estimativa interna)"
+    }
+  },
+  {
+    "tipo": "macho_conformacao",
+    "familia": "roscar",
+    "material": "Alumínio 6061-T6",
+    "ferramenta": "HSS",
+    "operacao": "acabamento",
+    "saidas": {
+      "resultado-rpm": "1108",
+      "resultado-avanco": "1662",
+      "resultado-indice-saude": "100",
+      "resultado-mrr": "— cm³/min",
+      "resultado-potencia": "— kW",
+      "resultado-torque": "11.34 Nm",
+      "texto-fonte-vc": "Fonte: estimativa interna, sem validação de catálogo",
+      "resultado-furo-previo": "9.25 mm",
+      "resultado-tempo-furo": "— min",
+      "badge-alerta-seguranca": "OK Parâmetros de roscamento dentro dos limites.",
+      "cartao-formula": "Ver fórmulas e substituições Furo Prévio = D − P/2 = 10.0 − 1.50/2 = 9.25 mmVc rosqueamento ≈ 15% × Vc fresamento × fator ferramenta = 34.8 m/min (estimativa interna)Vf = P × n = 1.50 × 1108 = 1662 mm/min (travado no passo)Mc_est ≈ (kc1.1/1000) × D × P² × 0.6 = 16.20 Nm (estimativa interna)"
+    }
+  },
+  {
+    "tipo": "macho_conformacao",
+    "familia": "roscar",
+    "material": "Ferro Fundido GG25",
+    "ferramenta": "MD_REV",
+    "operacao": "semi",
+    "saidas": {
+      "resultado-rpm": "955",
+      "resultado-avanco": "1432",
+      "resultado-indice-saude": "0",
+      "resultado-mrr": "— cm³/min",
+      "resultado-potencia": "— kW",
+      "resultado-torque": "10.87 Nm",
+      "texto-fonte-vc": "Fonte: estimativa interna, sem validação de catálogo",
+      "resultado-furo-previo": "9.25 mm",
+      "resultado-tempo-furo": "— min",
+      "badge-alerta-seguranca": "! Bloqueado: Ferro Fundido GG25 não é recomendado para macho de conformação (material frágil/duro). Utilize macho de corte.",
+      "cartao-formula": "Ver fórmulas e substituições Furo Prévio = D − P/2 = 10.0 − 1.50/2 = 9.25 mmVc rosqueamento ≈ 15% × Vc fresamento × fator ferramenta = 30.0 m/min (estimativa interna)Vf = P × n = 1.50 × 955 = 1432 mm/min (travado no passo)Mc_est ≈ (kc1.1/1000) × D × P² × 0.6 = 15.52 Nm (estimativa interna)"
+    }
+  },
+  {
+    "tipo": "fresa_rosca",
+    "familia": "roscar",
+    "material": "Aço 1045",
+    "ferramenta": "MD",
+    "operacao": "desbaste",
+    "saidas": {
+      "resultado-rpm": "4456",
+      "resultado-avanco": "1003",
+      "resultado-indice-saude": "100",
+      "resultado-mrr": "— cm³/min",
+      "resultado-potencia": "— kW",
+      "resultado-torque": "— Nm",
+      "texto-fonte-vc": "Fonte: catálogo interno validado",
+      "resultado-furo-previo": "— mm",
+      "resultado-tempo-furo": "— min",
+      "badge-alerta-seguranca": "OK Parâmetros de roscamento dentro dos limites.",
+      "cartao-formula": "Ver fórmulas e substituições n = (Vc × 1000) / (π × D_fresa) = 4456 rpmVf_perif = fz × Z × nVf_centro = Vf_perif × (D_rosca − D_fresa) / D_rosca = 1003 mm/min"
+    }
+  },
+  {
+    "tipo": "fresa_rosca",
+    "familia": "roscar",
+    "material": "Alumínio 6061-T6",
+    "ferramenta": "HSS",
+    "operacao": "acabamento",
+    "saidas": {
+      "resultado-rpm": "7385",
+      "resultado-avanco": "554",
+      "resultado-indice-saude": "100",
+      "resultado-mrr": "— cm³/min",
+      "resultado-potencia": "— kW",
+      "resultado-torque": "— Nm",
+      "texto-fonte-vc": "Fonte: estimativa interna, sem validação de catálogo",
+      "resultado-furo-previo": "— mm",
+      "resultado-tempo-furo": "— min",
+      "badge-alerta-seguranca": "OK Parâmetros de roscamento dentro dos limites.",
+      "cartao-formula": "Ver fórmulas e substituições n = (Vc × 1000) / (π × D_fresa) = 7385 rpmVf_perif = fz × Z × nVf_centro = Vf_perif × (D_rosca − D_fresa) / D_rosca = 554 mm/min"
+    }
+  },
+  {
+    "tipo": "fresa_rosca",
+    "familia": "roscar",
+    "material": "Ferro Fundido GG25",
+    "ferramenta": "MD_REV",
+    "operacao": "semi",
+    "saidas": {
+      "resultado-rpm": "6366",
+      "resultado-avanco": "955",
+      "resultado-indice-saude": "100",
+      "resultado-mrr": "— cm³/min",
+      "resultado-potencia": "— kW",
+      "resultado-torque": "— Nm",
+      "texto-fonte-vc": "Fonte: estimativa interna, sem validação de catálogo",
+      "resultado-furo-previo": "— mm",
+      "resultado-tempo-furo": "— min",
+      "badge-alerta-seguranca": "OK Parâmetros de roscamento dentro dos limites.",
+      "cartao-formula": "Ver fórmulas e substituições n = (Vc × 1000) / (π × D_fresa) = 6366 rpmVf_perif = fz × Z × nVf_centro = Vf_perif × (D_rosca − D_fresa) / D_rosca = 955 mm/min"
+    }
+  },
+  {
+    "tipo": "mandril",
+    "familia": "mandrilar",
+    "material": "Aço 1045",
+    "ferramenta": "MD",
+    "operacao": "desbaste",
+    "saidas": {
+      "resultado-rpm": "1857",
+      "resultado-avanco": "186",
+      "resultado-indice-saude": "100",
+      "resultado-mrr": "84.00 cm³/min",
+      "resultado-potencia": "3.03 kW",
+      "resultado-torque": "15.59 Nm",
+      "texto-fonte-vc": "Fonte: catálogo interno validado",
+      "resultado-furo-previo": "— mm",
+      "resultado-tempo-furo": "— min",
+      "badge-alerta-seguranca": "OK Balanço adequado (L/D = 1.5).",
+      "cartao-formula": "Ver fórmulas e substituições ap = (Øf − Øi) / 2 = (24.0 − 20.0) / 2 = 2.00 mmn = (Vc × 1000) / (π × Øf) = 1857 rpmVf = fn × n = 186 mm/minRa = (fn² / (8 × rε)) × 1000 = 0.63 µm"
+    }
+  },
+  {
+    "tipo": "mandril",
+    "familia": "mandrilar",
+    "material": "Alumínio 6061-T6",
+    "ferramenta": "HSS",
+    "operacao": "acabamento",
+    "saidas": {
+      "resultado-rpm": "3077",
+      "resultado-avanco": "308",
+      "resultado-indice-saude": "100",
+      "resultado-mrr": "139.20 cm³/min",
+      "resultado-potencia": "10.96 kW",
+      "resultado-torque": "34.01 Nm",
+      "texto-fonte-vc": "Fonte: estimativa interna, sem validação de catálogo",
+      "resultado-furo-previo": "— mm",
+      "resultado-tempo-furo": "— min",
+      "badge-alerta-seguranca": "OK Balanço adequado (L/D = 1.5).",
+      "cartao-formula": "Ver fórmulas e substituições ap = (Øf − Øi) / 2 = (24.0 − 20.0) / 2 = 2.00 mmn = (Vc × 1000) / (π × Øf) = 3077 rpmVf = fn × n = 308 mm/minRa = (fn² / (8 × rε)) × 1000 = 0.63 µm"
+    }
+  },
+  {
+    "tipo": "mandril",
+    "familia": "mandrilar",
+    "material": "Ferro Fundido GG25",
+    "ferramenta": "MD_REV",
+    "operacao": "semi",
+    "saidas": {
+      "resultado-rpm": "2653",
+      "resultado-avanco": "265",
+      "resultado-indice-saude": "100",
+      "resultado-mrr": "120.00 cm³/min",
+      "resultado-potencia": "2.55 kW",
+      "resultado-torque": "9.19 Nm",
+      "texto-fonte-vc": "Fonte: estimativa interna, sem validação de catálogo",
+      "resultado-furo-previo": "— mm",
+      "resultado-tempo-furo": "— min",
+      "badge-alerta-seguranca": "OK Balanço adequado (L/D = 1.5).",
+      "cartao-formula": "Ver fórmulas e substituições ap = (Øf − Øi) / 2 = (24.0 − 20.0) / 2 = 2.00 mmn = (Vc × 1000) / (π × Øf) = 2653 rpmVf = fn × n = 265 mm/minRa = (fn² / (8 × rε)) × 1000 = 0.63 µm"
+    }
+  }
+]

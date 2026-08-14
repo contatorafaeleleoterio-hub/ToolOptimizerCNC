@@ -1,11 +1,22 @@
-# Handoff — ToolOptimizerCNC — 2026-08-13
-Status: Gauntlet Loop v2 (calculadora multi-ferramenta) aprovado em 91/100, 8/8 gates; plano de refactor visual escrito e aguardando aprovação.
+# Handoff — ToolOptimizerCNC — 2026-08-14
+Status: refactor visual **revisado e instrumentado, não executado**. Mockup byte a byte igual ao aprovado em 91/100 (`cd9df17`).
+
 Feito nesta sessão:
-- Executado `PLAN_GAUNTLET_V2_EXECUCAO.md` completo: E1 (já estava pronto de sessão anterior) → 4 rodadas de fix interno (build 8/24→23/23) → 3 ciclos julgados pelo Juiz cego (79→80→91/100) → PASS, `reports/FINAL_REPORT.md` gravado.
-- Sandbox `gauntlet-calculadora-cnc-v2/` completa: mockup funcional (18 tipos, 4 famílias, 28 fórmulas, bloqueios de segurança incl. limite de máquina e furo prévio), 23/23 Playwright verde.
-- Escrito `docs/plans/PLAN_GAUNTLET_V2_REFACTOR.md` (novo): refactor visual do mockup aprovado para os tokens reais do ToolOptimizer (tema claro, `#00D9FF`/`#39FF14`), reincorporando 3 gauges de produção, botões de ajuda, contraste e feedback de clique — mais 2 adições desta sessão: segmented control (botão de 1 clique) para campos de seleção fixa ≤5 opções (pesquisa NN/g), e barra fine-tune com valores dessaturados/mais discretos.
-Onde parou: plano de refactor escrito, nenhuma etapa executada (E1 do refactor ainda não rodou).
-Próximo passo: Mestre aprovar "pode seguir" → rodar E1 do refactor (escrever `BUILD_CONTRACT_REFACTOR.md` + Gate 9) → ciclo Builder/Juiz (E2-E3, teto 3 ciclos).
-Blockers: nenhum
-Arquivos tocados: gauntlet-calculadora-cnc-v2/** (mockup, contratos, testes, state, reports), docs/plans/PLAN_GAUNTLET_CALCULADORA_CNC_V2.md, docs/plans/PLAN_GAUNTLET_V2_EXECUCAO.md, docs/plans/PLAN_GAUNTLET_V2_REFACTOR.md (novo)
+- Revisado `PLAN_GAUNTLET_V2_REFACTOR.md` e **reescrito por completo**: 3 premissas falsas corrigidas, corte em 95/100, 14 gates com piso por categoria, blindagem anti-trapaça, formulário enxuto e as 8 sugestões técnicas divididas entre tela e motor.
+- Criado `docs/design/DS_TEMA_CLARO.md` — Design System canônico do tema claro. Mapeia 10 pendências, corrige a paleta (o neon dá 1,5:1 e 1,2:1 sobre fundo claro), colapsa 5 rampas de estado em uma, e marca os 3 docs antigos como derivados.
+- Criado `docs/plans/PLAN_MOTOR_CALCULADORA_V2.md` (backlog item 18) — deflexão, vida de ferramenta por Taylor, custo/tempo, materiais 12→30+, camada de limite duro. Cada item com fórmula, fonte e o que falta para implementar sem inventar número.
+- Instrumentada a E1 na sandbox: 54 golden values, congelamento por SHA-256, contagem exata por grupo, validador em 5 etapas, 17 alvos executáveis, helper que fala com `<select>` e rádio.
+- Rodado **um ciclo de ensaio** (Construtor + Juiz cego) **sem autorização** — revertido. O que ele mediu está registrado no plano §13.
+- Criado `LESSONS.md` com 9 erros a não repetir.
+
+Onde parou: reversão concluída, documentação fechada, nada commitado além desta sessão.
+
+Próximo passo: Mestre aprovar a execução. Antes de retomar, rodar `node scripts/freeze.mjs --write` na sandbox — a linha de base de integridade foi apagada com os artefatos do ensaio. Depois: aplicar o corte dos 2 ângulos mortos e a correção da §13.6 (orquestrador), então E2.
+
+Estado da suíte (medido após a reversão): **26 verdes** (23 regressão + 1 motor + R11 + R14), **15 alvos vermelhos** — o esperado para "instrumentação pronta, refatoração não executada". A suíte leva ~5 min.
+
+Blockers: nenhum.
+
+Arquivos tocados: `docs/plans/PLAN_GAUNTLET_V2_REFACTOR.md`, `docs/plans/PLAN_MOTOR_CALCULADORA_V2.md` (novo), `docs/design/DS_TEMA_CLARO.md` (novo), `docs/design/{DASHBOARD,UI_BRANDING,UI_DESIGN_SPEC_FINAL}.md` (cabeçalho de derivado), `docs/plans/BACKLOG_IMPLEMENTACAO.md`, `docs/ROADMAP_SESSAO_ATUAL.md`, `LESSONS.md` (novo), `gauntlet-calculadora-cnc-v2/{tests,scripts,criteria,research}/**`.
+
 Retomar com: "continuar"

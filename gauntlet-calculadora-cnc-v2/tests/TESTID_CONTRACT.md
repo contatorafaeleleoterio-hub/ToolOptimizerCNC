@@ -37,3 +37,67 @@
 | `badge-alerta-seguranca` | Banner / Chip do Semáforo (Verde, Amarelo, Vermelho, Bloqueado) | T10, T11, T16, T17, T20, T22, T24 |
 | `badge-material-estimado` | Badge indicador de material com parâmetros estimados | T01, T12 |
 | `cartao-formula` | Container expansível exibindo fórmula e substituição numérica | T01, T04 |
+| `btn-calcular` | Botão que dispara o cálculo | T01–T24, R01–R17 |
+
+---
+
+## Adendo do refactor visual (R01–R17)
+
+> **Congelado junto com a suíte.** O Builder implementa exatamente estes nomes.
+
+### Escolha segmentada — mudança de contrato
+
+Quatro controles deixam de ser `<select>` e viram grupo de rádios. **O `data-testid`
+permanece no mesmo nome, mas passa a ficar no CONTAINER do grupo**; cada `<input type="radio">`
+dentro dele carrega o `value` que o `<option>` carregava antes.
+
+| `data-testid` | Vira | Opções |
+|---|---|---|
+| `select-familia` | grupo de rádios | `fresar`, `furar`, `roscar`, `mandrilar` |
+| `select-operacao` | grupo de rádios | `desbaste`, `semi`, `acabamento` |
+| `select-material-ferramenta` | grupo de rádios | `HSS`, `HSS_CO`, `MD`, `MD_REV` |
+| `input-angulo-broca` | grupo de rádios | os ângulos do tipo selecionado; 1 opção → texto fixo, sem seletor |
+
+Continuam `<select>` (acima do corte de 5 opções ou com rótulo longo):
+`select-tipo-ferramenta`, `select-material-peca`, `select-designacao-rosca`.
+
+O helper `escolher()` de `tests/helpers.ts` fala com as duas formas — é o que mantém a
+regressão verde durante a transição.
+
+### Blocos do formulário (a ordem é verificada)
+
+| `data-testid` | Conteúdo |
+|---|---|
+| `bloco-contexto` | perfil de máquina + fator de segurança (recolhível) |
+| `bloco-categorico` | família, tipo, material da peça, material da ferramenta, operação |
+| `bloco-geometrico` | campos dimensionais do tipo; cada campo é um filho com classe `.row`, oculto com `.hidden` |
+| `bloco-ajuste-fino` | os 4 controles de ajuste |
+
+### Perfil de máquina
+
+`input-maquina-rpm` · `input-maquina-potencia` · `input-maquina-torque` · `input-maquina-avanco`
+
+### Ajuste fino — um conjunto por parâmetro (`vc`, `fz`, `ae`, `ap`)
+
+| Padrão | Elemento |
+|---|---|
+| `slider-{p}` | `<input type="range">` do parâmetro |
+| `valor-{p}` | valor numérico exibido, atualiza ao arrastar |
+| `barra-estado-{p}` | barra de estado do parâmetro |
+| `ajuda-{p}` | botão `ⓘ` — `aria-expanded`, `aria-controls` apontando para o popover |
+| `popover-{p}` | painel de ajuda, `aria-live="polite"` |
+
+### Indicadores
+
+`gauge-eficiencia-avanco` · `gauge-mrr` · `gauge-saude`, cada um com `{gauge}-valor` para o número central.
+
+### Procedência
+
+`procedencia-rpm` · `procedencia-avanco` · `procedencia-potencia` · `procedencia-torque` —
+o gatilho que leva da leitura à fórmula e à fonte do dado.
+
+### Saídas com estado velho
+
+Todo resultado ganha a classe `stale` enquanto houver alteração pendente de cálculo.
+A classe já existe no mockup para valor não finito; passa a valer também para "resultado
+desatualizado, clique em Calcular".

@@ -1,234 +1,445 @@
-# Plano de Execução — Gauntlet Loop v2: Refactor Visual (Design System Oficial)
+# Plano de Execução — Gauntlet Loop v2: Refactor Visual da Calculadora
 
-> **Status:** aguardando "pode seguir" do Mestre. Nenhuma etapa executada.
+> **Status:** revisado em 14/08/2026 · **aguardando "pode seguir" do Mestre** · refatoração **não executada**.
 > **Item do backlog:** 17 (continuação — refactor da entrega aprovada em 91/100, ciclo 3).
 > **Mecânica do loop:** `C:\Users\USUARIO\Desktop\central_rafael\protocolos\protocolo-loop-construtor-juiz-cego.md`.
-> **Não é um novo mockup.** É uma refatoração visual do `gauntlet-calculadora-cnc-v2/mockup/index.html`
-> já aprovado (91/100, 8/8 gates) — motor de cálculo, 18 tipos, schemas e regras de bloqueio ficam
-> intocados. Só a camada visual (CSS/tokens) e 4 lacunas funcionais pontuais mudam.
+> **Preparação (E1) já feita:** contratos, suíte, golden values e blindagem estão no repositório.
+> A sandbox está coerente: `mockup/index.html` é byte a byte o aprovado no commit `cd9df17`.
+> **Erros a não repetir:** `LESSONS.md` na raiz.
 
 ---
 
-## Por que este plano existe
+## 0. Como ler este plano
 
-O ciclo 3 aprovou o mockup usando os tokens do **FlowNC DS** (§ decisão declarada na Fase 0 do
-plano anterior — origem primária definida ali, não um erro). O Mestre agora pede para trocar essa
-paleta pela do **ToolOptimizer CNC real**, e reincorporar elementos que existem em produção
-(`src/`) mas não entraram no mockup: os 3 gauges, os botões de ajuda contextual, e o feedback de
-clique. **Isto NÃO é uma decisão nova de design — é aplicar o que já está aprovado e rodando.**
+A sessão de 13-14/08/2026 revisou este plano, encontrou defeitos nele, e chegou a rodar **um
+ciclo completo de ensaio** (Construtor + Juiz cego) antes de ser revertido por não estar
+autorizado. O ciclo foi desfeito, mas **o que ele mediu ficou** — e está incorporado aqui.
 
-## Fontes levantadas em produção (`src/`, só leitura, nenhuma linha copiada 1:1 — só os tokens/padrões)
+Isso muda o valor do documento: as seções abaixo não são previsão, são resultado medido.
+Onde diz "o Juiz reprovou em 86/100", isso aconteceu de verdade, com evidência citada linha a linha.
 
-| Elemento pedido pelo Mestre | Onde já existe em produção |
+---
+
+## 1. Por que este plano existe
+
+O ciclo 3 aprovou o mockup usando os tokens do **FlowNC DS**, que sempre foram placeholder
+declarado na Fase 0 anterior. O pedido agora é trocar essa pele pelos tokens reais do
+ToolOptimizer e reincorporar elementos que existem em produção (`src/`) mas ficaram fora do
+escopo do primeiro loop.
+
+**Contexto que muda o peso da decisão:** a calculadora atual **vai ser desativada** e substituída
+por esta. Paridade de recurso importa — não dá para entregar menos do que o operador já tem hoje.
+
+---
+
+## 2. Correção de rota — o plano anterior estava errado em 3 pontos
+
+| Premissa antiga | Realidade verificada |
 |---|---|
-| Design system oficial (cores, fontes, glass) | `src/index.css` — tokens `--primary:#00D9FF`, `--secondary:#39FF14`, `--background-dark:#0F1419`, `bg-surface-dark` (`rgba(22,27,34,.7)` + `backdrop-blur-xl`), `shadow-neon-cyan`/`shadow-neon-green`, fontes Inter (display) + JetBrains Mono (números) |
-| Tema claro | **Não implementado em lugar nenhum do código hoje.** Só existe o token `background-light:#F3F4F6` cadastrado (não usado) em `docs/design/DASHBOARD.md`. Decisão do Mestre (confirmada nesta sessão): usar os tokens oficiais (`#00D9FF`/`#39FF14`/Inter/JetBrains Mono/glass) sobre fundo claro `#F3F4F6`, não o dark de produção — é a variante clara dos MESMOS tokens, não uma paleta nova. |
-| 3 gauges de velocímetro | `src/components/half-moon-gauge.tsx` — arco de 41 barras, ponteiro animado, 3 instâncias em `results-panel.tsx` Zona 5: **Eficiência de Avanço**, **Produtividade MRR**, **Saúde da Ferramenta** |
-| Botão de ajuda contextual | `src/components/param-explanation.tsx` — botão "O QUE É X?" com popover hover/click, ícone `info`, borda cyan |
-| 4 parâmetros de ajuste fino | `src/components/fine-tune-panel.tsx` — Vc, fz, ae, ap (os 4 já estabelecidos; ordem/nomes não mudam) |
-| Feedback de clique no botão calcular | `src/components/config-panel.tsx` (linhas ~464-481) — ícone `check_circle` + texto "Atualizado" substitui `play_arrow` + "Simular" após o cálculo |
-| Recalcular só ao clicar | Regra Crítica 7 do `CLAUDE.md` do projeto: store não auto-recalcula, exige clique explícito — **mesma regra**, o mockup deve seguir o padrão que produção já segue |
+| "os testids continuam no `<input type=radio>`, risco baixo de quebrar os 23 cenários" | Os 23 cenários usavam `page.selectOption()` em `select-familia`, `select-operacao` e `select-material-ferramenta`. **`selectOption` não funciona em rádio** — a troca por escolha segmentada quebraria praticamente toda a suíte. **Resolvido:** `tests/helpers.ts` traz `escolher()`, que fala com `<select>` e com rádio, e os 23 cenários foram migrados para ele. |
+| "barra fine-tune com valores visuais reduzidos" | **Não existe barra de fine-tune no mockup.** O único `type="range"` é o fator de segurança. Os 4 controles de ajuste **nascem** neste refactor. |
+| "gauge de Eficiência de Avanço = Vf efetivo ÷ Vf sugerido" | Sem os controles, isso marcaria 100% fixo — ponteiro morto. Só faz sentido **com** os 4 controles. |
+
+**Correção de comportamento:** os controles **não** recalculam ao vivo. A Regra Crítica 7
+(`CLAUDE.md:102`) manda o store não auto-recalcular. Ao arrastar: o valor do parâmetro e a barra
+dele mudam na hora; os resultados ficam **velhos** (classe `stale`, opacidade 0,6) até o clique em
+Calcular.
 
 ---
 
-## FASE 0 — preenchida
+## 3. Os 6 campos mortos — com evidência
 
+Campos que o operador preenche e que **não entram em conta nenhuma**. Quatro saíram da auditoria
+de código; **dois foram achados pelo Juiz cego** e a auditoria tinha deixado passar.
+
+| Campo | Onde | Evidência |
+|---|---|---|
+| **Refrigeração Interna** | broca de metal duro | Declarado em `TOOLS.broca_md.campos` e renderizado, mas `computeDrilling` **nunca lê** |
+| **Sobremetal** | alargador | Lido em `computeDrilling` e **nunca usado** no corpo da função |
+| **Nº de Arestas (Z)** | escareador, alargador | Lido e **nunca usado** — furação trabalha por rotação, não por dente. Z só vale para fresa (inclusive a de rosca) |
+| **Profundidade (h)** | broca de centro, escareador | **Não é lido em lugar nenhum.** Pior: na broca de centro o campo que faria diferença (comprimento) nem existe, então o tempo sai `—` |
+| **Ângulo de Chanfro** | fresa de chanfrar | `computeMilling` lê `anguloPosicao` (κ), **nunca** `anguloBroca` — achado do Juiz |
+| **Ângulo de Ponta** | escareador | `computeDrilling` só usa o ângulo para `Lp` quando o tipo é `broca_hss`, `broca_md` ou `broca_centro`. No escareador é decorativo — achado do Juiz |
+
+### Método de prova (reutilizável)
+
+Capturar os golden values → aplicar o corte → recapturar → comparar. Se um número mudar, o corte
+não era inerte e é revertido.
+
+Na execução de ensaio isso deu **54/54 idênticos**, e a prova saiu mais forte que o esperado: com
+os campos fora do schema, `Z` e `sobremetal` passaram a chegar no motor como `NaN` — e mesmo assim
+nenhum resultado mudou.
+
+**Ferramenta:** `node scripts/capture-goldens.mjs [saida.json]`.
+
+---
+
+## 4. Ordem do formulário
+
+A SPEC §5.4 já definia o fluxo e coloca o **ajuste fino como Passo 5, dentro da configuração,
+logo antes de Simular**. A §2/§3.3 fixa **categórico → geométrico → contínuo → ação**.
+
+| # | Bloco | `data-testid` | Conteúdo |
+|---|---|---|---|
+| 1 | Contexto | `bloco-contexto` | **perfil de máquina editável** + fator de segurança. A SPEC §5.3 classifica os dois como contexto, não como campo de peça |
+| 2 | Categórico | `bloco-categorico` | família → tipo → material da peça → material da ferramenta → operação |
+| 3 | Geométrico | `bloco-geometrico` | campos dimensionais do tipo, sem os 6 mortos |
+| 4 | Ajuste fino | `bloco-ajuste-fino` | os 4 controles |
+| 5 | Ação | `btn-calcular` | 56px |
+
+**Validação de mercado** (`DOCUMENTACAO_MARKETING_MONETIZACAO/02-ANALISE-COMPETITIVA.md:117-120`):
+o ISCAR Tool Advisor — 25 idiomas, plugin de Fusion 360 — é catalogado no próprio dossiê do projeto
+com **"2-6 campos de entrada, top 3 recomendações, rápido"** como destaque. G-Wizard e HSMAdvisor
+vão para o lado oposto e o dossiê os marca com "UI datada" e "curva de aprendizado" como fraqueza.
+
+**Regra que passa a valer:** todo campo visível por padrão precisa mudar um número que o operador
+lê na tela. Teto de **6 campos por tipo**, verificado automaticamente (cenário R11).
+
+---
+
+## 5. Escolha segmentada
+
+| Vira botão de 1 clique | Opções | Continua dropdown | Por quê |
+|---|---|---|---|
+| `select-familia` | 4 | `select-tipo-ferramenta` | 6–8, muda por família, rótulo longo |
+| `select-operacao` | 3 | `select-designacao-rosca` | 8, rótulo técnico longo |
+| `select-material-ferramenta` | 4 | `select-material-peca` | 12, bem acima do corte |
+| `input-angulo-broca` | 1–3 | | |
+
+Rádio nativo + `<label>`, sem JavaScript de alternância — o rádio já entrega teclado e leitor de
+tela de graça. O `data-testid` fica no **container**; cada rádio carrega o `value`.
+Ângulo com **uma única opção** não vira seletor: mostra valor fixo.
+
+Alvo mínimo **44px** (ISA-101, operação com luva).
+
+---
+
+## 6. Os 4 controles de ajuste fino
+
+Dentro do painel de configuração, como último bloco antes de Calcular.
+
+### Limites — portados de `src/engine/slider-bounds.ts:25`, sem reinventar
+
+| Parâmetro | Mínimo | Máximo | Passo |
+|---|---|---|---|
+| **Vc** | 0 | `Vc_max_do_material × 1,3` (sem material: 30–350) | 1 |
+| **ae** | 0,01 | **`D`** — limite físico | `D ≤ 1` → 0,01 · `D ≤ 10` → 0,1 · senão 0,5 |
+| **ap** | 0,05 | desbaste `D ≤ 6` → `1,0·D`, senão `0,8·D` · semi `0,5·D` · acabamento **0,5 fixo** · teto de **0,1** com `L/D` acima do crítico | 0,05 |
+| **fz** | `max(0,002; fz_rec × 0,4)` | `fz_rec × 2,0` | por faixa |
+
+Todo controle **chega no valor recomendado** — quem não mexe obtém exatamente o resultado atual, e
+é isso que segura os golden values.
+
+### Mapeamento por família
+
+| Família | Controles |
+|---|---|
+| Fresar | Vc, fz, ae, ap |
+| Furar | Vc, fn — **e fn só onde o motor aceita fn** (U-Drill e mandril têm `fnManual` no schema; as demais brocas não) |
+| Roscar | Vc; o passo é travado (avanço é `P × n`) |
+| Mandrilar | Vc, fn, ap |
+
+### Textos de ajuda — usar estes, não inventar
+
+De `src/components/fine-tune-panel.tsx:30-51`, já validados em produção. Estrutura de 4 partes:
+
+**Vc — Velocidade de corte (m/min).** Velocidade tangencial na aresta durante o corte. *Aumentar:*
+usinagem mais rápida, mas desgaste prematuro e mais calor. *Diminuir:* ferramenta mais protegida,
+porém pode manchar o acabamento. *Equilíbrio:* ajuste junto com fz — material mais duro exige Vc menor.
+
+**fz — Avanço por dente (mm/dente).** Espessura do cavaco por aresta em cada passagem. *Aumentar:*
+maior taxa de remoção, mas risco de vibração e quebra. *Diminuir:* acabamento mais fino e menor
+esforço, porém reduz produtividade. *Equilíbrio:* mantenha dentro da recomendação do fabricante.
+
+**ae — Engajamento radial (mm).** Largura radial de corte — quantos % do diâmetro está em contato.
+*Aumentar:* remove mais material por passada, mas aumenta pressão lateral e deflexão. *Diminuir:*
+menor força lateral, ideal para paredes finas ou ferramentas longas. *Equilíbrio:* ae abaixo de 50%
+do diâmetro aciona a compensação de afinamento de cavaco.
+
+**ap — Profundidade axial (mm).** Principal fator da taxa de remoção. *Aumentar:* MRR sobe, mas
+eleva potência e torque exigidos. *Diminuir:* operação mais leve, essencial quando a potência é o
+fator limitante. *Equilíbrio:* combine ap alto com ae baixo para desbaste eficiente.
+
+O texto de **fn** não existe em produção e precisa ser escrito antes do ciclo, na mesma estrutura.
+
+---
+
+## 7. Ajuda contextual — padrão consagrado, não caseiro
+
+Combinação de **Disclosure do WAI-ARIA APG** (mecânica), **toggletip** (conteúdo sob demanda em
+região viva) e a forma produtizada do **definition tooltip do IBM Carbon** / **rich tooltip do
+Material 3**.
+
+- gatilho `ⓘ` de 24px com área de toque de 44px, ao lado do rótulo;
+- `aria-expanded` no botão, `aria-controls` apontando para o painel;
+- painel com `aria-live="polite"`, **não** `role="tooltip"`;
+- **abre por clique**, nunca só por hover;
+- fecha com `Esc` e clique fora; um aberto por vez; máximo 280px, com seta.
+
+**Por que não copiar produção:** `src/components/param-explanation.tsx:13-15` abre por hover no
+desktop e por clique só no mobile — resultado, **quem navega por teclado nunca consegue abrir**.
+Também usa `role="tooltip"` sem `aria-describedby`, não fecha com `Esc` e não fecha ao clicar fora.
+Correção do componente real está registrada para a etapa E5.
+
+---
+
+## 8. Os 3 gauges
+
+Zona 5. Arco de 180°, **41 barras**, ponteiro com base circular, valor central em mono 32px, em
+SVG/CSS puro.
+
+| Gauge | Valor | Escala |
+|---|---|---|
+| Eficiência de Avanço | `Vf efetivo ÷ Vf recomendado × 100` | `centered` — 100% no meio |
+| Produtividade MRR | `Q` já calculado | `ascending` |
+| Saúde da Ferramenta | índice já calculado | `ascending` |
+
+Cores: **a rampa de estado do Design System**, não a paleta do componente de produção.
+**Ponteiro em `--tx-1`** — o ponteiro branco da produção some em fundo claro.
+
+---
+
+## 9. Perfil de máquina editável
+
+Quatro campos no bloco Contexto escrevendo no objeto `MACHINE` já existente: rotação (12000 rpm),
+potência (15 kW), torque (80 Nm) e avanço (5000 mm/min) máximos.
+
+`checkMachineLimits` já lê esse objeto em tempo de execução — **a função não muda**, só os campos
+passam a escrever nos valores. Os padrões são os valores atuais, e é por isso que os golden values
+continuam batendo.
+
+**Por que importa:** hoje todo alerta de torque e potência é calculado contra uma máquina fictícia
+fixa. Numa oficina com centro de 8000 rpm e 7,5 kW, o aviso sai errado **para o lado perigoso**.
+É o único item da lista de melhorias que era **defeito**, não preferência.
+
+---
+
+## 10. Design System
+
+Fonte única: **`docs/design/DS_TEMA_CLARO.md`** (criado nesta revisão, canônico). Os três documentos
+antigos (`DASHBOARD.md`, `UI_BRANDING.md`, `UI_DESIGN_SPEC_FINAL.md`) viraram derivados.
+
+O que mais derruba ciclo:
+
+1. **Neon é marca, área de trabalho é cinza, cor é estado.**
+2. `#00D9FF` e `#39FF14` **nunca** como texto, ícone ou borda — dão **1,5:1** e **1,2:1** sobre
+   fundo claro. Como preenchimento com `#0F1419` por cima: 11:1 e 13,7:1. Para marca legível,
+   `--ink-primary #005E77`.
+3. **Uma rampa de estado só:** ok `#116631` · atenção `#7A4F00` · crítico `#A81E16` · info `#005E77`.
+4. **Zero rede.** Medido: o mockup atual dispara **5 requisições ao Google Fonts** — a tela quebra
+   numa oficina sem internet. Fonte local, ícone em SVG inline.
+5. Sem glass, sem glow, sem orbs.
+
+---
+
+## 11. Blindagem anti-trapaça — o que já está instalado
+
+| Vetor | Trava | Estado |
+|---|---|---|
+| Builder edita os testes para passar | SHA-256 de `tests/`, `criteria/`, `scripts/` e `research/` | `scripts/freeze.mjs` |
+| Builder mexe nos dados de domínio | Região `DADOS` do mockup congelada byte a byte | idem — **trava testada: alterar `maxRPM` de 12000 para 9999 foi detectado e reprovou com exit 1** |
+| Builder hardcoda resultado dos testes visíveis | 54 combinações de entrada/saída capturadas antes de qualquer edição | `tests/GOLDEN_VALUES.json` + `goldens.spec.ts` |
+| Cenário desligado (`test.skip`/`only`) | Recusa por token + **contagem exata** por grupo | `scripts/check-suites.mjs` |
+| Builder mexe fora da sandbox | `git status --porcelain` derrubando o ciclo (antes só imprimia aviso) | `validate-cycle-refactor.ps1` |
+| Juiz inflar score | Cego, read-only, **evidência obrigatória** por dedução **e** por nota cheia, prompt variado por ciclo | `JUDGE_CRITERIA_REFACTOR.md` |
+| Score alto escondendo categoria podre | **Piso por categoria** | idem |
+
+**Motor não é congelado por byte de propósito** — os controles de ajuste precisam sobrepor
+Vc/fz/ae/ap. Quem prova que a matemática não mudou são os 54 goldens.
+
+**Limite conhecido:** os goldens fixam também o **texto** dos alertas. Melhorar a redação de uma
+mensagem exige rebaseline feito pelo orquestrador, com o diff inspecionado — nunca pelo Construtor.
+Ver §14, item 3.
+
+---
+
+## 12. Matriz e gates — corte em 95
+
+**Os scores deste loop não são comparáveis com o 91/100 do loop de construção**: base diferente,
+matriz diferente. Exigência do protocolo §4/Fase 2.
+
+| # | Categoria | Pts | Quem pontua | Piso |
+|---|---|---|---|---|
+| 1 | Correção de cálculo e cobertura dos 18 tipos | 12 | script | 10 |
+| 2 | Usabilidade: economia de setup + ajuda contextual | 14 | Juiz | 11 |
+| 3 | Prevenção e recuperação de erro | 12 | Juiz | 10 |
+| 4 | Fluxo e estabilidade de layout | 10 | Juiz | 8 |
+| 5 | Conformidade HMI industrial — ISA-101 | 12 | Juiz | 10 |
+| 6 | Clareza dos parâmetros e procedência | 8 | Juiz | 6 |
+| 7 | Fidelidade ao Design System | 12 | script + Juiz | 10 |
+| 8 | Acessibilidade: contraste AA, foco, alvo ≥44px | 12 | script | 10 |
+| 9 | Indicadores + suíte objetiva | 8 | script + Juiz | 6 |
+
+**14 gates**, um FAIL reprova tudo. Detalhe em `criteria/JUDGE_CRITERIA_REFACTOR.md`.
+
+---
+
+## 13. O que a execução de ensaio mediu (14/08/2026)
+
+Um ciclo completo rodou e foi revertido. O resultado é o dado mais valioso deste plano.
+
+### 13.1 Resultado
+
+| | |
+|---|---|
+| Regressão | **23/23** verdes |
+| Motor (54 goldens) | **verde** |
+| Alvos do refactor | **17/17** verdes |
+| Integridade | OK |
+| **Veredito do Juiz cego** | **86/100 — REPROVADO** |
+
+Categorias abaixo do piso: **2** (10 < 11), **3** (8 < 10), **5** (9 < 10).
+
+### 13.2 A lição central
+
+**Passar nos 17 alvos automatizados não chega perto de 95.** Os cenários provam presença e
+comportamento; não provam qualidade. O Juiz reprovou um mockup com 41/41 verdes.
+
+Consequência para o próximo ciclo: tratar os alvos como **piso**, e o contrato do Construtor
+precisa endereçar explicitamente o que o Juiz olhou além deles.
+
+### 13.3 As 3 prioridades apontadas pelo Juiz
+
+1. **Prevenção de erro** — o bloqueio de rotação/avanço excedidos não sugeria ação nenhuma, e
+   potência/torque diziam só "reduza ap/ae/Vc", sem número-alvo. É o padrão que o próprio critério
+   usa como exemplo do esperado.
+2. **Usabilidade** — os ângulos de chanfro e de escareador não afetam cálculo (§3, campos 5 e 6).
+3. **Clareza** — os gauges de Eficiência de Avanço e Saúde da Ferramenta não têm procedência
+   nenhuma: são calculados e nunca explicados ao operador.
+
+### 13.4 Outros achados objetivos
+
+- **`.disclosure` (34px) e `.prov` (34px)** ficaram abaixo dos 44px que o DS exige. Os cenários
+  automatizados não pegaram porque só medem os controles de escolha segmentada — **lacuna de
+  cobertura conhecida**.
+- Contraste AA já passava nos 5 pares medidos **antes** do refactor, com a paleta FlowNC.
+- R11 (teto de 6 campos) já passava antes — o corte dos campos mortos é o que entrega.
+- A suíte inteira leva **~5 minutos**. Orçar isso por ciclo.
+
+### 13.5 Suposições que o Construtor teve que tomar — pré-responder no contrato
+
+Cada uma destas é um buraco do contrato que apareceu só na execução:
+
+1. **Bloco de contexto recolhido x expandido** — o contrato pedia "começa recolhido", mas dois
+   cenários preenchem campos dentro dele e `page.fill` falha em elemento oculto. **Decisão: começa
+   expandido**, com recolher funcional.
+2. **fn não vale para toda a família Furar** — só U-Drill e mandril têm `fnManual` no schema.
+   Exibir nas demais brocas alteraria goldens.
+3. **Passo (roscar) e ap (mandrilar)** viram leitura travada/derivada, sem deslizante — o motor os deriva.
+4. **Texto de ajuda de fn** não existe em produção; precisa ser escrito antes do ciclo.
+5. **Referência de ae/ap** para a barra de estado: o motor não devolve recomendação para eles; usar
+   o default do tipo de ferramenta. Vc/fz/fn usam o recomendado real.
+6. **Alerta e chip de nível não recebem `stale`** — apagar alarme ativo contraria ISA-101. Só os
+   números recebem.
+7. **Escala do gauge de MRR**: 0–50 cm³/min, com os cortes de 40%/76% do DS.
+
+### 13.6 Correção já redigida (aplicar no ciclo, não reinventar)
+
+A mensagem de limite de máquina com alvo numérico foi escrita e validada — **0 números alterados,
+6 textos de alerta melhorados**, com as razões conferidas (5000/10331 → 52%, 5000/5707 → 12%,
+5000/9839 → 49%):
+
+```js
+// quanto o valor precisa cair, em %, para caber no limite. Vf e n variam
+// linearmente com avanço e Vc; Pc e Mc variam com a taxa de remoção — então a
+// mesma razão serve de alvo numérico para o operador nos quatro casos.
+function excesso(valor, limite){ return (1 - limite / valor) * 100; }
 ```
-Entregável:
-  O MESMO index.html (`gauntlet-calculadora-cnc-v2/mockup/index.html`), refatorado — não recriado.
-  Motor de cálculo, 18 tipos, schemas declarativos, regras de bloqueio e os 24 cenários Playwright
-  continuam intactos e verdes. Só mudam: (1) tokens visuais, (2) 3 gauges, (3) botões de ajuda nos
-  4 parâmetros, (4) contraste input vs. painel, (5) feedback de check no botão calcular, (6)
-  recálculo só ao clicar (não em cada input).
 
-Por que refatorar (não redesenhar):
-  O ciclo 3 aprovou a arquitetura e o comportamento funcional (91/100, 8/8 gates) usando uma
-  paleta de referência (FlowNC) que era um placeholder deliberado da Fase 0 anterior — nunca foi
-  pra ser a paleta final. Agora que a arquitetura está validada, troca-se só a pele pela do produto
-  real, e reincorporam-se elementos de produção que ficaram de fora do escopo do primeiro loop
-  (gauges, ajuda contextual) por não estarem no `BUILD_CONTRACT.md` original.
+Aplicada nas quatro mensagens de `checkMachineLimits`, no formato:
+`"... excede o limite da máquina (X). Reduza <o quê> em pelo menos N% para caber."`
 
-Escopo travado (ENTRA):
-  · Substituição de 100% dos tokens de cor/fonte/sombra do FlowNC DS pelos tokens reais do
-    ToolOptimizer (`src/index.css`), em variante clara (fundo `#F3F4F6`, mesmos `#00D9FF`/`#39FF14`
-    neon, Inter + JetBrains Mono, glass adaptado a fundo claro).
-  · 3 `HalfMoonGauge` (ou equivalente SVG/CSS autocontido, já que o mockup é HTML puro sem React) na
-    Zona 5, mesmos 3 indicadores de produção: Eficiência de Avanço, Produtividade MRR, Saúde da
-    Ferramenta — adaptados para funcionar com os 18 tipos (não só fresamento).
-  · Botão de ajuda ("O QUE É X?") nos 4 parâmetros de ajuste (Vc, fz/passo-equivalente, ae, ap —
-    ou os campos correspondentes por família, ver regra de exibição condicional abaixo) com texto
-    curto explicando o impacto de cada um no resultado — mesmo padrão de `param-explanation.tsx`.
-  · Exibição condicional dos 4 parâmetros por tipo de ferramenta: só aparece o controle (slider +
-    botão de ajuda) que aquele tipo realmente usa, herdando a lista `campos[]` que já existe no
-    schema declarativo do mockup — nenhum parâmetro novo é criado.
-  · Contraste visual: inputs com superfície própria (`bg-black/40`-equivalente em fundo claro,
-    ex. superfície mais escura/neutra que o card ao redor) distinta do fundo do painel — mesmo
-    padrão de produção onde select/input tem `bg-black/40` sobre `bg-surface-dark`.
-  · Feedback de check no botão "Calcular": ícone `check_circle` substitui o ícone de play por ~1-2s
-    (ou até o próximo clique) após o cálculo, mesmo padrão de `config-panel.tsx`.
-  · Recalcular só ao clicar em "Calcular" — remover qualquer recálculo automático em `input`/`change`
-    que exista hoje no mockup (ciclo 3 tinha recálculo ao digitar; produção não tem).
-  · Substituição de `select-familia`, `select-operacao`, `select-material-ferramenta` e
-    `input-angulo-broca` por segmented control (componente CSS `.segmented-choice` reutilizável,
-    radio nativo + label estilizado via `peer-checked:`), mantendo `select-tipo-ferramenta`,
-    `select-designacao-rosca` e `select-material-peca` como `<select>` — regra de corte de
-    cardinalidade (≤5→botão, ≥6→dropdown) documentada no `BUILD_CONTRACT_REFACTOR.md` de E1.
-  · Barra fine-tune com valores visuais reduzidos (altura, opacidade, saturação, sem glow por
-    segmento) — mesma lógica de segmentos ativos/inativos do componente de produção, só o visual
-    muda; escopo limitado ao mockup, não altera `src/segmented-gradient-bar.tsx`.
-
-Escopo fora (NÃO entra):
-  · Qualquer mudança na lógica de cálculo, fórmulas, regras de bloqueio, schemas dos 18 tipos —
-    tudo isso já passou pelo Juiz e está aprovado, é reescrita proibida.
-  · Novos parâmetros de ajuste além dos 4 já existentes (Vc + 3).
-  · Tema escuro (fica de fora deste refactor — se quiser depois, é outro ciclo).
-  · Qualquer arquivo em `src/` — só leitura, para extrair tokens/padrões. Nada é copiado 1:1, é
-    reimplementado inline no HTML autocontido do mockup (que não usa React/Tailwind build).
-  · Persistência, tabelas de consulta, unidades imperiais — mesmo escopo fora do plano original.
-
-Sandbox: gauntlet-calculadora-cnc-v2/ (mesma pasta, mesmo arquivo — refactor in-place com git-safe
-  checkpoint antes de começar: snapshot do estado aprovado já existe em
-  `state/snapshots/index-ciclo3-23of23.html`, preservado como ponto de rollback).
-Teto de ciclos: 3 (menor que o padrão de 5 — é refactor sobre base aprovada, não construção do zero;
-  se não convergir em 3, para e reporta causa, não força).
-Score mínimo de aceite: manter ≥ 90/100 e 8/8 gates (não pode regredir o que já foi aprovado) +
-  1 gate novo (ver Matriz de Critérios abaixo).
-Fronteiras proibidas: as mesmas do plano original — `src/**`, `package.json` raiz, `node_modules/`,
-  `vite.config.ts`, `vitest.config.ts`, `wrangler.jsonc`, `.gitignore` raiz,
-  `gauntlet-calculadora-cnc/` (rodada 1), qualquer deploy.
-
-O que este loop NÃO decide:
-  Score ≥ 90 não autoriza mover este HTML para produção — a arquitetura React real (`src/`) é o
-  caminho de implementação, não o mockup. Aprovação de produção é decisão separada do Mestre.
-```
+**Como aplicar sem furar a blindagem:** o orquestrador aplica, recaptura os goldens e confere que
+**nenhum campo numérico ou de fórmula mudou** — só o texto do alerta. Nunca o Construtor.
 
 ---
 
-## Decisões tomadas e declaradas (não são perguntas)
+## 14. Instrumentação pronta no repositório
 
-1. **Refactor, não rewrite.** O Builder recebe o `index.html` do ciclo 3 (1209+ linhas, já com todo
-   o motor de cálculo) como ponto de partida obrigatório — instrução explícita de "edite este
-   arquivo", não "escreva um novo". Isso é o oposto do loop anterior (que proibia ler o ciclo
-   anterior); aqui é o inverso: **é proibido não reaproveitar.**
-2. **Gauges em CSS/SVG puro, sem React.** O mockup é HTML autocontido; `half-moon-gauge.tsx` é
-   React. O Builder recebe a descrição funcional do componente (41 barras em arco, ponteiro,
-   3 zonas de cor por `colorMode`) como contrato, não o `.tsx` para copiar — recriação inline em
-   JS vanilla + CSS, mesmo resultado visual.
-3. **4 parâmetros = Vc, fz, ae, ap, sempre nesse conjunto.** Para tipos onde o nome do campo do
-   mockup difere (ex. `fn` em furação, `passoRosca` em roscamento), o Builder mapeia para o
-   parâmetro correspondente da família (`BUILD_CONTRACT.md` já define isso por tipo) — não cria um
-   5º parâmetro, não duplica.
-4. **Textos de ajuda são escritos por mim (Rafael's agent), não inventados pelo Builder.** Vou
-   entregar os 4 textos curtos (o que é / o que muda no resultado) no `BUILD_CONTRACT_REFACTOR.md`
-   de E1, baseados no domínio já documentado (`DADOS_TECNICOS_KIENZLE_E_VC.md`, `BUILD_CONTRACT.md`
-   original) — evita invenção pelo Builder.
-5. **Critérios:** matriz original (9 categorias/100pts + 8 gates) + **1 gate novo** — "Gate 9:
-   fidelidade aos tokens reais do ToolOptimizer (não FlowNC) confirmada pelo Juiz, incluindo os 3
-   gauges presentes e funcionais nos 18 tipos." Congela em E1.
-6. **Agentes:** 1 Builder + 1 Juiz cego por ciclo, teto de 3 ciclos (não 5) — refactor sobre base
-   aprovada tem risco menor, orçamento menor. **Aprovar este plano autoriza essas chamadas.**
+E1 está **feita**. O que existe hoje na sandbox:
 
----
+| Arquivo | Papel |
+|---|---|
+| `tests/helpers.ts` | `escolher()` (fala com `<select>` e rádio) e `calcular()` |
+| `tests/combinacoes.mjs` | acionamento compartilhado entre captura e verificação dos goldens |
+| `tests/GOLDEN_VALUES.json` | 54 combinações capturadas do mockup aprovado |
+| `tests/goldens.spec.ts` | trava do motor |
+| `tests/refactor.spec.ts` | os 17 alvos — especificação executável |
+| `tests/gauntlet.spec.ts` | os 23 de regressão, migrados para o helper |
+| `tests/TESTID_CONTRACT.md` | contrato de seletores, com o adendo do refactor |
+| `criteria/JUDGE_CRITERIA_REFACTOR.md` | matriz de 95, 14 gates, pisos, formato do veredito |
+| `research/BUILD_CONTRACT_REFACTOR.md` | contrato do Construtor |
+| `scripts/capture-goldens.mjs` | captura dos goldens |
+| `scripts/freeze.mjs` | congelamento e conferência de integridade |
+| `scripts/check-suites.mjs` | contagem exata por grupo, cenário desligado |
+| `scripts/validate-cycle-refactor.ps1` | validação de ciclo em 5 etapas, exit 0/1/2 |
+| `state/snapshots/index-pre-refactor.html` | ponto de rollback |
 
-## Etapas
+**Estado atual da suíte, medido após a reversão: 26 verdes** (23 regressão + 1 motor + R11 + R14)
+e **15 alvos vermelhos**. É o estado esperado de "instrumentação pronta, refatoração não executada".
 
-### E1 — Setup e contrato de refactor (eu, sem subagente)
-
-1. Escrever `gauntlet-calculadora-cnc-v2/research/BUILD_CONTRACT_REFACTOR.md`:
-   - Tokens reais do ToolOptimizer, variante clara (extraídos de `src/index.css` +
-     `docs/design/DASHBOARD.md`, valores exatos de cor/fonte/sombra/glass).
-   - Especificação funcional dos 3 gauges (não o `.tsx`, a descrição: arco de 180°, N barras,
-     zonas de cor, ponteiro, valor central) mapeada aos 3 indicadores do mockup atual (índice de
-     saúde já existe como número; MRR já existe; falta um 3º — Eficiência de Avanço, calculável a
-     partir de `Vf` real vs. `Vf` recomendado pela fórmula).
-   - Especificação do botão de ajuda (estrutura HTML/CSS, popover hover+click) e os 4 textos
-     curtos de explicação (Vc, fz, ae, ap — 1 por parâmetro, ~2-3 frases cada, foco em impacto no
-     resultado, tom didático pra novato).
-   - Regra de exibição condicional dos 4 parâmetros por tipo (reaproveita `campos[]` do schema
-     já existente).
-   - Regra de contraste (input vs. card vs. fundo — 3 níveis de superfície).
-   - Regra do botão Calcular (ícone/estado check) e da remoção do recálculo automático.
-   - **Regra de widget de seleção** — pesquisa de UX (NN/g): dropdown custa 2 ações (abrir+escolher),
-     segmented control custa 1 clique com efeito imediato, preferível até 5-7 opções. Corte adotado:
-     ≤5 opções → segmented control; ≥6 → `<select>` mantido.
-
-     | Campo | Cardinalidade | Widget final |
-     |---|---|---|
-     | `select-familia` | 4, fixa | Botão (grid-cols-4) |
-     | `select-operacao` | 3, fixa | Botão (grid-cols-3) |
-     | `select-material-ferramenta` | 4, fixa | Botão (grid-cols-4 ou 2×2) |
-     | `input-angulo-broca` | 1-3, dinâmica | Botão (grid-cols-3); só 1 opção → auto-seleciona, mostra como texto fixo, sem seletor |
-     | `select-tipo-ferramenta` | 6-8, dinâmica | `<select>` mantido — acima do corte, labels longos, lista muda por família |
-     | `select-designacao-rosca` | 8, dinâmica | `<select>` mantido — acima do corte, labels técnicos longos (M6x1.0 etc.) |
-     | `select-material-peca` | 12, dinâmica | `<select>` mantido — bem acima do corte |
-
-     Especificação CSS de `.segmented-choice` (radio nativo + label, não JS de toggle manual —
-     reduz risco de quebrar os 23 cenários Playwright, testids continuam no `<input type="radio">`):
-     - Container: `display:grid`, `gap:6px`, colunas = nº de opções, nunca mais de 4 por linha.
-     - Alvo de toque: `min-height:44px` (regra ISA-101 do projeto), `padding:8px 4px`,
-       `border-radius:8px`, `font-size:13px` Inter 600.
-     - Inativo: `background:#FFFFFF`, `border:1px solid rgba(0,0,0,.12)`, `color:#4B5563`.
-     - Hover (inativo): `border-color:#00D9FF`, `background:rgba(0,217,255,.06)`, `color:#111827`.
-     - Ativo (`peer-checked`): `background:#00D9FF`, `color:#0F1419`, `border:1px solid #00D9FF`,
-       `box-shadow:0 0 0 3px rgba(0,217,255,.18)` (glow suave calibrado pro fundo claro, não o glow
-       forte do dark).
-     - Foco por teclado: `outline:2px solid #00D9FF`, `outline-offset:2px`.
-     - Transição: `all 120ms ease` em background/border/color.
-   - **Barra fine-tune sutil** — a versão de produção (`segmented-gradient-bar.tsx`) é a mesma da
-     imagem "exagerada" (blocos de 22px, opacidade máxima 1.0, cores vivas, glow por segmento).
-     Valores fechados pro mockup (mesma lógica de segmentos ativos/inativos, só o visual muda):
-
-     | Propriedade | Produção | Proposto (mockup) |
-     |---|---|---|
-     | Altura do segmento | 22px (container 28px) | 6px (container 10px) |
-     | Vermelho | `#FF4D4D` | `#E85A5A` (dessaturado) |
-     | Laranja | `#FFA500` | `#E8A23D` (dessaturado) |
-     | Verde | `#00E676` | `#2EE6A6` (mesmo matiz do `--secondary`, dessaturado) |
-     | Opacidade ativo | 1.0 | 0.78 |
-     | Opacidade inativo (passado) | 0.3 | 0.22 |
-     | Opacidade nunca alcançado | 0.1 | 0.08 |
-     | Glow por segmento | `0 0 8px cor44` | removido |
-     | Border-radius do segmento | — | 1px (quase reto) |
-2. Atualizar `criteria/JUDGE_CRITERIA.md` com o Gate 9 novo (ADITIVO — não removo nem reescrevo os
-   8 gates e 9 categorias existentes, só acrescento).
-3. Snapshot de segurança: copiar o `index.html` aprovado (ciclo 3) para
-   `state/snapshots/index-pre-refactor.html` antes de qualquer edição do Builder.
-4. `git status` na raiz: só a sandbox e este plano aparecem.
-
-**→ Reporto e espero "pode seguir" antes de gastar o primeiro agente.**
-
-### E2 — Ciclo 1 (refactor)
-
-Builder (1 subagente) edita o `index.html` existente in-place → `npx playwright test` (as 23
-verificações funcionais precisam continuar 100% verdes — se quebrar, é regressão, não é sobre isso
-que o Juiz avalia) → Juiz cego (1 subagente) avalia contra a matriz + Gate 9 → registro em
-`state/GAUNTLET_STATE_REFACTOR.md`.
-
-### E3 — Ciclos 2–3, conforme necessário
-
-Mesmo laço. Paradas:
-- score ≥ 90 **e** 9/9 gates (8 originais + Gate 9) → **PASS**, vai pra E4;
-- score piorou vs. ciclo 3 original (91) → não avança cego, considero reverter ao snapshot
-  pré-refactor;
-- teto de 3 ciclos sem PASS → paro e entrego o melhor ciclo.
-
-### E4 — Relatório e parada
-
-Atualizo `reports/FINAL_REPORT.md` (seção nova, não substituo o histórico) com o resultado do
-refactor. Resumo no chat aponta pro arquivo.
+**Antes de retomar:** rodar `node scripts/freeze.mjs --write` para gravar a linha de base de
+integridade (foi apagada junto com os artefatos do ensaio).
 
 ---
 
-## Verificação (final)
+## 15. Etapas
 
-1. `npx playwright test` — os mesmos 23 cenários funcionais continuam passando (refactor visual não
-   pode quebrar cálculo).
-2. Abrir `mockup/index.html`: confirmar visualmente fundo claro + neon cyan/green, 3 gauges na
-   Zona 5, botões de ajuda nos parâmetros visíveis por tipo, contraste input/card/fundo, botão
-   Calcular com feedback de check, valores só mudam ao clicar.
-   - Família/Operação/Material da Ferramenta/Ângulo aparecem como botão de 1 clique, não dropdown.
-   - Barra fine-tune com blocos finos e cores dessaturadas, sem glow por segmento.
-3. Ler `reports/FINAL_REPORT.md` (seção do refactor).
-4. `git status` — só a sandbox e os planos deste loop.
+### E1 — Setup e contratos ✅ **FEITA**
+Contratos, suíte, goldens, blindagem e corte dos 4 primeiros campos mortos.
+**Falta:** aplicar o corte dos 2 ângulos (§3) e a correção da §13.6 — os dois foram revertidos.
 
-Ao fim: **paro e espero aprovação explícita do Mestre.**
+### E2 — Ciclo 1
+Construtor (1 subagente) edita o mockup → `validate-cycle-refactor.ps1` → Juiz cego (1 subagente)
+→ registro em `state/GAUNTLET_STATE_REFACTOR.md` + snapshot.
+
+### E3 — Ciclos 2 em diante
+**Teto: 10 ciclos.** Paradas, na ordem: PASS (≥95 + 14/14 + nenhuma categoria no piso) · score
+piorou → reverter ao melhor snapshot · 2 ciclos parados com as mesmas prioridades → estagnação,
+parar e reportar · teto sem PASS → entregar o **melhor** ciclo, não o último.
+
+### E4 — Relatório
+`reports/FINAL_REPORT.md` com a série por ciclo, limitações e a frase de que PASS **não é aprovação
+para produção**.
+
+### E5 — Aplicar em produção (separada, depois)
+Portar `DS_TEMA_CLARO.md` para `src/index.css` e corrigir `param-explanation.tsx`. Plano próprio.
+
+---
+
+## 16. As 8 sugestões técnicas — onde cada uma entra
+
+| # | Sugestão | Onde |
+|---|---|---|
+| 1 | **Perfil de máquina editável** | **neste loop** — zero linha de motor (§9) |
+| 6 | **Auditabilidade**: todo número abre fórmula, valores e fonte | **neste loop** — é apresentação |
+| 7 | **Zero dependência de rede** | **neste loop** — 5 requisições confirmadas |
+| 8 | **Neon é marca, área de trabalho é cinza** | **neste loop** — regra central do DS |
+| 2 | **Deflexão em µm** amarrada à tolerância, no lugar do L/D puro | `PLAN_MOTOR_CALCULADORA_V2.md` |
+| 3 | **Vida de ferramenta** por Taylor, forma relativa | idem |
+| 4 | **Custo e tempo por peça** | idem |
+| 5 | **Materiais 12 → 30+ com procedência** | idem |
+
+**Fora, com motivo declarado:** análise de chatter (exige dados modais/FRF que não temos — seria
+chute com cara de ciência), catálogo por aprendizado de máquina (sem base) e micro-otimização de
+cálculo (com 12 materiais e 18 tipos o cálculo leva microssegundos).
+
+---
+
+## 17. Fronteiras
+
+Sandbox `gauntlet-calculadora-cnc-v2/` + `docs/plans/` + `docs/design/` + `docs/ROADMAP_SESSAO_ATUAL.md`.
+Proibido: `src/**`, `package.json` raiz, `node_modules/`, `vite.config.ts`, `vitest.config.ts`,
+`wrangler.jsonc`, `.gitignore` raiz, `gauntlet-calculadora-cnc/` (rodada 1), qualquer deploy.
+
+## 18. Verificação final
+
+1. `npx playwright test` — três grupos verdes, contagem exata conferida.
+2. `.\scripts\validate-cycle-refactor.ps1 -CycleNumber N` — exit 0.
+3. Abrir o mockup: fundo claro, 3 gauges, 4 controles dentro da configuração, ajuda por clique e
+   por teclado, resultado velho até clicar, escolha de 1 clique.
+4. **Desligar a rede e recarregar** — tela idêntica.
+5. Percorrer a tela **só pelo teclado** — foco visível em tudo.
+6. `git status` — só a sandbox e os docs declarados.
+
+**Ao fim: parar e esperar aprovação explícita do Mestre.** PASS no loop não autoriza produção.

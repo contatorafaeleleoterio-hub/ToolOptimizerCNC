@@ -1,4 +1,10 @@
 ﻿# UI DESIGN SPECIFICATION - ToolOptimizer CNC
+
+> ⚠️ **DOCUMENTO DERIVADO — não define token.** A fonte única do tema claro é
+> [`DS_TEMA_CLARO.md`](DS_TEMA_CLARO.md), que **vence este arquivo em qualquer divergência**.
+> Este documento descreve o **tema escuro** e já estava desatualizado em relação ao código:
+> prescreve 3 colunas, a implementação entrega 2.
+
 **Base do Design:** Protótipo High-Fidelity (Tailwind/Cyber-Industrial)
 
 ## 1. PALETA DE CORES (Tokens Oficiais)
