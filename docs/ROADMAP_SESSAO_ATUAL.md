@@ -68,9 +68,9 @@ npx tsc --noEmit
 | 14 | Redesign Calculadora 80/20 (4 sessões S0-S3) — `docs/plans/REDESIGN_DASHBOARD_80-20.md` | 🎨 Redesign | MINOR | 🔁 Absorvido pelo item 16 |
 | 15 | Design System Canônico (4 sessões, replanejado de 6) — `docs/plans/PLAN_DESIGN_SYSTEM_CANONICO.md` | 📄 Docs / Design Audit | — | ✅ Concluído (`d471895`) |
 | 16 | Implementação DS + 80/20 + Mobile + Dívida Visual (8 sessões) — `docs/plans/PLAN_IMPLEMENTACAO_DS_80-20_MOBILE.md` | 🎨 Redesign + Refactor | v0.12.0 | 🔁 Concluído localmente (8/8) |
-| 17 | Gauntlet — Mockup Experimental da Calculadora — `docs/plans/PLAN_GAUNTLET_CALCULADORA_CNC.md` | 🧪 Experimento isolado (zero `src/`) | — | ⬜ Pendente |
-| 18 | Gauntlet v2 — Refactor visual da calculadora (DS real, ajuste fino, blindagem anti-trapaça) — `docs/plans/PLAN_GAUNTLET_V2_REFACTOR.md` | 🎨 Redesign (zero `src/`) | — | ⬜ Pendente — plano revisado e instrumentação pronta; execução aguarda aprovação |
-| 19 | Motor da Calculadora Multi-Ferramenta (deflexão, vida de ferramenta, custo, materiais 30+) — `docs/plans/PLAN_MOTOR_CALCULADORA_V2.md` | 📄 Spec / Engine | a definir | ⬜ Pendente |
+| 17 | Gauntlet v2 — Refactor visual da calculadora (DS real, ajuste fino, blindagem anti-trapaça) — `docs/plans/PLAN_GAUNTLET_V2_REFACTOR.md` | 🎨 Redesign (zero `src/`) | — | ⏸️ **E2 bloqueado pelo item 19** (15/08/2026) — contrato, cenários e goldens precisam absorver as 5 decisões do painel antes do ciclo 1. Antes disso estava "pronto para executar o E2" — construção aprovada (91/100, ciclo 3); E1 fechada: 44 cenários, todo gate `script` com executor, contrato do Construtor sem lacuna |
+| 18 | Motor da Calculadora Multi-Ferramenta (deflexão, vida de ferramenta, custo, materiais 30+) — `docs/plans/PLAN_MOTOR_CALCULADORA_V2.md` | 📄 Spec / Engine | a definir | ⬜ Pendente |
+| 19 | Diretrizes do Painel da Calculadora (5 decisões fechadas) — `docs/specs/SPEC_PAINEL_CALCULADORA_PARAMETROS.md` | 📄 Spec / UX | — | ⬜ **Executar antes do E2 do item 17** (15/08/2026) — remove o campo material da ferramenta, reescreve `R03`/`R06`/`R13`, muda cores e exige recaptura dos 54 goldens |
 
 ### ✅ Reestruturação Documental (v0.6.0) — CONCLUÍDA
 

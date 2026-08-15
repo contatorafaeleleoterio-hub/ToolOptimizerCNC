@@ -1,8 +1,8 @@
 # Backlog de Implementação — ToolOptimizer CNC
 
-> **Última atualização:** 13/08/2026 (item 17 aprovado em 91/100 e em refactor visual; criação do plano 18 — motor da calculadora)
+> **Última atualização:** 15/08/2026 (item 19 — diretrizes do painel da calculadora, com 5 decisões fechadas pelo Mestre)
 > **Versão atual:** v0.12.1
-> **Total de planos pendentes:** 2 — item 17 (experimento isolado, em refactor visual, não altera produção) e item 18 (especificação de motor, aplicar quando a codificação real começar)
+> **Total de planos pendentes:** 3 — item 17 (experimento isolado, em refactor visual, não altera produção), item 18 (especificação de motor, aplicar quando a codificação real começar) e item 19 (diretrizes do painel — **bloqueia o E2 do item 17**)
 
 Esta lista define a ordem de implementação dos planos criados e ainda não executados.
 A ordem garante estabilidade progressiva: bugs corrigidos antes de features, features antes de polish.
@@ -30,8 +30,9 @@ A ordem garante estabilidade progressiva: bugs corrigidos antes de features, fea
 | 14 | [Design System Canônico](#14-design-system-canônico) | 📄 Docs / Design Audit | — | 1 arquivo HTML, 4 sessões, zero `src/` | ✅ Concluído (`d471895`) |
 | 15 | [Implementação DS + 80/20 + Mobile + Dívida Visual](#15-implementação-ds--8020--mobile--dívida-visual) | 🎨 Redesign + Refactor | v0.12.0 | ~25 arquivos + 9 testes novos, 8 sessões | 🔁 Concluído localmente (8/8 sessões) |
 | 16 | [Gauntlet — Mockup Experimental da Calculadora](#16-gauntlet--mockup-experimental-da-calculadora) | 🧪 Experimento isolado | — (nenhuma) | Pasta `gauntlet-calculadora-cnc/`, **zero `src/`** | ✅ Concluído (score 92/100, 7/7 gates) |
-| 17 | [Gauntlet v2 — Redo com protocolo revisado](#17-gauntlet-v2--redo-com-protocolo-revisado) | 🧪 Experimento isolado | — (nenhuma) | Pasta `gauntlet-calculadora-cnc-v2/`, **zero `src/`** | 🔁 Construção aprovada (91/100, 8/8); refactor visual planejado e instrumentado, **não executado** |
+| 17 | [Gauntlet v2 — Redo com protocolo revisado](#17-gauntlet-v2--redo-com-protocolo-revisado) | 🧪 Experimento isolado | — (nenhuma) | Pasta `gauntlet-calculadora-cnc-v2/`, **zero `src/`** | 🔁 Construção aprovada (91/100, 8/8); refactor visual **pronto para executar o E2**, não executado |
 | 18 | [Motor da Calculadora Multi-Ferramenta](#18-motor-da-calculadora-multi-ferramenta) | 📄 Spec / Engine | a definir | Especificação — aplicar em `src/engine/` quando a codificação real começar | ⬜ Pendente |
+| 19 | [Diretrizes do Painel da Calculadora](#19-diretrizes-do-painel-da-calculadora) | 📄 Spec / UX | — | `docs/specs/` + reescrita de contrato, cenários e goldens da sandbox v2 | ⬜ Pendente — **executar antes do E2 do item 17** |
 
 ---
 
@@ -265,8 +266,10 @@ v0.5.3/v0.4.2 — Unificar Indicadores ✅
 
 ### 17. Gauntlet v2 — Redo com protocolo revisado
 
-**Plano:** `docs/plans/PLAN_GAUNTLET_CALCULADORA_CNC_V2.md` | **Versão alvo:** nenhuma (não vai para produção)
-**Status:** 🟡 Aguardando Fase 0 (13/08/2026) — objetivo, escopo e sandbox ainda não definidos
+**Plano vigente:** `docs/plans/PLAN_GAUNTLET_V2_REFACTOR.md` | **Versão alvo:** nenhuma (não vai para produção)
+**Status:** ✅ **E1 fechada — pronto para executar o E2** (14/08/2026). Construção aprovada em
+91/100; o refactor visual está instrumentado (44 cenários, todo gate `script` com executor,
+contrato do Construtor sem lacuna) e **não executado**.
 
 **Objetivo:** reexecutar o exercício do item 16 usando a versão revisada do Gauntlet Loop
 (`protocolo-loop-construtor-juiz-cego.md`), com critério de parada por convergência real
@@ -307,6 +310,41 @@ separando recomendação de limite físico · fontes empacotadas no app.
 
 **Fora, com motivo declarado:** análise de chatter (exige dados modais que não temos), catálogo por
 aprendizado de máquina (sem base) e micro-otimização de cálculo (irrelevante nesta escala).
+
+---
+
+### 19. Diretrizes do Painel da Calculadora
+
+**Documento:** `docs/specs/SPEC_PAINEL_CALCULADORA_PARAMETROS.md` | **Versão alvo:** —
+**Status:** ⬜ Pendente (15/08/2026) — diretrizes escritas e decisões fechadas; falta aplicar em
+contrato, cenários e goldens da sandbox `gauntlet-calculadora-cnc-v2/`.
+
+**Objetivo:** consolidar como o painel da calculadora deve ser estruturado — elementos, posição,
+ordem, agrupamento, relação entre componentes e comportamento de interação — servindo de referência
+única para o Construtor do loop v2 e para o código real depois.
+
+**5 decisões fechadas pelo Mestre (15/08/2026):**
+
+1. **Recálculo híbrido** — formulário até o 1º Calcular, painel vivo depois (paridade com produção).
+2. **Slider de agressividade** (conservador ↔ produtivo) move os 4 parâmetros; os 3 gauges seguem
+   read-only — arrastar gauge é problema inverso sem solução única.
+3. **Laranja `#E85D04` é marca** (logo, cabeçalho, botão Calcular com letra `#0F1419`, 5,29:1);
+   **seleção e foco em índigo `#3730A3`** (9,03:1), não no teal `#005E77` de "informação".
+4. **Campo Material da Ferramenta é removido** — substrato embutido no nome da ferramenta, uma
+   entrada por variação real de mercado; **"Família de Operação" → "Tipo de Usinagem"**.
+5. **Revestimento separado só em ferramenta inteiriça** (vale 25% de Vc e o operador sabe qual tem);
+   pastilhada tem entrada única revestida.
+
+**Também consolida:** ordem dos blocos, blocos colapsáveis com resumo no cabeçalho, ajuda contextual
+inline (várias abertas ao mesmo tempo), edição reversa de RPM/Avanço com trava de limite físico,
+Modo Rápido com os 4 campos que as calculadoras de fabricante pedem (o `Z` fixo em 4 de hoje erra o
+avanço por fator 2), estados do painel e requisitos de chão de fábrica.
+
+**Impacto no item 17 — por isso vem antes:** remove `select-material-ferramenta` (usado pelos 23
+cenários de regressão e pelo `R13`), reescreve `R03` e `R06`, mexe na região `DADOS` congelada
+(`TOOLS`, `FAMILIAS`, `TOOL_FACTORS`) exigindo **recaptura completa dos 54 goldens**, e altera
+`check-tokens.mjs` e `R14` pelas cores novas. Tudo é trabalho de Orquestrador — o Construtor não pode
+tocar em contrato, testes ou dados sem derrubar a blindagem.
 
 ---
 
