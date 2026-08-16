@@ -204,7 +204,7 @@ footer.disclaimer{max-width:1360px; margin:0 auto; padding:0 var(--sp-24) var(--
       <h2>Contexto</h2>
 
       <div class="row">
-        <label for="f-familia">Família de Operação</label>
+        <label for="f-familia">Tipo de Usinagem</label>
         <div class="field-wrap">
           <select id="f-familia" data-testid="select-familia">
             <option value="fresar">Fresar</option>
@@ -227,18 +227,6 @@ footer.disclaimer{max-width:1360px; margin:0 auto; padding:0 var(--sp-24) var(--
         <div class="field-wrap">
           <select id="f-mat-peca" data-testid="select-material-peca"></select>
           <span class="badge-estimado hidden" id="badge-estimado" data-testid="badge-material-estimado" title="Parâmetros de corte estimados, sem validação de catálogo">Estimado</span>
-        </div>
-      </div>
-
-      <div class="row">
-        <label for="f-mat-ferr">Material da Ferramenta</label>
-        <div class="field-wrap">
-          <select id="f-mat-ferr" data-testid="select-material-ferramenta">
-            <option value="HSS">Aço Rápido (HSS)</option>
-            <option value="HSS_CO">Aço Rápido ao Cobalto (HSS-Co)</option>
-            <option value="MD" selected>Metal Duro Inteiriço (MD)</option>
-            <option value="MD_REV">Metal Duro Pastilha Revestida</option>
-          </select>
         </div>
       </div>
 
@@ -446,11 +434,14 @@ var MATERIALS = [
 
 var NAO_CONFORMAVEL = ['inox304', 'gg25', 'ggg50', 'h13', '8620cementado', 'ti6al4v'];
 
+// Fator de Vc por substrato. A construção (inteiriça × pastilhada) deixou de estar
+// misturada aqui: ela vive na geometria (GEOMETRIAS.construcao). SPEC §4.4 registra
+// que substrato e revestimento viram eixos independentes quando o motor real for escrito.
 var TOOL_FACTORS = {
   HSS:{label:'Aço Rápido (HSS)', fator:0.29},
   HSS_CO:{label:'Aço Rápido ao Cobalto (HSS-Co)', fator:0.37},
-  MD:{label:'Metal Duro Inteiriço (MD)', fator:1.00},
-  MD_REV:{label:'Metal Duro Pastilha Revestida', fator:1.25}
+  MD:{label:'Metal Duro (MD)', fator:1.00},
+  MD_REV:{label:'Metal Duro Revestido', fator:1.25}
 };
 
 var THREADS = {
@@ -495,48 +486,117 @@ var SELECT_FIELDS = ['anguloBroca','designacaoRosca'];
 var CHECK_FIELDS = ['refrigInterna'];
 var ALL_FIELD_KEYS = NUMERIC_FIELDS.concat(SELECT_FIELDS).concat(CHECK_FIELDS);
 
-var TOOLS = {
-  fresa_topo:{nome:'Fresa de Topo Reto', familia:'fresar', z:4, campos:['diametro','arestas','balanco','ap','ae']},
-  fresa_toroidal:{nome:'Fresa Toroidal / Raio de Canto', familia:'fresar', z:4, campos:['diametro','raioCanto','arestas','balanco','ap','ae']},
-  fresa_esferica:{nome:'Fresa Esférica (Ball Nose)', familia:'fresar', z:2, campos:['diametro','arestas','balanco','ap','ae']},
-  fresa_chanfrar:{nome:'Fresa de Chanfrar', familia:'fresar', z:4, campos:['diametro','diametroMenor','anguloBroca','arestas','ap'],
-    labels:{diametro:'Diâmetro Maior (Dmax)', anguloBroca:'Ângulo de Chanfro'}, anguloOptions:[45,60,90]},
-  fresa_alto_avanco:{nome:'Fresa de Alto Avanço (High-Feed)', familia:'fresar', z:3, campos:['diametro','anguloPosicao','arestas','ap','ae']},
-  cabecote_faceador:{nome:'Cabeçote Faceador', familia:'fresar', z:5, campos:['diametro','anguloPosicao','arestas','ap','ae']},
-  fresa_pastilhada:{nome:'Fresa de Topo c/ Pastilhas', familia:'fresar', z:2, campos:['diametro','arestas','balanco','ap','ae'],
-    labels:{arestas:'Insertos (Zeff)'}},
-  fresa_disco:{nome:'Fresa de Disco / Serra', familia:'fresar', z:8, campos:['diametro','arestas','ap','ae'],
-    labels:{ap:'Largura da Fresa (b)', ae:'Profundidade Radial (ap_rad)'}},
+/*
+ * Catálogo de ferramentas — SPEC_PAINEL_CALCULADORA_PARAMETROS.md §4.
+ *
+ * O material da ferramenta saiu da tela (§3.2): cada entrada do seletor já é uma
+ * ferramenta real com o substrato no nome. `GEOMETRIAS` declara a forma e a lista de
+ * substratos que existem em catálogo para ela; `TOOLS` e `FAMILIAS` são expandidos daí,
+ * uma entrada por variação. Ordem dentro do grupo: do mais usado para o menos
+ * (MD revestido → MD → HSS-Co → HSS); o primeiro é o default do grupo.
+ */
+var SUBSTRATO_LABEL = {MD_REV:'MD revestido', MD:'MD', HSS_CO:'HSS-Co', HSS:'HSS'};
+var SUBSTRATO_SUFIXO = {MD_REV:'mdrev', MD:'md', HSS_CO:'hssco', HSS:'hss'};
 
-  broca_hss:{nome:'Broca Helicoidal HSS / HSS-Co', familia:'furar', campos:['diametro','anguloBroca','balanco'], anguloOptions:[118,135]},
-  broca_md:{nome:'Broca Inteiriça Metal Duro', familia:'furar', campos:['diametro','anguloBroca','balanco','refrigInterna'], anguloOptions:[140]},
-  u_drill:{nome:'Broca de Insertos (U-Drill)', familia:'furar', campos:['diametro','balanco','fnManual']},
-  broca_centro:{nome:'Broca de Centro / Spot Drill', familia:'furar', campos:['diametro','anguloBroca','profundidadeH'], anguloOptions:[90,120],
+var GEOMETRIAS = {
+  fresa_topo:{nome:'Fresa de Topo Reto', familia:'fresar', construcao:'inteiriça',
+    substratos:['MD_REV','MD','HSS_CO','HSS'], z:4, campos:['diametro','arestas','balanco','ap','ae'],
+    defaults:{ap:3, ae:5, balanco:30}},
+  fresa_toroidal:{nome:'Fresa Toroidal / Raio de Canto', familia:'fresar', construcao:'inteiriça',
+    substratos:['MD_REV','MD'], z:4, campos:['diametro','raioCanto','arestas','balanco','ap','ae'],
+    defaults:{raioCanto:2, ap:1, ae:3, balanco:30}},
+  fresa_esferica:{nome:'Fresa Esférica (Ball Nose)', familia:'fresar', construcao:'inteiriça',
+    substratos:['MD_REV','MD','HSS_CO'], z:2, campos:['diametro','arestas','balanco','ap','ae'],
+    defaults:{ap:2, ae:3, balanco:25}},
+  fresa_chanfrar:{nome:'Fresa de Chanfrar', familia:'fresar', construcao:'inteiriça',
+    substratos:['MD','HSS_CO'], z:4, campos:['diametro','diametroMenor','anguloBroca','arestas','ap'],
+    labels:{diametro:'Diâmetro Maior (Dmax)', anguloBroca:'Ângulo de Chanfro'}, anguloOptions:[45,60,90],
+    defaults:{ap:1, balanco:30}},
+  fresa_alto_avanco:{nome:'Fresa de Alto Avanço (High-Feed)', familia:'fresar', construcao:'pastilhada',
+    substratos:['MD_REV'], z:3, campos:['diametro','anguloPosicao','arestas','ap','ae'],
+    defaults:{anguloPosicao:15, ap:1, ae:8, balanco:30}},
+  cabecote_faceador:{nome:'Cabeçote Faceador', familia:'fresar', construcao:'pastilhada',
+    substratos:['MD_REV'], z:5, campos:['diametro','anguloPosicao','arestas','ap','ae'],
+    defaults:{anguloPosicao:45, ap:1}},
+  fresa_pastilhada:{nome:'Fresa de Topo c/ Pastilhas', familia:'fresar', construcao:'pastilhada',
+    substratos:['MD_REV'], z:2, campos:['diametro','arestas','balanco','ap','ae'],
+    labels:{arestas:'Insertos (Zeff)'}, defaults:{ap:3, ae:5, balanco:30}},
+  // única geometria com construção por substrato: disco pastilhado em MD, serra inteiriça em HSS-Co
+  fresa_disco:{nome:'Fresa de Disco / Serra', familia:'fresar', construcao:'pastilhada',
+    construcaoPorSubstrato:{HSS_CO:'inteiriça'},
+    substratos:['MD','HSS_CO'], z:8, campos:['diametro','arestas','ap','ae'],
+    labels:{ap:'Largura da Fresa (b)', ae:'Profundidade Radial (ap_rad)'}, defaults:{ap:5, ae:3}},
+
+  // ângulo de ponta segue o substrato (SPEC §4.2): 140° em metal duro, 118°/135° em HSS/HSS-Co
+  broca_helicoidal:{nome:'Broca Helicoidal', familia:'furar', construcao:'inteiriça',
+    substratos:['MD_REV','MD','HSS_CO','HSS'], campos:['diametro','anguloBroca','balanco'],
+    anguloOptions:[118,135], anguloPorSubstrato:{MD_REV:[140], MD:[140]},
+    camposPorSubstrato:{MD_REV:['diametro','anguloBroca','balanco','refrigInterna'], MD:['diametro','anguloBroca','balanco','refrigInterna']},
+    defaults:{balanco:50}},
+  u_drill:{nome:'Broca de Insertos (U-Drill)', familia:'furar', construcao:'pastilhada',
+    substratos:['MD_REV'], campos:['diametro','balanco','fnManual'], defaults:{balanco:50}},
+  broca_centro:{nome:'Broca de Centro / Spot Drill', familia:'furar', construcao:'inteiriça',
+    substratos:['MD','HSS_CO'], campos:['diametro','anguloBroca','profundidadeH'], anguloOptions:[90,120],
     labels:{profundidadeH:'Altura de Ponta (h)'}},
-  escareador:{nome:'Escareador / Rebaixador', familia:'furar', campos:['diametro','anguloBroca','arestas','profundidadeH'], anguloOptions:[60,90,120],
+  escareador:{nome:'Escareador / Rebaixador', familia:'furar', construcao:'inteiriça',
+    substratos:['MD','HSS_CO'], campos:['diametro','anguloBroca','arestas','profundidadeH'], anguloOptions:[60,90,120],
     labels:{diametro:'Diâmetro Maior', profundidadeH:'Profundidade (h)'}},
-  alargador:{nome:'Alargador (Reamer)', familia:'furar', campos:['diametro','arestas','sobremetal','balanco']},
+  alargador:{nome:'Alargador (Reamer)', familia:'furar', construcao:'inteiriça',
+    substratos:['MD','HSS_CO'], campos:['diametro','arestas','sobremetal','balanco'],
+    defaults:{sobremetal:0.2, balanco:40}},
 
-  macho_corte:{nome:'Macho de Corte', familia:'roscar', campos:['diametro','passoRosca','balanco','furoExecutado'], labels:{diametro:'Diâmetro Nominal da Rosca (D)', balanco:'Comprimento de Rosca (L)'}},
-  macho_conformacao:{nome:'Macho de Conformação', familia:'roscar', campos:['diametro','passoRosca','balanco','furoExecutado'], labels:{diametro:'Diâmetro Nominal da Rosca (D)', balanco:'Comprimento de Rosca (L)'}},
-  fresa_rosca:{nome:'Fresa de Rosca (Thread Mill)', familia:'roscar', z:3, campos:['designacaoRosca','diametro','passoRosca','arestas'], labels:{diametro:'Diâmetro da Fresa (D_fresa)'}},
+  macho_corte:{nome:'Macho de Corte', familia:'roscar', construcao:'inteiriça',
+    substratos:['HSS_CO','MD'], campos:['diametro','passoRosca','balanco','furoExecutado'],
+    labels:{diametro:'Diâmetro Nominal da Rosca (D)', balanco:'Comprimento de Rosca (L)'}},
+  macho_conformacao:{nome:'Macho de Conformação', familia:'roscar', construcao:'inteiriça',
+    substratos:['HSS_CO','MD'], campos:['diametro','passoRosca','balanco','furoExecutado'],
+    labels:{diametro:'Diâmetro Nominal da Rosca (D)', balanco:'Comprimento de Rosca (L)'}},
+  fresa_rosca:{nome:'Fresa de Rosca (Thread Mill)', familia:'roscar', construcao:'inteiriça',
+    substratos:['MD_REV'], z:3, campos:['designacaoRosca','diametro','passoRosca','arestas'],
+    labels:{diametro:'Diâmetro da Fresa (D_fresa)'}},
 
-  mandril:{nome:'Barra / Cabeçote de Mandrilar', familia:'mandrilar', campos:['diametroInicial','diametroFinal','balanco','raioCanto','fnManual'],
-    labels:{balanco:'Comprimento da Barra (L)', raioCanto:'Raio de Ponta (rε)', fnManual:'Avanço por Rotação (fn)'}}
+  mandril:{nome:'Barra / Cabeçote de Mandrilar', familia:'mandrilar', construcao:'pastilhada',
+    substratos:['MD_REV'], campos:['diametroInicial','diametroFinal','balanco','raioCanto','fnManual'],
+    labels:{balanco:'Comprimento da Barra (L)', raioCanto:'Raio de Ponta (rε)', fnManual:'Avanço por Rotação (fn)'},
+    defaults:{raioCanto:0.4}}
 };
 
+var TOOLS = {};
 var FAMILIAS = {
-  fresar:{label:'Fresar', tipos:['fresa_topo','fresa_toroidal','fresa_esferica','fresa_chanfrar','fresa_alto_avanco','cabecote_faceador','fresa_pastilhada','fresa_disco']},
-  furar:{label:'Furar', tipos:['broca_hss','broca_md','u_drill','broca_centro','escareador','alargador']},
-  roscar:{label:'Roscar', tipos:['macho_corte','macho_conformacao','fresa_rosca']},
-  mandrilar:{label:'Mandrilar', tipos:['mandril']}
+  fresar:{label:'Fresar', tipos:[]},
+  furar:{label:'Furar', tipos:[]},
+  roscar:{label:'Roscar', tipos:[]},
+  mandrilar:{label:'Mandrilar', tipos:[]}
 };
+var FIELD_DEFAULTS = {};
+
+Object.keys(GEOMETRIAS).forEach(function(geoId){
+  var g = GEOMETRIAS[geoId];
+  g.substratos.forEach(function(sub){
+    var id = geoId + '_' + SUBSTRATO_SUFIXO[sub];
+    var construcao = (g.construcaoPorSubstrato && g.construcaoPorSubstrato[sub]) || g.construcao;
+    TOOLS[id] = {
+      nome: g.nome + ' — ' + (construcao === 'pastilhada' ? 'pastilhada ' : '') + SUBSTRATO_LABEL[sub],
+      grupo: g.nome,
+      geometria: geoId,
+      familia: g.familia,
+      construcao: construcao,
+      substrato: sub,
+      z: g.z,
+      campos: (g.camposPorSubstrato && g.camposPorSubstrato[sub]) || g.campos,
+      labels: g.labels,
+      anguloOptions: (g.anguloPorSubstrato && g.anguloPorSubstrato[sub]) || g.anguloOptions
+    };
+    FAMILIAS[g.familia].tipos.push(id);
+    if (g.defaults) FIELD_DEFAULTS[id] = g.defaults;
+  });
+});
 
 /* ============================ DOM REFS ============================ */
 
 var $ = function(id){ return document.getElementById(id); };
 var els = {
-  familia: $('f-familia'), tipo: $('f-tipo'), matPeca: $('f-mat-peca'), matFerr: $('f-mat-ferr'),
+  familia: $('f-familia'), tipo: $('f-tipo'), matPeca: $('f-mat-peca'),
   operacao: $('f-operacao'), sf: $('f-sf'), sfValue: $('sf-value'), btnModoRapido: $('btn-modo-rapido'),
   btnCalcular: $('btn-calcular'), badgeEstimado: $('badge-estimado'),
   hdrMaterial: $('hdr-material'), hdrOperacao: $('hdr-operacao'), hdrFerramenta: $('hdr-ferramenta'), hdrNivel: $('hdr-nivel'),
@@ -549,22 +609,6 @@ var els = {
 
 var quickMode = false;
 var fieldUserEdited = {arestas:false, ap:false, ae:false, balanco:false, raioCanto:false, anguloPosicao:false, sobremetal:false};
-
-var FIELD_DEFAULTS = {
-  fresa_topo:{ap:3, ae:5, balanco:30},
-  fresa_esferica:{ap:2, ae:3, balanco:25},
-  fresa_toroidal:{raioCanto:2, ap:1, ae:3, balanco:30},
-  fresa_chanfrar:{ap:1, balanco:30},
-  fresa_alto_avanco:{anguloPosicao:15, ap:1, ae:8, balanco:30},
-  cabecote_faceador:{anguloPosicao:45, ap:1},
-  fresa_pastilhada:{ap:3, ae:5, balanco:30},
-  fresa_disco:{ap:5, ae:3},
-  broca_hss:{balanco:50},
-  broca_md:{balanco:50},
-  u_drill:{balanco:50},
-  alargador:{sobremetal:0.2, balanco:40},
-  mandril:{raioCanto:0.4}
-};
 
 /* ============================ HELPERS ============================ */
 
@@ -583,6 +627,9 @@ function getMaterial(nome){
 }
 
 function fieldEl(key){ return $('fld-' + key); }
+
+/** Id da geometria por trás de uma entrada do catálogo (`fresa_topo_md` → `fresa_topo`). */
+function geoDe(tipoId){ return (TOOLS[tipoId] && TOOLS[tipoId].geometria) || tipoId; }
 
 function readNumeric(key){
   var el = fieldEl(key);
@@ -728,21 +775,26 @@ function ldSemaforoMandrilar(ld, D){
 
 var HEALTH_LD = {verde:100, amarelo:65, vermelho:35, bloqueado:0};
 
+// quanto o valor precisa cair, em %, para caber no limite. Vf e n variam
+// linearmente com avanço e Vc; Pc e Mc variam com a taxa de remoção — então a
+// mesma razão serve de alvo numérico para o operador nos quatro casos.
+function excesso(valor, limite){ return Math.round((1 - limite / valor) * 100); }
+
 // checagem de limites de máquina (Pc/Mc exibidos já com fator de segurança, n e Vf calculados):
 // se qualquer um exceder o limite da máquina, força bloqueio. Pc/Mc só se aplica a
 // Fresar/Furar/Mandrilar — Roscar já tem sua própria checagem de torque no macho.
 function checkMachineLimits(familia, pcExibido, mcExibido, n, vf){
   if (familia !== 'roscar' && Number.isFinite(pcExibido) && pcExibido > MACHINE.maxPower){
-    return {nivel:'bloqueado', msg:'Bloqueado: Potência estimada de '+fmt(pcExibido,2)+' kW excede o limite da máquina ('+MACHINE.maxPower+' kW). Reduza ap/ae/Vc.'};
+    return {nivel:'bloqueado', msg:'Bloqueado: Potência estimada de '+fmt(pcExibido,2)+' kW excede o limite da máquina ('+MACHINE.maxPower+' kW). Reduza ap/ae/Vc em pelo menos '+excesso(pcExibido, MACHINE.maxPower)+'% para caber.'};
   }
   if (familia !== 'roscar' && Number.isFinite(mcExibido) && mcExibido > MACHINE.maxTorque){
-    return {nivel:'bloqueado', msg:'Bloqueado: Torque estimado de '+fmt(mcExibido,1)+' Nm excede o limite da máquina ('+MACHINE.maxTorque+' Nm). Reduza ap/ae/Vc.'};
+    return {nivel:'bloqueado', msg:'Bloqueado: Torque estimado de '+fmt(mcExibido,1)+' Nm excede o limite da máquina ('+MACHINE.maxTorque+' Nm). Reduza ap/ae/Vc em pelo menos '+excesso(mcExibido, MACHINE.maxTorque)+'% para caber.'};
   }
   if (Number.isFinite(n) && n > MACHINE.maxRPM){
-    return {nivel:'bloqueado', msg:'Bloqueado: Rotação calculada de '+fmt(n,0)+' rpm excede o limite da máquina ('+MACHINE.maxRPM+' rpm).'};
+    return {nivel:'bloqueado', msg:'Bloqueado: Rotação calculada de '+fmt(n,0)+' rpm excede o limite da máquina ('+MACHINE.maxRPM+' rpm). Reduza Vc em pelo menos '+excesso(n, MACHINE.maxRPM)+'% para caber.'};
   }
   if (Number.isFinite(vf) && vf > MACHINE.maxFeed){
-    return {nivel:'bloqueado', msg:'Bloqueado: Avanço calculado de '+fmt(vf,0)+' mm/min excede o limite da máquina ('+MACHINE.maxFeed+'mm/min).'};
+    return {nivel:'bloqueado', msg:'Bloqueado: Avanço calculado de '+fmt(vf,0)+' mm/min excede o limite da máquina ('+MACHINE.maxFeed+'mm/min). Reduza o avanço em pelo menos '+excesso(vf, MACHINE.maxFeed)+'% para caber.'};
   }
   return null;
 }
@@ -776,13 +828,13 @@ function computeMilling(tipoId, ctx){
   var Dc = D; // diâmetro efetivo para rotação
   var apLimiteMsg = null;
 
-  if (tipoId === 'fresa_esferica'){
+  if (geoDe(tipoId) === 'fresa_esferica'){
     if (ap > 0 && ap < D/2){ Dc = 2 * Math.sqrt(Math.max(0, ap * (D - ap))); }
-  } else if (tipoId === 'fresa_toroidal'){
+  } else if (geoDe(tipoId) === 'fresa_toroidal'){
     if (Number.isFinite(r) && r > 0 && ap > 0 && ap < r){
       Dc = D - 2*r + 2*Math.sqrt(Math.max(0, ap * (2*r - ap)));
     }
-  } else if (tipoId === 'fresa_chanfrar'){
+  } else if (geoDe(tipoId) === 'fresa_chanfrar'){
     if (Number.isFinite(Dmenor) && Dmenor > 0){ Dc = (Dmenor + D) / 2; }
   }
   if (!Number.isFinite(Dc) || Dc <= 0) Dc = D;
@@ -794,7 +846,7 @@ function computeMilling(tipoId, ctx){
   var fzBase = FZ_BASE[ctx.operacao];
   var hm, fz, vf;
 
-  if (tipoId === 'fresa_alto_avanco' || tipoId === 'cabecote_faceador'){
+  if (geoDe(tipoId) === 'fresa_alto_avanco' || geoDe(tipoId) === 'cabecote_faceador'){
     var k = Number.isFinite(kappaDeg) && kappaDeg > 0 ? kappaDeg : 45;
     hm = fzBase; // hm alvo assumido = fz base do material/operação
     fz = hm / Math.sin(rad(k));
@@ -811,7 +863,7 @@ function computeMilling(tipoId, ctx){
   }
 
   var apEff = ap, aeEff = ae;
-  if (tipoId === 'fresa_disco'){
+  if (geoDe(tipoId) === 'fresa_disco'){
     // inversão geométrica: ap = largura (b), ae = profundidade radial (ap_rad)
     apEff = ap; aeEff = ae;
   }
@@ -829,7 +881,7 @@ function computeMilling(tipoId, ctx){
   var extraWarn = null;
   var healthSub = [HEALTH_LD[semaforo.nivel]];
 
-  if (tipoId === 'cabecote_faceador' && ae > 0 && D > 0 && ae > 0.8*D){
+  if (geoDe(tipoId) === 'cabecote_faceador' && ae > 0 && D > 0 && ae > 0.8*D){
     extraWarn = {nivel:'amarelo', msg:'Atenção: ae = '+fmt(ae,1)+'mm ('+fmt(ae/D*100,0)+'% do diâmetro). Descentralize a fresa ou reduza ae para no máximo '+fmt(0.8*D,1)+' mm.'};
     healthSub.push(65);
   }
@@ -868,20 +920,20 @@ function computeDrilling(tipoId, ctx){
 
   var vcBase = ctx.material.vc[ctx.operacao];
   var vc = vcBase * ctx.toolFactor;
-  if (tipoId === 'escareador') vc = vc * 0.5;
-  if (tipoId === 'alargador') vc = vc / 3;
+  if (geoDe(tipoId) === 'escareador') vc = vc * 0.5;
+  if (geoDe(tipoId) === 'alargador') vc = vc / 3;
 
   var n = (vc * 1000) / (Math.PI * D);
 
   var fn;
   var fnMin = null, fnWarn = null;
-  if (tipoId === 'u_drill'){
+  if (geoDe(tipoId) === 'u_drill'){
     fn = Number.isFinite(fnUserRaw) ? fnUserRaw : fnDefault(D);
     fnMin = 0.05 * Math.sqrt(D);
     if (fn < fnMin){
       fnWarn = {nivel:'amarelo', msg:'Avanço fn = '+fmt(fn,3)+' mm/rot abaixo do mínimo recomendado de '+fmt(fnMin,3)+' mm/rot. Aumente fn para pelo menos '+fmt(fnMin,3)+' mm/rot.'};
     }
-  } else if (tipoId === 'alargador'){
+  } else if (geoDe(tipoId) === 'alargador'){
     fn = fnDefault(D) * 2.5;
   } else {
     fn = fnDefault(D);
@@ -896,7 +948,7 @@ function computeDrilling(tipoId, ctx){
   var mcRaw = (Number.isFinite(pcRaw) && n > 0) ? 9549 * pcRaw / n : NaN;
 
   var Lp = 0;
-  if (Number.isFinite(angulo) && angulo > 0 && angulo < 180 && (tipoId==='broca_hss'||tipoId==='broca_md'||tipoId==='broca_centro')){
+  if (Number.isFinite(angulo) && angulo > 0 && angulo < 180 && (geoDe(tipoId)==='broca_helicoidal'||geoDe(tipoId)==='broca_centro')){
     Lp = (D/2) * Math.tan(rad(90 - angulo/2));
   }
   var tempo = (Number.isFinite(L) && vf > 0) ? (L + Lp) / vf : NaN;
@@ -942,11 +994,11 @@ function computeThreading(tipoId, ctx){
   var healthSub = [100];
   var furoPrevio = NaN, n, vf, mcRaw = NaN, resumo, formulas, hmVal = NaN;
 
-  if (tipoId === 'macho_corte' || tipoId === 'macho_conformacao'){
+  if (geoDe(tipoId) === 'macho_corte' || geoDe(tipoId) === 'macho_conformacao'){
     var Dnom = readNumeric('diametro');
     var P = readNumeric('passoRosca');
     hmVal = P;
-    furoPrevio = tipoId === 'macho_corte' ? (Dnom - P) : (Dnom - P/2);
+    furoPrevio = geoDe(tipoId) === 'macho_corte' ? (Dnom - P) : (Dnom - P/2);
 
     var vcBase = ctx.material.vc[ctx.operacao] * 0.15 * ctx.toolFactor;
     n = (vcBase * 1000) / (Math.PI * Dnom);
@@ -954,7 +1006,7 @@ function computeThreading(tipoId, ctx){
 
     mcRaw = (ctx.material.kc11 / 1000) * Dnom * P * P * 0.6;
 
-    if (tipoId === 'macho_conformacao' && NAO_CONFORMAVEL.indexOf(ctx.material.id) !== -1){
+    if (geoDe(tipoId) === 'macho_conformacao' && NAO_CONFORMAVEL.indexOf(ctx.material.id) !== -1){
       semaforo = {nivel:'bloqueado', msg:'Bloqueado: '+ctx.material.nome+' não é recomendado para macho de conformação (material frágil/duro). Utilize macho de corte.'};
       healthSub.push(0);
     } else if (mcRaw > MACHINE.maxTorque){
@@ -985,7 +1037,7 @@ function computeThreading(tipoId, ctx){
 
     resumo = cfg.nome+' — D'+fmt(Dnom,1)+' × P'+fmt(P,2)+'mm · Furo prévio '+fmt(furoPrevio,2)+'mm';
     formulas = [
-      'Furo Prévio = '+(tipoId==='macho_corte' ? 'D − P = '+fmt(Dnom,1)+' − '+fmt(P,2) : 'D − P/2 = '+fmt(Dnom,1)+' − '+fmt(P,2)+'/2')+' = '+fmt(furoPrevio,2)+' mm',
+      'Furo Prévio = '+(geoDe(tipoId)==='macho_corte' ? 'D − P = '+fmt(Dnom,1)+' − '+fmt(P,2) : 'D − P/2 = '+fmt(Dnom,1)+' − '+fmt(P,2)+'/2')+' = '+fmt(furoPrevio,2)+' mm',
       'Vc rosqueamento ≈ 15% × Vc fresamento × fator ferramenta = '+fmt(vcBase,1)+' m/min (estimativa interna)',
       'Vf = P × n = '+fmt(P,2)+' × '+fmt(n,0)+' = '+fmt(vf,0)+' mm/min (travado no passo)',
       'Mc_est ≈ (kc1.1/1000) × D × P² × 0.6 = '+fmt(mcRaw,2)+' Nm (estimativa interna)'
@@ -1221,7 +1273,7 @@ function computeQuickMode(){
   var ld = L / D;
   var semaforo = ldSemaforoFresar(ld, D);
 
-  render('fresa_topo', {material:material, operacao:operacao, toolFactor:1.0, toolFactorLabel:'Metal Duro (estimado)'}, {
+  render('fresa_topo_mdrev', {material:material, operacao:operacao, toolFactor:1.0, toolFactorLabel:'Metal Duro (estimado)'}, {
     n:n, vf:vf, vc:vc, hm:fz, q:q, pc:pcRaw, mc:mcRaw, ld:ld,
     semaforo:semaforo, healthSub:[HEALTH_LD[semaforo.nivel]],
     resumo:'Modo Rápido — estimativa genérica de fresamento (Z4, ap2mm, ae2mm, L30mm, MD).',
@@ -1247,7 +1299,7 @@ function recalc(){
     }
 
     var material = getMaterial(els.matPeca.value);
-    var toolFactorKey = els.matFerr.value;
+    var toolFactorKey = cfg.substrato;
     var toolFactor = TOOL_FACTORS[toolFactorKey].fator;
     var toolFactorLabel = TOOL_FACTORS[toolFactorKey].label;
     var ctx = {material:material, operacao:els.operacao.value, toolFactor:toolFactor, toolFactorLabel:toolFactorLabel};
@@ -1312,7 +1364,6 @@ els.btnModoRapido.addEventListener('click', function(){
   });
   els.familia.closest('.row').classList.toggle('hidden', quickMode);
   els.tipo.closest('.row').classList.toggle('hidden', quickMode);
-  els.matFerr.closest('.row').classList.toggle('hidden', quickMode);
 
   recalc();
 });

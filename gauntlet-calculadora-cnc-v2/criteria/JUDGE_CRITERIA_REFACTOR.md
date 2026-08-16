@@ -102,9 +102,10 @@ Rótulo em português, unidade visível, e **procedência alcançável a partir 
 
 ### 7. Fidelidade ao Design System (tema claro) — 12 pts *(script + Juiz)*
 
-Tokens de `DS_TEMA_CLARO.md`. Script confere ausência da paleta antiga e de hex fora do sistema; o
-Juiz avalia a aplicação — neon restrito à marca, uma rampa de estado só, três níveis de superfície,
-sem glass, sem glow.
+Tokens de `DS_TEMA_CLARO.md`. **`node scripts/check-tokens.mjs`** confere ausência da paleta antiga
+e de hex fora do sistema — o número dele entra fechado, o Juiz não altera. O Juiz avalia a
+aplicação: neon restrito à marca, uma rampa de estado só, três níveis de superfície, sem glass,
+sem glow.
 
 - **10-12:** paleta limpa e coerente; nenhum hex estranho.
 - **5-9:** 1 ou 2 desvios.
@@ -122,7 +123,8 @@ Preenchido pelos cenários R13, R14 e R15:
 ### 9. Indicadores + suíte objetiva — 8 pts *(script + Juiz)*
 
 4 pts pelos 3 gauges presentes e legíveis (Juiz: ponteiro visível em fundo claro, valor central
-legível, cor vinda da rampa de estado). 4 pts pela suíte: 23 de regressão + 1 golden + 17 alvos.
+legível, cor vinda da rampa de estado). 4 pts pela suíte completa: **23 de regressão + 3 invariantes
++ 1 golden + 17 alvos = 44 cenários**, contagem exata conferida por `check-suites.mjs`.
 
 ---
 
@@ -133,17 +135,17 @@ legível, cor vinda da rampa de estado). 4 pts pela suíte: 23 de regressão + 1
 | # | Gate | Quem confere |
 |---|---|---|
 | 1 | Score total ≥ **95**/100 **e** nenhuma categoria abaixo do piso | soma |
-| 2 | Os 18 tipos selecionáveis, cada um renderizando seus campos sem erro de JS | script |
-| 3 | Nenhum `NaN`, `undefined` ou `Infinity` visível na tela | script |
-| 4 | Console sem exceção não tratada durante a suíte | script |
+| 2 | Os 18 tipos selecionáveis, cada um renderizando seus campos sem erro de JS | script — `I01` |
+| 3 | Nenhum `NaN`, `undefined` ou `Infinity` visível na tela | script — `I02` |
+| 4 | Console sem exceção não tratada durante a suíte | script — `I03` |
 | 5 | Entrada inválida tratada com correção escrita, sem travar | script + Juiz |
 | 6 | Bloqueios por família operantes (fresar L/D > 6 · mandrilar L/D > 5 · furo prévio · torque) | script |
 | 7 | Fluxo compreensível — o Juiz narra a tela sem consultar os testes | Juiz |
 | 8 | Adequada para uso diário no chão de fábrica, com justificativa de 1–2 frases | Juiz |
-| 9 | Design System aplicado: tokens, cinza dominante, 3 gauges, 4 controles de ajuste, ajuda, escolha segmentada, recálculo só no clique | script + Juiz |
+| 9 | Design System aplicado: tokens (`check-tokens.mjs` sem irregularidade), cinza dominante, marca laranja e seleção índigo, 3 gauges read-only, slider de agressividade + 4 controles de ajuste, ajuda inline, escolha segmentada, **recálculo híbrido** (não recalcula antes do 1º Calcular; painel vivo depois dele) | script + Juiz |
 | 10 | Contraste AA e foco visível em 100% dos pares medidos | script |
 | 11 | Integridade: região `DADOS`, `tests/`, `criteria/`, `scripts/` e `research/` intactos; 54 golden values idênticos | script |
-| 12 | Fluxo de entrada: ordem dos 5 blocos, 4 campos mortos ausentes, nenhum tipo acima de 6 campos | script |
+| 12 | Fluxo de entrada: ordem dos 5 blocos, 6 campos mortos ausentes, nenhum tipo acima de 6 campos | script |
 | 13 | **Zero requisição externa** — nenhuma rede disparada pela página | script |
 | 14 | Perfil de máquina manda no resultado, e todo número principal tem procedência alcançável | script |
 

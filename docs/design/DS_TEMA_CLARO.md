@@ -36,7 +36,8 @@ clique). **Vale a Regra Crítica 7** — é mais recente e está implementada.
 
 > **Neon é marca. Área de trabalho é cinza. Cor é estado.**
 
-- **Marca** (`#00D9FF`) vive no cabeçalho, na identidade e no botão principal de ação. Nada mais.
+- **Marca** (`#E85D04`) vive no cabeçalho, na identidade e no botão principal de ação. Nada mais.
+- **Seleção e foco** (`#3730A3`) vivem no controle escolhido e no anel de foco. Nada mais.
 - **Área de entrada e área de resultado** vivem em escala de cinza.
 - **A única cor que aparece na área de trabalho é a do semáforo**, e ela significa uma coisa só:
   condição do processo.
@@ -77,13 +78,25 @@ Três níveis, sempre nessa ordem de claridade: página (mais escura) → cartã
 
 `#6B7280` foi **rejeitado**: 4,45:1 sobre a página, abaixo do mínimo de 4,5:1.
 
-### 3.3 Marca
+### 3.3 Marca e seleção
 
-| Token | Valor | Regra |
-|---|---|---|
-| `--brand-fill` | `#00D9FF` | **só como preenchimento**, com `--tx-on-brand` por cima. Nunca como texto, ícone ou borda fina |
-| `--tx-on-brand` | `#0F1419` | texto sobre o preenchimento neon — **11:1** |
-| `--ink-primary` | `#005E77` | a cor da marca quando precisa ser **legível**: texto, ícone, borda, foco. **6,7:1** |
+Decisão de 15/08/2026 (`SPEC_PAINEL_CALCULADORA_PARAMETROS.md` §10.3): **laranja é marca, índigo é
+seleção**. Laranja nunca marca estado; se um elemento laranja aparecer fora de marca ou ação
+principal, é defeito.
+
+| Token | Valor | Regra | Contraste |
+|---|---|---|---|
+| `--brand-fill` | `#E85D04` | **só como preenchimento**: logo, cabeçalho, botão Calcular. Com `--tx-on-brand` por cima. Nunca como texto, ícone, borda fina ou estado | — |
+| `--tx-on-brand` | `#0F1419` | letra do botão Calcular e de qualquer superfície de marca | **5,29:1** sobre o laranja |
+| `--select-ink` | `#3730A3` | **seleção e foco**: rádio/segmentado escolhido, borda de campo ativo, anel de foco | **9,03:1** sobre a página · **9,9:1** contra branco por cima |
+| `--ink-primary` | `#005E77` | marca legível e "informação" da rampa de estado: texto, ícone, borda | **6,65:1** |
+
+Índigo é a família de matiz mais distante das quatro cores de estado (verde, âmbar, vermelho, teal),
+então "selecionado" nunca é confundido com "condição do processo". Texto branco sobre `#E85D04` dá
+**3,50:1** e reprova — por isso a letra do botão Calcular é escura.
+
+`#00D9FF` deixa de ter papel no tema claro: a marca passou para o laranja e a legibilidade continua
+em `--ink-primary`. Ele segue válido no tema escuro (§8).
 
 `#39FF14` **sai do sistema no tema claro.** Ele era simultaneamente marca, avanço e "sucesso" — e
 dá 1,2:1 sobre fundo claro, o pior número da paleta inteira. Onde ele significava "bom", agora é o
@@ -118,14 +131,16 @@ parâmetro, badges e mensagens. **Não existe segunda rampa.** As antigas ficam 
 
 | Token | Valor |
 |---|---|
-| `--focus-ring` | `outline: 2px solid #005E77; outline-offset: 2px` + `box-shadow: 0 0 0 3px rgba(0,217,255,.35)` |
+| `--focus-ring` | `outline: 2px solid #3730A3; outline-offset: 2px` + `box-shadow: 0 0 0 3px rgba(55,48,163,.35)` |
 | `--surface-hover` | `#DDE1E7` (campo) · `#F7F8FA` (cartão clicável) |
 | `--surface-pressed` | `#CFD4DC` |
 | `--tx-disabled` | `#8A93A0` · `--surface-disabled` `#EDEFF2` · cursor `not-allowed` |
 | `--scrim` | `rgba(16,24,40,.45)` |
 
-O anel de foco tem **duas camadas de propósito**: o traço `#005E77` garante os 3:1 exigidos, e o
-halo ciano carrega a marca sem depender dele para legibilidade.
+O anel de foco tem **duas camadas de propósito**: o traço `#3730A3` garante os 3:1 exigidos com
+folga (9,03:1), e o halo índigo translúcido amplia a área percebida sem depender dele para
+legibilidade. Foco e seleção compartilham a mesma matiz de propósito — é o mesmo significado
+("este é o elemento em que estou").
 
 ### 3.6 Tipografia
 
@@ -184,8 +199,8 @@ de tela de graça.
 | Estado | Fundo | Borda | Texto |
 |---|---|---|---|
 | inativo | `#FFFFFF` | `--border-control` | `--tx-2` |
-| hover | `rgba(0,94,119,.06)` | `--ink-primary` | `--tx-1` |
-| **ativo** | `--brand-fill` | `--brand-fill` | `--tx-on-brand` |
+| hover | `rgba(55,48,163,.06)` | `--select-ink` | `--tx-1` |
+| **ativo** | `--select-ink` | `--select-ink` | `#FFFFFF` (**9,9:1**) |
 | foco | — | `--focus-ring` | — |
 
 Grade de no máximo 4 por linha, altura mínima 44px, 13px peso 600.
@@ -247,7 +262,10 @@ Medidos contra `--bg-page` `#F3F4F6`, salvo indicação. Mínimo WCAG 2.2 AA: **
 | `--tx-3` sobre página | 6,8:1 | ✅ |
 | `--ink-primary` sobre página | 6,7:1 | ✅ |
 | `ok / atenção / crítico -ink` sobre página | 6,4 · 6,5 · 6,7:1 | ✅ |
-| `--tx-on-brand` sobre `--brand-fill` | 11:1 | ✅ |
+| `--tx-on-brand` `#0F1419` sobre `--brand-fill` `#E85D04` | **5,29:1** | ✅ |
+| `--select-ink` `#3730A3` sobre página | **9,03:1** | ✅ |
+| `#FFFFFF` sobre `--select-ink` (segmentado ativo) | 9,9:1 | ✅ |
+| `#FFFFFF` sobre `--brand-fill` `#E85D04` | **3,50:1** | ❌ proibido — botão Calcular leva letra escura |
 | `--border-control` sobre `--surface-card` | 3,8:1 | ✅ (mínimo 3:1) |
 | `#00D9FF` **como texto** sobre página | **1,5:1** | ❌ proibido |
 | `#39FF14` **como texto** sobre página | **1,2:1** | ❌ proibido |
@@ -264,6 +282,8 @@ Aplicável a qualquer tela nova no tema claro:
 
 - [ ] Nenhum `#00D9FF` ou `#39FF14` usado como texto, ícone ou borda
 - [ ] Nenhuma cor fora dos tokens desta página
+- [ ] `#E85D04` só em marca e ação principal — nunca marcando estado, seleção ou foco
+- [ ] Seleção e foco em `#3730A3`; texto sobre laranja sempre `#0F1419`, nunca branco
 - [ ] Uma única rampa de estado em toda a tela
 - [ ] Área de trabalho em escala de cinza; cor só onde há condição de processo
 - [ ] Todo texto ≥ 4,5:1 e toda borda funcional ≥ 3:1
