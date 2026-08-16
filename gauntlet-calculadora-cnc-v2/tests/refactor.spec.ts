@@ -42,11 +42,15 @@ async function coresEfetivas(page: Page, seletor: string) {
   });
 }
 
+/** Número exibido, tolerando separador de milhar. Só serve para inteiros (rpm, Vf). */
+function inteiro(texto: string | null): number {
+  return Number((texto ?? '').replace(/\D/g, ''));
+}
+
 async function preencherFresaTopo(page: Page) {
   await escolher(page, 'select-familia', 'fresar');
-  await page.selectOption('[data-testid="select-tipo-ferramenta"]', 'fresa_topo');
+  await page.selectOption('[data-testid="select-tipo-ferramenta"]', 'fresa_topo_md');
   await page.selectOption('[data-testid="select-material-peca"]', 'Aço 1045');
-  await escolher(page, 'select-material-ferramenta', 'MD');
   await escolher(page, 'select-operacao', 'desbaste');
   await page.fill('[data-testid="input-diametro"]', '10');
   await page.fill('[data-testid="input-arestas"]', '4');
@@ -84,23 +88,35 @@ test.describe('Refactor v2 — alvos novos', () => {
     }
   });
 
-  test('R03 — mexer no controle não recalcula: resultado fica velho até clicar em Calcular', async ({ page }) => {
-    await preencherFresaTopo(page);
-    await calcular(page);
-    const rpmAntes = await page.locator('[data-testid="resultado-rpm"]').textContent();
-
+  test('R03 — recálculo híbrido: nada antes do 1º Calcular, painel vivo depois dele', async ({ page }) => {
+    // Reescrito em 16/08/2026 (SPEC §6.6, contrato §5.2). A versão anterior exigia
+    // "recálculo só no clique" e reprovaria a implementação correta.
+    const rpm = page.locator('[data-testid="resultado-rpm"]');
     const slider = page.locator('[data-testid="slider-vc"]');
-    const max = await slider.getAttribute('max');
-    await slider.fill(String(Math.round(Number(max) * 0.6)));
 
-    // valor do parâmetro atualiza na hora
-    await expect(page.locator('[data-testid="valor-vc"]')).not.toHaveText('');
-    // resultado NÃO
-    expect(await page.locator('[data-testid="resultado-rpm"]').textContent()).toBe(rpmAntes);
-    await expect(page.locator('[data-testid="resultado-rpm"]')).toHaveClass(/stale/);
+    await preencherFresaTopo(page);
 
+    // ── Antes do 1º Calcular: mexer no controle NÃO produz resultado ──────────
+    const max = Number(await slider.getAttribute('max'));
+    await slider.fill(String(Math.round(max * 0.6)));
+
+    await expect(page.locator('[data-testid="valor-vc"]'), 'o valor do parâmetro atualiza na hora').not.toHaveText('');
+    await expect(rpm, 'antes do 1º Calcular o painel fica no estado vazio').toHaveText('—');
+    await expect(rpm, 'stale vai no próprio elemento, não num container acima').toHaveClass(/stale/);
+
+    // ── 1º Calcular: o resultado aparece e deixa de ser velho ─────────────────
     await calcular(page);
-    expect(await page.locator('[data-testid="resultado-rpm"]').textContent()).not.toBe(rpmAntes);
+    await expect(rpm).not.toHaveText('—');
+    await expect(rpm).not.toHaveClass(/stale/);
+    const rpmAncorado = await rpm.textContent();
+
+    // ── Depois do 1º Calcular: recalcula sozinho, sem clique ─────────────────
+    await slider.fill(String(Math.round(max * 0.9)));
+    await expect(rpm, 'depois do 1º Calcular o painel é vivo').not.toHaveText(rpmAncorado!);
+    await expect(rpm, 'terminado o recálculo o resultado não fica velho').not.toHaveClass(/stale/);
+
+    // O botão nunca some nem desabilita: é reancoragem, não gatilho único
+    await expect(page.locator('[data-testid="btn-calcular"]')).toBeEnabled();
   });
 
   test('R04 — cada parâmetro tem barra de estado própria', async ({ page }) => {
@@ -130,17 +146,39 @@ test.describe('Refactor v2 — alvos novos', () => {
     expect((await painel.textContent())!.length).toBeGreaterThan(40);
   });
 
-  test('R06 — ajuda fecha com Esc e só uma fica aberta por vez', async ({ page }) => {
+  test('R06 — ajuda é gaveta inline: várias abertas ao mesmo tempo, fecha por Esc e pelo gatilho', async ({ page }) => {
+    // Reescrito em 16/08/2026 (SPEC §8.1, contrato §6). Caíram "uma por vez" e
+    // "fecha ao clicar fora": conteúdo que some ao tocar no slider some justamente
+    // quando o operador quer ler. Permanecem o Esc e o fechar pelo próprio gatilho.
+    const ajudaVc = page.locator('[data-testid="ajuda-vc"]');
+    const ajudaAp = page.locator('[data-testid="ajuda-ap"]');
+    const gavetaVc = page.locator('[data-testid="popover-vc"]');
+    const gavetaAp = page.locator('[data-testid="popover-ap"]');
+
     await preencherFresaTopo(page);
-    await page.locator('[data-testid="ajuda-vc"]').click();
-    await expect(page.locator('[data-testid="popover-vc"]')).toBeVisible();
 
-    await page.locator('[data-testid="ajuda-ap"]').click();
-    await expect(page.locator('[data-testid="popover-ap"]')).toBeVisible();
-    await expect(page.locator('[data-testid="popover-vc"]'), 'só um popover aberto por vez').toBeHidden();
+    await ajudaVc.click();
+    await expect(gavetaVc).toBeVisible();
 
+    await ajudaAp.click();
+    await expect(gavetaAp).toBeVisible();
+    await expect(gavetaVc, 'abrir uma gaveta não pode fechar a outra').toBeVisible();
+
+    // clicar fora não fecha — o slider é justamente onde o operador vai mexer lendo
+    await page.locator('[data-testid="slider-vc"]').click();
+    await expect(gavetaVc, 'clicar fora não fecha a gaveta').toBeVisible();
+    await expect(gavetaAp, 'clicar fora não fecha a gaveta').toBeVisible();
+
+    // o próprio gatilho fecha a sua, e só a sua
+    await ajudaVc.click();
+    await expect(gavetaVc).toBeHidden();
+    await expect(ajudaVc).toHaveAttribute('aria-expanded', 'false');
+    await expect(gavetaAp).toBeVisible();
+
+    // Esc fecha a que está com o foco
+    await ajudaAp.focus();
     await page.keyboard.press('Escape');
-    await expect(page.locator('[data-testid="popover-ap"]')).toBeHidden();
+    await expect(gavetaAp).toBeHidden();
   });
 
   test('R07 — ajuda é alcançável e acionável só pelo teclado', async ({ page }) => {
@@ -178,7 +216,7 @@ test.describe('Refactor v2 — alvos novos', () => {
 
   // ─── Formulário enxuto ────────────────────────────────────────────────────
 
-  test('R10 — os 4 campos mortos não aparecem em nenhum dos 18 tipos', async ({ page }) => {
+  test('R10 — os 6 campos mortos não aparecem em nenhuma das 33 entradas do catálogo', async ({ page }) => {
     const mortos = ['chk-refrig-interna', 'input-sobremetal', 'input-profundidade-h'];
     const familias = ['fresar', 'furar', 'roscar', 'mandrilar'];
 
@@ -195,10 +233,21 @@ test.describe('Refactor v2 — alvos novos', () => {
         if (familia === 'furar' || familia === 'mandrilar') {
           await expect(page.locator('[data-testid="input-arestas"]'), `Z visível em ${tipo}`).toBeHidden();
         }
+        // Ângulo só entra na conta nas brocas, onde define o Lp da ponta. No
+        // escareador `computeDrilling` ignora, e na fresa de chanfrar
+        // `computeMilling` lê `anguloPosicao` (κ), nunca `anguloBroca`.
+        // o id do catálogo é `{geometria}_{substrato}` — a comparação é por geometria
+        if (tipo.startsWith('escareador_') || tipo.startsWith('fresa_chanfrar_')) {
+          await expect(page.locator('[data-testid="input-angulo-broca"]'), `ângulo visível em ${tipo}`).toBeHidden();
+        }
       }
     }
   });
 
+  // Teto revalidado em 16/08/2026 contra as 33 entradas: o máximo real é 6, na
+  // fresa toroidal (D · r · Z · L · ap · ae) — nenhum campo dela é dispensável.
+  // A saída do material da ferramenta deu folga ao formulário inteiro, mas ela
+  // era do bloco categórico; o teto aqui conta só o bloco geométrico e segue em 6.
   test('R11 — nenhum tipo pede mais de 6 campos no fluxo padrão', async ({ page }) => {
     const familias = ['fresar', 'furar', 'roscar', 'mandrilar'];
     const excedentes: string[] = [];
@@ -226,11 +275,15 @@ test.describe('Refactor v2 — alvos novos', () => {
     }
   });
 
-  test('R13 — família, operação, material da ferramenta e ângulo são escolha de 1 clique', async ({ page }) => {
+  test('R13 — família, operação e ângulo são escolha de 1 clique', async ({ page }) => {
+    // O material da ferramenta saiu da tela (SPEC §3.2): sobraram 3 controles.
+    // A broca em HSS é a equivalente da antiga `broca_hss` e é a que mantém dois
+    // ângulos de ponta (118°/135°) — em metal duro há um só, e 1 opção vira texto
+    // fixo sem seletor (TESTID_CONTRACT).
     await escolher(page, 'select-familia', 'furar');
-    await page.selectOption('[data-testid="select-tipo-ferramenta"]', 'broca_hss');
+    await page.selectOption('[data-testid="select-tipo-ferramenta"]', 'broca_helicoidal_hss');
 
-    for (const testid of ['select-familia', 'select-operacao', 'select-material-ferramenta', 'input-angulo-broca']) {
+    for (const testid of ['select-familia', 'select-operacao', 'input-angulo-broca']) {
       const container = page.locator(`[data-testid="${testid}"]`);
       const tag = await container.evaluate((n) => n.tagName.toLowerCase());
       expect(tag, `${testid} continua dropdown`).not.toBe('select');
@@ -317,6 +370,136 @@ test.describe('Refactor v2 — alvos novos', () => {
       ).toHaveCount(1);
     }
     await expect(page.locator('[data-testid="texto-fonte-vc"]')).not.toHaveText('');
+  });
+
+  // ─── Slider de agressividade (SPEC §6.3, contrato §5.0) ───────────────────
+
+  test('R18 — o slider de agressividade move os 4 parâmetros juntos sem furar limite', async ({ page }) => {
+    await preencherFresaTopo(page);
+    await calcular(page);
+
+    const agressividade = page.locator('[data-testid="slider-agressividade"]');
+    const valor = page.locator('[data-testid="valor-agressividade"]');
+    await expect(agressividade).toBeVisible();
+    await expect(valor, 'nasce num ponto declarado do vetor, não em "misto"').not.toHaveText(/misto/i);
+
+    const partida: Record<string, number> = {};
+    for (const p of PARAMETROS) partida[p] = Number(await page.locator(`[data-testid="slider-${p}"]`).inputValue());
+
+    const min = (await agressividade.getAttribute('min')) ?? '0';
+    const max = (await agressividade.getAttribute('max')) ?? '100';
+
+    // extremo produtivo: os 4 sobem, nenhum passa do próprio teto
+    await agressividade.fill(max);
+    for (const p of PARAMETROS) {
+      const el = page.locator(`[data-testid="slider-${p}"]`);
+      const v = Number(await el.inputValue());
+      expect(v, `${p} não acompanhou o slider de agressividade`).toBeGreaterThan(partida[p]);
+      expect(v, `${p} foi empurrado além do próprio teto`).toBeLessThanOrEqual(Number(await el.getAttribute('max')));
+    }
+
+    // extremo conservador: os 4 descem, nenhum passa do próprio piso
+    await agressividade.fill(min);
+    for (const p of PARAMETROS) {
+      const el = page.locator(`[data-testid="slider-${p}"]`);
+      const v = Number(await el.inputValue());
+      expect(v, `${p} não acompanhou o slider de agressividade`).toBeLessThan(partida[p]);
+      expect(v, `${p} foi empurrado abaixo do próprio piso`).toBeGreaterThanOrEqual(Number(await el.getAttribute('min')));
+    }
+
+    // mexer num controle individual depois não devolve o slider ao lugar: vira misto
+    const ap = page.locator('[data-testid="slider-ap"]');
+    await ap.fill(String(Number(await ap.getAttribute('max'))));
+    await expect(valor, 'com um parâmetro fora do vetor, exibir um percentual seria mentira na tela').toHaveText(/misto/i);
+
+    // só existe onde existem os 4 parâmetros — ou seja, na família fresar
+    await escolher(page, 'select-familia', 'furar');
+    await expect(agressividade, 'sem os 4 parâmetros vira um slider de Vc com nome errado').toBeHidden();
+  });
+
+  // ─── Edição reversa dos números-herói (contrato §5.2.1 e §5.2.2) ──────────
+
+  test('R19 — editar RPM e Avanço inverte a conta e trava no limite da máquina', async ({ page }) => {
+    await preencherFresaTopo(page);
+    await calcular(page);
+
+    const rpm = page.locator('[data-testid="resultado-rpm"]');
+    const avanco = page.locator('[data-testid="resultado-avanco"]');
+    const rpmPartida = inteiro(await rpm.textContent());
+    const avancoPartida = inteiro(await avanco.textContent());
+    expect(rpmPartida, 'sem resultado de partida não há o que inverter').toBeGreaterThan(0);
+
+    // RPM editado → Vc invertido; com fz e Z constantes, o avanço acompanha na mesma razão
+    const rpmAlvo = Math.round(rpmPartida * 1.2);
+    await page.fill('[data-testid="input-resultado-rpm"]', String(rpmAlvo));
+    await page.locator('[data-testid="input-resultado-rpm"]').blur();
+
+    expect(Math.abs(inteiro(await rpm.textContent()) - rpmAlvo), 'a rotação digitada tem que valer').toBeLessThanOrEqual(1);
+    const avancoEsperado = avancoPartida * 1.2;
+    const avancoObtido = inteiro(await avanco.textContent());
+    expect(Math.abs(avancoObtido - avancoEsperado) / avancoEsperado,
+      `avanço não acompanhou a rotação editada: ${avancoPartida} → ${avancoObtido}, esperado ~${Math.round(avancoEsperado)}`)
+      .toBeLessThan(0.02);
+
+    // Avanço editado → fz invertido; a rotação NÃO se mexe
+    const rpmAntesDoAvanco = inteiro(await rpm.textContent());
+    const avancoAlvo = Math.round(avancoObtido * 0.8);
+    await page.fill('[data-testid="input-resultado-avanco"]', String(avancoAlvo));
+    await page.locator('[data-testid="input-resultado-avanco"]').blur();
+
+    expect(inteiro(await avanco.textContent()), 'o avanço digitado tem que valer').toBe(avancoAlvo);
+    expect(inteiro(await rpm.textContent()), 'editar o avanço mexe em fz, não na rotação').toBe(rpmAntesDoAvanco);
+
+    // limite físico: para no teto do perfil de máquina, não passa em silêncio
+    const maxRPM = Number(await page.locator('[data-testid="input-maquina-rpm"]').inputValue());
+    await page.fill('[data-testid="input-resultado-rpm"]', String(maxRPM * 10));
+    await page.locator('[data-testid="input-resultado-rpm"]').blur();
+    expect(inteiro(await rpm.textContent()), `rotação passou de maxRPM (${maxRPM}) sem override`).toBeLessThanOrEqual(maxRPM);
+  });
+
+  // ─── Modo Rápido (SPEC §9.3) ──────────────────────────────────────────────
+
+  test('R20 — Modo Rápido pede Z, e o avanço acompanha o número de arestas', async ({ page }) => {
+    // Hoje o Modo Rápido assume Z=4: com uma fresa de 2 cortes o avanço sai o
+    // dobro do correto. Vf = fz × Z × n — Z é fator direto, não conveniência.
+    await page.click('[data-testid="toggle-modo-rapido"]');
+    await page.selectOption('[data-testid="select-material-peca"]', 'Aço 1045');
+    await escolher(page, 'select-operacao', 'desbaste');
+    await page.fill('[data-testid="input-diametro"]', '10');
+
+    await expect(page.locator('[data-testid="input-arestas"]'), 'Z é um dos 4 campos do Modo Rápido').toBeVisible();
+
+    await page.fill('[data-testid="input-arestas"]', '2');
+    await calcular(page);
+    const rpmZ2 = inteiro(await page.locator('[data-testid="resultado-rpm"]').textContent());
+    const avancoZ2 = inteiro(await page.locator('[data-testid="resultado-avanco"]').textContent());
+    expect(avancoZ2, 'sem avanço não há o que comparar').toBeGreaterThan(0);
+
+    await page.fill('[data-testid="input-arestas"]', '4');
+    await calcular(page);
+    const rpmZ4 = inteiro(await page.locator('[data-testid="resultado-rpm"]').textContent());
+    const avancoZ4 = inteiro(await page.locator('[data-testid="resultado-avanco"]').textContent());
+
+    expect(rpmZ4, 'Z não entra na rotação').toBe(rpmZ2);
+    expect(avancoZ4 / avancoZ2, `dobrar Z tem que dobrar o avanço: ${avancoZ2} → ${avancoZ4}`).toBeCloseTo(2, 1);
+  });
+
+  // ─── Catálogo com substrato no nome (SPEC §3.2) ───────────────────────────
+
+  test('R21 — o substrato da ferramenta escolhida aparece no resumo do resultado', async ({ page }) => {
+    // O substrato saiu do formulário; se ele também não aparecer na leitura, o
+    // operador perde a informação que decide o Vc.
+    const resumo = page.locator('[data-testid="resumo-ferramenta"]');
+
+    await preencherFresaTopo(page);
+    await calcular(page);
+    await expect(resumo).toContainText('MD');
+    const comMD = (await resumo.textContent())!.trim();
+
+    await page.selectOption('[data-testid="select-tipo-ferramenta"]', 'fresa_topo_hss');
+    await calcular(page);
+    await expect(resumo).toContainText('HSS');
+    expect((await resumo.textContent())!.trim(), 'o resumo não distingue os substratos da mesma geometria').not.toBe(comMD);
   });
 
 });

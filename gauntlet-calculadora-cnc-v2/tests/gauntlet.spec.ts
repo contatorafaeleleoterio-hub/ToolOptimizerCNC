@@ -4,6 +4,14 @@ import { mockupPath, escolher, calcular } from './helpers';
 // Suíte de REGRESSÃO. Estes 23 cenários definem o comportamento já aprovado
 // (ciclo 3, 91/100) e têm que continuar verdes em todo ciclo do refactor.
 // Cenários do que o refactor ADICIONA ficam em `refactor.spec.ts`.
+//
+// Reapontados em 16/08/2026: o material da ferramenta saiu da tela (SPEC §3.2) e
+// virou parte da entrada do catálogo. Onde o cenário escolhia `MD` no seletor de
+// material, ele passa a escolher a ferramenta equivalente — mesma geometria, mesmo
+// substrato (`fresa_topo` + MD → `fresa_topo_md`). O `MD` era o default do seletor
+// removido, então a equivalência preserva o número. Onde a geometria não existe em
+// MD no catálogo (alto avanço, faceador, U-Drill, fresa de rosca, mandril), a
+// entrada é MD revestido e o número muda pelo fator 1,25 — registrado na etapa E.
 
 test.describe('Gauntlet Loop v2 — Suíte Completa de Testes (T01 a T24)', () => {
 
@@ -14,9 +22,8 @@ test.describe('Gauntlet Loop v2 — Suíte Completa de Testes (T01 a T24)', () =
   // T01 — Básico Fresar
   test('T01 — Básico Fresar: topo reto, Aço 1045, MD, desbaste, Ø10mm, Z=4', async ({ page }) => {
     await escolher(page, 'select-familia', 'fresar');
-    await page.selectOption('[data-testid="select-tipo-ferramenta"]', 'fresa_topo');
+    await page.selectOption('[data-testid="select-tipo-ferramenta"]', 'fresa_topo_md');
     await page.selectOption('[data-testid="select-material-peca"]', 'Aço 1045');
-    await escolher(page, 'select-material-ferramenta', 'MD');
     await escolher(page, 'select-operacao', 'desbaste');
     await page.fill('[data-testid="input-diametro"]', '10');
     await page.fill('[data-testid="input-arestas"]', '4');
@@ -53,7 +60,7 @@ test.describe('Gauntlet Loop v2 — Suíte Completa de Testes (T01 a T24)', () =
     await page.selectOption('[data-testid="select-material-peca"]', 'Aço 1045');
     await page.fill('[data-testid="input-diametro"]', '12');
 
-    await page.selectOption('[data-testid="select-tipo-ferramenta"]', 'fresa_toroidal');
+    await page.selectOption('[data-testid="select-tipo-ferramenta"]', 'fresa_toroidal_md');
 
     const matVal = await page.locator('[data-testid="select-material-peca"]').inputValue();
     const diaVal = await page.locator('[data-testid="input-diametro"]').inputValue();
@@ -139,12 +146,14 @@ test.describe('Gauntlet Loop v2 — Suíte Completa de Testes (T01 a T24)', () =
     await page.selectOption('[data-testid="select-material-peca"]', 'Aço 1045');
     await page.fill('[data-testid="input-diametro"]', '10');
 
-    await escolher(page, 'select-material-ferramenta', 'MD');
+    // mesma geometria, substratos diferentes: o fator de substrato é o único
+    // termo que muda entre as duas entradas do catálogo
+    await page.selectOption('[data-testid="select-tipo-ferramenta"]', 'fresa_topo_md');
     await calcular(page);
     const rpmMDText = await page.locator('[data-testid="resultado-rpm"]').textContent();
     const rpmMD = Number(rpmMDText?.replace(/\D/g, ''));
 
-    await escolher(page, 'select-material-ferramenta', 'HSS');
+    await page.selectOption('[data-testid="select-tipo-ferramenta"]', 'fresa_topo_hss');
     await calcular(page);
     const rpmHSSText = await page.locator('[data-testid="resultado-rpm"]').textContent();
     const rpmHSS = Number(rpmHSSText?.replace(/\D/g, ''));
@@ -155,7 +164,7 @@ test.describe('Gauntlet Loop v2 — Suíte Completa de Testes (T01 a T24)', () =
   // T13 — Diâmetro Efetivo em Fresa Esférica
   test('T13 — Diâmetro Efetivo em Fresa Esférica altera rotação quando ap < D/2', async ({ page }) => {
     await escolher(page, 'select-familia', 'fresar');
-    await page.selectOption('[data-testid="select-tipo-ferramenta"]', 'fresa_esferica');
+    await page.selectOption('[data-testid="select-tipo-ferramenta"]', 'fresa_esferica_md');
     await page.fill('[data-testid="input-diametro"]', '10');
     await page.fill('[data-testid="input-ap"]', '2'); // ap < 5mm
     await calcular(page);
@@ -167,7 +176,7 @@ test.describe('Gauntlet Loop v2 — Suíte Completa de Testes (T01 a T24)', () =
   // T14 — Diâmetro Efetivo em Fresa Toroidal
   test('T14 — Diâmetro Efetivo em Fresa Toroidal quando ap < r', async ({ page }) => {
     await escolher(page, 'select-familia', 'fresar');
-    await page.selectOption('[data-testid="select-tipo-ferramenta"]', 'fresa_toroidal');
+    await page.selectOption('[data-testid="select-tipo-ferramenta"]', 'fresa_toroidal_md');
     await page.fill('[data-testid="input-diametro"]', '10');
     await page.fill('[data-testid="input-raio-canto"]', '2');
     await page.fill('[data-testid="input-ap"]', '1'); // ap < r
@@ -179,7 +188,7 @@ test.describe('Gauntlet Loop v2 — Suíte Completa de Testes (T01 a T24)', () =
 
   // T15 — Fresa de Alto Avanço
   test('T15 — Fresa de Alto Avanço aplica correção por ângulo de posição', async ({ page }) => {
-    await page.selectOption('[data-testid="select-tipo-ferramenta"]', 'fresa_alto_avanco');
+    await page.selectOption('[data-testid="select-tipo-ferramenta"]', 'fresa_alto_avanco_mdrev');
     await page.fill('[data-testid="input-diametro"]', '16');
     await page.fill('[data-testid="input-angulo-posicao"]', '15');
     await calcular(page);
@@ -190,7 +199,7 @@ test.describe('Gauntlet Loop v2 — Suíte Completa de Testes (T01 a T24)', () =
 
   // T16 — Cabeçote Faceador
   test('T16 — Cabeçote Faceador alerta quando ae > 0.8D', async ({ page }) => {
-    await page.selectOption('[data-testid="select-tipo-ferramenta"]', 'cabecote_faceador');
+    await page.selectOption('[data-testid="select-tipo-ferramenta"]', 'cabecote_faceador_mdrev');
     await page.fill('[data-testid="input-diametro"]', '80');
     await page.fill('[data-testid="input-ae"]', '75'); // > 64mm (0.8D)
     await calcular(page);
@@ -201,7 +210,7 @@ test.describe('Gauntlet Loop v2 — Suíte Completa de Testes (T01 a T24)', () =
   // T17 — U-Drill Avanço Mínimo
   test('T17 — Broca U-Drill alerta avanço mínimo', async ({ page }) => {
     await escolher(page, 'select-familia', 'furar');
-    await page.selectOption('[data-testid="select-tipo-ferramenta"]', 'u_drill');
+    await page.selectOption('[data-testid="select-tipo-ferramenta"]', 'u_drill_mdrev');
     await page.fill('[data-testid="input-diametro"]', '20');
     await calcular(page);
 
@@ -211,7 +220,7 @@ test.describe('Gauntlet Loop v2 — Suíte Completa de Testes (T01 a T24)', () =
   // T18 — Alargador Vc reduzido
   test('T18 — Alargador possui Vc reduzido (~1/3 da broca)', async ({ page }) => {
     await escolher(page, 'select-familia', 'furar');
-    await page.selectOption('[data-testid="select-tipo-ferramenta"]', 'alargador');
+    await page.selectOption('[data-testid="select-tipo-ferramenta"]', 'alargador_md');
     await page.fill('[data-testid="input-diametro"]', '10');
     await calcular(page);
 
@@ -222,7 +231,7 @@ test.describe('Gauntlet Loop v2 — Suíte Completa de Testes (T01 a T24)', () =
   // T19 — Macho de Corte M10x1.5
   test('T19 — Macho de Corte calcula Furo Prévio e trava Avanço no passo', async ({ page }) => {
     await escolher(page, 'select-familia', 'roscar');
-    await page.selectOption('[data-testid="select-tipo-ferramenta"]', 'macho_corte');
+    await page.selectOption('[data-testid="select-tipo-ferramenta"]', 'macho_corte_md');
     await page.fill('[data-testid="input-diametro"]', '10');
     await page.fill('[data-testid="input-passo-rosca"]', '1.5');
     await calcular(page);
@@ -234,7 +243,7 @@ test.describe('Gauntlet Loop v2 — Suíte Completa de Testes (T01 a T24)', () =
   // T20 — Macho de Conformação
   test('T20 — Macho de Conformação calcula Furo Prévio maior', async ({ page }) => {
     await escolher(page, 'select-familia', 'roscar');
-    await page.selectOption('[data-testid="select-tipo-ferramenta"]', 'macho_conformacao');
+    await page.selectOption('[data-testid="select-tipo-ferramenta"]', 'macho_conformacao_md');
     await page.fill('[data-testid="input-diametro"]', '10');
     await page.fill('[data-testid="input-passo-rosca"]', '1.5');
     await calcular(page);
@@ -246,7 +255,7 @@ test.describe('Gauntlet Loop v2 — Suíte Completa de Testes (T01 a T24)', () =
   // T21 — Fresa de Rosca
   test('T21 — Fresa de Rosca calcula compensação de avanço', async ({ page }) => {
     await escolher(page, 'select-familia', 'roscar');
-    await page.selectOption('[data-testid="select-tipo-ferramenta"]', 'fresa_rosca');
+    await page.selectOption('[data-testid="select-tipo-ferramenta"]', 'fresa_rosca_mdrev');
     await page.fill('[data-testid="input-diametro"]', '12');
     await page.fill('[data-testid="input-passo-rosca"]', '1.75');
     await calcular(page);
@@ -258,7 +267,7 @@ test.describe('Gauntlet Loop v2 — Suíte Completa de Testes (T01 a T24)', () =
   // T22 — Mandrilar ap por lado e L/D > 5 bloqueado
   test('T22 — Mandrilar ap por lado e alerta de L/D > 5', async ({ page }) => {
     await escolher(page, 'select-familia', 'mandrilar');
-    await page.selectOption('[data-testid="select-tipo-ferramenta"]', 'mandril');
+    await page.selectOption('[data-testid="select-tipo-ferramenta"]', 'mandril_mdrev');
     await page.fill('[data-testid="input-diametro-inicial"]', '30');
     await page.fill('[data-testid="input-diametro-final"]', '34');
     await page.fill('[data-testid="input-balanco"]', '160'); // L/D > 5

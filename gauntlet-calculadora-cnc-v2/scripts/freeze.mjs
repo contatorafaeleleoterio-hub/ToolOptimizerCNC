@@ -6,14 +6,14 @@
  *
  * Congela:
  *   1. A região DADOS do mockup (materiais, fatores, roscas, máquina, schemas
- *      dos 18 tipos) — byte a byte. O Builder mexe na tela, nunca no domínio.
+ *      das 33 entradas do catálogo) — byte a byte. O Builder mexe na tela, nunca no domínio.
  *   2. Todo arquivo de `tests/`, `criteria/` e `scripts/` — inclusive os golden
  *      values, a matriz do Juiz e este próprio script. Teste que o avaliado pode
  *      reescrever não mede nada, e validador que ele pode editar mede menos ainda.
  *
  * O motor de cálculo NÃO é congelado por byte de propósito: os 4 controles de
  * ajuste fino precisam poder sobrepor Vc/fz/ae/ap. Quem prova que a matemática
- * não mudou é `goldens.spec.ts`, que compara 54 combinações contra valores
+ * não mudou é `goldens.spec.ts`, que compara 99 combinações contra valores
  * capturados antes de qualquer edição.
  */
 import * as path from 'path';
@@ -70,7 +70,7 @@ const esperado = JSON.parse(fs.readFileSync(freezePath, 'utf8'));
 const violacoes = [];
 
 if (atual.dados !== esperado.dados) {
-  violacoes.push('região DADOS do mockup foi alterada (materiais, fatores, roscas, máquina ou schemas dos 18 tipos)');
+  violacoes.push('região DADOS do mockup foi alterada (materiais, fatores, roscas, máquina ou schemas das 33 entradas)');
 }
 
 for (const [arquivo, hash] of Object.entries(esperado.arquivos)) {

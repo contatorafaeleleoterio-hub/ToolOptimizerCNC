@@ -7,8 +7,10 @@
  * aplica as regras duras do loop:
  *
  *   - regressão (gauntlet.spec.ts): os 23 cenários aprovados, todos verdes;
+ *   - invariantes (invariantes.spec.ts): 3 cenários, todos verdes — são os
+ *     executores dos gates 2, 3 e 4 do Juiz;
  *   - motor (goldens.spec.ts): 1 cenário, verde;
- *   - alvos do refactor (refactor.spec.ts): 17 cenários; quantos estão verdes
+ *   - alvos do refactor (refactor.spec.ts): 21 cenários; quantos estão verdes
  *     é o placar do ciclo, e o PASS exige todos.
  *
  * A contagem é EXATA de propósito: "0 falhas" também é o resultado de apagar
@@ -22,8 +24,9 @@ const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 
 const ESPERADO = {
   'gauntlet.spec.ts': { total: 23, exigeTodosVerdes: true, rotulo: 'regressão' },
+  'invariantes.spec.ts': { total: 3, exigeTodosVerdes: true, rotulo: 'invariantes (gates 2-4)' },
   'goldens.spec.ts': { total: 1, exigeTodosVerdes: true, rotulo: 'motor (golden values)' },
-  'refactor.spec.ts': { total: 17, exigeTodosVerdes: false, rotulo: 'alvos do refactor' },
+  'refactor.spec.ts': { total: 21, exigeTodosVerdes: false, rotulo: 'alvos do refactor' },
 };
 
 const TOKENS_PROIBIDOS = ['test.skip', 'test.only', 'test.fixme', '.skip(', '.only('];

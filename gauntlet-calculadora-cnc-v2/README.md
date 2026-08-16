@@ -1,16 +1,46 @@
-﻿# Gauntlet Loop v2 â€” Calculadora CNC Multi-Ferramenta (Sandbox)
+# Gauntlet Loop v2 — Calculadora CNC Multi-Ferramenta (Sandbox)
 
-> **Data de criaÃ§Ã£o:** 2026-08-13 05:50:20  
-> **Item do backlog:** 17  
-> **Plano de execuÃ§Ã£o:** [PLAN_GAUNTLET_V2_EXECUCAO.md](../../docs/plans/PLAN_GAUNTLET_V2_EXECUCAO.md)  
-> **InstÃ¢ncia:** [PLAN_GAUNTLET_CALCULADORA_CNC_V2.md](../../docs/plans/PLAN_GAUNTLET_CALCULADORA_CNC_V2.md)  
+> **Criada em:** 13/08/2026 · **Item do backlog:** 17
+> **Plano vigente:** [PLAN_GAUNTLET_V2_REFACTOR.md](../docs/plans/PLAN_GAUNTLET_V2_REFACTOR.md)
+> **Mecânica do loop:** `central_rafael/protocolos/protocolo-loop-construtor-juiz-cego.md`
+> **Estado:** construção aprovada (91/100, ciclo 3). Refactor visual instrumentado e **não executado**.
 
-## Estrutura da Sandbox
+Experimento isolado: **nada aqui toca `src/`**. O mockup é campo de prova dos tokens do tema claro
+antes de qualquer linha ir para produção.
 
-- esearch/: Contrato de construÃ§Ã£o e regras de HMI industrial
-- criteria/: Tokens de design e matriz do Juiz (congelados em E1)
-- 	ests/: CenÃ¡rios automatizados Playwright e contrato de data-testid
-- mockup/: Artefato do Construtor (index.html)
-- state/: HistÃ³rico de ciclos, vereditos e snapshots de rollback
-- eports/: RelatÃ³rio final da rodada (FINAL_REPORT.md)
-- scripts/: AutomaÃ§Ãµes de validaÃ§Ã£o de ciclo
+## Estrutura
+
+| Pasta | Conteúdo |
+|---|---|
+| `research/` | `BUILD_CONTRACT_REFACTOR.md` (contrato do Construtor) e `HMI_RULES.md` |
+| `criteria/` | `JUDGE_CRITERIA_REFACTOR.md` — matriz de 95, 14 gates, pisos por categoria |
+| `tests/` | 44 cenários Playwright, golden values e o contrato de `data-testid` |
+| `mockup/` | `index.html` — o artefato que o Construtor edita |
+| `state/` | `FREEZE.json` (integridade), histórico de ciclos e snapshots de rollback |
+| `reports/` | relatório final da rodada |
+| `scripts/` | validação de ciclo, congelamento, contagem de suíte e conferência de paleta |
+
+## A suíte — 44 cenários em 4 grupos
+
+| Arquivo | Grupo | Regra |
+|---|---|---|
+| `gauntlet.spec.ts` | 23 de regressão | verdes em todo ciclo |
+| `invariantes.spec.ts` | 3 invariantes | verdes em todo ciclo — executores dos gates 2, 3 e 4 |
+| `goldens.spec.ts` | 54 combinações do motor | verde em todo ciclo |
+| `refactor.spec.ts` | 17 alvos do refactor | vermelhos até o ciclo que passa |
+
+## Comandos
+
+```bash
+npx playwright test                       # a suíte inteira (~5 min)
+node scripts/check-suites.mjs             # contagem exata por grupo, cenário desligado
+node scripts/check-tokens.mjs             # paleta contra DS_TEMA_CLARO.md
+node scripts/freeze.mjs                   # confere integridade (--write só o Orquestrador)
+node scripts/capture-goldens.mjs          # recaptura os golden values (só o Orquestrador)
+```
+
+Validação completa de um ciclo, em 6 etapas — exit `0` libera o Juiz, `1` reprova, `2` alvos pendentes:
+
+```powershell
+.\scripts\validate-cycle-refactor.ps1 -CycleNumber N
+```

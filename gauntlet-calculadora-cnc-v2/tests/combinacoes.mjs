@@ -28,11 +28,18 @@ export const FIELD_VALUES = {
 // designação da rosca, então o preenchimento automático não os alcança.
 // furoExecutado não entra: é opcional por definição.
 
-/** Contextos: cobrem 3 grupos ISO (dado verificado e estimado) e 3 fatores de ferramenta. */
+/**
+ * Contextos: cobrem 3 grupos ISO (dado verificado e estimado) × as 3 operações.
+ *
+ * O eixo `ferramenta` saiu em 15/08/2026: o substrato deixou de ser um campo da
+ * tela e virou parte da própria entrada do catálogo (SPEC §3.2). A cobertura de
+ * substrato passa a vir das 33 entradas enumeradas por `enumerarTipos` — repeti-la
+ * aqui multiplicaria combinações sem cobrir nada novo. 33 × 3 = 99 goldens.
+ */
 export const CONTEXTS = [
-  { material: 'Aço 1045', ferramenta: 'MD', operacao: 'desbaste' },
-  { material: 'Alumínio 6061-T6', ferramenta: 'HSS', operacao: 'acabamento' },
-  { material: 'Ferro Fundido GG25', ferramenta: 'MD_REV', operacao: 'semi' },
+  { material: 'Aço 1045', operacao: 'desbaste' },
+  { material: 'Alumínio 6061-T6', operacao: 'acabamento' },
+  { material: 'Ferro Fundido GG25', operacao: 'semi' },
 ];
 
 export const OUTPUT_TESTIDS = [
@@ -81,7 +88,6 @@ export async function aplicarCombinacao(page, tipo, ctx) {
   await escolher(page, 'select-familia', tipo.familia);
   await page.selectOption('[data-testid="select-tipo-ferramenta"]', tipo.id);
   await page.selectOption('[data-testid="select-material-peca"]', ctx.material);
-  await escolher(page, 'select-material-ferramenta', ctx.ferramenta);
   await escolher(page, 'select-operacao', ctx.operacao);
 
   for (const [key, value] of Object.entries(FIELD_VALUES)) {

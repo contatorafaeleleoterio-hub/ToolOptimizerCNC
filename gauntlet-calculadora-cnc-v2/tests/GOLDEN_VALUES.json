@@ -255,7 +255,7 @@
       "texto-fonte-vc": "Fonte: catálogo interno validado",
       "resultado-furo-previo": "— mm",
       "resultado-tempo-furo": "— min",
-      "badge-alerta-seguranca": "! Bloqueado: Avanço calculado de 10331 mm/min excede o limite da máquina (5000mm/min).",
+      "badge-alerta-seguranca": "! Bloqueado: Avanço calculado de 10331 mm/min excede o limite da máquina (5000mm/min). Reduza o avanço em pelo menos 52% para caber.",
       "cartao-formula": "Ver fórmulas e substituições n = (Vc × 1000) / (π × Dc) = (140.0 × 1000) / (π × 10.00) = 4456 rpmVf = fz × Z × n = 0.580 × 4 × 4456 = 10331 mm/minQ = (ap × ae × Vf) / 1000 = 103.31 cm³/minPc = (Q × kc) / 60000 = 5.002 kWMc = 9549 × Pc / n = 10.72 Nm"
     }
   },
@@ -275,7 +275,7 @@
       "texto-fonte-vc": "Fonte: estimativa interna, sem validação de catálogo",
       "resultado-furo-previo": "— mm",
       "resultado-tempo-furo": "— min",
-      "badge-alerta-seguranca": "! Bloqueado: Avanço calculado de 5707 mm/min excede o limite da máquina (5000mm/min).",
+      "badge-alerta-seguranca": "! Bloqueado: Avanço calculado de 5707 mm/min excede o limite da máquina (5000mm/min). Reduza o avanço em pelo menos 12% para caber.",
       "cartao-formula": "Ver fórmulas e substituições n = (Vc × 1000) / (π × Dc) = (232.0 × 1000) / (π × 10.00) = 7385 rpmVf = fz × Z × n = 0.193 × 4 × 7385 = 5707 mm/minQ = (ap × ae × Vf) / 1000 = 57.07 cm³/minPc = (Q × kc) / 60000 = 10.794 kWMc = 9549 × Pc / n = 13.96 Nm"
     }
   },
@@ -295,7 +295,7 @@
       "texto-fonte-vc": "Fonte: estimativa interna, sem validação de catálogo",
       "resultado-furo-previo": "— mm",
       "resultado-tempo-furo": "— min",
-      "badge-alerta-seguranca": "! Bloqueado: Avanço calculado de 9839 mm/min excede o limite da máquina (5000mm/min).",
+      "badge-alerta-seguranca": "! Bloqueado: Avanço calculado de 9839 mm/min excede o limite da máquina (5000mm/min). Reduza o avanço em pelo menos 49% para caber.",
       "cartao-formula": "Ver fórmulas e substituições n = (Vc × 1000) / (π × Dc) = (200.0 × 1000) / (π × 10.00) = 6366 rpmVf = fz × Z × n = 0.386 × 4 × 6366 = 9839 mm/minQ = (ap × ae × Vf) / 1000 = 98.39 cm³/minPc = (Q × kc) / 60000 = 2.989 kWMc = 9549 × Pc / n = 4.48 Nm"
     }
   },
@@ -315,7 +315,7 @@
       "texto-fonte-vc": "Fonte: catálogo interno validado",
       "resultado-furo-previo": "— mm",
       "resultado-tempo-furo": "— min",
-      "badge-alerta-seguranca": "! Bloqueado: Avanço calculado de 10331 mm/min excede o limite da máquina (5000mm/min).",
+      "badge-alerta-seguranca": "! Bloqueado: Avanço calculado de 10331 mm/min excede o limite da máquina (5000mm/min). Reduza o avanço em pelo menos 52% para caber.",
       "cartao-formula": "Ver fórmulas e substituições n = (Vc × 1000) / (π × Dc) = (140.0 × 1000) / (π × 10.00) = 4456 rpmVf = fz × Z × n = 0.580 × 4 × 4456 = 10331 mm/minQ = (ap × ae × Vf) / 1000 = 103.31 cm³/minPc = (Q × kc) / 60000 = 5.002 kWMc = 9549 × Pc / n = 10.72 Nm"
     }
   },
@@ -335,7 +335,7 @@
       "texto-fonte-vc": "Fonte: estimativa interna, sem validação de catálogo",
       "resultado-furo-previo": "— mm",
       "resultado-tempo-furo": "— min",
-      "badge-alerta-seguranca": "! Bloqueado: Avanço calculado de 5707 mm/min excede o limite da máquina (5000mm/min).",
+      "badge-alerta-seguranca": "! Bloqueado: Avanço calculado de 5707 mm/min excede o limite da máquina (5000mm/min). Reduza o avanço em pelo menos 12% para caber.",
       "cartao-formula": "Ver fórmulas e substituições n = (Vc × 1000) / (π × Dc) = (232.0 × 1000) / (π × 10.00) = 7385 rpmVf = fz × Z × n = 0.193 × 4 × 7385 = 5707 mm/minQ = (ap × ae × Vf) / 1000 = 57.07 cm³/minPc = (Q × kc) / 60000 = 10.794 kWMc = 9549 × Pc / n = 13.96 Nm"
     }
   },
@@ -355,7 +355,7 @@
       "texto-fonte-vc": "Fonte: estimativa interna, sem validação de catálogo",
       "resultado-furo-previo": "— mm",
       "resultado-tempo-furo": "— min",
-      "badge-alerta-seguranca": "! Bloqueado: Avanço calculado de 9839 mm/min excede o limite da máquina (5000mm/min).",
+      "badge-alerta-seguranca": "! Bloqueado: Avanço calculado de 9839 mm/min excede o limite da máquina (5000mm/min). Reduza o avanço em pelo menos 49% para caber.",
       "cartao-formula": "Ver fórmulas e substituições n = (Vc × 1000) / (π × Dc) = (200.0 × 1000) / (π × 10.00) = 6366 rpmVf = fz × Z × n = 0.386 × 4 × 6366 = 9839 mm/minQ = (ap × ae × Vf) / 1000 = 98.39 cm³/minPc = (Q × kc) / 60000 = 2.989 kWMc = 9549 × Pc / n = 4.48 Nm"
     }
   },

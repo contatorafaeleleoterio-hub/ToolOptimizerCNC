@@ -3,7 +3,8 @@ import { mockupPath } from './helpers';
 import { aplicarCombinacao, lerSaidas } from './combinacoes.mjs';
 import * as goldens from './GOLDEN_VALUES.json';
 
-// Trava do motor. As 54 combinações foram capturadas do mockup aprovado
+// Trava do motor. As 99 combinações (33 entradas do catálogo × 3 contextos) foram
+// capturadas do mockup aprovado
 // (ciclo 3, 91/100) ANTES de qualquer edição do refactor. Se um único número,
 // alerta ou linha de fórmula mudar, este cenário reprova.
 //
@@ -13,7 +14,7 @@ import * as goldens from './GOLDEN_VALUES.json';
 
 const linhas = (goldens as any).default ?? goldens;
 
-test('GOLDEN — as 54 combinações de referência produzem exatamente os mesmos valores', async ({ page }) => {
+test('GOLDEN — as 99 combinações de referência produzem exatamente os mesmos valores', async ({ page }) => {
   test.setTimeout(180_000);
 
   const divergencias: string[] = [];

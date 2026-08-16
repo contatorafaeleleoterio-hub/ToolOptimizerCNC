@@ -1,0 +1,27 @@
+{
+  "congeladoEm": "2026-08-14T22:20:53.655Z",
+  "dados": "58bdad08596f9a2576239d303306c74d68a81dd0cbbd4f789902bdaa3f21da77",
+  "arquivos": {
+    "tests/GOLDEN_VALUES.json": "4d83b13a1e06500e54f4d8c7b8eb7053367b1810710ed6f38368f02294c09942",
+    "tests/TESTID_CONTRACT.md": "163e44154f59d91ff48df29f3b52bf5955e25867a2d34e6537fd6401d81a0df6",
+    "tests/TEST_SCENARIOS.md": "cda9daf55840a1d0c27a69097d6c5b8804807d6d6e5db69d036b637669be8a24",
+    "tests/combinacoes.mjs": "6951c1c7f98c607310f15ce45b8b99431efc389bd52df0477d7f200843626642",
+    "tests/gauntlet.spec.ts": "43d9e53c75cb479f6a7e0a90a619e400762eea8f5ef275cd7e72d36f129407c0",
+    "tests/goldens.spec.ts": "be439a283a0b0485c1f7e070d5e7288cbb6fab288fb934913d7dddfeedbd30d8",
+    "tests/helpers.ts": "f787986c28d1a73035355a736edfa54b10624bdd57e7778abdf5092deae46b98",
+    "tests/invariantes.spec.ts": "638953386ab9dbfa30d8481c563f4b9cebd569ca794b7242beedbbbedef7c1ca",
+    "tests/refactor.spec.ts": "9f399fb9f16d8cd376a0934754f8bb8aa70de94762a728f40cf1221d99de89c1",
+    "criteria/DESIGN_TOKENS.md": "b0ed126c73dd99cf79b3f554578fd6010670496007639dd2157ad0ae72ec632c",
+    "criteria/JUDGE_CRITERIA.md": "2f84f78871222b2c4288b1ecaf80776c998e9ae7cd8f9cdc6f18b3f89ece226b",
+    "criteria/JUDGE_CRITERIA_REFACTOR.md": "0c378ce638897a5753dca4b3b7823b55cbd4e2208c6e81ee55080645ae433882",
+    "scripts/capture-goldens.mjs": "56bde7c1da5d948a0abb8c24c7e83978478d4217a930a992b328e1f75e5f4995",
+    "scripts/check-suites.mjs": "8081bca797531d840601c28dabfb8082e3c24ed70dc2f0472475819dec4268bf",
+    "scripts/check-tokens.mjs": "68e2daba390817e95cb79f33417d5bbc86ab32ef4ce41eeacef0fc7e92cae8aa",
+    "scripts/freeze.mjs": "533f7dc57ab09a4fbaf60128a82b2761e6d4c8a8bfdca5e1fa54243c5b70b274",
+    "scripts/validate-cycle-refactor.ps1": "3d7b9b9f9c3cdd3d959357074b173d7f7578b6ae44330a7408dfeadf30fd6cfa",
+    "scripts/validate-cycle.ps1": "36c26ecba81fd6cdae91c41662edcbc0e256d7997916cb5972ea26564dad8422",
+    "research/BUILD_CONTRACT.md": "4857038978f66854fbd258dbd2dac626e3147117e3d147b229a69ed9e306a8b0",
+    "research/BUILD_CONTRACT_REFACTOR.md": "47fbe8e940d4bae55426c316998178052b0590c55da01acee63216fbd5935e1c",
+    "research/HMI_RULES.md": "03a0ff2c26a1db37faca707a870029bcc1ec2f48adac501cd63311aa54f7cc40"
+  }
+}

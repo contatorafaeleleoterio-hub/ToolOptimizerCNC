@@ -23,22 +23,28 @@ $falhas = @()
 Write-Host "=== Validacao de Refatoracao (Ciclo $CycleNumber) - Gauntlet v2 ===" -ForegroundColor Cyan
 
 # 1. Integridade: regiao DADOS do mockup + tests/ + criteria/ + scripts/ + research/
-Write-Host "[1/5] Conferindo integridade (motor, testes, criterios, scripts)..." -ForegroundColor Yellow
+Write-Host "[1/6] Conferindo integridade (motor, testes, criterios, scripts)..." -ForegroundColor Yellow
 node scripts/freeze.mjs
 if ($LASTEXITCODE -ne 0) { $falhas += "Integridade violada: arquivo congelado foi alterado" }
 
 # 2. Suite Playwright (reporter do config: list + json)
-Write-Host "[2/5] Executando suite Playwright..." -ForegroundColor Yellow
+Write-Host "[2/6] Executando suite Playwright..." -ForegroundColor Yellow
 npx playwright test
 $playwrightExit = $LASTEXITCODE
 
 # 3. Contagem exata por grupo + nenhum cenario desligado
-Write-Host "[3/5] Conferindo contagem por grupo..." -ForegroundColor Yellow
+Write-Host "[3/6] Conferindo contagem por grupo..." -ForegroundColor Yellow
 node scripts/check-suites.mjs
 if ($LASTEXITCODE -ne 0) { $falhas += "Suite reprovada: regressao, contagem divergente ou cenario desligado" }
 
-# 4. Fronteira da sandbox
-Write-Host "[4/5] Conferindo fronteira da sandbox..." -ForegroundColor Yellow
+# 4. Paleta: executor da parte script da categoria 7 e do gate 9.
+# Hex fora do Design System e reprova objetiva - nao gasta o Juiz.
+Write-Host "[4/6] Conferindo paleta contra o Design System..." -ForegroundColor Yellow
+node scripts/check-tokens.mjs
+if ($LASTEXITCODE -ne 0) { $falhas += "Paleta reprovada: hex fora de DS_TEMA_CLARO.md" }
+
+# 5. Fronteira da sandbox
+Write-Host "[5/6] Conferindo fronteira da sandbox..." -ForegroundColor Yellow
 Push-Location ..
 $gitStatus = git status --porcelain
 Pop-Location
@@ -52,8 +58,8 @@ if ($foraDaSandbox) {
     $falhas += "Fronteira da sandbox violada"
 }
 
-# 5. Snapshot do ciclo (rollback para o melhor ciclo depende disto)
-Write-Host "[5/5] Gravando snapshot do ciclo..." -ForegroundColor Yellow
+# 6. Snapshot do ciclo (rollback para o melhor ciclo depende disto)
+Write-Host "[6/6] Gravando snapshot do ciclo..." -ForegroundColor Yellow
 $mockupPath = "mockup/index.html"
 if (Test-Path $mockupPath) {
     $snapshotDir = "state/snapshots"

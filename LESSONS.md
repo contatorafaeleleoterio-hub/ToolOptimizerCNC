@@ -119,7 +119,14 @@ erro de sintaxe em cascata. **Regra:** `.ps1` em ASCII puro.
 **Regra:** enumerar pelo DOM (as `<option>` do seletor), que é como o usuário faz e não depende da
 estrutura interna do script.
 
-**A suíte leva ~5 minutos.** Orçar isso por ciclo antes de prometer prazo.
+**A suíte leva ~5 minutos** — ~9 quando os goldens estão vermelhos e cada linha espera o timeout.
+Orçar isso por ciclo antes de prometer prazo.
+
+**O RTK reescreve `npx playwright test` acrescentando `--reporter=json`.** Isso anula os reporters
+do `playwright.config.ts` e `reports/test-results.json` **não é regravado** — `check-suites.mjs`
+passa a conferir um relatório velho sem avisar, que é exatamente a trava que ele deveria ser.
+**Regra:** rodar com `PLAYWRIGHT_JSON_OUTPUT_NAME=reports/test-results.json` e conferir a data do
+arquivo antes de acreditar no placar.
 
 ---
 

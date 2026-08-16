@@ -116,6 +116,12 @@ mesmo tempo** — não há mais "uma por vez" nem fechamento por clique fora.
 | `input-resultado-avanco` | campo editável do Avanço. Inverte `fz`/`fn` e trava em `maxFeed`. **Inerte na família roscar** — `Vf = P × n` é imposto pela rosca |
 | `badge-forcado` | marca de override de limite físico no resultado |
 
+### Resumo do resultado
+
+| `data-testid` | Elemento |
+|---|---|
+| `resumo-ferramenta` | nome da ferramenta escolhida na leitura do resultado, **com o substrato** (`Fresa de Topo Reto — MD revestido`). O substrato saiu do formulário; se sumir também da leitura, o operador perde a informação que decide o Vc. `R21` mede |
+
 ### Gavetas de bloco
 
 | `data-testid` | Elemento |

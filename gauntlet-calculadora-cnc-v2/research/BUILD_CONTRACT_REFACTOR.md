@@ -33,7 +33,7 @@ validação, antes de qualquer nota.
 **Roda quantas vezes quiser** (ler e executar é permitido, editar não):
 
 ```
-npx playwright test                 44 cenários
+npx playwright test                 48 cenários
 node scripts/check-tokens.mjs       paleta contra o Design System
 node scripts/freeze.mjs             confere que você não saiu do lugar certo
 ```
@@ -447,14 +447,14 @@ na tela.** Teto de 6 campos por tipo no fluxo padrão, verificado automaticament
 
 ## 11. Como saber que terminou
 
-`npx playwright test` — **44 cenários em quatro grupos**:
+`npx playwright test` — **48 cenários em quatro grupos**:
 
 | Grupo | O que é | Regra |
 |---|---|---|
 | `gauntlet.spec.ts` | 23 cenários de regressão | **verdes em todo ciclo** — quebrar é reprovar |
-| `invariantes.spec.ts` | 3 invariantes (18 tipos sem erro de JS · nada de `NaN`/`undefined`/`Infinity` na tela · console limpo) | **verdes em todo ciclo** — já valem hoje |
-| `goldens.spec.ts` | 54 combinações do motor | **verde em todo ciclo** — quebrar significa que o cálculo mudou |
-| `refactor.spec.ts` | 17 alvos novos | vermelhos no começo; ficar todos verdes é o alvo do ciclo |
+| `invariantes.spec.ts` | 3 invariantes (as 33 entradas sem erro de JS · nada de `NaN`/`undefined`/`Infinity` na tela · console limpo) | **verdes em todo ciclo** — já valem hoje |
+| `goldens.spec.ts` | 99 combinações do motor (33 entradas × 3 contextos) | **verde em todo ciclo** — quebrar significa que o cálculo mudou |
+| `refactor.spec.ts` | 21 alvos novos | vermelhos no começo; ficar todos verdes é o alvo do ciclo |
 
 Mais dois verificadores objetivos, que você pode rodar quantas vezes quiser:
 

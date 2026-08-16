@@ -1,10 +1,13 @@
 # Plano de Execução — Gauntlet Loop v2: Refactor Visual da Calculadora
 
-> **Status:** revisado em 14/08/2026 · **aguardando "pode seguir" do Mestre** · refatoração **não executada**.
+> **Status:** ✅ **pronto para executar o E2** (fechado em 14/08/2026) · refatoração **não executada**.
+> Instrumentação, contratos, critérios e gates conferidos ponta a ponta: 48 cenários rodando,
+> todo gate `script` com executor, as 7 decisões da §13.5 escritas no contrato do Construtor.
 > **Item do backlog:** 17 (continuação — refactor da entrega aprovada em 91/100, ciclo 3).
 > **Mecânica do loop:** `C:\Users\USUARIO\Desktop\central_rafael\protocolos\protocolo-loop-construtor-juiz-cego.md`.
 > **Preparação (E1) já feita:** contratos, suíte, golden values e blindagem estão no repositório.
-> A sandbox está coerente: `mockup/index.html` é byte a byte o aprovado no commit `cd9df17`.
+> A sandbox está coerente: `mockup/index.html` é o aprovado no commit `cd9df17` **mais a correção
+> de mensagem da §13.6**, aplicada pelo Orquestrador em 14/08/2026 com os goldens recapturados.
 > **Erros a não repetir:** `LESSONS.md` na raiz.
 
 ---
@@ -190,12 +193,15 @@ SVG/CSS puro.
 
 | Gauge | Valor | Escala |
 |---|---|---|
-| Eficiência de Avanço | `Vf efetivo ÷ Vf recomendado × 100` | `centered` — 100% no meio |
-| Produtividade MRR | `Q` já calculado | `ascending` |
-| Saúde da Ferramenta | índice já calculado | `ascending` |
+| Eficiência de Avanço | `Vf efetivo ÷ Vf recomendado × 100` | `centered`, `scaleMax` 150 — 100% no meio |
+| Produtividade MRR | `Q` já calculado | `ascending`, **0–50 cm³/min**, cortes em 40% e 76% |
+| Saúde da Ferramenta | índice já calculado | `ascending`, 0–100, mesmos cortes |
 
 Cores: **a rampa de estado do Design System**, não a paleta do componente de produção.
 **Ponteiro em `--tx-1`** — o ponteiro branco da produção some em fundo claro.
+
+**Os três abrem procedência** — foi a prioridade 3 do Juiz no ensaio: gauge calculado e nunca
+explicado é dedução na categoria 6.
 
 ---
 
@@ -237,19 +243,20 @@ O que mais derruba ciclo:
 | Vetor | Trava | Estado |
 |---|---|---|
 | Builder edita os testes para passar | SHA-256 de `tests/`, `criteria/`, `scripts/` e `research/` | `scripts/freeze.mjs` |
+| Gate declarado como "script" sem executor | gates 2/3/4 → `invariantes.spec.ts` · categoria 7 e gate 9 → `check-tokens.mjs` | fechado em 14/08/2026 |
 | Builder mexe nos dados de domínio | Região `DADOS` do mockup congelada byte a byte | idem — **trava testada: alterar `maxRPM` de 12000 para 9999 foi detectado e reprovou com exit 1** |
-| Builder hardcoda resultado dos testes visíveis | 54 combinações de entrada/saída capturadas antes de qualquer edição | `tests/GOLDEN_VALUES.json` + `goldens.spec.ts` |
+| Builder hardcoda resultado dos testes visíveis | 99 combinações de entrada/saída capturadas antes de qualquer edição | `tests/GOLDEN_VALUES.json` + `goldens.spec.ts` |
 | Cenário desligado (`test.skip`/`only`) | Recusa por token + **contagem exata** por grupo | `scripts/check-suites.mjs` |
 | Builder mexe fora da sandbox | `git status --porcelain` derrubando o ciclo (antes só imprimia aviso) | `validate-cycle-refactor.ps1` |
 | Juiz inflar score | Cego, read-only, **evidência obrigatória** por dedução **e** por nota cheia, prompt variado por ciclo | `JUDGE_CRITERIA_REFACTOR.md` |
 | Score alto escondendo categoria podre | **Piso por categoria** | idem |
 
 **Motor não é congelado por byte de propósito** — os controles de ajuste precisam sobrepor
-Vc/fz/ae/ap. Quem prova que a matemática não mudou são os 54 goldens.
+Vc/fz/ae/ap. Quem prova que a matemática não mudou são os 99 goldens.
 
 **Limite conhecido:** os goldens fixam também o **texto** dos alertas. Melhorar a redação de uma
 mensagem exige rebaseline feito pelo orquestrador, com o diff inspecionado — nunca pelo Construtor.
-Ver §14, item 3.
+Já aconteceu uma vez, em 14/08/2026 — ver §13.6.
 
 ---
 
@@ -260,7 +267,7 @@ matriz diferente. Exigência do protocolo §4/Fase 2.
 
 | # | Categoria | Pts | Quem pontua | Piso |
 |---|---|---|---|---|
-| 1 | Correção de cálculo e cobertura dos 18 tipos | 12 | script | 10 |
+| 1 | Correção de cálculo e cobertura das 33 entradas | 12 | script | 10 |
 | 2 | Usabilidade: economia de setup + ajuda contextual | 14 | Juiz | 11 |
 | 3 | Prevenção e recuperação de erro | 12 | Juiz | 10 |
 | 4 | Fluxo e estabilidade de layout | 10 | Juiz | 8 |
@@ -271,6 +278,11 @@ matriz diferente. Exigência do protocolo §4/Fase 2.
 | 9 | Indicadores + suíte objetiva | 8 | script + Juiz | 6 |
 
 **14 gates**, um FAIL reprova tudo. Detalhe em `criteria/JUDGE_CRITERIA_REFACTOR.md`.
+
+**Todo gate marcado como `script` tem executor nomeado** — foi conferido um a um em 14/08/2026.
+Os gates 2, 3 e 4 ganharam `tests/invariantes.spec.ts`; a parte objetiva da categoria 7 e do gate 9
+ganhou `scripts/check-tokens.mjs`. Gate sem executor é gate que passa por omissão, e isso derrubaria
+a blindagem inteira por dentro.
 
 ---
 
@@ -302,23 +314,26 @@ precisa endereçar explicitamente o que o Juiz olhou além deles.
 
 1. **Prevenção de erro** — o bloqueio de rotação/avanço excedidos não sugeria ação nenhuma, e
    potência/torque diziam só "reduza ap/ae/Vc", sem número-alvo. É o padrão que o próprio critério
-   usa como exemplo do esperado.
+   usa como exemplo do esperado. ✅ **Resolvido pelo Orquestrador** — ver §13.6.
 2. **Usabilidade** — os ângulos de chanfro e de escareador não afetam cálculo (§3, campos 5 e 6).
+   ✅ **Cobertos por `R10`** e listados no §10 do contrato.
 3. **Clareza** — os gauges de Eficiência de Avanço e Saúde da Ferramenta não têm procedência
-   nenhuma: são calculados e nunca explicados ao operador.
+   nenhuma: são calculados e nunca explicados ao operador. ✅ **Exigida no §7 do contrato.**
 
 ### 13.4 Outros achados objetivos
 
 - **`.disclosure` (34px) e `.prov` (34px)** ficaram abaixo dos 44px que o DS exige. Os cenários
   automatizados não pegaram porque só medem os controles de escolha segmentada — **lacuna de
-  cobertura conhecida**.
+  cobertura conhecida**. ✅ **Escrita no §6 e no §9 do contrato**, com o número do ensaio citado;
+  continua sendo achado do Juiz, não do script.
 - Contraste AA já passava nos 5 pares medidos **antes** do refactor, com a paleta FlowNC.
 - R11 (teto de 6 campos) já passava antes — o corte dos campos mortos é o que entrega.
-- A suíte inteira leva **~5 minutos**. Orçar isso por ciclo.
+- A suíte inteira leva **~5 minutos** (os 3 invariantes somam 20s). Orçar isso por ciclo.
 
-### 13.5 Suposições que o Construtor teve que tomar — pré-responder no contrato
+### 13.5 Suposições que o Construtor teve que tomar ✅ **todas respondidas no contrato (14/08/2026)**
 
-Cada uma destas é um buraco do contrato que apareceu só na execução:
+Cada uma destas era um buraco do contrato que apareceu só na execução. As sete foram escritas em
+`research/BUILD_CONTRACT_REFACTOR.md` — o Construtor do próximo ciclo não decide nenhuma sozinho:
 
 1. **Bloco de contexto recolhido x expandido** — o contrato pedia "começa recolhido", mas dois
    cenários preenchem campos dentro dele e `page.fill` falha em elemento oculto. **Decisão: começa
@@ -333,24 +348,27 @@ Cada uma destas é um buraco do contrato que apareceu só na execução:
    números recebem.
 7. **Escala do gauge de MRR**: 0–50 cm³/min, com os cortes de 40%/76% do DS.
 
-### 13.6 Correção já redigida (aplicar no ciclo, não reinventar)
+### 13.6 Correção de mensagem ✅ **APLICADA em 14/08/2026**
 
-A mensagem de limite de máquina com alvo numérico foi escrita e validada — **0 números alterados,
-6 textos de alerta melhorados**, com as razões conferidas (5000/10331 → 52%, 5000/5707 → 12%,
-5000/9839 → 49%):
+A mensagem de limite de máquina com alvo numérico está no mockup e os goldens foram recapturados —
+**0 números alterados, 6 textos de alerta melhorados**, com as razões conferidas (5000/10331 → 52%,
+5000/5707 → 12%, 5000/9839 → 49%):
 
 ```js
 // quanto o valor precisa cair, em %, para caber no limite. Vf e n variam
 // linearmente com avanço e Vc; Pc e Mc variam com a taxa de remoção — então a
 // mesma razão serve de alvo numérico para o operador nos quatro casos.
-function excesso(valor, limite){ return (1 - limite / valor) * 100; }
+function excesso(valor, limite){ return Math.round((1 - limite / valor) * 100); }
 ```
 
-Aplicada nas quatro mensagens de `checkMachineLimits`, no formato:
-`"... excede o limite da máquina (X). Reduza <o quê> em pelo menos N% para caber."`
+Está nas quatro mensagens de `checkMachineLimits`, no formato
+`"... excede o limite da máquina (X). Reduza <o quê> em pelo menos N% para caber."` — potência e
+torque pedem `ap/ae/Vc`, rotação pede `Vc`, avanço pede `o avanço`.
 
-**Como aplicar sem furar a blindagem:** o orquestrador aplica, recaptura os goldens e confere que
-**nenhum campo numérico ou de fórmula mudou** — só o texto do alerta. Nunca o Construtor.
+**Como foi aplicada sem furar a blindagem:** o Orquestrador editou o mockup fora da região `DADOS`,
+recapturou os 54 goldens e conferiu campo a campo que **nenhum número ou fórmula mudou** — só
+`badge-alerta-seguranca`, em 6 dos 54 casos. Depois disso regravou `state/FREEZE.json`. Nunca o
+Construtor.
 
 ---
 
@@ -362,41 +380,68 @@ E1 está **feita**. O que existe hoje na sandbox:
 |---|---|
 | `tests/helpers.ts` | `escolher()` (fala com `<select>` e rádio) e `calcular()` |
 | `tests/combinacoes.mjs` | acionamento compartilhado entre captura e verificação dos goldens |
-| `tests/GOLDEN_VALUES.json` | 54 combinações capturadas do mockup aprovado |
+| `tests/GOLDEN_VALUES.json` | 99 combinações capturadas do mockup aprovado |
 | `tests/goldens.spec.ts` | trava do motor |
-| `tests/refactor.spec.ts` | os 17 alvos — especificação executável |
+| `tests/refactor.spec.ts` | os 21 alvos — especificação executável |
+| `tests/invariantes.spec.ts` | os 3 invariantes — executores dos gates 2, 3 e 4 |
 | `tests/gauntlet.spec.ts` | os 23 de regressão, migrados para o helper |
 | `tests/TESTID_CONTRACT.md` | contrato de seletores, com o adendo do refactor |
 | `criteria/JUDGE_CRITERIA_REFACTOR.md` | matriz de 95, 14 gates, pisos, formato do veredito |
-| `research/BUILD_CONTRACT_REFACTOR.md` | contrato do Construtor |
+| `research/BUILD_CONTRACT_REFACTOR.md` | contrato do Construtor, com as 7 decisões pré-respondidas |
 | `scripts/capture-goldens.mjs` | captura dos goldens |
 | `scripts/freeze.mjs` | congelamento e conferência de integridade |
 | `scripts/check-suites.mjs` | contagem exata por grupo, cenário desligado |
-| `scripts/validate-cycle-refactor.ps1` | validação de ciclo em 5 etapas, exit 0/1/2 |
+| `scripts/check-tokens.mjs` | paleta contra o DS — executor da categoria 7 e do gate 9 |
+| `scripts/validate-cycle-refactor.ps1` | validação de ciclo em 6 etapas, exit 0/1/2 |
 | `state/snapshots/index-pre-refactor.html` | ponto de rollback |
+| `state/FREEZE.json` | linha de base de integridade, regravada ao fim do fechamento de E1 |
+| `state/GAUNTLET_STATE_REFACTOR.md` | registro por ciclo, com placar, formato fixo e regras de parada |
 
-**Estado atual da suíte, medido após a reversão: 26 verdes** (23 regressão + 1 motor + R11 + R14)
-e **15 alvos vermelhos**. É o estado esperado de "instrumentação pronta, refatoração não executada".
+**Estado atual da suíte, medido em 14/08/2026: 29 verdes** (23 regressão + 3 invariantes + 1 motor
++ R11 + R14) e **15 alvos vermelhos**, de 44 cenários. `check-tokens.mjs` acusa **34 hex
+irregulares** — a paleta FlowNC que o refactor substitui. É o estado esperado de "instrumentação
+pronta, refatoração não executada".
 
-**Antes de retomar:** rodar `node scripts/freeze.mjs --write` para gravar a linha de base de
-integridade (foi apagada junto com os artefatos do ensaio).
+**Nada a preparar antes de retomar.** A integridade já está gravada e conferida
+(`node scripts/freeze.mjs` responde "Integridade OK").
 
 ---
 
 ## 15. Etapas
 
 ### E1 — Setup e contratos ✅ **FEITA**
-Contratos, suíte, goldens, blindagem e corte dos 4 primeiros campos mortos.
-**Falta:** aplicar o corte dos 2 ângulos (§3) e a correção da §13.6 — os dois foram revertidos.
+Contratos, suíte, goldens e blindagem instalados e conferidos.
+A correção da §13.6 foi aplicada ao mockup pelo Orquestrador e os 54 goldens recapturados:
+**0 números alterados, 6 textos de alerta melhorados** (razões 52%, 12% e 49%), conferidos campo a
+campo. `state/FREEZE.json` regravado depois disso.
 
-### E2 — Ciclo 1
-Construtor (1 subagente) edita o mockup → `validate-cycle-refactor.ps1` → Juiz cego (1 subagente)
-→ registro em `state/GAUNTLET_STATE_REFACTOR.md` + snapshot.
+**O corte dos 6 campos mortos é entregável do Construtor, no ciclo — não de E1.** `R10` cobre os
+seis, e o corte é na renderização: a região `DADOS` é congelada, mexer em `TOOLS` derruba o ciclo
+na verificação de integridade.
+
+**Fechamento do contrato (14/08/2026).** O contrato do Construtor foi revisado contra o que o ensaio
+mediu e contra a suíte, linha a linha. Entrou nele: as 7 decisões da §13.5, a procedência dos 3
+gauges (prioridade 3 do Juiz), os 44px do `ⓘ` e do gatilho de procedência (§13.4), o `stale` no
+próprio elemento e fora do alerta, os blocos empilhados em coluna única que o `R12` exige, o foco
+declarado em `:focus` (o `R15` foca por script, e `:focus-visible` não dispara de forma confiável
+assim), e a preservação dos testids que a regressão lê. Sem esse fechamento, o ciclo reprovaria por
+defeito de contrato — não por defeito de entrega.
+
+### E2 — Ciclo 1 ▶ **próximo passo, pronto para começar**
+
+1. **Construtor** (1 subagente) lê `research/BUILD_CONTRACT_REFACTOR.md`, `research/HMI_RULES.md`,
+   `docs/design/DS_TEMA_CLARO.md`, `criteria/JUDGE_CRITERIA_REFACTOR.md`, `tests/TESTID_CONTRACT.md`
+   e `tests/refactor.spec.ts`; edita **só** `mockup/index.html`.
+2. **Validação:** `.\scripts\validate-cycle-refactor.ps1 -CycleNumber 1` — exit 0 libera o Juiz,
+   exit 1 reprova sem gastar subagente, exit 2 significa alvo do refactor ainda pendente.
+3. **Juiz cego** (1 subagente), só com exit 0.
+4. **Orquestrador** registra em `state/GAUNTLET_STATE_REFACTOR.md`, no formato já definido lá, e
+   guarda o snapshot que o validate gravou.
 
 ### E3 — Ciclos 2 em diante
-**Teto: 10 ciclos.** Paradas, na ordem: PASS (≥95 + 14/14 + nenhuma categoria no piso) · score
-piorou → reverter ao melhor snapshot · 2 ciclos parados com as mesmas prioridades → estagnação,
-parar e reportar · teto sem PASS → entregar o **melhor** ciclo, não o último.
+**Teto: 10 ciclos.** Paradas, na ordem: PASS (≥95 + 14/14 + **nenhuma categoria abaixo do piso**) ·
+score piorou → reverter ao melhor snapshot · 2 ciclos parados com as mesmas prioridades →
+estagnação, parar e reportar · teto sem PASS → entregar o **melhor** ciclo, não o último.
 
 ### E4 — Relatório
 `reports/FINAL_REPORT.md` com a série por ciclo, limitações e a frase de que PASS **não é aprovação
@@ -422,7 +467,7 @@ Portar `DS_TEMA_CLARO.md` para `src/index.css` e corrigir `param-explanation.tsx
 
 **Fora, com motivo declarado:** análise de chatter (exige dados modais/FRF que não temos — seria
 chute com cara de ciência), catálogo por aprendizado de máquina (sem base) e micro-otimização de
-cálculo (com 12 materiais e 18 tipos o cálculo leva microssegundos).
+cálculo (com 12 materiais e 33 entradas o cálculo leva microssegundos).
 
 ---
 
@@ -434,12 +479,13 @@ Proibido: `src/**`, `package.json` raiz, `node_modules/`, `vite.config.ts`, `vit
 
 ## 18. Verificação final
 
-1. `npx playwright test` — três grupos verdes, contagem exata conferida.
-2. `.\scripts\validate-cycle-refactor.ps1 -CycleNumber N` — exit 0.
-3. Abrir o mockup: fundo claro, 3 gauges, 4 controles dentro da configuração, ajuda por clique e
+1. `npx playwright test` — **48 cenários**, os quatro grupos verdes, contagem exata conferida.
+2. `node scripts/check-tokens.mjs` — paleta limpa, zero hex fora do DS.
+3. `.\scripts\validate-cycle-refactor.ps1 -CycleNumber N` — exit 0.
+4. Abrir o mockup: fundo claro, 3 gauges, 4 controles dentro da configuração, ajuda por clique e
    por teclado, resultado velho até clicar, escolha de 1 clique.
-4. **Desligar a rede e recarregar** — tela idêntica.
-5. Percorrer a tela **só pelo teclado** — foco visível em tudo.
-6. `git status` — só a sandbox e os docs declarados.
+5. **Desligar a rede e recarregar** — tela idêntica.
+6. Percorrer a tela **só pelo teclado** — foco visível em tudo.
+7. `git status` — só a sandbox e os docs declarados.
 
 **Ao fim: parar e esperar aprovação explícita do Mestre.** PASS no loop não autoriza produção.
