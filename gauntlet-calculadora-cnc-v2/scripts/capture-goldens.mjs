@@ -1,13 +1,17 @@
 /**
- * Captura os golden values do mockup — a prova de que o motor não mudou.
+ * Captura os golden values do mockup — a prova de que a zona de resultado não
+ * perdeu nada na refatoração da tela.
  *
  * Uso:  node scripts/capture-goldens.mjs [saida.json]
  * Padrão de saída: tests/GOLDEN_VALUES.json
  *
  * Roda todas as combinações de tipo de ferramenta × contexto, com valores de
- * entrada fixos, e grava cada saída visível na tela. Qualquer alteração no
- * cálculo muda este arquivo — é isso que torna impossível o Builder "melhorar"
- * o resultado hardcodando caso de teste.
+ * entrada fixos, e grava cada saída visível na tela **com os números
+ * mascarados** (ver `mascararNumeros` em `tests/combinacoes.mjs`). O mockup é o
+ * documento canônico da tela; o motor definitivo entra depois, então o dígito
+ * de hoje é provisório e não é comparado. O que fica travado é a saída existir,
+ * com rótulo, unidade, texto de alerta e formato de fórmula — em 99
+ * combinações, muito mais do que a suíte de regressão mostra.
  *
  * A lógica de acionamento vem de `tests/combinacoes.mjs`, compartilhada com a
  * verificação, para captura e conferência nunca divergirem.
@@ -16,7 +20,7 @@ import { chromium } from 'playwright';
 import * as path from 'path';
 import * as fs from 'fs';
 import { fileURLToPath } from 'url';
-import { CONTEXTS, enumerarTipos, aplicarCombinacao, lerSaidas } from '../tests/combinacoes.mjs';
+import { CONTEXTS, enumerarTipos, aplicarCombinacao, lerSaidasEstruturais } from '../tests/combinacoes.mjs';
 
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 const mockupUrl = 'file://' + path.join(root, 'mockup', 'index.html').replace(/\\/g, '/');
@@ -33,7 +37,7 @@ for (const tipo of tipos) {
   for (const ctx of CONTEXTS) {
     await page.goto(mockupUrl); // estado limpo: nenhum valor vaza entre combinações
     await aplicarCombinacao(page, tipo, ctx);
-    rows.push({ tipo: tipo.id, familia: tipo.familia, ...ctx, saidas: await lerSaidas(page) });
+    rows.push({ tipo: tipo.id, familia: tipo.familia, ...ctx, saidas: await lerSaidasEstruturais(page) });
   }
 }
 

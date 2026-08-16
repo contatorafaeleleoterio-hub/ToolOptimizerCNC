@@ -105,9 +105,24 @@ export async function aplicarCombinacao(page, tipo, ctx) {
   await page.click('[data-testid="btn-calcular"]');
 }
 
-/** Lê todas as saídas visíveis, normalizando espaço em branco. */
-export async function lerSaidas(page) {
-  return page.evaluate((testids) => {
+/**
+ * Troca cada número por `#`.
+ *
+ * O golden deixou de comparar dígito em 16/08/2026: o mockup é o documento
+ * canônico da TELA, e o motor de cálculo definitivo entra depois
+ * (`docs/plans/PLAN_MOTOR_CALCULADORA_V2.md`). Congelar valor provisório só
+ * criaria vermelho falso quando o motor real chegar.
+ *
+ * O que sobra travado é o que a tela mostra: a saída existe, com o rótulo, a
+ * unidade, o traço de "não se aplica", o texto do alerta e o formato da
+ * fórmula. `"26.74 cm³/min"` vira `"# cm³/min"`; `"Reduza ap/ae/Vc em pelo
+ * menos 52% para caber."` vira `"... pelo menos #% para caber."`.
+ */
+const mascararNumeros = (texto) => (texto === null ? null : texto.replace(/\d[\d.,]*/g, '#'));
+
+/** Lê todas as saídas visíveis, sem os números, normalizando espaço em branco. */
+export async function lerSaidasEstruturais(page) {
+  const cru = await page.evaluate((testids) => {
     const out = {};
     for (const id of testids) {
       const el = document.querySelector(`[data-testid="${id}"]`);
@@ -115,4 +130,6 @@ export async function lerSaidas(page) {
     }
     return out;
   }, OUTPUT_TESTIDS);
+
+  return Object.fromEntries(Object.entries(cru).map(([id, texto]) => [id, mascararNumeros(texto)]));
 }

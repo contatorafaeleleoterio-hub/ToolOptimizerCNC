@@ -12,9 +12,11 @@
  *      reescrever não mede nada, e validador que ele pode editar mede menos ainda.
  *
  * O motor de cálculo NÃO é congelado por byte de propósito: os 4 controles de
- * ajuste fino precisam poder sobrepor Vc/fz/ae/ap. Quem prova que a matemática
- * não mudou é `goldens.spec.ts`, que compara 99 combinações contra valores
- * capturados antes de qualquer edição.
+ * ajuste fino precisam poder sobrepor Vc/fz/ae/ap, e o motor definitivo entra
+ * depois do refactor (`docs/plans/PLAN_MOTOR_CALCULADORA_V2.md`). Quem prova
+ * que a TELA não perdeu nada é `goldens.spec.ts`, que compara 99 combinações
+ * contra as saídas capturadas antes de qualquer edição — com os números
+ * mascarados, porque o dígito de hoje é provisório e a estrutura não é.
  */
 import * as path from 'path';
 import * as fs from 'fs';

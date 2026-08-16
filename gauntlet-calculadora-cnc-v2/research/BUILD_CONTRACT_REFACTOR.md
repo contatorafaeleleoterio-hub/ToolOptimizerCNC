@@ -8,8 +8,15 @@
 > **Regra de ouro:** o motor de cálculo, as fórmulas 1–28, as **17 geometrias** e as regras de
 > bloqueio **não mudam**. O catálogo passou a ter **33 entradas** (uma por variação de substrato),
 > mas nenhuma conta foi tocada: combinação equivalente dá exatamente o mesmo número.
-> A região `DADOS` do mockup é conferida byte a byte a cada ciclo e as combinações de entrada/saída
-> foram recapturadas pelo Orquestrador — se um número mudar, o ciclo reprova.
+> A região `DADOS` do mockup é conferida byte a byte a cada ciclo.
+>
+> **O que os golden values medem mudou em 16/08/2026 (decisão do Mestre).** Este mockup é o
+> **documento canônico da tela**, e o motor de cálculo definitivo entra depois
+> (`docs/plans/PLAN_MOTOR_CALCULADORA_V2.md`). O número que a tela mostra hoje é provisório, então
+> os goldens **não comparam dígito** — comparam o que a zona de resultado apresenta: a saída existir,
+> o rótulo, a unidade, o traço de "não se aplica", o texto do alerta e o formato de cada linha de
+> fórmula, em 99 combinações. Perder qualquer um deles reprova o ciclo. Ainda assim, **você não
+> mexe em conta**: alterar cálculo continua fora do seu escopo e cai na integridade da região `DADOS`.
 > **Ponto de partida obrigatório:** `mockup/index.html` como está. Isto é refatoração, não reescrita.
 > É **proibido não reaproveitar**.
 
@@ -157,8 +164,8 @@ Quatro campos numéricos no bloco Contexto, escrevendo no objeto `MACHINE` já e
 | Avanço máximo | `input-maquina-avanco` | 5000 | mm/min |
 
 `checkMachineLimits` já lê esse objeto em tempo de execução — **não altere a função**, só faça os
-campos escreverem nos valores. Os padrões acima são os valores atuais, e é por isso que os golden
-values continuam batendo.
+campos escreverem nos valores. Os padrões acima são os valores atuais: trocá-los faria alerta de
+limite aparecer ou sumir na tela, e é isso que os golden values pegam.
 
 Por que importa: hoje todo alerta de torque e potência é calculado contra uma máquina fictícia
 fixa. Numa oficina com centro de 8000 rpm e 7,5 kW, o aviso sai errado para o lado perigoso.
@@ -179,7 +186,8 @@ Fica **acima** dos controles individuais, no topo do bloco de ajuste fino. `data
 `slider-agressividade`.
 
 1. Escala **0–100%**, rótulo nas pontas: **conservador** ↔ **produtivo**. O valor recomendado é
-   marcado com tick e **é onde o slider nasce** — é isso que preserva os golden values.
+   marcado com tick e **é onde o slider nasce** — nascer fora do recomendado mudaria alerta e
+   procedência já na abertura da tela, e os golden values pegam isso.
 2. Move `Vc`, `fz`, `ae` e `ap` **juntos**, cada um entre o piso conservador e o teto de recomendação
    dele, respeitando os limites do §5.1. **Nunca** empurra um parâmetro além do limite próprio para
    satisfazer os outros: quem chega no limite para lá, e os demais continuam.
@@ -429,8 +437,10 @@ Seis campos são preenchidos pelo operador e **não entram em conta nenhuma**. T
 | Ângulo de chanfro | fresa de chanfrar | `computeMilling` lê `anguloPosicao` (κ), nunca `anguloBroca` |
 | Ângulo de ponta | escareador | o ângulo só vira `Lp` na broca helicoidal e na broca de centro |
 
-A prova de que são inertes está nos golden values: com eles fora, todos os resultados continuam
-idênticos. Se algum número mudar, o corte estava errado — reverta aquele campo.
+A prova de que são inertes está no **código**: a coluna "por quê" acima aponta, campo a campo, a
+função de cálculo que nunca os lê. Os golden values **não** cobrem mais isso — eles pararam de
+comparar dígito em 16/08/2026 (ver cabeçalho). Na dúvida sobre um campo, registre no ciclo em vez
+de decidir por conta própria.
 
 **Corte na renderização, não no schema.** A região `DADOS` do mockup foi reescrita pelo Orquestrador
 em 15/08/2026 (novo catálogo) e **congelada de novo**, byte a byte: mexer em `GEOMETRIAS`, `TOOLS`,
@@ -453,7 +463,7 @@ na tela.** Teto de 6 campos por tipo no fluxo padrão, verificado automaticament
 |---|---|---|
 | `gauntlet.spec.ts` | 23 cenários de regressão | **verdes em todo ciclo** — quebrar é reprovar |
 | `invariantes.spec.ts` | 3 invariantes (as 33 entradas sem erro de JS · nada de `NaN`/`undefined`/`Infinity` na tela · console limpo) | **verdes em todo ciclo** — já valem hoje |
-| `goldens.spec.ts` | 99 combinações do motor (33 entradas × 3 contextos) | **verde em todo ciclo** — quebrar significa que o cálculo mudou |
+| `goldens.spec.ts` | 99 combinações da zona de resultado (33 entradas × 3 contextos), sem os números | **verde em todo ciclo** — quebrar significa que a tela perdeu saída, rótulo, unidade, alerta ou linha de fórmula |
 | `refactor.spec.ts` | 21 alvos novos | vermelhos no começo; ficar todos verdes é o alvo do ciclo |
 
 Mais dois verificadores objetivos, que você pode rodar quantas vezes quiser:
@@ -479,7 +489,8 @@ Categoria 3 vale 12 pontos com piso 10 e tirou **8** no ciclo de ensaio. O motiv
 
 As quatro mensagens de limite de máquina já foram corrigidas pelo Orquestrador e trazem o alvo
 numérico (`"... Reduza ap/ae/Vc em pelo menos 52% para caber."`). Você **não** as escreve — elas
-estão nos golden values e mudá-las reprova o ciclo. O que cabe a você:
+estão nos golden values — o texto é comparado, só o número dentro da frase não é — e reescrevê-las
+reprova o ciclo. O que cabe a você:
 
 - **não truncar.** Nada de `text-overflow: ellipsis` nem altura fixa no `badge-alerta-seguranca`:
   o número-alvo mora no fim da frase e é justamente o que o Juiz procura;

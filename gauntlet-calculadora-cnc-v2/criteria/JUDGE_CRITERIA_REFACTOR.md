@@ -27,7 +27,7 @@ Nota sem evidência é tratada como nota não justificada e a categoria vai para
 
 | # | Categoria | Pts | Quem pontua | Piso |
 |---|---|---|---|---|
-| 1 | Correção de cálculo e cobertura das 33 entradas | 12 | script (golden values + integridade) | 10 |
+| 1 | Integridade e cobertura das 33 entradas na zona de resultado | 12 | script (golden values + integridade) | 10 |
 | 2 | Usabilidade operacional: economia de setup + ajuda contextual | 14 | Juiz | 11 |
 | 3 | Prevenção e recuperação de erro | 12 | Juiz | 10 |
 | 4 | Fluxo e estabilidade de layout | 10 | Juiz | 8 |
@@ -42,12 +42,17 @@ Nota sem evidência é tratada como nota não justificada e a categoria vai para
 
 ---
 
-### 1. Correção de cálculo e cobertura das 33 entradas — 12 pts *(script)*
+### 1. Integridade e cobertura das 33 entradas na zona de resultado — 12 pts *(script)*
 
 Preenchido pelo resultado objetivo, sem julgamento:
 
-- **12 pts:** `goldens.spec.ts` verde (99/99 combinações idênticas) **e** integridade intacta.
-- **0 pts:** qualquer divergência. Não há meio-termo — o motor mudou ou não mudou.
+- **12 pts:** `goldens.spec.ts` verde (99/99 combinações com as mesmas saídas) **e** integridade intacta.
+- **0 pts:** qualquer divergência. Não há meio-termo.
+
+**O que esta categoria mede desde 16/08/2026:** o mockup é o documento canônico da **tela** e o motor
+definitivo entra depois, então os goldens **não comparam dígito** — comparam a saída existir, com
+rótulo, unidade, traço de "não se aplica", texto de alerta e formato de fórmula, nas 99 combinações.
+Cálculo não é escopo do Construtor e continua protegido pela integridade da região `DADOS`.
 
 ### 2. Usabilidade operacional: economia de setup + ajuda contextual — 14 pts *(Juiz)*
 
@@ -144,7 +149,7 @@ legível, cor vinda da rampa de estado). 4 pts pela suíte completa: **23 de reg
 | 8 | Adequada para uso diário no chão de fábrica, com justificativa de 1–2 frases | Juiz |
 | 9 | Design System aplicado: tokens (`check-tokens.mjs` sem irregularidade), cinza dominante, marca laranja e seleção índigo, 3 gauges read-only, slider de agressividade + 4 controles de ajuste, ajuda inline, escolha segmentada, **recálculo híbrido** (não recalcula antes do 1º Calcular; painel vivo depois dele) | script + Juiz |
 | 10 | Contraste AA e foco visível em 100% dos pares medidos | script |
-| 11 | Integridade: região `DADOS`, `tests/`, `criteria/`, `scripts/` e `research/` intactos; 99 golden values idênticos | script |
+| 11 | Integridade: região `DADOS`, `tests/`, `criteria/`, `scripts/` e `research/` intactos; as 99 combinações com as mesmas saídas (sem os números) | script |
 | 12 | Fluxo de entrada: ordem dos 5 blocos, 6 campos mortos ausentes, nenhum tipo acima de 6 campos | script |
 | 13 | **Zero requisição externa** — nenhuma rede disparada pela página | script |
 | 14 | Perfil de máquina manda no resultado, e todo número principal tem procedência alcançável | script |

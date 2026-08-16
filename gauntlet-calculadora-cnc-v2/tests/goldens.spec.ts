@@ -1,20 +1,25 @@
 import { test, expect } from '@playwright/test';
 import { mockupPath } from './helpers';
-import { aplicarCombinacao, lerSaidas } from './combinacoes.mjs';
+import { aplicarCombinacao, lerSaidasEstruturais } from './combinacoes.mjs';
 import * as goldens from './GOLDEN_VALUES.json';
 
-// Trava do motor. As 99 combinações (33 entradas do catálogo × 3 contextos) foram
-// capturadas do mockup aprovado
-// (ciclo 3, 91/100) ANTES de qualquer edição do refactor. Se um único número,
-// alerta ou linha de fórmula mudar, este cenário reprova.
+// Trava da zona de resultado. As 99 combinações (33 entradas do catálogo × 3
+// contextos) foram capturadas do mockup aprovado (ciclo 3, 91/100) ANTES de
+// qualquer edição do refactor.
 //
-// É o que impede o Builder de "melhorar" o resultado hardcodando os casos de
-// teste visíveis: aqui há muito mais combinação do que a suíte de regressão
-// mostra, e os valores não são escolhidos por ele.
+// Os números NÃO entram na comparação: o mockup é o documento canônico da tela
+// e o motor definitivo entra depois, então o dígito de hoje é provisório
+// (`mascararNumeros` em `combinacoes.mjs` troca cada número por `#`). O que
+// reprova aqui é a tela perder uma saída, um rótulo, uma unidade, o texto de um
+// alerta ou o formato de uma linha de fórmula.
+//
+// A zona de ENTRADA fica de fora de propósito: o contrato manda tirar 6 campos
+// e converter seletor de opção única em texto fixo — travar campo visível
+// reprovaria o Construtor por cumprir o que foi pedido.
 
 const linhas = (goldens as any).default ?? goldens;
 
-test('GOLDEN — as 99 combinações de referência produzem exatamente os mesmos valores', async ({ page }) => {
+test('GOLDEN — as 99 combinações de referência mostram exatamente as mesmas saídas', async ({ page }) => {
   test.setTimeout(180_000);
 
   const divergencias: string[] = [];
@@ -22,7 +27,7 @@ test('GOLDEN — as 99 combinações de referência produzem exatamente os mesmo
   for (const linha of linhas) {
     await page.goto(mockupPath);
     await aplicarCombinacao(page, { id: linha.tipo, familia: linha.familia }, linha);
-    const saidas = await lerSaidas(page);
+    const saidas = await lerSaidasEstruturais(page);
 
     for (const [campo, esperado] of Object.entries(linha.saidas)) {
       if (saidas[campo] !== esperado) {
@@ -35,6 +40,6 @@ test('GOLDEN — as 99 combinações de referência produzem exatamente os mesmo
     }
   }
 
-  expect(divergencias, `Motor alterado em ${divergencias.length} ponto(s):\n${divergencias.join('\n')}`)
+  expect(divergencias, `Zona de resultado alterada em ${divergencias.length} ponto(s):\n${divergencias.join('\n')}`)
     .toEqual([]);
 });

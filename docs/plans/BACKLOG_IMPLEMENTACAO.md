@@ -1,8 +1,8 @@
 # Backlog de Implementação — ToolOptimizer CNC
 
-> **Última atualização:** 15/08/2026 (item 19 — diretrizes do painel da calculadora, com 5 decisões fechadas pelo Mestre)
+> **Última atualização:** 16/08/2026 (item 19 concluído — etapas A–E; E2 do item 17 desbloqueado)
 > **Versão atual:** v0.12.1
-> **Total de planos pendentes:** 3 — item 17 (experimento isolado, em refactor visual, não altera produção), item 18 (especificação de motor, aplicar quando a codificação real começar) e item 19 (diretrizes do painel — **bloqueia o E2 do item 17**)
+> **Total de planos pendentes:** 2 — item 17 (experimento isolado, **E2 pronto para começar**, não altera produção) e item 18 (especificação de motor, aplicar quando a codificação real começar)
 
 Esta lista define a ordem de implementação dos planos criados e ainda não executados.
 A ordem garante estabilidade progressiva: bugs corrigidos antes de features, features antes de polish.
@@ -30,9 +30,9 @@ A ordem garante estabilidade progressiva: bugs corrigidos antes de features, fea
 | 14 | [Design System Canônico](#14-design-system-canônico) | 📄 Docs / Design Audit | — | 1 arquivo HTML, 4 sessões, zero `src/` | ✅ Concluído (`d471895`) |
 | 15 | [Implementação DS + 80/20 + Mobile + Dívida Visual](#15-implementação-ds--8020--mobile--dívida-visual) | 🎨 Redesign + Refactor | v0.12.0 | ~25 arquivos + 9 testes novos, 8 sessões | 🔁 Concluído localmente (8/8 sessões) |
 | 16 | [Gauntlet — Mockup Experimental da Calculadora](#16-gauntlet--mockup-experimental-da-calculadora) | 🧪 Experimento isolado | — (nenhuma) | Pasta `gauntlet-calculadora-cnc/`, **zero `src/`** | ✅ Concluído (score 92/100, 7/7 gates) |
-| 17 | [Gauntlet v2 — Redo com protocolo revisado](#17-gauntlet-v2--redo-com-protocolo-revisado) | 🧪 Experimento isolado | — (nenhuma) | Pasta `gauntlet-calculadora-cnc-v2/`, **zero `src/`** | 🔁 Construção aprovada (91/100, 8/8); refactor visual **pronto para executar o E2**, não executado |
+| 17 | [Gauntlet v2 — Redo com protocolo revisado](#17-gauntlet-v2--redo-com-protocolo-revisado) | 🧪 Experimento isolado | — (nenhuma) | Pasta `gauntlet-calculadora-cnc-v2/`, **zero `src/`** | 🔁 Construção aprovada (91/100, 8/8); refactor visual **desbloqueado em 16/08/2026 — E2 pronto para começar**, não executado |
 | 18 | [Motor da Calculadora Multi-Ferramenta](#18-motor-da-calculadora-multi-ferramenta) | 📄 Spec / Engine | a definir | Especificação — aplicar em `src/engine/` quando a codificação real começar | ⬜ Pendente |
-| 19 | [Diretrizes do Painel da Calculadora](#19-diretrizes-do-painel-da-calculadora) | 📄 Spec / UX | — | `docs/specs/` + reescrita de contrato, cenários e goldens da sandbox v2 | ⬜ Pendente — **executar antes do E2 do item 17** |
+| 19 | [Diretrizes do Painel da Calculadora](#19-diretrizes-do-painel-da-calculadora) | 📄 Spec / UX | — | `docs/specs/` + reescrita de contrato, cenários e goldens da sandbox v2 | ✅ Concluído (16/08/2026, etapas A–E) |
 
 ---
 
@@ -316,8 +316,9 @@ aprendizado de máquina (sem base) e micro-otimização de cálculo (irrelevante
 ### 19. Diretrizes do Painel da Calculadora
 
 **Documento:** `docs/specs/SPEC_PAINEL_CALCULADORA_PARAMETROS.md` | **Versão alvo:** —
-**Status:** ⬜ Pendente (15/08/2026) — diretrizes escritas e decisões fechadas; falta aplicar em
-contrato, cenários e goldens da sandbox `gauntlet-calculadora-cnc-v2/`.
+**Status:** ✅ Concluído (16/08/2026) — diretrizes aplicadas em DS, catálogo, contrato, cenários e
+goldens da sandbox `gauntlet-calculadora-cnc-v2/`. Etapas A–E fechadas; o E2 do item 17 está
+desbloqueado.
 
 **Objetivo:** consolidar como o painel da calculadora deve ser estruturado — elementos, posição,
 ordem, agrupamento, relação entre componentes e comportamento de interação — servindo de referência
@@ -340,11 +341,30 @@ inline (várias abertas ao mesmo tempo), edição reversa de RPM/Avanço com tra
 Modo Rápido com os 4 campos que as calculadoras de fabricante pedem (o `Z` fixo em 4 de hoje erra o
 avanço por fator 2), estados do painel e requisitos de chão de fábrica.
 
-**Impacto no item 17 — por isso vem antes:** remove `select-material-ferramenta` (usado pelos 23
-cenários de regressão e pelo `R13`), reescreve `R03` e `R06`, mexe na região `DADOS` congelada
-(`TOOLS`, `FAMILIAS`, `TOOL_FACTORS`) exigindo **recaptura completa dos 54 goldens**, e altera
-`check-tokens.mjs` e `R14` pelas cores novas. Tudo é trabalho de Orquestrador — o Construtor não pode
-tocar em contrato, testes ou dados sem derrubar a blindagem.
+**Impacto no item 17 — por isso veio antes:** removeu `select-material-ferramenta` (usado pelos 23
+cenários de regressão e pelo `R13`), reescreveu `R03` e `R06`, mexeu na região `DADOS` congelada
+(`TOOLS`, `FAMILIAS`, `TOOL_FACTORS`) exigindo recaptura completa dos goldens, e alterou
+`check-tokens.mjs` e `R14` pelas cores novas. Tudo foi trabalho de Orquestrador — o Construtor não
+pode tocar em contrato, testes ou dados sem derrubar a blindagem.
+
+**O que a etapa E entregou (16/08/2026):**
+
+- **99 goldens** (33 entradas do catálogo × 3 contextos) no lugar dos 54 antigos. O eixo `ferramenta`
+  morreu junto com o campo material da ferramenta: o substrato virou parte da entrada.
+- **Decisão do Mestre — os goldens deixaram de comparar número.** O mockup é o documento canônico da
+  **tela**; o motor definitivo entra depois (item 18). Congelar valor provisório só criaria vermelho
+  falso quando o motor real chegar. Os goldens passam a travar a zona de resultado: a saída existir,
+  com rótulo, unidade, traço de "não se aplica", texto de alerta e formato de fórmula. A zona de
+  entrada fica livre de propósito — o contrato §10 manda tirar 6 campos da tela.
+- **Conferência da migração do catálogo:** 26 pares equivalentes entre goldens velhos e novos, **23
+  idênticos dígito a dígito**. Os 3 restantes são a broca helicoidal, e a única diferença é o `Lp`
+  (comprimento da ponta): `broca_hss` (118°) e `broca_md` (140°) viraram uma geometria só, com o
+  ângulo seguindo o substrato (SPEC §4.2). Cada um dos 3 tem par idêntico na outra combinação.
+- O aumento de 25% previsto na etapa D para as 5 entradas só-MD_revestido **não aparece em golden
+  nenhum**: onde elas têm par equivalente, o contexto já era MD revestido.
+- Categoria 1 do Juiz continua com 12 pontos, medindo integridade + cobertura da zona de resultado.
+- `FREEZE.json` regravado. Placar de partida do E2: **regressão 23/23 · invariantes 3/3 · golden 1/1
+  · alvos 2/21** (R11 e R14).
 
 ---
 

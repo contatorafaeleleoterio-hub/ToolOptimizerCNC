@@ -1,27 +1,24 @@
 # Handoff — ToolOptimizerCNC — 2026-08-16
-Status: item 19 (diretrizes do painel) — **etapas A, B, C e D fechadas; falta só a E.** Sessão de Orquestrador, zero `src/**`.
+Status: item 19 **concluído (A–E)**. E2 do item 17 desbloqueado, **não iniciado**. Sessão de Orquestrador, zero `src/**`.
 
-Feito nesta sessão (**etapa D — cenários**):
-- `tests/combinacoes.mjs` — eixo `ferramenta` fora dos `CONTEXTS` e o passo do material da ferramenta fora de `aplicarCombinacao`. É o que destravou a suíte, vermelha de propósito desde a B.
-- **13 cenários de regressão reapontados** para a ferramenta equivalente (`fresa_topo` + MD → `fresa_topo_md`). `MD` era o default do seletor removido, então onde a geometria existe em MD o número é idêntico. Em `fresa_alto_avanco`, `cabecote_faceador`, `u_drill`, `fresa_rosca` e `mandril` só existe MD revestido: o número sobe pelo fator 1,25 — **conferir na E**.
-- `R03` reescrito para o **híbrido** (painel vazio + `stale` antes do 1º Calcular; vivo depois, sem clique; botão nunca desabilita). `R06` reescrito para **gaveta inline** (várias abertas, clicar fora não fecha, gatilho fecha só a sua, `Esc` na que tem foco). `R13` com 3 controles e `broca_helicoidal_hss` (é a entrada que mantém 118°/135°; em MD há um ângulo só e vira texto fixo).
-- `R11` revalidado contra as 33 entradas: **o máximo real é 6** (fresa toroidal, nenhum campo dispensável). A folga do campo removido era no bloco categórico; o teto conta o geométrico e segue 6.
-- **4 cenários novos:** `R18` slider de agressividade · `R19` edição reversa RPM/Avanço com trava no limite · `R20` Modo Rápido com `Z` · `R21` substrato no resumo (exigiu o testid novo `resumo-ferramenta`, declarado no `TESTID_CONTRACT.md`).
-- Contagens fechadas em `check-suites.mjs` (21 alvos), `freeze.mjs`, `invariantes.spec.ts` (33), `goldens.spec.ts` (99), `BUILD_CONTRACT_REFACTOR.md` (48 cenários), `JUDGE_CRITERIA_REFACTOR.md` (categoria 1, gates 2 e 11, §9) e `PLAN_GAUNTLET_V2_REFACTOR.md` nos 8 pontos normativos. Os números históricos do ensaio ficaram intactos.
-- Decidido junto e declarado: categoria 2 do Juiz dizia "Modo rápido em 3 campos" e contradizia a SPEC §9.3 que o `R20` mede — virou 4 campos com `Z`.
+Feito nesta sessão (**etapa E — goldens e integridade**):
+- **Decisão do Mestre que redefiniu a etapa:** o mockup é o **documento canônico da tela**; o motor de cálculo definitivo vem depois (item 18). O valor mostrado hoje é provisório, então os goldens **deixaram de comparar dígito** — `mascararNumeros` troca cada número por `#` em `combinacoes.mjs`, e captura e verificação usam a mesma função (`lerSaidasEstruturais`).
+- **O que os 99 goldens travam agora:** a saída existir, com rótulo, unidade, traço de "não se aplica", texto de alerta e formato de cada linha de fórmula, nas 33 entradas × 3 contextos. **A zona de entrada ficou de fora de propósito:** o contrato §10 manda tirar 6 campos e §3 converter seletor de opção única em texto fixo — travar campo visível reprovaria o Construtor por cumprir o que foi pedido.
+- **Conferência da migração do catálogo (etapa B):** 26 pares equivalentes entre os 54 goldens velhos e os 99 novos, **0 divergência estrutural** e **23 idênticos dígito a dígito**. Os 3 restantes são a broca helicoidal e diferem só no `Lp`: `broca_hss` (118°) e `broca_md` (140°) viraram uma geometria com o ângulo seguindo o substrato (SPEC §4.2) — cada um tem par idêntico na outra combinação. **Nenhum número mudou na migração.**
+- **O fator 1,25 previsto na etapa D não aparece em golden nenhum:** as 5 entradas só-MD_revestido só têm par no contexto que já era MD revestido.
+- Documentos normativos alinhados: `BUILD_CONTRACT_REFACTOR.md` (cabeçalho, §4, §5.0, §10, §11, §12), `JUDGE_CRITERIA_REFACTOR.md` (categoria 1 e gate 11 — **12 pontos mantidos**, medindo integridade + cobertura da zona de resultado), `PLAN_GAUNTLET_V2_REFACTOR.md` (§blindagem e método de prova), `freeze.mjs`, `check-suites.mjs`.
+- `FREEZE.json` regravado (21 arquivos + região `DADOS`); `node scripts/freeze.mjs` responde **Integridade OK**.
 
-Placar medido ao fim da D: **regressão 23/23 · invariantes 3/3 · goldens vermelho (esperado) · alvos 2/21** (R11 e R14, os mesmos do ensaio).
+Placar medido: **regressão 23/23 · invariantes 3/3 · golden 1/1 · alvos 2/21** (R11 e R14). Relatório regravado às 03:15 — a suíte foi rodada com `PLAYWRIGHT_JSON_OUTPUT_NAME=reports/test-results.json`, senão o RTK anula o reporter e o `check-suites.mjs` confere arquivo velho.
 
-Onde parou: fim da etapa D, **aguardando "pode seguir" para a E**. Nada da E foi executado.
+Onde parou: fim da etapa E, **aguardando "pode seguir"**. O ciclo 1 do E2 não foi rodado.
 
-Próximo passo: **etapa E** — (1) confirmar os 99 goldens, (2) `node scripts/capture-goldens.mjs` e conferir campo a campo, (3) `node scripts/freeze.mjs --write`, (4) validar, (5) fechar item 19 no roadmap e no backlog. Prompt pronto em `docs/plans/PROMPT_SESSAO_GOLDENS_ETAPA_E.md`.
+Próximo passo: **E2 — ciclo 1 do loop Construtor/Juiz** (`docs/plans/PLAN_GAUNTLET_V2_REFACTOR.md`).
 
-Blockers: nenhum. `goldens.spec.ts` fica vermelho **até a recaptura** — o JSON ainda tem os 54 registros com ids antigos. `state/FREEZE.json` está desatualizado de propósito: só é regravado no fim da E.
+Blockers: nenhum. **Atenção ao critério de pronto do prompt da E:** ele previa `validate-cycle-refactor.ps1` em exit 0 ou 2, mas o script trata paleta reprovada como falha dura — com os 33 hex da FlowNC ainda no mockup (que são o alvo do refactor) o exit é **1**, com "Paleta reprovada" como única falha. As outras 5 etapas passam: integridade OK, suíte 48, contagem exata, fronteira limpa. Zerar a paleta é trabalho do Construtor no ciclo 1.
 
-Decisão pendente do Mestre: os `CONTEXTS` ficam com 3 contextos de material+operação e a cobertura de substrato vem das 33 entradas → **99 goldens**. Repetir o substrato nos contextos daria 396 combinações sem cobrir nada novo.
+Fora de escopo, registrado e não tocado: `research/BUILD_CONTRACT.md` ainda cita `broca_hss`/`broca_md` (registro histórico do loop de construção); `#00D9FF` segue em `PERMITIDOS` do `check-tokens.mjs`; **a reorganização de `docs/plans/` em `02_planos_executados/` e `03_planos_arquivados/` segue sem commit — os 3 protótipos `.html` foram apagados e não estão nos diretórios novos**, então commitar isso gravaria a perda sem decisão do Mestre. Novo: rodar o validador gravou `state/snapshots/index-refactor-ciclo-1.html` (baseline do mockup antes do refactor) — o ciclo 1 vai sobrescrever.
 
-Fora de escopo, registrado e não tocado: `research/BUILD_CONTRACT.md` ainda cita `broca_hss`/`broca_md` (registro histórico do loop de construção); `#00D9FF` segue em `PERMITIDOS` do `check-tokens.mjs`; **a reorganização de `docs/plans/` em `02_planos_executados/` e `03_planos_arquivados/` segue sem commit — os 3 protótipos `.html` foram apagados e não estão nos diretórios novos**, então commitar isso agora gravaria a perda sem decisão do Mestre.
-
-Arquivos tocados: `gauntlet-calculadora-cnc-v2/{tests/combinacoes.mjs, tests/gauntlet.spec.ts, tests/refactor.spec.ts, tests/invariantes.spec.ts, tests/goldens.spec.ts, tests/TESTID_CONTRACT.md, scripts/check-suites.mjs, scripts/freeze.mjs, research/BUILD_CONTRACT_REFACTOR.md, criteria/JUDGE_CRITERIA_REFACTOR.md}`, `docs/plans/PLAN_GAUNTLET_V2_REFACTOR.md`, `LESSONS.md`.
+Arquivos tocados: `gauntlet-calculadora-cnc-v2/{tests/combinacoes.mjs, tests/goldens.spec.ts, tests/GOLDEN_VALUES.json, scripts/capture-goldens.mjs, scripts/check-suites.mjs, scripts/freeze.mjs, criteria/JUDGE_CRITERIA_REFACTOR.md, research/BUILD_CONTRACT_REFACTOR.md, state/FREEZE.json}`, `docs/plans/{PLAN_GAUNTLET_V2_REFACTOR.md, BACKLOG_IMPLEMENTACAO.md}`, `docs/ROADMAP_SESSAO_ATUAL.md`.
 
 Retomar com: "continuar"

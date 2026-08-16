@@ -73,6 +73,10 @@ Na execução de ensaio isso deu **54/54 idênticos**, e a prova saiu mais forte
 os campos fora do schema, `Z` e `sobremetal` passaram a chegar no motor como `NaN` — e mesmo assim
 nenhum resultado mudou.
 
+> **Este método não vale mais para o E2.** Desde 16/08/2026 os goldens não comparam dígito, então
+> a inércia dos 6 campos não é mais demonstrável por eles — ela já está demonstrada acima, campo a
+> campo, pela função de cálculo que não os lê. O registro do ensaio fica como está.
+
 **Ferramenta:** `node scripts/capture-goldens.mjs [saida.json]`.
 
 ---
@@ -245,18 +249,24 @@ O que mais derruba ciclo:
 | Builder edita os testes para passar | SHA-256 de `tests/`, `criteria/`, `scripts/` e `research/` | `scripts/freeze.mjs` |
 | Gate declarado como "script" sem executor | gates 2/3/4 → `invariantes.spec.ts` · categoria 7 e gate 9 → `check-tokens.mjs` | fechado em 14/08/2026 |
 | Builder mexe nos dados de domínio | Região `DADOS` do mockup congelada byte a byte | idem — **trava testada: alterar `maxRPM` de 12000 para 9999 foi detectado e reprovou com exit 1** |
-| Builder hardcoda resultado dos testes visíveis | 99 combinações de entrada/saída capturadas antes de qualquer edição | `tests/GOLDEN_VALUES.json` + `goldens.spec.ts` |
+| Builder hardcoda resultado dos testes visíveis | 99 combinações de entrada/saída capturadas antes de qualquer edição (saídas sem os números desde 16/08/2026) | `tests/GOLDEN_VALUES.json` + `goldens.spec.ts` |
 | Cenário desligado (`test.skip`/`only`) | Recusa por token + **contagem exata** por grupo | `scripts/check-suites.mjs` |
 | Builder mexe fora da sandbox | `git status --porcelain` derrubando o ciclo (antes só imprimia aviso) | `validate-cycle-refactor.ps1` |
 | Juiz inflar score | Cego, read-only, **evidência obrigatória** por dedução **e** por nota cheia, prompt variado por ciclo | `JUDGE_CRITERIA_REFACTOR.md` |
 | Score alto escondendo categoria podre | **Piso por categoria** | idem |
 
 **Motor não é congelado por byte de propósito** — os controles de ajuste precisam sobrepor
-Vc/fz/ae/ap. Quem prova que a matemática não mudou são os 99 goldens.
+Vc/fz/ae/ap. Quem prova que a **tela** não perdeu nada são os 99 goldens.
 
-**Limite conhecido:** os goldens fixam também o **texto** dos alertas. Melhorar a redação de uma
-mensagem exige rebaseline feito pelo orquestrador, com o diff inspecionado — nunca pelo Construtor.
-Já aconteceu uma vez, em 14/08/2026 — ver §13.6.
+**O que os goldens medem mudou em 16/08/2026 (decisão do Mestre):** o mockup é o documento canônico
+da tela e o motor definitivo entra depois (`PLAN_MOTOR_CALCULADORA_V2.md`), então os goldens
+deixaram de comparar dígito — comparam saída, rótulo, unidade, traço, texto de alerta e formato de
+fórmula, com os números mascarados. O que trava o domínio é o congelamento byte a byte da região
+`DADOS`; o cálculo continua fora do escopo do Construtor.
+
+**Limite conhecido:** os goldens fixam o **texto** dos alertas (não o número dentro dele). Melhorar
+a redação de uma mensagem exige rebaseline feito pelo orquestrador, com o diff inspecionado — nunca
+pelo Construtor. Já aconteceu uma vez, em 14/08/2026 — ver §13.6.
 
 ---
 
