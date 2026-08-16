@@ -11,6 +11,10 @@ Feito nesta sessão (**etapa E — goldens e integridade**):
 
 Placar medido: **regressão 23/23 · invariantes 3/3 · golden 1/1 · alvos 2/21** (R11 e R14). Relatório regravado às 03:15 — a suíte foi rodada com `PLAYWRIGHT_JSON_OUTPUT_NAME=reports/test-results.json`, senão o RTK anula o reporter e o `check-suites.mjs` confere arquivo velho.
 
+Commits desta sessão, **locais, sem push**: `c192f51` (etapa E) e `9fe42b5` (reorganização de `docs/plans/`, com os 3 protótipos `.html` recuperados do histórico e arquivados em `03_planos_arquivados/`).
+
+Saúde do projeto medida no fechamento: **TypeScript zero erros · 1017 testes passando, 0 falhas**. Rodar `npx vitest run` sem escopo coleta 5 arquivos Playwright das sandboxes e marca 5 suítes como falha de coleta (nenhum teste falha) — usar `npx vitest run tests/`. Não corrigido: `vitest.config.ts` está fora da fronteira desta sessão.
+
 Onde parou: fim da etapa E, **aguardando "pode seguir"**. O ciclo 1 do E2 não foi rodado.
 
 Próximo passo: **E2 — ciclo 1 do loop Construtor/Juiz** (`docs/plans/PLAN_GAUNTLET_V2_REFACTOR.md`).

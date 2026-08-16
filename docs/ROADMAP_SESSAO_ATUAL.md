@@ -29,10 +29,10 @@
 |------|-------|
 | **Branch** | `main` |
 | **Versão** | `0.12.0` (DS+80/20+Mobile concluído localmente) |
-| **Testes** | **1067 passando** (66 arquivos) — 0 falhas de projeto; `npm test` agora exclui `.aiox-core/**` |
-| **TypeScript** | **zero erros** |
+| **Testes** | **1017 passando, 0 falhas** (medido em 16/08/2026). ⚠️ Rodar `npx vitest run` **sem escopo** coleta 5 arquivos Playwright das sandboxes `gauntlet-calculadora-cnc*/tests/` e marca 5 suítes como falha de coleta, sem nenhum teste falhando — usar `npx vitest run tests/` |
+| **TypeScript** | **zero erros** (medido em 16/08/2026) |
 | **Build** | **limpo** |
-| **Remote** | `origin/main` — último commit `757309d` (pushed ✅); Sessão 8 ainda local |
+| **Remote** | `origin/main` — último commit pushado `757309d`; **local à frente**: Sessão 8, etapas A–E do item 19 e a reorganização de `docs/plans/` ainda sem push |
 | **Worker** | ✅ LIVE — `https://tooloptimizercnc.contatorafaeleleoterio.workers.dev` |
 | **Custom Domains** | ✅ `tooloptimizercnc.com.br` + `app.tooloptimizercnc.com.br` |
 | **GitHub Actions** | ✅ deploy automático ao push para main |

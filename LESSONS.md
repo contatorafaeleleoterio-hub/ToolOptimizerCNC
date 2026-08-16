@@ -141,3 +141,32 @@ arquivo antes de acreditar no placar.
   defeitos reais que a auditoria do orquestrador tinha perdido. Vale o custo.
 - **Medir antes de escrever o handoff.** Rodar a suíte depois da reversão para o número do
   documento ser o número real, não o lembrado.
+
+---
+
+## 10. Confirmar para que serve o artefato, não só quantos são · 16/08/2026
+
+A etapa E abriu perguntando ao Mestre **quantos** goldens capturar (99) e detalhando a conta em
+vocabulário do projeto — "contextos", "substrato", "eixo". Resposta: *"não entendi nada"*. Reescrito
+em linguagem simples, veio a informação que mudava tudo: **o número calculado é provisório, o mockup
+é o documento canônico da tela e o motor definitivo entra depois.** A pergunta certa nunca foi
+quantos, e sim **o que a trava mede**. Capturar 99 fotos de números teria produzido um teste que
+reprovaria de propósito assim que o motor real chegasse.
+
+**Regra:** antes de recapturar, congelar ou fixar qualquer baseline, confirmar **o propósito** do
+artefato em uma frase sem jargão. Quantidade é detalhe de execução; propósito é decisão do Mestre.
+
+**Segunda regra, do mesmo episódio:** ao desenhar a trava nova, conferir o que o contrato **manda**
+o avaliado mudar. Congelar os campos visíveis da tela pareceu óbvio — e teria reprovado o Construtor
+por cumprir o §10, que manda tirar 6 campos. A trava ficou só na zona de resultado.
+
+## 11. Critério de pronto tem que bater com o que o validador faz · 16/08/2026
+
+O prompt da etapa previa `validate-cycle-refactor.ps1` em **exit 0 ou 2**, e o mesmo prompt declarava
+que os 33 hex da paleta FlowNC **seguem** até o refactor. As duas coisas não cabem juntas: o script
+trata paleta reprovada como falha dura e sai com **exit 1**. Ninguém errou a execução — o critério
+foi escrito sem conferir o código do validador.
+
+**Regra:** critério de pronto que cita código de saída de script se escreve **lendo o script**, não
+de memória. E, ao encontrar a divergência, registrar — não "ajustar" o validador para o critério
+fechar, ainda mais quando ele está congelado por hash.

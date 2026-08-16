@@ -3,6 +3,38 @@
 > **Ponto de entrada da sessão:** `docs/ROADMAP_SESSAO_ATUAL.md` — ler este primeiro!
 
 ---
+## 📄 Sessão de Orquestrador — item 19, etapa E: goldens e integridade (16/08/2026)
+
+Commits `c192f51` (etapa E) e `9fe42b5` (reorganização de `docs/plans/`), **locais, sem push**. Zero
+`src/**` — trabalho todo na sandbox `gauntlet-calculadora-cnc-v2/` e nos documentos do loop.
+
+- **Decisão do Mestre que redefiniu a etapa:** o mockup é o **documento canônico da tela**; o motor
+  de cálculo definitivo entra depois (item 18). O valor mostrado hoje é provisório, então os goldens
+  **deixaram de comparar número** — `mascararNumeros` troca cada dígito por `#` em
+  `tests/combinacoes.mjs`, e captura e verificação usam a mesma leitura (`lerSaidasEstruturais`).
+- **99 goldens** (33 entradas do catálogo × 3 contextos) no lugar dos 54 antigos. Travam a zona de
+  resultado: saída existir, rótulo, unidade, traço de "não se aplica", texto de alerta e formato de
+  cada linha de fórmula. **A zona de entrada ficou de fora de propósito** — o contrato §10 manda
+  tirar 6 campos da tela e §3 converter seletor de opção única em texto fixo; travar campo visível
+  reprovaria o Construtor por cumprir o que foi pedido.
+- **Conferência da migração do catálogo (etapa B):** 26 pares equivalentes entre goldens velhos e
+  novos, **0 divergência estrutural** e **23 idênticos dígito a dígito**. Os 3 restantes são a broca
+  helicoidal e diferem só no `Lp` — `broca_hss` (118°) e `broca_md` (140°) viraram uma geometria com
+  o ângulo seguindo o substrato (SPEC §4.2), e cada um tem par idêntico na outra combinação.
+  **Nenhum número mudou na migração.** O fator 1,25 previsto na etapa D não aparece em golden algum:
+  as 5 entradas só-MD_revestido só têm par no contexto que já era MD revestido.
+- Documentos alinhados: `BUILD_CONTRACT_REFACTOR.md`, `JUDGE_CRITERIA_REFACTOR.md` (categoria 1 e
+  gate 11 — **12 pontos mantidos**, medindo integridade + cobertura da zona de resultado),
+  `PLAN_GAUNTLET_V2_REFACTOR.md`, `freeze.mjs`, `check-suites.mjs`. `FREEZE.json` regravado.
+- **Placar de partida do E2:** regressão 23/23 · invariantes 3/3 · golden 1/1 · alvos 2/21.
+  `validate-cycle-refactor.ps1` dá **exit 1** com uma falha só — "Paleta reprovada", os 33 hex da
+  FlowNC que o refactor existe para substituir. As outras 5 etapas passam. O critério de pronto do
+  prompt previa exit 0/2 e estava errado (ver `LESSONS.md` §11).
+- 3 protótipos `.html` de `docs/plans/` tinham sido apagados numa reorganização anterior sem ir para
+  as pastas novas — recuperados do histórico e arquivados em `03_planos_arquivados/`.
+- **Item 19 concluído (A–E). E2 do item 17 desbloqueado e não iniciado.**
+
+---
 ## 📄 Sessão de execução — Fechamento DS + 80/20 + Mobile, Sessão 8/8 (07/08/2026)
 
 Execução final do `PLAN_IMPLEMENTACAO_DS_80-20_MOBILE.md` como release local `v0.12.0`.
