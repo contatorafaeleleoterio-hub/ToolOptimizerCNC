@@ -1,0 +1,476 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+  <style>
+    :root{
+      /* superfícies */
+      --bg-page:#F3F4F6; --surface-card:#FFFFFF; --surface-input:#E9EBEF;
+      --border-subtle:#D1D5DB; --border-control:#7A8494;
+      --shadow-card:0 1px 2px rgba(16,24,40,.06), 0 4px 12px rgba(16,24,40,.08);
+      /* texto */
+      --tx-1:#111827; --tx-2:#374151; --tx-3:#475569;
+      /* marca e seleção */
+      --brand-fill:#E85D04; --tx-on-brand:#0F1419; --select-ink:#3730A3;
+      /* estado — rampa única */
+      --st-normal-ink:#116631; --st-normal-bg:#E8F5EC; --st-normal-bd:#A8D5B8;
+      --st-warn-ink:#7A4F00; --st-warn-bg:#FDF3E2; --st-warn-bd:#E3C98A;
+      --st-crit-ink:#A81E16; --st-crit-bg:#FCEBEA; --st-crit-bd:#EFB3AE;
+      --st-info-ink:#005E77; --st-info-bg:#E6F1F6; --st-info-bd:#A8CEDD;
+      /* interação */
+      --surface-hover-field:#DDE1E7; --surface-hover-card:#F7F8FA; --surface-pressed:#CFD4DC;
+      /* tipografia */
+      --font-sans:Inter,"Segoe UI Variable","Segoe UI",system-ui,-apple-system,sans-serif;
+      --font-mono:"JetBrains Mono","Cascadia Mono",Consolas,ui-monospace,monospace;
+      /* espaço, raio, tempo */
+      --sp-1:4px; --sp-2:8px; --sp-3:12px; --sp-4:16px; --sp-5:24px; --sp-6:32px; --sp-7:48px;
+      --r-chip:2px; --r-field:4px; --r-card:8px; --r-pill:999px;
+      --t-control:120ms; --t-panel:180ms;
+      /* alvo — toque impreciso, tela em pé na máquina */
+      --h-target:44px; --h-cta:56px;
+    }
+    *{box-sizing:border-box}
+    [hidden]{display:none !important}
+    body{margin:0;background:var(--bg-page);font-family:var(--font-sans);color:var(--tx-2);font-size:13px;line-height:1.5}
+    a{color:var(--tx-2);text-decoration:underline} a:hover{color:var(--tx-1)}
+    button{font:inherit;color:inherit}
+    :focus-visible{outline:2px solid var(--select-ink);outline-offset:2px;box-shadow:0 0 0 3px rgba(55, 48, 163, .35)}
+    @media (prefers-reduced-motion: reduce){*, *::before, *::after{animation:none !important;transition:none !important}}
+    .num{font-family:var(--font-mono);font-variant-numeric:tabular-nums}
+    .lbl{font-size:11px;font-weight:600;letter-spacing:.07em;text-transform:uppercase;color:var(--tx-3)}
+    .sym{text-transform:none}
+    .card{background:var(--surface-card);border-radius:var(--r-card);box-shadow:var(--shadow-card);padding:16px}
+    .fbox{display:flex;align-items:center;justify-content:space-between;gap:8px;background:var(--surface-input);border:1px solid var(--border-control);border-radius:var(--r-field);min-height:44px;padding:0 12px}
+    .fval{font-family:var(--font-mono);font-variant-numeric:tabular-nums;font-size:16px;font-weight:600;color:var(--tx-1)}
+    .funit{font-size:11px;font-weight:600;color:var(--tx-3)}
+    .fplace{font-family:var(--font-mono);font-size:16px;color:var(--tx-3)}
+    .field{display:flex;flex-direction:column;gap:4px}
+    .sep{height:1px;background:var(--border-subtle);border:0;margin:0}
+    .prose{max-width:62ch;color:var(--tx-2);text-wrap:pretty}
+    .trigger{display:flex;align-items:center;justify-content:center;width:44px;height:44px;flex:none;color:var(--tx-3)}
+    .bhead{display:flex;align-items:center;gap:12px;min-height:44px;cursor:pointer;width:100%;background:none;border:0;padding:0;text-align:left;color:inherit}
+    .bsum{font-family:var(--font-mono);font-variant-numeric:tabular-nums;color:var(--tx-3);font-size:11px}
+    .mgrid{display:grid;grid-template-columns:repeat(2, minmax(0, 1fr));gap:12px 16px}
+    .mval{font-family:var(--font-mono);font-variant-numeric:tabular-nums;font-size:16px;font-weight:600;color:var(--tx-1)}
+    .z3{display:flex;align-items:center;gap:12px;flex-wrap:wrap;background:var(--surface-card);border:1px solid var(--tx-3);border-radius:var(--r-field);padding:10px 16px}
+    .z3name{font-family:var(--font-mono);font-variant-numeric:tabular-nums;font-size:13px;font-weight:700;color:var(--tx-1);letter-spacing:.04em}
+    /* D7 — cartão de resultado */
+    .rcard{background:var(--surface-card);border:1px solid var(--border-subtle);border-radius:var(--r-card);padding:12px 16px;display:flex;flex-direction:column;gap:8px}
+    .rtall-row{display:flex;align-items:center;gap:12px}
+    .step{width:var(--h-target);height:var(--h-target);flex:none;display:flex;align-items:center;justify-content:center;background:var(--surface-input);border:1px solid var(--border-control);border-radius:var(--r-field);font-size:20px;font-weight:600;color:var(--tx-1);cursor:pointer}
+    .rval{flex-grow:1;display:flex;align-items:baseline;justify-content:center;gap:8px}
+    .raddr{font-family:var(--font-mono);font-size:20px;font-weight:700;color:var(--tx-3)}
+    .rbig{font-family:var(--font-mono);font-variant-numeric:tabular-nums;font-size:32px;font-weight:700;color:var(--tx-1)}
+    .u20{font-family:var(--font-mono);font-variant-numeric:tabular-nums;font-size:20px;font-weight:700;color:var(--tx-1)}
+    /* endereco de maquina no cartao baixo — o Q do ciclo, ao lado de um numero de 20px */
+    .raddr-sm{font-family:var(--font-mono);font-size:13px;font-weight:700;color:var(--tx-3)}
+    /* valor comparavel ao lado do avanco — texto, nunca trilha nem barra (D4, R14) */
+    .refline{display:flex;align-items:baseline;gap:6px;flex-wrap:wrap;padding:0 12px}
+    /* D11 / D9 — gaveta recolhida */
+    .drawer{border:1px solid var(--border-subtle);border-radius:var(--r-field);background:var(--surface-card)}
+    .dtrigger{width:100%;display:flex;align-items:center;gap:10px;min-height:44px;padding:0 12px;background:none;border:0;cursor:pointer;text-align:left}
+    .dsum{font-family:var(--font-mono);font-variant-numeric:tabular-nums;font-size:11px;color:var(--tx-3);flex-grow:1}
+    .dhint{font-size:11px;color:var(--tx-3);flex-grow:1;font-weight:400;text-transform:none;letter-spacing:0}
+    .dbody{padding:4px 12px 12px 34px;display:grid;grid-template-columns:96px minmax(0,1fr);gap:6px 12px;font-size:13px}
+    .dbody--col{display:flex;flex-direction:column}
+    .qline{min-height:44px;padding:8px 0}
+    .linkrow{display:flex;align-items:center;gap:8px;min-height:44px;color:var(--tx-2);font-size:13px;font-weight:600;background:none;border:0;padding:0;cursor:pointer;text-align:left;text-decoration:none}
+    .linkrow span{border-bottom:1px solid var(--border-control)}
+    /* campo variavel — o mesmo passo +/- do cartao de resultado (D-Q4) */
+    .fin{flex-grow:1;min-width:0;align-self:stretch;background:none;border:0;padding:0;text-align:left}
+    .fin::placeholder{color:var(--tx-3);font-weight:400}
+    .sctl{display:flex;align-items:center;gap:8px}
+    .sctl .fbox{flex-grow:1;min-width:0}
+    .vgrid{display:grid;grid-template-columns:repeat(2, minmax(0, 1fr));gap:12px 16px}
+    .vgrid>.field{justify-content:flex-end}
+    /* escolha em lista — dropdown nativo com a pele do campo */
+    .selbox{position:relative;display:flex}
+    .fsel{width:100%;min-height:44px;padding:0 40px 0 12px;background:var(--surface-input);border:1px solid var(--border-control);border-radius:var(--r-field);font-family:inherit;font-size:13px;font-weight:600;color:var(--tx-1);cursor:pointer;appearance:none;-webkit-appearance:none}
+    .fsel:hover{background:var(--surface-hover-field)}
+    .selcv{position:absolute;right:12px;top:50%;transform:translateY(-50%);pointer-events:none;color:var(--tx-3)}
+    /* Z1 — marca provisoria, identidade curta, acao neutra de cabecalho */
+    .brand{display:flex;align-items:center;justify-content:center;width:44px;height:44px;flex:none;background:var(--brand-fill);border-radius:var(--r-field);color:var(--tx-on-brand)}
+    .zid{display:flex;align-items:center;gap:12px;flex-wrap:wrap;font-size:16px;text-wrap:balance}
+    .zidlbl{font-size:13px;font-weight:600;color:var(--tx-3)}
+    .zidval{font-weight:600;color:var(--tx-1)}
+    .zidrule{width:1px;height:20px;background:var(--border-subtle);flex:none}
+    .hbtn{display:inline-flex;align-items:center;gap:8px;min-height:44px;padding:0 16px;flex:none;background:var(--surface-input);border:1px solid var(--border-control);border-radius:var(--r-field);color:var(--tx-2);font-size:13px;font-weight:600;text-decoration:none}
+    .hbtn:hover{background:var(--surface-hover-field);color:var(--tx-1)}
+    .z3pair{display:flex;align-items:baseline;gap:6px}
+  </style>
+</helmet>
+
+<!-- ═══ DECISÕES DECLARADAS DESTA FOLHA ═══════════════════════════════════════
+     A folha encena o modo de partida da BROCA DE AÇO RÁPIDO AO COBALTO (HSS-Co), fechado pela
+     rodada R9. Onde a régua não tinha o número, a folha declara aqui — mesma disciplina do
+     MVP §7.6.1, que declarou `sin κ = 1` como decisão de projeto quando a fonte faltou.
+
+     1. HIERARQUIA DO TERCEIRO NÚMERO — DECISÃO DE DESENHO (camada 2, tensão do cartão).
+        O painel passa a devolver três números e o cartão de resultado foi desenhado para dois
+        (design system §4.6: duas alturas, e a altura diz se o número é editável).
+        A saída: SEPARAR OS DOIS SINAIS QUE ESTAVAM CONFUNDIDOS.
+          • A LETRA DE ENDEREÇO (S, F, Q) diz "isto você digita na máquina". São três.
+          • A ALTURA diz "isto você empurra e a conta refaz para trás". São dois.
+        O incremento ganha endereço Q e fica no cartão baixo — 20px, sem `−`/`+` — porque
+        editá-lo não recalcula nada para trás (brief §7.3). É a própria razão que a §4.6
+        escreve para negar `±` às saídas de verificação; nada novo foi inventado — só se parou
+        de ler altura como se fosse importância. O checklist §9 continua válido: `−`/`+` só nos
+        dois cartões altos. E o incremento não desce para o RESUMO GERAL: lá moram os números
+        que existem para conferir, e este é transcrito para a máquina.
+
+     2. ÂNGULO DE PONTA = 140° — MANTIDO, DECISÃO DECLARADA. É o valor de metal duro do
+        MVP §3.2. A R9 não publica ângulo de ponta para a broca HSS-Co (a fonte dá código de
+        ponta, não grau), e trocar por 118° seria número sem fonte. É entrada do operador e
+        não entra em nenhum dos três números. Pendência de pesquisa, não de desenho.
+
+     3. DIÂMETRO (D) = 10 mm e BALANÇO (L) = 50 mm — entradas do operador, iguais às do Main,
+        para que as folhas sejam comparáveis. D 10 é também o caso verificador do Mestre.
+
+     ═══ O QUE ESTA FOLHA NÃO MOSTRA, E POR QUÊ ════════════════════════════════
+     Espessura de cavaco (hex) e fator de afinamento (CTF) não existem sem penetração de
+     trabalho (ae), que a furação não tem. Potência de corte (Pc) e torque (Mc) dependem da
+     espessura média (hm) via Kienzle (MVP §6.7), e a fórmula de hm do §6.4 é de fresamento
+     (ae/D) — a cadeia de furação não fecha nos documentos. Registrado como questão aberta;
+     não é decisão de desenho, e a carta do Dexter proíbe tocar em motor de cálculo.
+     NÃO MOSTRA TAMBÉM nome de fabricante, link ou rótulo de confiança ao lado do avanço de
+     referência: a procedência saiu do produto (gabarito §2.2, commit `2783a6b`). O que aparece
+     é valor comparável e razão — em texto, sem trilha, sem faixa e sem barra, que a D4 tirou
+     do MVP e a R14 proíbe.
+
+     ═══ A CADEIA, CONFERIDA ═══════════════════════════════════════════════
+     Entradas: D 10 · L 50 · ângulo de ponta 140° · vc 16 m/min (partida HSS-Co em aço 1045,
+     faixa 16–22) · percentual do avanço 10% · divisor do incremento 25 · teto 0,8 mm.
+       n            318 × 16 ÷ 10           =   508,8       →   508 rpm
+       vf           508 × 10%               =    50,8       →    50 mm/min
+       incremento   10 ÷ 25                 =     0,4       →   0,4 mm  (teto 0,8 não morde)
+       fn           50 ÷ 508                =     0,0984    →  0,10 mm/rot
+       vc real      π × 10 × 508 ÷ 1000     =    15,9593    →  16,0 m/min
+       MRR          π × 10² ÷ 4 × 50        = 3.927 mm³/min →   3,9 cm³/min
+       L/D          50 ÷ 10                 =     5,0       →   5,0
+     Caso verificador do Mestre: Ø10, vc 16 → S 508 · F 50 · 0,4. Confere.
+     Referência de avanço para Ø10: 0,19 mm/rot · 0,10 ÷ 0,19 = 0,526 → 0,53×.
+     Direção de ajuste: vc 22, topo da faixa de partida desta broca neste material.
+       n 318 × 22 ÷ 10 = 699,6 → 699 rpm · vf 699 × 10% = 69,9 → 69 mm/min
+       ganho 22 ÷ 16 − 1 = +37,5% → +38%
+       o incremento não se move: ele vem do diâmetro, não da velocidade.
+     Gatilhos, testados: janela de vc (MVP §9.2, 0,6× a 1,4× da partida) = 9,6 a 22,4 — vc 16
+     dentro, não dispara. Faixa de segurança do avanço (CANONICO_FURACAO §1.6): alerta só
+     acima de ~2× ou abaixo de ~0,5× da partida — 0,53× está dentro, por pouco, e o
+     cruzamento só acontece acima de ~Ø10,7. Balanço: a furação não tem alerta de balanço
+     (CANONICO_LIMITES_E_ALERTAS §1, "Furar"). Furo profundo: depende da profundidade do furo,
+     que não é campo desta geometria (§3.2). Nenhum ativo → nível NORMAL.
+     ════════════════════════════════════════════════════════════════════════ -->
+
+<div style="max-width:1440px;width:100%;margin:0 auto;padding:24px;display:flex;flex-direction:column;gap:16px">
+
+  <!-- Z1 — cabeçalho idêntico ao Main: a linguagem é herdada, não reinventada por família. -->
+  <div class="card" style="display:flex;align-items:center;gap:24px;padding:12px 24px;flex-wrap:wrap">
+    <div class="brand" role="img" aria-label="Marca do produto — placeholder, o asset definitivo ainda não existe">
+      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><rect x="4.75" y="4.75" width="14.5" height="14.5" rx="2" stroke-dasharray="4 3"></rect></svg>
+    </div>
+    <div class="zid" style="flex-grow:1;min-width:280px">
+      <span class="zidlbl">Material:</span>
+      <span class="zidval">Aço 1045</span>
+      <span class="zidrule" aria-hidden="true"></span>
+      <span class="zidlbl">Ferramenta:</span>
+      <span class="zidval">Broca Helicoidal — Aço Rápido ao Cobalto (HSS-Co)</span>
+      <span class="zidrule" aria-hidden="true"></span>
+      <span style="display:inline-flex;align-items:baseline;gap:6px"><span class="zidlbl">Diâmetro (D)</span><span class="zidval"><span class="num">10</span> mm</span></span>
+      <span style="display:inline-flex;align-items:baseline;gap:6px"><span class="zidlbl">Ângulo de ponta</span><span class="zidval"><span class="num">140</span>°</span></span>
+      <span style="display:inline-flex;align-items:baseline;gap:6px"><span class="zidlbl">Balanço (L)</span><span class="zidval"><span class="num">50</span> mm</span></span>
+    </div>
+    <a class="hbtn" href="Configuracoes.dc.html"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"></circle><path d="M19 12a7 7 0 0 0-.1-1l2-1.6-2-3.4-2.4 1a7 7 0 0 0-1.7-1L14.5 3h-5l-.3 2.4a7 7 0 0 0-1.7 1l-2.4-1-2 3.4L3 11a7 7 0 0 0 0 2l-2 1.6 2 3.4 2.4-1a7 7 0 0 0 1.7 1L9.5 21h5l.3-2.4a7 7 0 0 0 1.7-1l2.4 1 2-3.4-2-1.6a7 7 0 0 0 .1-1Z"></path></svg>Configurações</a>
+  </div>
+
+  <div style="display:flex;gap:24px;align-items:flex-start;flex-wrap:wrap">
+
+    <!-- COLUNA DE CONFIGURAÇÃO -->
+    <div style="flex:1 1 440px;min-width:0;max-width:520px;display:flex;flex-direction:column;gap:16px">
+
+      <!-- MATERIAL — recolhido depois do cálculo (D9), igual ao Main -->
+      <div class="card" style="display:flex;flex-direction:column;gap:12px">
+        <button type="button" class="bhead" aria-expanded="false" aria-controls="b-material">
+          <svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" style="color:var(--tx-3)"><path d="M6 3.5 L11 8 L6 12.5"></path></svg>
+          <span class="lbl" style="flex-grow:1">MATERIAL A SER USINADO</span>
+          <span class="bsum">Aço 1045 · classe P · 170–220 HB</span>
+        </button>
+        <div id="b-material" hidden style="display:flex;flex-direction:column;gap:12px">
+        <hr class="sep">
+        <div class="selbox">
+          <select class="fsel" aria-label="Material a ser usinado">
+            <option selected>Aço 1045</option>
+          </select>
+          <svg class="selcv" width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M3.5 6 L8 11 L12.5 6"></path></svg>
+        </div>
+        <div class="lbl">DADOS DO MATERIAL</div>
+        <div class="mgrid">
+          <div class="field"><span class="lbl">Classe ISO</span><span class="mval">P</span></div>
+          <div class="field"><span class="lbl">Dureza</span><span class="mval">170–220 <span class="funit">HB</span></span></div>
+          <div class="field"><span class="lbl">Força específica de corte (<span class="sym">kc1.1</span>)</span><span class="mval">1.500 <span class="funit">N/mm²</span></span></div>
+          <div class="field"><span class="lbl">Expoente (<span class="sym">mc</span>)</span><span class="mval">0,21</span></div>
+          <div class="field" style="grid-column:span 2"><span class="lbl">Velocidade de corte (<span class="sym">vc</span>)</span><span class="mval">16 <span class="funit">m/min</span></span></div>
+        </div>
+        <a class="linkrow" href="Configuracoes.dc.html">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"></circle><path d="M19 12a7 7 0 0 0-.1-1l2-1.6-2-3.4-2.4 1a7 7 0 0 0-1.7-1L14.5 3h-5l-.3 2.4a7 7 0 0 0-1.7 1l-2.4-1-2 3.4L3 11a7 7 0 0 0 0 2l-2 1.6 2 3.4 2.4-1a7 7 0 0 0 1.7 1L9.5 21h5l.3-2.4a7 7 0 0 0 1.7-1l2.4 1 2-3.4-2-1.6a7 7 0 0 0 .1-1Z"></path></svg>
+          <span>Editar dados de material</span>
+        </a>
+        </div>
+      </div>
+
+      <!-- FERRAMENTA — a ausência é o conteúdo desta folha.
+           Não existe número de arestas (a furação mede por rotação, MVP §3.2), não existe
+           profundidade de corte, não existe penetração de trabalho, não existe comprimento de
+           aresta. Campo que não se aplica NÃO EXISTE — não aparece apagado (design system §7). -->
+      <div class="card" style="display:flex;flex-direction:column;gap:12px">
+        <button type="button" class="bhead" aria-expanded="true" aria-controls="b-ferramenta">
+          <svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" style="color:var(--tx-3)"><path d="M3.5 6 L8 11 L12.5 6"></path></svg>
+          <span class="lbl" style="flex-grow:1">FERRAMENTA A SER USADA</span>
+          <span class="bsum">HSS-Co · Helicoidal · Ø10 · 140° · L50</span>
+        </button>
+        <div id="b-ferramenta" style="display:flex;flex-direction:column;gap:12px">
+        <hr class="sep">
+
+        <div style="display:flex;flex-direction:column;gap:8px">
+          <div class="field">
+            <label class="lbl" for="t-tipo">TIPO DA FERRAMENTA</label>
+            <div class="selbox">
+              <select class="fsel" id="t-tipo">
+                <option selected>Broca de aço rápido ao cobalto (HSS-Co)</option>
+                <option>Broca de metal duro</option>
+              </select>
+              <svg class="selcv" width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M3.5 6 L8 11 L12.5 6"></path></svg>
+            </div>
+          </div>
+          <div class="field">
+            <label class="lbl" for="t-geo">GEOMETRIA DA FERRAMENTA</label>
+            <div class="selbox">
+              <select class="fsel" id="t-geo">
+                <option selected>Helicoidal</option>
+                <option>Broca de insertos (U-Drill)</option>
+                <option>Broca de centro</option>
+                <option>Escareador</option>
+                <option>Alargador</option>
+              </select>
+              <svg class="selcv" width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M3.5 6 L8 11 L12.5 6"></path></svg>
+            </div>
+          </div>
+        </div>
+
+        <!-- Dimensões: duram o que a ferramenta durar. O ângulo de ponta ocupa aqui o mesmo lugar
+             que o raio de canto ocupa na toroidal — é o campo que a geometria traz consigo. -->
+        <div class="lbl">DIMENSÕES DA FERRAMENTA</div>
+        <div class="vgrid">
+          <div class="field"><label class="lbl" for="t-d">Diâmetro da ferramenta (<span class="sym">D</span>)</label>
+              <div class="sctl">
+                <button type="button" class="step" aria-label="Diminuir diâmetro da ferramenta em 0,1 mm">−</button>
+                <div class="fbox"><input class="num fval fin" id="t-d" type="text" inputmode="decimal" value="10"><span class="funit">mm</span></div>
+                <button type="button" class="step" aria-label="Aumentar diâmetro da ferramenta em 0,1 mm">+</button>
+              </div>
+            </div>
+          <div class="field"><label class="lbl" for="t-ang">Ângulo de ponta</label>
+              <div class="sctl">
+                <button type="button" class="step" aria-label="Diminuir ângulo de ponta em 1 grau">−</button>
+                <div class="fbox"><input class="num fval fin" id="t-ang" type="text" inputmode="decimal" value="140"><span class="funit">°</span></div>
+                <button type="button" class="step" aria-label="Aumentar ângulo de ponta em 1 grau">+</button>
+              </div>
+            </div>
+        </div>
+
+        <!-- Valores desta montagem: no fresamento são quatro; na broca helicoidal é um só. -->
+        <div class="lbl">VALORES DESTA MONTAGEM</div>
+        <div class="vgrid">
+          <div class="field"><label class="lbl" for="t-l">Balanço (<span class="sym">L</span>)</label>
+              <div class="sctl">
+                <button type="button" class="step" aria-label="Diminuir balanço em 0,5 mm">−</button>
+                <div class="fbox"><input class="num fval fin" id="t-l" type="text" inputmode="decimal" value="50"><span class="funit">mm</span></div>
+                <button type="button" class="step" aria-label="Aumentar balanço em 0,5 mm">+</button>
+              </div>
+            </div>
+        </div>
+        </div>
+      </div>
+
+      <!-- AJUSTE FINO — um controle só (MVP §5.1: na furação o operador regula a velocidade de
+           corte, e nada mais). O avanço por rotação fica logo abaixo, como LEITURA: ele existe,
+           o operador precisa vê-lo, e não é controle porque a ferramenta é que o traz.
+           Leitura, nunca campo apagado — estado desabilitado não existe (design system §7). -->
+      <div class="card" style="display:flex;flex-direction:column;gap:16px">
+        <button type="button" class="bhead" aria-expanded="true" aria-controls="b-ajuste">
+          <svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" style="color:var(--tx-3)"><path d="M3.5 6 L8 11 L12.5 6"></path></svg>
+          <span class="lbl" style="flex-grow:1">Ajuste fino</span>
+          <span class="bsum">vc 16 · fn 0,10</span>
+        </button>
+        <div id="b-ajuste" style="display:flex;flex-direction:column;gap:16px">
+        <hr class="sep">
+
+        <div class="field">
+          <label class="lbl" for="a-vc">Velocidade de corte (<span class="sym">vc</span>)</label>
+          <div class="sctl">
+            <button type="button" class="step" aria-label="Diminuir velocidade de corte em 1 m/min">−</button>
+            <div class="fbox"><input class="num fval fin" id="a-vc" type="text" inputmode="decimal" value="16"><span class="funit">m/min</span></div>
+            <button type="button" class="step" aria-label="Aumentar velocidade de corte em 1 m/min">+</button>
+          </div>
+          <div class="drawer">
+            <button type="button" class="dtrigger" aria-expanded="false" aria-controls="d-vc">
+              <svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" style="color:var(--tx-3)"><path d="M6 3.5 L11 8 L6 12.5"></path></svg>
+              <span class="dhint">o que a velocidade de corte faz</span>
+            </button>
+            <div id="d-vc" class="dbody" hidden>
+              <span class="lbl">O que é</span><span>Velocidade do gume passando pelo material · manda no calor do corte.</span>
+              <span class="lbl">▲ aumentar</span><span>Esquenta mais · gume gasta mais rápido · menos vida</span>
+              <span class="lbl">▼ diminuir</span><span>Gume dura mais · material gruda no gume · acabamento pior</span>
+              <span class="lbl">Equilíbrio</span><span>Cada material tem seu valor de partida — a tela avisa se você se afasta demais.</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Leitura, não campo: a superfície não afunda (sem --surface-input) e não há caixa de
+             digitar. É o que separa "vem da ferramenta" de "você escolhe" sem apagar nada. -->
+        <div class="field">
+          <span class="lbl">Avanço por rotação (<span class="sym">fn</span>)</span>
+          <div class="fbox" style="background:none;border-color:var(--border-subtle)"><span class="mval">0,10</span><span class="funit">mm/rot</span></div>
+          <!-- valor comparável, nunca no lugar do número do operador (E0 §3.3). Texto puro:
+               sem nome de fabricante, sem link, sem rótulo de confiança — a procedência saiu do
+               produto (gabarito §2.2). Sem trilha e sem faixa desenhada — D4 tirou do MVP. -->
+          <div class="refline">
+            <span class="lbl" style="flex:none">Referência para Ø10</span>
+            <span class="num" style="font-weight:600;color:var(--tx-2)">0,19</span><span class="funit">mm/rot</span>
+            <span class="funit" aria-hidden="true">·</span>
+            <span class="funit">você está a</span><span class="num" style="font-weight:600;color:var(--tx-2)">0,53×</span>
+          </div>
+          <div class="drawer">
+            <button type="button" class="dtrigger" aria-expanded="false" aria-controls="d-fn">
+              <svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" style="color:var(--tx-3)"><path d="M6 3.5 L11 8 L6 12.5"></path></svg>
+              <span class="dhint">de onde vem o avanço por rotação</span>
+            </button>
+            <div id="d-fn" class="dbody" hidden>
+              <span class="lbl">O que é</span><span>Distância que a broca desce a cada volta · na furação o cavaco se mede por rotação, não por dente.</span>
+              <span class="lbl">De onde vem</span><span>Da velocidade de avanço da mesa, que nesta broca é 10% da rotação · como o avanço acompanha a rotação, o valor por volta fica em 0,10 mm/rot em qualquer diâmetro.</span>
+              <span class="lbl">A referência</span><span>É o avanço usual de uma broca de aço rápido deste diâmetro · ela cresce com o diâmetro, os 10% não. Em broca fina a regra pede mais que a referência; em broca grossa, menos.</span>
+              <span class="lbl">▲ aumentar</span><span>Fura mais rápido e quebra melhor o cavaco · eleva a força axial</span>
+              <span class="lbl">▼ diminuir</span><span>Menos esforço na ponta e furo mais preciso · o cavaco sai fino e tende a embolar</span>
+            </div>
+          </div>
+        </div>
+
+        <button type="button" class="linkrow">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12a8 8 0 1 0 2.4-5.7"></path><path d="M4 4.5V10h5.5"></path></svg>
+          <span>Resetar valores</span>
+        </button>
+        </div>
+      </div>
+
+      <button style="display:flex;align-items:center;justify-content:center;width:100%;min-height:56px;background:var(--brand-fill);color:var(--tx-on-brand);border:0;border-radius:var(--r-field);font-size:13px;font-weight:600;letter-spacing:.04em;cursor:pointer">Calcular</button>
+      <!-- D10 — retorno visual de que o cálculo rodou -->
+      <div style="display:flex;align-items:center;gap:6px;color:var(--tx-3);font-size:11px;justify-content:center">
+        <svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 8.5 L6.5 12 L13 4.5"></path></svg>
+        Cálculo atualizado
+      </div>
+    </div>
+
+    <!-- COLUNA DE LEITURA -->
+    <div style="flex:1 1 640px;min-width:0;display:flex;flex-direction:column;gap:16px">
+
+      <!-- Z2 — nível de segurança. Aqui é NORMAL: ocupa o mesmo lugar e o mesmo peso que o
+           ATENÇÃO do Main. O nível muda de cor e de palavra, nunca de posição (R8). -->
+      <div style="background:var(--st-normal-bg);border:1px solid var(--st-normal-bd);border-radius:var(--r-field);padding:16px;display:flex;gap:16px;align-items:flex-start">
+        <div style="background:var(--st-normal-bg);color:var(--st-normal-ink);border:1px solid var(--st-normal-ink);border-radius:var(--r-chip);padding:4px 8px;font-size:11px;font-weight:700;letter-spacing:.08em;flex:none">NORMAL</div>
+        <div style="display:flex;flex-direction:column;gap:4px">
+          <div style="font-size:13px;font-weight:600;color:var(--tx-1)">Nenhuma condição fora da faixa nesta combinação</div>
+          <div class="prose">A velocidade de corte (vc) está em <span class="num">16 m/min</span>, dentro da janela de <span class="num">9,6</span> a <span class="num">22,4 m/min</span> desta broca neste material.</div>
+        </div>
+      </div>
+
+      <!-- Z3 — os parâmetros de corte com que este resultado foi calculado. No fresamento são
+           quatro; na furação são dois, e é isso que a linha mostra. -->
+      <div class="z3">
+        <span class="z3pair"><span class="lbl" style="flex:none">VC</span><span class="z3name">16</span></span>
+        <span class="funit" aria-hidden="true">·</span>
+        <span class="z3pair"><span class="lbl" style="flex:none">FN</span><span class="z3name">0,10</span></span>
+      </div>
+
+      <!-- Z4 — os números de comando. Três, não dois: com broca de aço rápido entra o
+           incremento do pica-pau. A letra de endereço (S, F, Q) marca o que é transcrito para a
+           máquina; a altura do cartão marca o que é editável e refaz a conta para trás (§4.6).
+           Por isso o Q é cartão baixo e sem `−`/`+`: editá-lo não recalcula nada. -->
+      <div style="display:flex;gap:16px;flex-wrap:wrap;align-items:flex-start">
+        <div class="rcard" style="flex:1 1 260px">
+          <div class="lbl">Rotação (<span class="sym">n</span>)</div>
+          <div class="rtall-row">
+            <button type="button" class="step" aria-label="Diminuir rotação 10%">−</button>
+            <div class="rval"><span class="raddr">S</span><span class="rbig">508</span><span class="funit">rpm</span></div>
+            <button type="button" class="step" aria-label="Aumentar rotação 10%">+</button>
+          </div>
+        </div>
+        <div class="rcard" style="flex:1 1 260px">
+          <div class="lbl">Velocidade de avanço da mesa (<span class="sym">vf</span>)</div>
+          <div class="rtall-row">
+            <button type="button" class="step" aria-label="Diminuir velocidade de avanço 10%">−</button>
+            <div class="rval"><span class="raddr">F</span><span class="rbig">50</span><span class="funit">mm/min</span></div>
+            <button type="button" class="step" aria-label="Aumentar velocidade de avanço 10%">+</button>
+          </div>
+        </div>
+        <div class="rcard" style="flex:0 1 200px">
+          <div class="lbl">Incremento por picada</div>
+          <div class="rval"><span class="raddr-sm">Q</span><span class="u20">0,4</span><span class="funit">mm</span></div>
+        </div>
+      </div>
+
+      <!-- Z5 — nasce recolhido (D9) -->
+      <div class="drawer">
+        <button type="button" class="dtrigger" aria-expanded="false" aria-controls="z5">
+          <svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" style="color:var(--tx-3)"><path d="M6 3.5 L11 8 L6 12.5"></path></svg>
+          <span class="lbl" style="flex:none">O que vai acontecer</span>
+          <span class="dhint">nada fora da faixa</span>
+        </button>
+        <div id="z5" class="dbody dbody--col" hidden style="gap:8px">
+          <div class="prose">A furação corre dentro da faixa. A velocidade de corte (vc) está em <span class="num">16 m/min</span>, entre <span class="num">9,6</span> e <span class="num">22,4 m/min</span> — a janela desta broca neste material.</div>
+          <div class="prose">A broca sai do furo a cada <span class="num">0,4 mm</span> para quebrar o cavaco. O incremento vem do diâmetro (Ø<span class="num">10</span> dividido por <span class="num">25</span>), com teto de <span class="num">0,8 mm</span> — em broca grossa ele para de crescer.</div>
+          <div class="prose">A relação balanço/diâmetro (L/D) está em <span class="num">5,0</span> e não pesa aqui: na furação quem manda é a profundidade do furo contra o diâmetro, não o balanço da haste.</div>
+          <div class="prose" style="color:var(--tx-3)">Taxa de remoção de material (MRR) <span class="num">3,9 cm³/min</span>, velocidade de corte real (vc) <span class="num">16,0 m/min</span>.</div>
+        </div>
+      </div>
+
+      <!-- Z6 — uma direção só, e a razão é a mesma ausência: na broca helicoidal a velocidade de
+           corte é o único parâmetro que o operador move. Duas direções aqui seriam invenção. -->
+      <div class="drawer">
+        <button type="button" class="dtrigger" aria-expanded="false" aria-controls="z6">
+          <svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" style="color:var(--tx-3)"><path d="M6 3.5 L11 8 L6 12.5"></path></svg>
+          <span class="lbl" style="flex:none">O que mexer</span>
+          <span class="dhint">1 direção · a velocidade de corte é o único ajuste desta broca</span>
+        </button>
+        <div id="z6" class="dbody dbody--col" hidden style="gap:20px">
+          <div style="display:flex;flex-direction:column;gap:6px">
+            <div style="font-size:13px;font-weight:600;color:var(--tx-1)">Para furar mais rápido</div>
+            <div class="qline">Aumente a velocidade de corte (vc) para <span class="num" style="font-weight:700;color:var(--tx-1);margin:0 4px">22 m/min</span> (hoje <span class="num">16</span>).</div>
+            <div>A rotação sobe para <span class="num">699 rpm</span> e o avanço da mesa para <span class="num">69 mm/min</span> — cerca de <span class="num">38%</span> mais material por minuto.</div>
+            <div>O incremento não se move: ele vem do diâmetro, não da velocidade.</div>
+            <div style="color:var(--tx-3)">Em troca: o gume esquenta mais e se desgasta mais rápido. <span class="num">22</span> é o topo da faixa de partida desta broca neste material.</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Z7 — resultados úteis. São três, não sete: espessura de cavaco e afinamento não existem
+           sem penetração de trabalho, e potência e torque dependem da espessura média, que a
+           cadeia de furação não fecha nos documentos. Ausência declarada, não cartão vazio. -->
+      <div class="card" style="display:flex;flex-direction:column;gap:12px">
+        <div class="lbl">RESUMO GERAL</div>
+        <div style="display:grid;grid-template-columns:repeat(3, minmax(0, 1fr));gap:12px">
+          <div class="rcard"><div class="lbl">Taxa de remoção de material (<span class="sym">MRR</span>)</div><div><span class="u20">3,9</span> <span class="funit">cm³/min</span></div></div>
+          <div class="rcard"><div class="lbl">Velocidade de corte real (<span class="sym">vc</span>)</div><div><span class="u20">16,0</span> <span class="funit">m/min</span></div></div>
+          <div class="rcard"><div class="lbl">Relação balanço/diâmetro (<span class="sym">L/D</span>)</div><div><span class="u20">5,0</span></div></div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+</div>
+</x-dc>
+</body>
+</html>

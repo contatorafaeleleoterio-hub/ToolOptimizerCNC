@@ -1,0 +1,41 @@
+{
+  "artboards": [
+    { "file": "Main.dc.html", "title": "Resultado com alerta ativo — desktop 1440", "x": 0, "y": 0, "w": 1440, "h": 2450 },
+    { "file": "Vazio.dc.html", "title": "Estado vazio — antes do primeiro cálculo", "x": 1560, "y": 0, "w": 1440, "h": 1000 },
+    { "file": "Tablet.dc.html", "title": "Mesma capacidade — tablet 834", "x": 3120, "y": 0, "w": 834, "h": 2500 },
+    { "file": "Celular.dc.html", "title": "Mesma capacidade — celular 390", "x": 4074, "y": 0, "w": 390, "h": 3550 },
+    { "file": "Estados.dc.html", "title": "Folha de estados — o contrato", "x": 0, "y": 3730, "w": 1080, "h": 2760 },
+    { "file": "Configuracoes.dc.html", "title": "Configurações — materiais, ferramentas, margem de segurança (responsivo)", "x": 1200, "y": 3730, "w": 1200, "h": 3400 }
+  ],
+  "annotations": [
+    {
+      "id": "tese",
+      "x": 0,
+      "y": -430,
+      "w": 900,
+      "text": "TESE DO PAINEL\n\nDuas colunas persistentes: a MONTAGEM à esquerda (o que está na máquina), a LEITURA à direita — sempre na mesma ordem vertical, que nunca reflui: alerta, os dois números, o que vai acontecer, o que mexer, resultados úteis.\n\nO operador aprende posição, não navegação. Só o alerta nasce aberto; a prosa e a gaveta de instrução por parâmetro nascem recolhidas, mesmo depois de calcular (D9)."
+    },
+    {
+      "id": "duas-funcoes",
+      "x": 960,
+      "y": -430,
+      "w": 560,
+      "text": "T2 — DOIS TRANSCRITOS ENTRE DOZE CONFERIDOS\n\nO que se digita na máquina é o que se pode digitar na tela: os dois números de comando (com o endereço S / F ao lado) são a única superfície de 32px e os únicos campos editáveis do resultado. Os outros doze são leitura.\n\nA espessura de cavaco não é transcrita e mesmo assim dispara o alerta mais importante — por isso ela sobe pela linha de alerta, que fica ACIMA do par, não por tamanho de fonte."
+    },
+    {
+      "id": "tres-tamanhos",
+      "x": 3120,
+      "y": -430,
+      "w": 1344,
+      "text": "T9 + R13 — COMPUTADOR, TABLET E CELULAR, NENHUM SECUNDÁRIO\n\nA mesma capacidade, o mesmo cálculo, os mesmos limiares — reorganizados. O desktop é fluido (sem largura travada, ao contrário do antecessor, que não renderizava abaixo de 1360px). No tablet as duas colunas empilham largas e \"resultados úteis\" cai de 4 para 2 colunas. No celular tudo vira coluna única, preservando a ordem: configuração acima do resultado (MVP §2.3). Nada foi cortado — o quadro do celular mostra a rolagem inteira."
+    },
+    {
+      "id": "estados-uso",
+      "x": 0,
+      "y": 3560,
+      "w": 1080,
+      "text": "A folha de estados é a parte canônica do contrato: alerta em três níveis, erro de digitação que NÃO move o nível, check ao calcular, desatualizado sem opacidade (e é ele quem diz que o número envelheceu, já que o horário saiu), reconfiguração de campos anunciada, prosa e gaveta de instrução nascendo recolhidas — só o alerta abre —, blocos de entrada recolhidos com os valores no cabeçalho, e os dados do material visíveis na tela (editados na área Configurações). Quem for construir a tela copia daqui."
+    }
+  ],
+  "launch": { "view": "canvas" }
+}

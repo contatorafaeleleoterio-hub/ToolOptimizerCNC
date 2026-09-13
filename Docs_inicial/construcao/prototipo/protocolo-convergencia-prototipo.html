@@ -1,0 +1,419 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Protocolo de Convergência do Protótipo</title>
+<style>
+  :root {
+    --surface-page: #f4f3ef;
+    --surface-card: #ffffff;
+    --surface-muted: #f1efe8;
+    --text-primary: #1c1c1a;
+    --text-secondary: #5f5e5a;
+    --text-muted: #888780;
+    --border: #e3e1d9;
+    --border-strong: #cfcdc3;
+    --accent: #185fa5;
+    --accent-bg: #e6f1fb;
+    --accent-text: #0c447c;
+    --danger: #a32d2d;
+    --danger-bg: #fcebeb;
+    --warning: #854f0b;
+    --warning-bg: #faeeda;
+    --success: #27500a;
+    --success-bg: #eaf3de;
+    --radius: 10px;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --surface-page: #171715;
+      --surface-card: #201f1d;
+      --surface-muted: #2a2926;
+      --text-primary: #f1efe8;
+      --text-secondary: #b4b2a9;
+      --text-muted: #888780;
+      --border: #3a3934;
+      --border-strong: #4a4944;
+      --accent: #85b7eb;
+      --accent-bg: #0c447c;
+      --accent-text: #b5d4f4;
+      --danger: #f09595;
+      --danger-bg: #501313;
+      --warning: #ef9f27;
+      --warning-bg: #412402;
+      --success: #97c459;
+      --success-bg: #173404;
+    }
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    padding: 32px 16px 64px;
+    background: var(--surface-page);
+    color: var(--text-primary);
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    line-height: 1.6;
+  }
+  #wrap {
+    max-width: 720px;
+    margin: 0 auto;
+  }
+  h1 {
+    font-size: 20px;
+    font-weight: 600;
+    margin: 0 0 4px;
+  }
+  .lead {
+    font-size: 14px;
+    color: var(--text-secondary);
+    margin: 0 0 28px;
+  }
+  .card {
+    background: var(--surface-card);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 20px;
+    margin-bottom: 20px;
+  }
+  button {
+    font-family: inherit;
+    font-size: 14px;
+    border-radius: 8px;
+    border: 1px solid var(--border-strong);
+    background: transparent;
+    color: var(--text-primary);
+    padding: 8px 14px;
+    cursor: pointer;
+    transition: background .15s, transform .1s;
+  }
+  button:hover { background: var(--surface-muted); }
+  button:active { transform: scale(0.98); }
+  input[type="text"], select {
+    font-family: inherit;
+    font-size: 14px;
+    padding: 8px 10px;
+    border-radius: 8px;
+    border: 1px solid var(--border-strong);
+    background: var(--surface-card);
+    color: var(--text-primary);
+  }
+  input[type="text"]:focus, select:focus {
+    outline: none;
+    box-shadow: 0 0 0 2px var(--accent-bg);
+    border-color: var(--accent);
+  }
+  input[type="checkbox"] { accent-color: var(--accent); }
+</style>
+</head>
+<body>
+<div id="wrap">
+
+  <h1>Protocolo de convergência do protótipo</h1>
+  <p class="lead">Acompanhe as fases, registre findings da auditoria e controle o gate de aceite.</p>
+
+  <div class="card">
+    <div style="display:flex; align-items:center; justify-content:space-between; margin-bottom:4px;">
+      <span style="font-size:13px; color:var(--text-secondary);">Progresso geral</span>
+      <span id="pct-label" style="font-size:13px; font-weight:600;">0%</span>
+    </div>
+    <div style="height:6px; background:var(--surface-muted); border-radius:3px; overflow:hidden; margin-bottom:20px;">
+      <div id="pct-bar" style="height:100%; width:0%; background:var(--accent); transition: width .3s;"></div>
+    </div>
+
+    <div style="display:grid; grid-template-columns: repeat(3, minmax(0,1fr)); gap:12px;">
+      <div style="background:var(--surface-muted); border-radius:8px; padding:14px;">
+        <p style="font-size:12px; color:var(--text-secondary); margin:0 0 4px;">Fase atual</p>
+        <p id="stat-phase" style="font-size:18px; font-weight:600; margin:0;">F0</p>
+      </div>
+      <div style="background:var(--surface-muted); border-radius:8px; padding:14px;">
+        <p style="font-size:12px; color:var(--text-secondary); margin:0 0 4px;">Ciclo</p>
+        <p id="stat-cycle" style="font-size:18px; font-weight:600; margin:0;">1 / 4</p>
+      </div>
+      <div style="background:var(--surface-muted); border-radius:8px; padding:14px;">
+        <p style="font-size:12px; color:var(--text-secondary); margin:0 0 4px;">Findings abertos</p>
+        <p id="stat-findings" style="font-size:18px; font-weight:600; margin:0;">0</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="card">
+    <p style="font-size:14px; font-weight:600; margin:0 0 12px;">Fases</p>
+    <div id="phase-list"></div>
+  </div>
+
+  <div class="card">
+    <p style="font-size:14px; font-weight:600; margin:0 0 12px;">Findings da auditoria</p>
+    <div id="findings-summary" style="display:flex; gap:8px; margin-bottom:14px; flex-wrap:wrap;"></div>
+    <div style="display:flex; gap:8px; margin-bottom:8px; flex-wrap:wrap;">
+      <input type="text" id="finding-input" placeholder="Descreva o finding (ex: botão sem hover state)" style="flex:1; min-width:200px;" />
+      <select id="finding-sev" style="width:140px;">
+        <option value="critico">Crítico</option>
+        <option value="importante" selected>Importante</option>
+        <option value="cosmetico">Cosmético</option>
+      </select>
+      <button id="finding-add">Adicionar</button>
+    </div>
+    <p id="finding-error" style="font-size:13px; color:var(--danger); margin:0 0 8px; display:none;">Descreva o finding antes de adicionar</p>
+    <div id="findings-list"></div>
+  </div>
+
+  <div class="card" style="display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap; gap:12px;">
+    <div>
+      <p style="font-size:14px; font-weight:600; margin:0;">Gate de aceite</p>
+      <p id="gate-sub" style="font-size:13px; color:var(--text-secondary); margin:2px 0 0;">Aguardando fechamento dos críticos e importantes</p>
+    </div>
+    <span id="gate-badge" style="font-size:12px; padding:4px 12px; border-radius:8px; background:var(--warning-bg); color:var(--warning); font-weight:600;">Bloqueado</span>
+  </div>
+
+  <div style="display:flex; gap:8px; margin-top:8px;">
+    <button id="cycle-btn" style="flex:1;">Avançar ciclo</button>
+    <button id="export-btn" style="flex:1;">Exportar estado (.json)</button>
+    <button id="reset-btn" style="flex:1;">Reiniciar tudo</button>
+  </div>
+
+  <p style="font-size:12px; color:var(--text-muted); text-align:center; margin-top:24px;">
+    O progresso é salvo automaticamente neste navegador (localStorage). Use "Exportar" para levar o estado para outro computador.
+  </p>
+
+</div>
+
+<script>
+const STORAGE_KEY = 'protocolo-convergencia-prototipo-v1';
+
+const PHASES = [
+  { id: 'g0', tag: 'G0', title: 'Diagnóstico rápido', sub: 'Spec ambígua ou agente ignorou spec clara?' },
+  { id: 'f1', tag: 'F1', title: 'Consolidar fonte de verdade', sub: 'Gabarito único e versionado' },
+  { id: 'f15', tag: 'F1.5', title: 'Baseline commit', sub: 'Travar o estado que será auditado' },
+  { id: 'f2', tag: 'F2', title: 'Auditoria fresh-context', sub: 'Novo agente, protótipo + gabarito + design system' },
+  { id: 'f3', tag: 'F3', title: 'Human gate', sub: 'Aceitar, rejeitar ou repriorizar cada finding' },
+  { id: 'f4', tag: 'F4', title: 'Critérios de aceite', sub: 'Estado atual → esperado → regra → critério testável' },
+  { id: 'f5', tag: 'F5', title: 'Action plan', sub: 'Tarefas rastreáveis ao finding original' },
+  { id: 'f6', tag: 'F6', title: 'Execução + proof artifact', sub: 'Escopo travado, evidência antes do commit' },
+  { id: 'f7', tag: 'F7', title: 'Verificação independente', sub: 'Protótipo novo vs gabarito + checklist' },
+  { id: 'f8', tag: 'F8', title: 'Acceptance gate', sub: '100% críticos + 100% importantes' },
+];
+
+function loadState() {
+  try {
+    const raw = localStorage.getItem(STORAGE_KEY);
+    if (raw) {
+      const parsed = JSON.parse(raw);
+      if (parsed && parsed.phases && parsed.findings) return parsed;
+    }
+  } catch (e) {}
+  const fresh = { phases: {}, findings: [], cycle: 1 };
+  PHASES.forEach(p => fresh.phases[p.id] = false);
+  return fresh;
+}
+
+const state = loadState();
+PHASES.forEach(p => { if (!(p.id in state.phases)) state.phases[p.id] = false; });
+if (!state.cycle) state.cycle = 1;
+
+function saveState() {
+  try {
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+  } catch (e) {}
+}
+
+function currentPhaseIndex() {
+  for (let i = 0; i < PHASES.length; i++) {
+    if (!state.phases[PHASES[i].id]) return i;
+  }
+  return PHASES.length - 1;
+}
+
+const sevMeta = {
+  critico: { label: 'Crítico', bg: 'var(--danger-bg)', fg: 'var(--danger)' },
+  importante: { label: 'Importante', bg: 'var(--warning-bg)', fg: 'var(--warning)' },
+  cosmetico: { label: 'Cosmético', bg: 'var(--accent-bg)', fg: 'var(--accent-text)' },
+};
+
+function render() {
+  const done = PHASES.filter(p => state.phases[p.id]).length;
+  const pct = Math.round((done / PHASES.length) * 100);
+  document.getElementById('pct-bar').style.width = pct + '%';
+  document.getElementById('pct-label').textContent = pct + '%';
+
+  const curIdx = currentPhaseIndex();
+  const allDone = done === PHASES.length;
+  document.getElementById('stat-phase').textContent = allDone ? 'Concluído' : PHASES[curIdx].tag;
+  document.getElementById('stat-cycle').textContent = state.cycle + ' / 4';
+
+  const open = state.findings.filter(f => !f.resolved).length;
+  document.getElementById('stat-findings').textContent = open;
+
+  const list = document.getElementById('phase-list');
+  list.innerHTML = '';
+  PHASES.forEach((p, i) => {
+    const row = document.createElement('div');
+    row.style.cssText = 'display:flex; align-items:flex-start; gap:12px; padding:10px 0; border-bottom:1px solid var(--border);';
+    if (i === PHASES.length - 1) row.style.borderBottom = 'none';
+    const isDone = state.phases[p.id];
+    const isCurrent = i === curIdx && !allDone;
+
+    const check = document.createElement('button');
+    check.setAttribute('aria-label', isDone ? 'Marcar fase como pendente' : 'Marcar fase como concluída');
+    check.style.cssText = 'width:24px; height:24px; border-radius:50%; border:1.5px solid ' + (isDone ? 'var(--accent)' : 'var(--border-strong)') + '; background:' + (isDone ? 'var(--accent)' : 'transparent') + '; flex-shrink:0; margin-top:1px; cursor:pointer; display:flex; align-items:center; justify-content:center; padding:0;';
+    check.innerHTML = isDone ? '<span style="color:#fff; font-size:13px; line-height:1;">✓</span>' : '';
+    check.onclick = () => {
+      state.phases[p.id] = !state.phases[p.id];
+      saveState();
+      render();
+    };
+
+    const textWrap = document.createElement('div');
+    textWrap.style.cssText = 'flex:1;';
+    const titleRow = document.createElement('div');
+    titleRow.style.cssText = 'display:flex; align-items:center; gap:8px; flex-wrap:wrap;';
+    const tag = document.createElement('span');
+    tag.textContent = p.tag;
+    tag.style.cssText = 'font-size:11px; font-weight:600; color:var(--accent-text); background:var(--accent-bg); padding:2px 7px; border-radius:4px;';
+    const title = document.createElement('span');
+    title.textContent = p.title;
+    title.style.cssText = 'font-size:14px; font-weight:600; ' + (isDone ? 'color:var(--text-muted); text-decoration:line-through;' : '');
+    titleRow.appendChild(tag);
+    titleRow.appendChild(title);
+    if (isCurrent) {
+      const badge = document.createElement('span');
+      badge.textContent = 'em andamento';
+      badge.style.cssText = 'font-size:11px; color:var(--text-secondary);';
+      titleRow.appendChild(badge);
+    }
+    const sub = document.createElement('p');
+    sub.textContent = p.sub;
+    sub.style.cssText = 'font-size:12px; color:var(--text-secondary); margin:3px 0 0;';
+    textWrap.appendChild(titleRow);
+    textWrap.appendChild(sub);
+
+    row.appendChild(check);
+    row.appendChild(textWrap);
+    list.appendChild(row);
+  });
+
+  const sevCounts = { critico: 0, importante: 0, cosmetico: 0 };
+  state.findings.forEach(f => { if (!f.resolved) sevCounts[f.sev]++; });
+  const summary = document.getElementById('findings-summary');
+  summary.innerHTML = '';
+  Object.keys(sevMeta).forEach(k => {
+    const chip = document.createElement('span');
+    chip.textContent = sevMeta[k].label + ': ' + sevCounts[k];
+    chip.style.cssText = 'font-size:12px; padding:4px 10px; border-radius:8px; background:' + sevMeta[k].bg + '; color:' + sevMeta[k].fg + '; font-weight:500;';
+    summary.appendChild(chip);
+  });
+
+  const fList = document.getElementById('findings-list');
+  fList.innerHTML = '';
+  if (state.findings.length === 0) {
+    const empty = document.createElement('p');
+    empty.textContent = 'Nenhum finding registrado ainda.';
+    empty.style.cssText = 'font-size:13px; color:var(--text-muted); margin:0;';
+    fList.appendChild(empty);
+  }
+  state.findings.forEach((f, idx) => {
+    const row = document.createElement('div');
+    row.style.cssText = 'display:flex; align-items:center; gap:10px; padding:8px 0; border-bottom:1px solid var(--border); flex-wrap:wrap;';
+
+    const cb = document.createElement('input');
+    cb.type = 'checkbox';
+    cb.checked = f.resolved;
+    cb.setAttribute('aria-label', 'Marcar finding como resolvido');
+    cb.style.cssText = 'width:16px; height:16px; flex-shrink:0;';
+    cb.onchange = () => { f.resolved = cb.checked; saveState(); render(); };
+
+    const label = document.createElement('span');
+    label.textContent = f.text;
+    label.style.cssText = 'flex:1; min-width:120px; font-size:13px; ' + (f.resolved ? 'color:var(--text-muted); text-decoration:line-through;' : '');
+
+    const sevTag = document.createElement('span');
+    sevTag.textContent = sevMeta[f.sev].label;
+    sevTag.style.cssText = 'font-size:11px; padding:2px 8px; border-radius:4px; background:' + sevMeta[f.sev].bg + '; color:' + sevMeta[f.sev].fg + ';';
+
+    const delBtn = document.createElement('button');
+    delBtn.setAttribute('aria-label', 'Remover finding');
+    delBtn.textContent = '✕';
+    delBtn.style.cssText = 'width:28px; height:28px; padding:0; flex-shrink:0; font-size:13px;';
+    delBtn.onclick = () => { state.findings.splice(idx, 1); saveState(); render(); };
+
+    row.appendChild(cb);
+    row.appendChild(label);
+    row.appendChild(sevTag);
+    row.appendChild(delBtn);
+    fList.appendChild(row);
+  });
+
+  const openCrit = state.findings.filter(f => f.sev === 'critico' && !f.resolved).length;
+  const openImp = state.findings.filter(f => f.sev === 'importante' && !f.resolved).length;
+  const gateBadge = document.getElementById('gate-badge');
+  const gateSub = document.getElementById('gate-sub');
+  if (state.findings.length > 0 && openCrit === 0 && openImp === 0) {
+    gateBadge.textContent = 'Aprovado';
+    gateBadge.style.background = 'var(--success-bg)';
+    gateBadge.style.color = 'var(--success)';
+    gateSub.textContent = 'Todos os críticos e importantes resolvidos';
+  } else {
+    gateBadge.textContent = 'Bloqueado';
+    gateBadge.style.background = 'var(--warning-bg)';
+    gateBadge.style.color = 'var(--warning)';
+    gateSub.textContent = openCrit + ' crítico(s) e ' + openImp + ' importante(s) ainda abertos';
+  }
+}
+
+document.getElementById('finding-add').onclick = () => {
+  const input = document.getElementById('finding-input');
+  const sev = document.getElementById('finding-sev').value;
+  const err = document.getElementById('finding-error');
+  const text = input.value.trim();
+  if (!text) {
+    err.style.display = 'block';
+    return;
+  }
+  err.style.display = 'none';
+  state.findings.push({ text, sev, resolved: false });
+  input.value = '';
+  saveState();
+  render();
+};
+
+document.getElementById('finding-input').addEventListener('input', () => {
+  document.getElementById('finding-error').style.display = 'none';
+});
+
+document.getElementById('finding-input').addEventListener('keydown', (e) => {
+  if (e.key === 'Enter') document.getElementById('finding-add').click();
+});
+
+document.getElementById('cycle-btn').onclick = () => {
+  if (state.cycle < 4) {
+    state.cycle++;
+    saveState();
+    render();
+  }
+};
+
+document.getElementById('export-btn').onclick = () => {
+  const blob = new Blob([JSON.stringify(state, null, 2)], { type: 'application/json' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = 'protocolo-convergencia-estado.json';
+  document.body.appendChild(a);
+  a.click();
+  document.body.removeChild(a);
+  URL.revokeObjectURL(url);
+};
+
+document.getElementById('reset-btn').onclick = () => {
+  if (!confirm('Reiniciar todas as fases, findings e o ciclo?')) return;
+  PHASES.forEach(p => state.phases[p.id] = false);
+  state.findings = [];
+  state.cycle = 1;
+  saveState();
+  render();
+};
+
+render();
+</script>
+</body>
+</html>

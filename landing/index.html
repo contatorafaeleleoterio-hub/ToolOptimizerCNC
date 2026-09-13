@@ -4,15 +4,15 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>ToolOptimizer CNC — Calculadora de Parâmetros de Corte</title>
-  <meta name="description" content="Sistema profissional de cálculo de parâmetros CNC. Calcule RPM, Avanço e Potência em 2 segundos. Desenvolvido por operador CNC com 17+ anos de experiência. Grátis, sem cadastro." />
-  <meta name="keywords" content="calculadora CNC, parâmetros de corte, RPM fresamento, avanço CNC, potência usinagem, Kienzle, velocidade de corte, fresamento CNC grátis" />
+  <meta name="description" content="Sistema profissional de cálculo de parâmetros CNC. Calcule RPM, Avanço e Potência em 2 segundos com precisão física. 4 famílias de usinagem com modelo de Kienzle. Grátis, offline-first." />
+  <meta name="keywords" content="calculadora CNC, parâmetros de corte, RPM fresamento, furação CNC, roscamento, mandrilamento, avanço CNC, potência usinagem, Kienzle, velocidade de corte, fresamento CNC grátis" />
   <meta name="robots" content="index, follow" />
   <meta name="author" content="Mestre CNC" />
 
   <!-- Open Graph -->
   <meta property="og:type" content="website" />
   <meta property="og:title" content="ToolOptimizer CNC — Calculadora de Parâmetros de Corte" />
-  <meta property="og:description" content="Sistema profissional de cálculo de parâmetros CNC. Calcule RPM, Avanço e Potência em 2 segundos. Grátis, sem cadastro." />
+  <meta property="og:description" content="Sistema profissional de cálculo de parâmetros CNC. Calcule RPM, Avanço e Potência em 2 segundos com modelo de Kienzle. 100% gratuito e offline-first." />
   <meta property="og:url" content="https://www.tooloptimizercnc.com.br/" />
   <meta property="og:image" content="https://app.tooloptimizercnc.com.br/og-image.png" />
   <meta property="og:site_name" content="ToolOptimizer CNC" />
@@ -21,7 +21,7 @@
   <!-- Twitter Card -->
   <meta name="twitter:card" content="summary_large_image" />
   <meta name="twitter:title" content="ToolOptimizer CNC — Calculadora de Parâmetros de Corte" />
-  <meta name="twitter:description" content="Sistema profissional de cálculo de parâmetros CNC. RPM, Avanço e Potência em 2 segundos. Grátis." />
+  <meta name="twitter:description" content="Sistema profissional de cálculo de parâmetros CNC. RPM, Avanço e Potência em 2 segundos. Grátis e offline." />
   <meta name="twitter:image" content="https://app.tooloptimizercnc.com.br/og-image.png" />
 
   <!-- Canonical -->
@@ -33,9 +33,9 @@
     "@context": "https://schema.org",
     "@type": "SoftwareApplication",
     "name": "ToolOptimizer CNC",
-    "description": "Sistema web para cálculo rápido de parâmetros de usinagem CNC. RPM, Avanço e Potência em 2 segundos.",
+    "description": "Sistema profissional para cálculo de parâmetros de usinagem CNC com modelo de Kienzle. Suporta fresamento, furação, roscamento e mandrilamento.",
     "applicationCategory": "ProductivityApplication",
-    "operatingSystem": "Web Browser, Windows",
+    "operatingSystem": "Web Browser, Windows, Android, iOS (PWA)",
     "url": "https://app.tooloptimizercnc.com.br/",
     "inLanguage": "pt-BR",
     "offers": {
@@ -51,11 +51,14 @@
       "description": "Programador e operador CNC com 17+ anos de experiência em moldes de injeção",
       "sameAs": ["https://tooloptimizercnc.com.br"]
     },
-    "aggregateRating": {
-      "@type": "AggregateRating",
-      "ratingValue": "5.0",
-      "reviewCount": "1"
-    }
+    "featureList": [
+      "4 famílias completas: fresar, furar, roscar e mandrilar",
+      "Modelo canônico de Kienzle para cálculo de potência e forças",
+      "Ajuste fino tátil bidirecional de ±5% com recálculo instantâneo",
+      "Suporte a brocas helicoidais em aço rápido (HSS) e metal duro (MD)",
+      "Persistência local offline-first em IndexedDB",
+      "Validação e semáforo visual de segurança física"
+    ]
   }
   </script>
 
@@ -78,7 +81,7 @@
         "name": "O ToolOptimizer CNC é gratuito?",
         "acceptedAnswer": {
           "@type": "Answer",
-          "text": "Sim, o ToolOptimizer CNC é completamente gratuito. Não requer cadastro, não tem anúncios e funciona diretamente no navegador ou como aplicativo portátil para Windows."
+          "text": "Sim, o ToolOptimizer CNC é completamente gratuito. Não requer cadastro, não tem anúncios e funciona diretamente no navegador em qualquer dispositivo."
         }
       },
       {
@@ -86,15 +89,15 @@
         "name": "Quais materiais o ToolOptimizer suporta?",
         "acceptedAnswer": {
           "@type": "Answer",
-          "text": "O sistema suporta aços carbono (1020, 1045), aços inoxidáveis (AISI 304), alumínio (Al 6061-T6), aços de molde (H13, P20, 2711), aços cementados (8620) e mais. Você pode adicionar materiais personalizados com seus próprios dados."
+          "text": "O sistema suporta aços carbono (1020, 1045), aços inoxidáveis (AISI 304), alumínio (Al 6061-T6), aços de molde (H13, P20, 2711), aços cementados (8620) e mais. Você também pode adicionar materiais personalizados que ficam salvos localmente."
         }
       },
       {
         "@type": "Question",
-        "name": "O sistema funciona sem internet?",
+        "name": "O sistema funciona sem internet (offline)?",
         "acceptedAnswer": {
           "@type": "Answer",
-          "text": "Sim. O ToolOptimizer CNC possui versão desktop portátil para Windows (.exe, ~85MB) que funciona completamente offline — ideal para ambientes industriais sem acesso à internet."
+          "text": "Sim. O ToolOptimizer CNC opera como Progressive Web App (PWA) e utiliza armazenamento local IndexedDB, funcionando 100% offline no chão de fábrica sem depender de conexão."
         }
       },
       {
@@ -102,7 +105,7 @@
         "name": "O sistema usa o modelo de Kienzle?",
         "acceptedAnswer": {
           "@type": "Answer",
-          "text": "Sim. O ToolOptimizer utiliza o modelo de Kienzle para cálculo da força específica de corte (kc), padrão técnico mais preciso para fresamento. Os dados de Kc1.1 e mc estão incluídos para cada material suportado."
+          "text": "Sim. O ToolOptimizer utiliza o modelo de Kienzle para cálculo da força específica de corte (kc) e potência de usinagem, com constantes canônicas de Kc1.1 e mc para cada classe de material."
         }
       }
     ]
@@ -138,28 +141,27 @@
       position: sticky;
       top: 0;
       z-index: 50;
-      background: rgba(15,20,25,0.9);
+      background: rgba(15, 20, 25, 0.92);
       backdrop-filter: blur(12px);
-      -webkit-backdrop-filter: blur(12px);
       border-bottom: 1px solid var(--border);
-      padding: 0 1.5rem;
     }
     .header-inner {
       max-width: 1100px;
       margin: auto;
+      padding: 0 1.5rem;
+      height: 64px;
       display: flex;
       align-items: center;
       justify-content: space-between;
-      height: 60px;
     }
     .logo {
-      font-weight: 800;
-      font-size: 1.1rem;
-      color: var(--cyan);
+      font-size: 1.15rem;
+      font-weight: 700;
+      color: #fff;
       text-decoration: none;
       letter-spacing: -0.02em;
     }
-    .logo span { color: var(--text); font-weight: 400; }
+    .logo span { color: var(--cyan); }
     .header-cta {
       background: var(--cyan);
       color: #0F1419;
@@ -168,35 +170,36 @@
       padding: 0.5rem 1.25rem;
       border-radius: 8px;
       text-decoration: none;
-      transition: opacity 0.15s;
+      transition: opacity 0.15s, transform 0.15s;
     }
-    .header-cta:hover { opacity: 0.85; }
+    .header-cta:hover { opacity: 0.9; transform: translateY(-1px); }
 
     /* ── HERO ── */
     .hero {
       text-align: center;
-      padding: 5rem 1.5rem 3.5rem;
-      max-width: 820px;
+      padding: 5rem 1.5rem 4rem;
+      max-width: 860px;
       margin: auto;
     }
     .badge {
       display: inline-flex;
       align-items: center;
-      gap: 8px;
-      background: rgba(0,217,255,0.08);
-      border: 1px solid rgba(0,217,255,0.25);
+      gap: 6px;
+      background: rgba(0, 217, 255, 0.08);
+      border: 1px solid rgba(0, 217, 255, 0.25);
       color: var(--cyan);
       font-size: 0.8rem;
       font-weight: 600;
-      padding: 5px 14px;
-      border-radius: 999px;
+      padding: 0.35rem 0.85rem;
+      border-radius: 20px;
       margin-bottom: 1.75rem;
+      letter-spacing: 0.04em;
     }
     .badge-dot {
-      width: 7px; height: 7px;
+      width: 6px; height: 6px;
       background: var(--green);
       border-radius: 50%;
-      box-shadow: 0 0 8px var(--green);
+      box-shadow: 0 0 6px var(--green);
       animation: blink 2s infinite;
     }
     @keyframes blink { 0%,100%{opacity:1} 50%{opacity:0.35} }
@@ -262,8 +265,10 @@
     .stats {
       display: flex;
       justify-content: center;
-      gap: 3.5rem;
-      padding: 0 1.5rem 3.5rem;
+      gap: clamp(1.5rem, 5vw, 4rem);
+      padding: 2.5rem 1.5rem;
+      max-width: 860px;
+      margin: auto;
       flex-wrap: wrap;
     }
     .stat { text-align: center; }
@@ -271,34 +276,34 @@
       font-size: 2rem;
       font-weight: 800;
       color: var(--cyan);
-      font-family: 'Courier New', monospace;
-      letter-spacing: -0.02em;
+      line-height: 1;
+      margin-bottom: 0.35rem;
     }
-    .stat-l { font-size: 0.78rem; color: var(--muted); margin-top: 3px; text-transform: uppercase; letter-spacing: 0.05em; }
+    .stat-l { font-size: 0.8rem; color: var(--muted); text-transform: uppercase; letter-spacing: 0.05em; }
 
-    /* ── SECTION ── */
-    section { padding: 4.5rem 1.5rem; }
+    /* ── SECTION COMMON ── */
+    section { padding: 5rem 1.5rem; }
     .container { max-width: 1100px; margin: auto; }
-
     h2 {
-      font-size: clamp(1.5rem, 3vw, 2.1rem);
-      font-weight: 700;
+      font-size: clamp(1.6rem, 3.5vw, 2.4rem);
+      font-weight: 800;
+      letter-spacing: -0.02em;
       text-align: center;
       margin-bottom: 0.75rem;
-      letter-spacing: -0.02em;
     }
     .sec-sub {
       text-align: center;
       color: var(--muted);
-      margin-bottom: 3rem;
+      max-width: 520px;
+      margin: 0 auto 3.5rem;
       font-size: 1rem;
     }
 
-    /* ── FEATURES ── */
+    /* ── FEATURES GRID ── */
     .grid-features {
       display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(290px, 1fr));
-      gap: 1.25rem;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 1.5rem;
     }
     .card {
       background: var(--bg-card);
@@ -308,54 +313,58 @@
       transition: border-color 0.2s, transform 0.2s;
     }
     .card:hover {
-      border-color: rgba(0,217,255,0.2);
-      transform: translateY(-3px);
+      border-color: rgba(0, 217, 255, 0.3);
+      transform: translateY(-2px);
     }
-    .card-icon { font-size: 1.75rem; margin-bottom: 1rem; }
-    .card h3 { font-size: 1.05rem; font-weight: 700; margin-bottom: 0.5rem; }
-    .card p { color: var(--muted); font-size: 0.9rem; line-height: 1.65; }
+    .card-icon {
+      font-size: 1.75rem;
+      margin-bottom: 1rem;
+      display: inline-block;
+    }
+    .card h3 { font-size: 1.05rem; font-weight: 700; margin-bottom: 0.5rem; color: #fff; }
+    .card p { font-size: 0.875rem; color: var(--muted); line-height: 1.6; }
 
-    /* ── HOW IT WORKS ── */
-    .steps-wrap {
-      background: var(--bg-card2);
-      border: 1px solid var(--border);
-      border-radius: 16px;
-      padding: 2.75rem;
-    }
-    .steps-wrap h2 { margin-bottom: 0.5rem; }
-    .steps-wrap .sec-sub { margin-bottom: 2.5rem; }
+    /* ── STEPS ── */
+    .steps-wrap { max-width: 780px; margin: auto; }
     .steps-grid {
       display: grid;
       grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-      gap: 2rem;
+      gap: 1.5rem;
     }
-    .step { text-align: center; }
+    .step {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      padding: 1.75rem;
+      position: relative;
+    }
     .step-n {
-      width: 50px; height: 50px;
-      background: rgba(0,217,255,0.1);
-      border: 1.5px solid rgba(0,217,255,0.3);
-      border-radius: 50%;
+      width: 32px; height: 32px;
+      background: rgba(0, 217, 255, 0.12);
+      border: 1px solid rgba(0, 217, 255, 0.35);
+      color: var(--cyan);
+      border-radius: 8px;
+      font-weight: 800;
       display: flex;
       align-items: center;
       justify-content: center;
-      font-weight: 800;
-      color: var(--cyan);
-      font-size: 1.2rem;
-      margin: 0 auto 1rem;
+      font-size: 0.9rem;
+      margin-bottom: 1rem;
     }
-    .step h3 { font-size: 0.95rem; font-weight: 600; margin-bottom: 0.4rem; }
-    .step p { font-size: 0.875rem; color: var(--muted); }
+    .step h3 { font-size: 1rem; font-weight: 700; margin-bottom: 0.5rem; color: #fff; }
+    .step p { font-size: 0.85rem; color: var(--muted); }
 
     /* ── AUTHORITY ── */
     .authority {
-      background: linear-gradient(135deg, rgba(0,217,255,0.06) 0%, rgba(57,255,20,0.03) 100%);
-      border: 1px solid rgba(0,217,255,0.15);
+      max-width: 740px;
+      margin: auto;
+      background: var(--bg-card);
+      border: 1px solid var(--border);
       border-radius: 16px;
-      padding: 2.75rem;
+      padding: 2.25rem;
       display: flex;
+      gap: 1.75rem;
       align-items: center;
-      gap: 2.5rem;
-      flex-wrap: wrap;
     }
     .av {
       width: 82px; height: 82px;
@@ -428,11 +437,11 @@
 
     /* ── RESPONSIVE ── */
     @media (max-width: 640px) {
-      .stats { gap: 2rem; }
-      .authority { flex-direction: column; align-items: flex-start; }
+      .hero { padding: 3.5rem 1rem 2.5rem; }
+      .authority { flex-direction: column; text-align: center; padding: 1.75rem; }
+      .av { margin: 0 auto; }
       .footer-inner { flex-direction: column; text-align: center; }
       .footer-links { justify-content: center; }
-      .steps-wrap { padding: 2rem 1.25rem; }
     }
   </style>
 </head>
@@ -450,23 +459,22 @@
   <div class="hero">
     <div class="badge">
       <span class="badge-dot"></span>
-      Sistema profissional gratuito · sem cadastro
+      Sistema profissional gratuito · 100% offline-first
     </div>
     <h1>Parâmetros de Corte CNC<br>em <em>2 segundos</em></h1>
     <p class="hero-sub">
-      RPM, Avanço e Potência com modelo de Kienzle. Validação de segurança integrada.
-      Desenvolvido por quem opera máquina CNC todo dia.
+      RPM, Avanço e Potência com modelo físico de Kienzle. Fresamento, Furação, Roscamento e Mandrilamento com segurança validada.
     </p>
     <div class="hero-actions">
       <a href="https://app.tooloptimizercnc.com.br" class="btn-primary">
         ⚡ Abrir Calculadora Grátis
       </a>
-      <a href="https://github.com/contatorafaeleleoterio-hub/ToolOptimizerCNC/releases/download/v1.0.0-alpha/app-debug.apk" class="btn-secondary" style="gap: 10px;">
-        <span>📱</span> Baixar para Android
+      <a href="#como-usar" class="btn-secondary">
+        📖 Como Usar
       </a>
     </div>
     <p style="color: var(--muted); font-size: 0.8rem; margin-top: 1.5rem; opacity: 0.7;">
-      Em breve na Play Store — disponível para teste antecipado
+      Progressive Web App (PWA) instalável · Funciona offline no celular, tablet e computador
     </p>
   </div>
 
@@ -477,8 +485,8 @@
       <div class="stat-l">tempo de cálculo</div>
     </div>
     <div class="stat">
-      <div class="stat-n">9+</div>
-      <div class="stat-l">materiais suportados</div>
+      <div class="stat-n">4</div>
+      <div class="stat-l">famílias de usinagem</div>
     </div>
     <div class="stat">
       <div class="stat-n">17+</div>
@@ -486,7 +494,7 @@
     </div>
     <div class="stat">
       <div class="stat-n">100%</div>
-      <div class="stat-l">gratuito</div>
+      <div class="stat-l">gratuito & offline</div>
     </div>
   </div>
 
@@ -496,37 +504,37 @@
   <section>
     <div class="container">
       <h2>Tudo que você precisa em um lugar</h2>
-      <p class="sec-sub">Desenvolvido para operadores e programadores CNC que precisam de resultados rápidos e confiáveis.</p>
+      <p class="sec-sub">Desenvolvido para operadores e programadores CNC que precisam de resultados rápidos, precisos e confiáveis.</p>
       <div class="grid-features">
         <div class="card">
           <div class="card-icon">⚡</div>
-          <h3>Cálculo instantâneo</h3>
-          <p>RPM, Avanço (F), Potência e Torque calculados com fórmulas validadas. Modelo de Kienzle para força de corte real.</p>
+          <h3>4 Famílias de Usinagem</h3>
+          <p>Fresamento, Furação (brocas HSS e MD), Roscamento (corte e conformação) e Mandrilamento fino com parâmetros canônicos completos.</p>
         </div>
         <div class="card">
           <div class="card-icon">🔒</div>
-          <h3>Validação de segurança</h3>
-          <p>Semáforo visual Verde/Amarelo/Vermelho. Verificação de relação L/D, limites de máquina e fator de segurança configurável.</p>
+          <h3>Modelo Físico de Kienzle</h3>
+          <p>Força de corte específica (kc), potência exigida (Pc) e torque (Mc) calculados com precisão industrial para evitar sobrecarga da máquina.</p>
         </div>
         <div class="card">
           <div class="card-icon">🎯</div>
-          <h3>Ajuste fino inteligente</h3>
-          <p>Sliders bidirecionais para RPM e Avanço. Indicadores de saúde dos parâmetros em tempo real para evitar erros.</p>
+          <h3>Ajuste Fino Tátil (±5%)</h3>
+          <p>Botões de ajuste fino ao vivo com recálculo instantâneo mantendo o torque estável, simulando a resposta real do operador no painel.</p>
         </div>
         <div class="card">
-          <div class="card-icon">📊</div>
-          <h3>Histórico de simulações</h3>
-          <p>Registre e compare simulações. Exporte resultados em JSON ou CSV para documentação e auditoria.</p>
+          <div class="card-icon">🛡️</div>
+          <h3>Diagnóstico de Segurança</h3>
+          <p>Semáforo visual de alerta verificando relação balanço L/D, afinamento de cavaco (hm e CTF), deflexão e teto de potência do fuso.</p>
         </div>
         <div class="card">
           <div class="card-icon">📱</div>
-          <h3>Web + Android + Desktop</h3>
-          <p>Funciona no navegador, como aplicativo Android (APK) ou como .exe portátil para Windows — use onde for mais conveniente.</p>
+          <h3>100% Offline (PWA)</h3>
+          <p>Instale como aplicativo nativo no celular ou PC. Funciona completamente sem internet no chão de fábrica através do IndexedDB.</p>
         </div>
         <div class="card">
           <div class="card-icon">🔧</div>
-          <h3>Materiais personalizados</h3>
-          <p>Banco de materiais editável. Adicione suas ligas específicas com dados reais do chão de fábrica.</p>
+          <h3>Materiais Customizáveis</h3>
+          <p>Banco de materiais editável. Adicione ligas personalizadas da sua oficina e configure margens de segurança globais persistidas localmente.</p>
         </div>
       </div>
     </div>
@@ -535,26 +543,26 @@
   <div class="div"></div>
 
   <!-- ── How It Works ── -->
-  <section>
+  <section id="como-usar">
     <div class="container">
       <div class="steps-wrap">
         <h2>Como usar</h2>
-        <p class="sec-sub">Três passos para resultados profissionais</p>
+        <p class="sec-sub">Três passos simples para parâmetros seguros</p>
         <div class="steps-grid">
           <div class="step">
             <div class="step-n">1</div>
-            <h3>Selecione material e ferramenta</h3>
-            <p>Escolha o material da peça e a ferramenta de corte no banco pré-configurado ou cadastre o seu.</p>
+            <h3>Selecione a operação e material</h3>
+            <p>Escolha entre Fresar, Furar, Roscar ou Mandrilar, e selecione a classe do material (Aços, Inox, Alumínio ou Endurecidos).</p>
           </div>
           <div class="step">
             <div class="step-n">2</div>
-            <h3>Configure os parâmetros</h3>
-            <p>Defina Vc, fz, ae, ap e o tipo de operação: desbaste, semi-acabamento ou acabamento.</p>
+            <h3>Defina a geometria da ferramenta</h3>
+            <p>Informe o diâmetro, balanço (L), arestas e profundidades de corte (ap, ae) nos campos geométricos adaptativos.</p>
           </div>
           <div class="step">
             <div class="step-n">3</div>
-            <h3>Simule e ajuste</h3>
-            <p>Clique em Simular. O sistema calcula RPM, Avanço, Potência e valida a segurança da operação instantaneamente.</p>
+            <h3>Obtenha os parâmetros prontos</h3>
+            <p>O sistema exibe na hora a rotação (S), avanço (F), potência de corte e o diagnóstico visual de segurança.</p>
           </div>
         </div>
       </div>
@@ -572,9 +580,8 @@
           <h3>Desenvolvido por Mestre CNC</h3>
           <div class="av-role">Especialista em Usinagem CNC · 17+ anos de experiência</div>
           <p>
-            Programador e operador CNC com vasta experiência em moldes de injeção. Criei o ToolOptimizer
-            para resolver um problema real: calcular parâmetros de corte com precisão levava 15–30 minutos
-            consultando catálogos. Agora leva 2 segundos.
+            Programador e operador CNC com vasta experiência em ferramentaria e moldes de injeção. O ToolOptimizer
+            foi concebido para eliminar o tempo perdido em tabelas desatualizadas, entregando parâmetros seguros e validados por fórmulas físicas em 2 segundos.
           </p>
           <a href="https://mestrecnc.com.br" target="_blank" rel="noopener" class="av-link">
             Leia mais sobre o projeto no Mestre CNC ↗
@@ -598,23 +605,23 @@
         </div>
         <div class="faq-item">
           <div class="faq-q">O ToolOptimizer CNC é gratuito?</div>
-          <div class="faq-a">Sim, completamente gratuito. Não requer cadastro, não tem anúncios e funciona diretamente no navegador ou como aplicativo portátil para Windows.</div>
+          <div class="faq-a">Sim, completamente gratuito. Não requer cadastro, não tem anúncios e funciona diretamente no navegador em qualquer computador, tablet ou smartphone.</div>
         </div>
         <div class="faq-item">
           <div class="faq-q">Quais materiais o ToolOptimizer suporta?</div>
-          <div class="faq-a">O sistema suporta aços carbono (1020, 1045), aços inoxidáveis (AISI 304), alumínio (Al 6061-T6), aços de molde (H13, P20, 2711), aços cementados (8620) e mais. Você também pode adicionar materiais personalizados com seus próprios dados do chão de fábrica.</div>
+          <div class="faq-a">O sistema suporta aços carbono (1020, 1045), aços inoxidáveis (AISI 304), alumínio (Al 6061-T6), aços de molde (H13, P20, 2711), aços cementados (8620) e mais. Você também pode cadastrar novos materiais personalizados diretamente no painel.</div>
         </div>
         <div class="faq-item">
           <div class="faq-q">O sistema funciona sem internet?</div>
-          <div class="faq-a">Sim. O ToolOptimizer CNC possui versão desktop portátil para Windows (.exe, ~85MB) que funciona completamente offline — ideal para ambientes industriais sem acesso à internet.</div>
+          <div class="faq-a">Sim. O ToolOptimizer CNC opera como Progressive Web App (PWA) e armazena suas configurações localmente via IndexedDB, funcionando 100% offline no chão de fábrica.</div>
         </div>
         <div class="faq-item">
           <div class="faq-q">O sistema usa o modelo de Kienzle?</div>
-          <div class="faq-a">Sim. O ToolOptimizer utiliza o modelo de Kienzle para cálculo da força específica de corte (kc), que é o padrão técnico mais preciso para fresamento. Os dados de Kc1.1 e mc estão incluídos para cada material suportado.</div>
+          <div class="faq-a">Sim. O ToolOptimizer utiliza o modelo canônico de Kienzle para cálculo da força específica de corte (kc) e potência de usinagem, garantindo precisão técnica para operadores e programadores.</div>
         </div>
         <div class="faq-item">
           <div class="faq-q">O que é a relação L/D e por que ela importa?</div>
-          <div class="faq-a">A relação L/D (comprimento por diâmetro da ferramenta) determina a tendência à vibração (chatter). O ToolOptimizer valida automaticamente: L/D ≤ 3 (verde, seguro), L/D ≤ 4 (amarelo, atenção), L/D ≤ 6 (vermelho, crítico), L/D > 6 (bloqueado — risco de quebra).</div>
+          <div class="faq-a">A relação L/D (comprimento de fixação por diâmetro da ferramenta) determina a tendência à vibração e deflexão. O ToolOptimizer valida automaticamente os limites e emite alertas visuais de segurança para preservar a vida útil da ferramenta.</div>
         </div>
       </div>
     </div>
@@ -622,14 +629,11 @@
 
   <!-- ── CTA Final ── -->
   <div class="cta-final">
-    <h2>Pronto para calcular com precisão?</h2>
+    <h2>Pronto para calcular com precisão física?</h2>
     <p>Grátis. Sem cadastro. Resultados em 2 segundos.</p>
     <div style="display: flex; gap: 1rem; justify-content: center; flex-wrap: wrap;">
       <a href="https://app.tooloptimizercnc.com.br" class="btn-primary" style="font-size:1.05rem; padding:1rem 2.5rem;">
         ⚡ Abrir Calculadora Grátis
-      </a>
-      <a href="https://github.com/contatorafaeleleoterio-hub/ToolOptimizerCNC/releases/download/v1.0.0-alpha/app-debug.apk" class="btn-secondary" style="font-size:1.05rem; padding:1rem 2.5rem; gap: 10px;">
-        <span>📱</span> Baixar para Android
       </a>
     </div>
   </div>
@@ -639,7 +643,6 @@
     <div class="footer-inner">
       <div class="footer-links">
         <a href="https://app.tooloptimizercnc.com.br">Calculadora</a>
-        <a href="/privacidade">Privacidade</a>
         <a href="https://mestrecnc.com.br" target="_blank" rel="noopener">Sobre o projeto</a>
       </div>
       <div class="footer-copy">© 2026 ToolOptimizer CNC · Todos os direitos reservados</div>

@@ -1,0 +1,145 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <script src="./support.js"></script>
+</head>
+<body>
+<!-- AVISO DE ARTEFATO CONGELADO — inserido em 08/09/2026. Não remover sem decisão do Mestre. -->
+<aside role="note" style="all:initial;display:block;box-sizing:border-box;width:100%;padding:14px 20px;
+  background:#3B2E12;color:#F7F0E2;font-family:system-ui,-apple-system,'Segoe UI',sans-serif;
+  font-size:13px;line-height:1.55;border-bottom:4px solid #C4720A">
+  <strong style="display:block;font-size:14px;letter-spacing:.02em;margin-bottom:6px">
+    FOLHA HISTÓRICA — CONGELADA EM 05/09/2026. NÃO É O PRODUTO ATUAL.
+  </strong>
+  Esta artboard é <strong>registro de intenção de desenho</strong>, não contrato. Por decisão do Mestre
+  de 08/09/2026, o contrato do painel é o protótipo interativo. Divergências conhecidas e
+  <strong>deliberadamente não corrigidas</strong>: as cores são a paleta anterior (a marca é laranja, e
+  hoje é azul-petróleo); o passo dos <code style="font-family:ui-monospace,Consolas,monospace">±</code>
+  aparece como 10%, e a emenda de 07/09/2026 mudou para 5%; os Cenários A a I e a área Configurações
+  editável não existem aqui. <strong>Os números desenhados aqui não são resultado de cálculo</strong> —
+  são preenchimento de maquete e não conferem com a cadeia canônica. Nenhum valor desta folha deve ser
+  copiado para especificação, teste ou código.
+  <span style="display:block;margin-top:8px">
+    <a href="index.html" style="color:#F0C88A;font-weight:700">→ Abrir o protótipo interativo, que é o contrato</a>
+  </span>
+</aside>
+
+<x-dc>
+<helmet>
+  <style>
+    :root{
+      /* superfícies */
+      --bg-page:#F3F4F6; --surface-card:#FFFFFF; --surface-input:#E9EBEF;
+      --border-subtle:#D1D5DB; --border-control:#7A8494;
+      --shadow-card:0 1px 2px rgba(16,24,40,.06), 0 4px 12px rgba(16,24,40,.08);
+      /* texto */
+      --tx-1:#111827; --tx-2:#374151; --tx-3:#475569;
+      /* marca e seleção */
+      --brand-fill:#E85D04; --tx-on-brand:#0F1419; --select-ink:#3730A3;
+      /* estado — rampa única */
+      --st-normal-ink:#116631; --st-normal-bg:#E8F5EC; --st-normal-bd:#A8D5B8;
+      --st-warn-ink:#7A4F00; --st-warn-bg:#FDF3E2; --st-warn-bd:#E3C98A;
+      --st-crit-ink:#A81E16; --st-crit-bg:#FCEBEA; --st-crit-bd:#EFB3AE;
+      --st-info-ink:#005E77; --st-info-bg:#E6F1F6; --st-info-bd:#A8CEDD;
+      /* interação */
+      --surface-hover-field:#DDE1E7; --surface-hover-card:#F7F8FA; --surface-pressed:#CFD4DC;
+      /* tipografia */
+      --font-sans:Inter,"Segoe UI Variable","Segoe UI",system-ui,-apple-system,sans-serif;
+      --font-mono:"JetBrains Mono","Cascadia Mono",Consolas,ui-monospace,monospace;
+      /* espaço, raio, tempo */
+      --sp-1:4px; --sp-2:8px; --sp-3:12px; --sp-4:16px; --sp-5:24px; --sp-6:32px; --sp-7:48px;
+      --r-chip:2px; --r-field:4px; --r-card:8px; --r-pill:999px;
+      --t-control:120ms; --t-panel:180ms;
+      /* alvo — toque impreciso, tela em pé na máquina */
+      --h-target:44px; --h-cta:56px;
+    }
+    *{box-sizing:border-box}
+    body{margin:0;background:var(--bg-page);font-family:var(--font-sans);color:var(--tx-2);font-size:13px;line-height:1.5}
+    a{color:var(--tx-2);text-decoration:underline} a:hover{color:var(--tx-1)}
+    button{font:inherit;color:inherit}
+    :focus-visible{outline:2px solid var(--select-ink);outline-offset:2px;box-shadow:0 0 0 3px rgba(55, 48, 163, .35)}
+    @media (prefers-reduced-motion: reduce){*, *::before, *::after{animation:none !important;transition:none !important}}
+    .num{font-family:var(--font-mono);font-variant-numeric:tabular-nums}
+    .lbl{font-size:11px;font-weight:600;letter-spacing:.07em;text-transform:uppercase;color:var(--tx-3)}
+    .sym{text-transform:none}
+    .card{background:var(--surface-card);border-radius:var(--r-card);box-shadow:var(--shadow-card);padding:16px}
+    .fbox{display:flex;align-items:center;justify-content:space-between;gap:8px;background:var(--surface-input);border:1px solid var(--border-control);border-radius:var(--r-field);min-height:44px;padding:0 12px}
+    .funit{font-size:11px;font-weight:600;color:var(--tx-3)}
+    .field{display:flex;flex-direction:column;gap:4px}
+    .sep{height:1px;background:var(--border-subtle);border:0;margin:0}
+    .prose{max-width:56ch;text-wrap:pretty}
+    .bhead{display:flex;align-items:center;gap:12px;min-height:44px}
+    .bsum{font-family:var(--font-mono);font-variant-numeric:tabular-nums;color:var(--tx-3);font-size:11px}
+    .mgrid{display:grid;grid-template-columns:repeat(2, minmax(0, 1fr));gap:12px 16px}
+    .mval{font-family:var(--font-mono);font-variant-numeric:tabular-nums;font-size:16px;font-weight:600;color:var(--tx-1)}
+    .linkrow{display:flex;align-items:center;gap:8px;min-height:44px;color:var(--tx-2);font-size:13px;font-weight:600}
+    .linkrow span{border-bottom:1px solid var(--border-control)}
+  </style>
+</helmet>
+
+<!-- Estado vazio — antes do primeiro cálculo. R4: nenhum dígito de resultado, nem zero, nem traço. -->
+<div style="max-width:1440px;width:100%;margin:0 auto;padding:24px;display:flex;flex-direction:column;gap:16px">
+
+  <div class="card" style="display:flex;align-items:center;gap:24px;padding:12px 24px">
+    <div style="background:var(--brand-fill);color:var(--tx-on-brand);border-radius:var(--r-field);padding:8px 12px;font-size:16px;font-weight:700;letter-spacing:.08em">FENIX</div>
+    <div style="font-size:16px;font-weight:600;color:var(--tx-1);flex-grow:1">Aço 1045 · escolha a ferramenta</div>
+  </div>
+
+  <div style="display:flex;gap:24px;align-items:flex-start;flex-wrap:wrap">
+
+    <!-- COLUNA DE CONFIGURAÇÃO — aqui há número, porque é entrada -->
+    <div style="flex:1 1 440px;min-width:0;max-width:520px;display:flex;flex-direction:column;gap:16px">
+
+      <!-- MATERIAL — os 5 dados ficam visíveis (entrada declarada, MVP §4.7). Editar vai para Configurações (D2). -->
+      <div class="card" style="display:flex;flex-direction:column;gap:12px">
+        <div class="bhead">
+          <svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" style="color:var(--tx-3)"><path d="M3.5 6 L8 11 L12.5 6"></path></svg>
+          <div class="lbl" style="flex-grow:1">Material da peça</div>
+          <span class="bsum">Aço 1045 · classe P · 170–220 HB</span>
+        </div>
+        <hr class="sep">
+        <div class="fbox">
+          <span style="font-size:13px;font-weight:600;color:var(--tx-1)">Aço 1045</span>
+          <svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" style="color:var(--tx-3)"><path d="M3.5 6 L8 11 L12.5 6"></path></svg>
+        </div>
+
+        <div class="lbl">Dados que entram na conta</div>
+        <div class="mgrid">
+          <div class="field"><span class="lbl">Classe ISO</span><span class="mval">P</span></div>
+          <div class="field"><span class="lbl">Dureza</span><span class="mval">170–220 <span class="funit">HB</span></span></div>
+          <div class="field"><span class="lbl">Força específica de corte (<span class="sym">kc1.1</span>)</span><span class="mval">1.500 <span class="funit">N/mm²</span></span></div>
+          <div class="field"><span class="lbl">Expoente (<span class="sym">mc</span>)</span><span class="mval">0,21</span></div>
+          <div class="field" style="grid-column:span 2"><span class="lbl">Velocidade de corte (<span class="sym">vc</span>)</span><span class="mval">140 <span class="funit">m/min</span></span></div>
+        </div>
+        <div class="linkrow">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"></circle><path d="M19 12a7 7 0 0 0-.1-1l2-1.6-2-3.4-2.4 1a7 7 0 0 0-1.7-1L14.5 3h-5l-.3 2.4a7 7 0 0 0-1.7 1l-2.4-1-2 3.4L3 11a7 7 0 0 0 0 2l-2 1.6 2 3.4 2.4-1a7 7 0 0 0 1.7 1L9.5 21h5l.3-2.4a7 7 0 0 0 1.7-1l2.4 1 2-3.4-2-1.6a7 7 0 0 0 .1-1Z"></path></svg>
+          <span>Editar em Configurações</span>
+        </div>
+      </div>
+
+      <div class="card" style="display:flex;flex-direction:column;gap:8px">
+        <div class="lbl">Ferramenta</div>
+        <div class="fbox" style="border-color:var(--select-ink)">
+          <span style="font-size:13px;color:var(--tx-3)">Escolher a ferramenta — a lista já vem filtrada pelo aço 1045</span>
+          <svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" style="color:var(--select-ink)"><path d="M3.5 6 L8 11 L12.5 6"></path></svg>
+        </div>
+        <div style="color:var(--tx-3);font-size:11px">Os campos da geometria aparecem depois dela.</div>
+      </div>
+
+      <div style="display:flex;align-items:center;justify-content:center;min-height:56px;background:var(--brand-fill);color:var(--tx-on-brand);border-radius:var(--r-field);font-size:13px;font-weight:600;letter-spacing:.04em">Calcular</div>
+    </div>
+
+    <!-- COLUNA DE LEITURA — vazia de número até o primeiro cálculo (R4). Sem cartão de resultado ainda. -->
+    <div style="flex:1 1 640px;min-width:0;display:flex;flex-direction:column;gap:16px">
+      <div class="card" style="min-height:280px;display:flex;flex-direction:column;justify-content:center;gap:8px;padding:32px">
+        <div style="font-size:16px;font-weight:600;color:var(--tx-1)">Escolha a ferramenta e confira o que está montado na máquina.</div>
+        <div class="prose" style="color:var(--tx-3)">Antes do primeiro cálculo esta área fica sem número — nem zero, nem traço. Quem não mexer em nada obtém a recomendação.</div>
+      </div>
+    </div>
+  </div>
+
+</div>
+</x-dc>
+</body>
+</html>

@@ -1,220 +1,76 @@
 # ToolOptimizer CNC
 
 ![CI](https://github.com/contatorafaeleleoterio-hub/ToolOptimizerCNC/actions/workflows/ci.yml/badge.svg)
-![Deploy](https://github.com/contatorafaeleleoterio-hub/ToolOptimizerCNC/actions/workflows/deploy.yml/badge.svg)
-![Versão](https://img.shields.io/badge/versão-0.3.0-cyan)
+![Deploy](https://github.com/contatorafaeleleoterio-hub/ToolOptimizerCNC/actions/workflows/deploy-cloudflare.yml/badge.svg)
+![Versão](https://img.shields.io/badge/versão-2.0.0-0F3D5C)
 
 **"A ciência da usinagem, simplificada."**
 
-Sistema de recomendação de parâmetros de corte para fresamento CNC. Calcula RPM, Avanço e Potência em menos de 2 segundos, com validação de segurança integrada.
+Sistema profissional de cálculo e recomendação de parâmetros de corte para máquinas-ferramenta CNC (fresadoras, centros de usinagem, tornos e furadeiras). O operador informa o material da peça, a ferramenta e a geometria; o sistema devolve rotação (`S`), avanço (`F`), potência exigida (`Pc`), torque (`Mc`) e uma avaliação física de segurança da operação.
 
 > **O sistema RECOMENDA, o operador DECIDE.** Sempre valide os parâmetros antes de usinar.
 
 ---
 
-## Funcionalidades
+## Funcionalidades da Versão 2.0
 
-- **Cálculo completo:** RPM, Avanço (mm/min), Potência (kW), Torque (Nm), MRR (cm³/min), Vc real
-- **Chip Thinning (CTF):** correção automática do fz quando ae < 50% do diâmetro
-- **Validação L/D:** semáforo visual (Verde / Amarelo / Vermelho / Bloqueado)
-- **Ajuste fino:** sliders bidirecionais para RPM e Avanço (−150% a +150%), sliders para Vc, fz, ae, ap
-- **ParameterHealthBar:** indicadores visuais de saúde por parâmetro no painel de ajuste fino
-- **Fórmulas educativas:** cards expansíveis com substituição de valores reais
-- **Configurações completas:** limites de máquina, materiais, ferramentas, fator de segurança, fatores de correção
-- **Histórico:** registro de simulações com feedback do operador (sucesso, quebra, acabamento ruim)
-- **Exportação:** JSON e CSV dos resultados
-- **Mobile:** interface adaptada para tablets e smartphones
-- **Desktop .exe:** versão portátil para uso offline (sem instalação)
-
----
-
-## Materiais Suportados
-
-| Material | ISO | Dureza |
-|----------|-----|--------|
-| Aço 1020 | P | 120–160 HB |
-| Aço 1045 | P | 170–220 HB |
-| Aço Inox 304 | M | 140–180 HB |
-| Alumínio 6061-T6 | N | 95 HB |
-| P20 (tratado) | P | 280–320 HB |
-| 2711 (tratado) | P | 300–340 HB |
-| 8620 (núcleo) | P | 180–220 HB |
-| 8620 (cementado) | H | 58–62 HRC |
-| H13 (tratado) | H | 45–52 HRC |
-
-Materiais customizados podem ser adicionados em **Configurações → Materiais**.
+- **4 Famílias Completas de Usinagem:**
+  - **Fresamento:** Fresas de topo reto, toroidal (bullnose), esférica (ball nose), alto avanço e cabeçote de facear.
+  - **Furação:** Brocas helicoidais de aço rápido (HSS) e metal duro (MD) integral, com profundidade de picapau e parâmetros de avanço adaptativos.
+  - **Roscamento:** Machos de corte e machos de conformação (laminação).
+  - **Mandrilamento:** Cabeçotes micrométricos para acabamento fino de furos.
+- **Precisão Física Canônica:** Fórmulas fundamentadas em constantes citadas e modelo de força de corte de Kienzle ($kc_{1.1}$, $mc$).
+- **Modelo Vivo Bidirecional (±5%):** Ajuste fino tátil em tempo real nos botões de incremento/decremento com recálculo instantâneo mantendo o torque constante.
+- **Diagnóstico e Alertas Físicos:** Semáforo de segurança (NORMAL, ATENÇÃO, CRÍTICO) cobrindo balanço de ferramenta ($L/D$), afinamento de cavaco ($hm$ e $CTF$), teto de potência e deflexão.
+- **Offline-First:** Progressive Web App (PWA) instalável com banco de dados local **IndexedDB** (`tooloptimizer_db`) para persistência de margem de segurança global e cadastro de novos materiais.
+- **Design System Acessível:** Paleta petróleo (`#0F3D5C`) e creme (`#F7F5F1`) auditada com 100% de conformidade WCAG AA.
 
 ---
 
-## Ferramentas Suportadas
+## Materiais Suportados Nativamente
 
-- Fresa Toroidal (Bullnose) — Raios R0.2, R0.5, R1.0 (customizável)
-- Fresa de Topo Reto (Flat End Mill)
-- Fresa Esférica (Ball Nose)
+- **Aços Carbono e Ligados (ISO P):** Aço 1020, Aço 1045, P20, 2711, 8620.
+- **Aços Inoxidáveis (ISO M):** Inox 304, Inox 316.
+- **Não Ferrosos (ISO N):** Alumínio 6061-T6, Cobre, Latão.
+- **Materiais Endurecidos (ISO H):** Aço H13 tratado, Aço 8620 cementado.
 
-Diâmetros disponíveis: 0.2 mm a 16 mm (padrão) + diâmetros customizados via Configurações.
+> Novos materiais e constantes personalizadas de usinagem podem ser cadastrados diretamente em **Configurações → Materiais** e persistem localmente no seu dispositivo.
 
 ---
 
-## Como Usar (Web)
+## Como Executar Localmente
 
 ### Pré-requisitos
+- Node.js 20+
+- npm 10+
 
-- Node.js 18+
-- npm 9+
-
-### Instalação
-
+### Instalação e Desenvolvimento
 ```bash
-git clone https://github.com/contatorafaeleleoterio-hub/ToolOptimizerCNC.git
-cd ToolOptimizerCNC
+# Instalar dependências
 npm install
-```
 
-### Desenvolvimento
-
-```bash
+# Iniciar servidor de desenvolvimento local
 npm run dev
-# Acesse: http://localhost:5173/ToolOptimizerCNC/
-```
 
-### Build de Produção
+# Executar suíte de typecheck e 102 testes unitários
+npm run check
 
-```bash
+# Gerar build otimizado de produção
 npm run build
-# Arquivos gerados em: dist/
-```
 
-### Testes
-
-```bash
-npm run test          # Todos os testes (401 casos)
-npm run typecheck     # Verificação TypeScript
-npm run validate      # typecheck + test + lint
+# Visualizar preview do build com runtime Cloudflare
+npm run preview
 ```
 
 ---
 
-## Como Usar (Desktop — .exe Portátil)
+## Governança e Arquitetura
 
-O arquivo `.exe` não requer instalação. Basta executar diretamente do pen drive ou pasta local.
-
-**Localização:** `Sistema_Desktop_Pen_driver/dist-electron/ToolOptimizer-CNC-{versão}-portable.exe`
-
-> Para instruções de rebuild do .exe, consulte `docs/architecture/ADR-005-electron-desktop-build.md`.
+O projeto utiliza um núcleo modular em TypeScript puro (`src/core/`), desacoplado da casca de apresentação em React 19 (`src/ui/`), com orquestração de governança multi-agente (`src/harness/` e `harness_config.yml`). Toda a fundamentação técnica e relatórios de auditoria física encontram-se em `Docs_inicial/`.
 
 ---
 
-## Fluxo de Uso Básico
+## Autoria e Licença
 
-1. **Selecione o Material** — sistema auto-popula a faixa de Vc recomendada
-2. **Selecione a Ferramenta** — tipo, diâmetro, raio (toroidal), número de arestas, altura de fixação
-3. **Selecione a Operação** — Desbaste, Semi-acabamento ou Acabamento
-4. **Ajuste os Parâmetros** — ap, ae, fz, Vc nos campos numéricos
-5. **Clique em SIMULAR** — resultados calculados instantaneamente
-6. **Analise o resultado** — verifique o status de segurança (verde / amarelo / vermelho)
-7. **Ajuste fino (opcional)** — use os sliders no painel direito para refinar RPM, Avanço e parâmetros de corte
-
-> **Primeira usinagem:** recomenda-se usar 50–70% dos parâmetros sugeridos e aumentar progressivamente enquanto monitora som, vibração e qualidade do cavaco.
-
----
-
-## Configurações
-
-Acesse via botão **⚙ Configurações** no cabeçalho:
-
-| Seção | O que configura |
-|-------|----------------|
-| **Máquina** | RPM máx, Potência máx, Torque máx, Avanço máx, Eficiência do fuso, Nome da máquina |
-| **Segurança** | Fator de segurança (0.5–1.0), Limites L/D, Multiplicadores ap por operação |
-| **Materiais** | Adicionar/editar materiais com Kc, mc, faixas de Vc por operação |
-| **Ferramentas** | Diâmetros e raios customizados, Fatores de correção por ferramenta/diâmetro |
-| **Exibição** | Casas decimais dos resultados |
-| **Dados** | Exportar/importar configurações (JSON), restaurar padrões de fábrica |
-
----
-
-## Stack Tecnológica
-
-| Camada | Tecnologia |
-|--------|-----------|
-| UI | React 18.3 + TypeScript 5.7 |
-| Build | Vite 6.1 |
-| Estilo | Tailwind CSS v4 (dark theme) |
-| Estado | Zustand 5.0 |
-| Roteamento | react-router-dom 7.13 |
-| Testes | Vitest 3.0 + Testing Library (401 testes) |
-| Desktop | Electron 40.4.1 |
-| Deploy | GitHub Pages + CI/CD (GitHub Actions) |
-
----
-
-## Limites Padrão da Máquina
-
-| Parâmetro | Valor Padrão |
-|-----------|-------------|
-| RPM Máximo | 12.000 rpm |
-| Potência Máxima | 15 kW |
-| Torque Máximo | 80 Nm |
-| Avanço Máximo | 5.000 mm/min |
-| Eficiência do Fuso | 85% |
-| Fator de Segurança | 0.75 |
-
-Todos os valores são editáveis em **Configurações → Máquina**.
-
----
-
-## Advertências de Segurança
-
-- Este sistema fornece **estimativas** com margem de erro de ±15–25%
-- **Nunca** use os valores diretamente sem validação humana
-- Verifique estado da máquina, fixação e ferramentas antes de usinar
-- O sistema não lê dados reais da máquina (potência, vibração, temperatura)
-- Parâmetros com L/D > 6 são bloqueados automaticamente (risco crítico de vibração)
-- Materiais marcados com **⚠ Estimado** possuem dados não validados por fabricante
-
----
-
-## Estrutura do Projeto
-
-```
-src/
-  engine/       # Fórmulas de cálculo (RPM, feed, power, chip-thinning, validators)
-  data/         # Banco de dados estático (materiais, ferramentas, operações)
-  store/        # Estado global (Zustand)
-  components/   # Componentes React
-  pages/        # Páginas (Settings, History, Mobile)
-  hooks/        # Hooks customizados
-tests/          # Testes unitários e de integração (espelho de src/)
-docs/           # PRDs, ADRs, especificações técnicas
-```
-
----
-
-## Versão
-
-**v0.3.0** — [Estratégia de versionamento](docs/architecture/ADR-006-estrategia-versionamento.md)
-
-| Versão | Feature |
-|--------|---------|
-| 0.1.0 | MVP base — cálculos + UI |
-| 0.2.0 | Animações + Sliders bidirecionais + Mobile + CI/CD |
-| 0.2.1 | SEO + Schema.org |
-| 0.3.0 | ParameterHealthBar (indicadores visuais de saúde) |
-
----
-
-## Deploy
-
-- **Web:** [GitHub Pages](https://contatorafaeleleoterio-hub.github.io/ToolOptimizerCNC/)
-- **CI/CD:** GitHub Actions — build + test automático em cada push para `main`
-
----
-
-## Autor
-
-**Rafael Eleoterio** — [mestrecnc.com.br](https://mestrecnc.com.br)
-
----
-
-*ToolOptimizer CNC — Sistema de Recomendação de Parâmetros de Usinagem CNC*
+- **Autor:** Mestre CNC ([mestrecnc.com.br](https://mestrecnc.com.br)) — Especialista em Usinagem CNC e Moldes de Injeção
+- **Licença:** Proprietária / ToolOptimizer CNC

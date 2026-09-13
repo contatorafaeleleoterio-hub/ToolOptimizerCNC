@@ -1,0 +1,374 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+  <style>
+    :root{
+      /* superfícies */
+      --bg-page:#F3F4F6; --surface-card:#FFFFFF; --surface-input:#E9EBEF;
+      --border-subtle:#D1D5DB; --border-control:#7A8494;
+      --shadow-card:0 1px 2px rgba(16,24,40,.06), 0 4px 12px rgba(16,24,40,.08);
+      /* texto */
+      --tx-1:#111827; --tx-2:#374151; --tx-3:#475569;
+      /* marca e seleção */
+      --brand-fill:#E85D04; --tx-on-brand:#0F1419; --select-ink:#3730A3;
+      /* estado — rampa única */
+      --st-normal-ink:#116631; --st-normal-bg:#E8F5EC; --st-normal-bd:#A8D5B8;
+      --st-warn-ink:#7A4F00; --st-warn-bg:#FDF3E2; --st-warn-bd:#E3C98A;
+      --st-crit-ink:#A81E16; --st-crit-bg:#FCEBEA; --st-crit-bd:#EFB3AE;
+      --st-info-ink:#005E77; --st-info-bg:#E6F1F6; --st-info-bd:#A8CEDD;
+      /* interação */
+      --surface-hover-field:#DDE1E7; --surface-hover-card:#F7F8FA; --surface-pressed:#CFD4DC;
+      /* tipografia */
+      --font-sans:Inter,"Segoe UI Variable","Segoe UI",system-ui,-apple-system,sans-serif;
+      --font-mono:"JetBrains Mono","Cascadia Mono",Consolas,ui-monospace,monospace;
+      /* espaço, raio, tempo */
+      --sp-1:4px; --sp-2:8px; --sp-3:12px; --sp-4:16px; --sp-5:24px; --sp-6:32px; --sp-7:48px;
+      --r-chip:2px; --r-field:4px; --r-card:8px; --r-pill:999px;
+      --t-control:120ms; --t-panel:180ms;
+      /* alvo — toque impreciso, tela em pé na máquina */
+      --h-target:44px; --h-cta:56px;
+    }
+    *{box-sizing:border-box}
+    [hidden]{display:none !important}
+    body{margin:0;background:var(--bg-page);font-family:var(--font-sans);color:var(--tx-2);font-size:13px;line-height:1.5}
+    a{color:var(--tx-2);text-decoration:underline} a:hover{color:var(--tx-1)}
+    button{font:inherit;color:inherit}
+    :focus-visible{outline:2px solid var(--select-ink);outline-offset:2px;box-shadow:0 0 0 3px rgba(55, 48, 163, .35)}
+    @media (prefers-reduced-motion: reduce){*, *::before, *::after{animation:none !important;transition:none !important}}
+    .num{font-family:var(--font-mono);font-variant-numeric:tabular-nums}
+    .lbl{font-size:11px;font-weight:600;letter-spacing:.07em;text-transform:uppercase;color:var(--tx-3)}
+    .sym{text-transform:none}
+    .card{background:var(--surface-card);border-radius:var(--r-card);box-shadow:var(--shadow-card);padding:16px}
+    .fbox{display:flex;align-items:center;justify-content:space-between;gap:8px;background:var(--surface-input);border:1px solid var(--border-control);border-radius:var(--r-field);min-height:44px;padding:0 12px}
+    .fval{font-family:var(--font-mono);font-variant-numeric:tabular-nums;font-size:16px;font-weight:600;color:var(--tx-1)}
+    .funit{font-size:11px;font-weight:600;color:var(--tx-3)}
+    .fplace{font-family:var(--font-mono);font-size:16px;color:var(--tx-3)}
+    .field{display:flex;flex-direction:column;gap:4px}
+    .sep{height:1px;background:var(--border-subtle);border:0;margin:0}
+    .prose{max-width:62ch;color:var(--tx-2);text-wrap:pretty}
+    .trigger{display:flex;align-items:center;justify-content:center;width:44px;height:44px;flex:none;color:var(--tx-3)}
+    .bhead{display:flex;align-items:center;gap:12px;min-height:44px;cursor:pointer;width:100%;background:none;border:0;padding:0;text-align:left;color:inherit}
+    .bsum{font-family:var(--font-mono);font-variant-numeric:tabular-nums;color:var(--tx-3);font-size:11px}
+    .mgrid{display:grid;grid-template-columns:repeat(2, minmax(0, 1fr));gap:12px 16px}
+    .mval{font-family:var(--font-mono);font-variant-numeric:tabular-nums;font-size:16px;font-weight:600;color:var(--tx-1)}
+    .z3{display:flex;align-items:center;gap:12px;flex-wrap:wrap;background:var(--surface-card);border:1px solid var(--tx-3);border-radius:var(--r-field);padding:10px 16px}
+    .z3name{font-family:var(--font-mono);font-variant-numeric:tabular-nums;font-size:13px;font-weight:700;color:var(--tx-1);letter-spacing:.04em}
+    /* D7 — cartão de resultado */
+    .rcard{background:var(--surface-card);border:1px solid var(--border-subtle);border-radius:var(--r-card);padding:12px 16px;display:flex;flex-direction:column;gap:8px}
+    .rtall-row{display:flex;align-items:center;gap:12px}
+    .step{width:var(--h-target);height:var(--h-target);flex:none;display:flex;align-items:center;justify-content:center;background:var(--surface-input);border:1px solid var(--border-control);border-radius:var(--r-field);font-size:20px;font-weight:600;color:var(--tx-1);cursor:pointer}
+    .rval{flex-grow:1;display:flex;align-items:baseline;justify-content:center;gap:8px}
+    .raddr{font-family:var(--font-mono);font-size:20px;font-weight:700;color:var(--tx-3)}
+    .rbig{font-family:var(--font-mono);font-variant-numeric:tabular-nums;font-size:32px;font-weight:700;color:var(--tx-1)}
+    .u20{font-family:var(--font-mono);font-variant-numeric:tabular-nums;font-size:20px;font-weight:700;color:var(--tx-1)}
+    /* D11 / D9 — gaveta recolhida */
+    .drawer{border:1px solid var(--border-subtle);border-radius:var(--r-field);background:var(--surface-card)}
+    .dtrigger{width:100%;display:flex;align-items:center;gap:10px;min-height:44px;padding:0 12px;background:none;border:0;cursor:pointer;text-align:left}
+    .dsum{font-family:var(--font-mono);font-variant-numeric:tabular-nums;font-size:11px;color:var(--tx-3);flex-grow:1}
+    .dhint{font-size:11px;color:var(--tx-3);flex-grow:1;font-weight:400;text-transform:none;letter-spacing:0}
+    .dbody{padding:4px 12px 12px 34px;display:grid;grid-template-columns:96px minmax(0,1fr);gap:6px 12px;font-size:13px}
+    .dbody--col{display:flex;flex-direction:column}
+    .qline{min-height:44px;padding:8px 0}
+    .linkrow{display:flex;align-items:center;gap:8px;min-height:44px;color:var(--tx-2);font-size:13px;font-weight:600;background:none;border:0;padding:0;cursor:pointer;text-align:left;text-decoration:none}
+    .linkrow span{border-bottom:1px solid var(--border-control)}
+    /* campo variavel — o mesmo passo +/- do cartao de resultado (D-Q4) */
+    .fin{flex-grow:1;min-width:0;align-self:stretch;background:none;border:0;padding:0;text-align:left}
+    .fin::placeholder{color:var(--tx-3);font-weight:400}
+    .sctl{display:flex;align-items:center;gap:8px}
+    .sctl .fbox{flex-grow:1;min-width:0}
+    .vgrid{display:grid;grid-template-columns:repeat(2, minmax(0, 1fr));gap:12px 16px}
+    .vgrid>.field{justify-content:flex-end}
+    /* escolha em lista — dropdown nativo com a pele do campo */
+    .selbox{position:relative;display:flex}
+    .fsel{width:100%;min-height:44px;padding:0 40px 0 12px;background:var(--surface-input);border:1px solid var(--border-control);border-radius:var(--r-field);font-family:inherit;font-size:13px;font-weight:600;color:var(--tx-1);cursor:pointer;appearance:none;-webkit-appearance:none}
+    .fsel:hover{background:var(--surface-hover-field)}
+    .selcv{position:absolute;right:12px;top:50%;transform:translateY(-50%);pointer-events:none;color:var(--tx-3)}
+    /* Z1 — marca provisoria, identidade curta, acao neutra de cabecalho */
+    .brand{display:flex;align-items:center;justify-content:center;width:44px;height:44px;flex:none;background:var(--brand-fill);border-radius:var(--r-field);color:var(--tx-on-brand)}
+    .zid{display:flex;align-items:center;gap:12px;flex-wrap:wrap;font-size:16px;text-wrap:balance}
+    .zidlbl{font-size:13px;font-weight:600;color:var(--tx-3)}
+    .zidval{font-weight:600;color:var(--tx-1)}
+    .zidrule{width:1px;height:20px;background:var(--border-subtle);flex:none}
+    .hbtn{display:inline-flex;align-items:center;gap:8px;min-height:44px;padding:0 16px;flex:none;background:var(--surface-input);border:1px solid var(--border-control);border-radius:var(--r-field);color:var(--tx-2);font-size:13px;font-weight:600;text-decoration:none}
+    .hbtn:hover{background:var(--surface-hover-field);color:var(--tx-1)}
+    .z3pair{display:flex;align-items:baseline;gap:6px}
+  </style>
+</helmet>
+
+<!-- ═══ O QUE ESTA FOLHA É, E O QUE ELA NÃO É ═════════════════════════════════════════════
+     Não é uma tela do produto. É uma folha de COMPARAÇÃO: três geometrias da mesma família,
+     lado a lado, com tudo o que pode ser igual mantido igual — mesmo material, mesmo diâmetro
+     de 10 mm, mesmo avanço por dente de 0,140 mm (a partida do §11.3 para Ø10), mesmo balanço.
+     O que muda entre as colunas é só o que a geometria obriga a mudar. Segurar o resto é o que
+     torna a variação legível; se cada coluna tivesse o seu diâmetro, a comparação não diria nada.
+
+     POR ISSO CADA MINI-PAINEL MOSTRA SÓ O BLOCO DE CONFIGURAÇÃO E OS DOIS NÚMEROS DE COMANDO.
+     Sem alerta, sem resumo de verificação, sem as duas gavetas de prosa. O assunto da folha é
+     quais campos existem e como eles se chamam em cada geometria — não o resultado completo,
+     que o Main já demonstra. Três painéis inteiros lado a lado não caberiam em nada legível.
+
+     ═══ DECISÕES DECLARADAS ═══════════════════════════════════════════════════════════════
+     Diâmetro 10 mm nas três e diâmetro menor 4 mm na chanfradeira são entradas do operador
+     (§2.6 do gabarito). O §3.2 não dá partida de balanço para a fresa de disco (coluna "—");
+     usei 30 mm, o mesmo das outras duas, para não introduzir uma segunda variável.
+     Tudo o mais vem da tabela do §3.2: número de arestas, ângulo de posição, e as partidas de
+     profundidade e penetração de cada geometria.
+
+     ═══ AS TRÊS CADEIAS, CONFERIDAS ═══════════════════════════════════════════════════════
+     Comum: aço 1045 · vc 140 (§11.2) · fz 0,140 (§11.3, Ø10) · metal duro (fator 1,00, §3.5)
+
+     ALTO AVANÇO — Z 3 · κ 15° · ap 1 · ae 8 (partidas do §3.2 geometria 5)
+       De  §6.2  arestas com κ: De = D = 10
+       n   §6.3  140 × 1000 ÷ (π × 10)          = 4 456,3384 → 4.456 rpm
+       vf  §6.6  0,140 × 3 × 4 456,3384         = 1 871,6621 → 1.872 mm/min
+
+     CHANFRAR — Z 4 · Ø menor 4 · ap 1 · ae 1,0 (partidas do §3.2 geometria 4)
+       De  §6.2  cônica: (4 + 10) ÷ 2           =     7,0    → 7,0 mm
+       n   §6.3  140 × 1000 ÷ (π × 7)           = 6 366,1977 → 6.366 rpm
+       vf  §6.6  0,140 × 4 × 6 366,1977         = 3 565,0707 → 3.565 mm/min
+       É a coluna que prova por que o diâmetro menor é campo: mesmo Ø10 nominal, 43% mais rotação.
+
+     DISCO / SERRA — Z 8 · b 5 · penetração radial 3 (partidas do §3.2 geometria 8)
+       De  §6.2  arestas retas: De = D = 10
+       n   §6.3  140 × 1000 ÷ (π × 10)          = 4 456,3384 → 4.456 rpm
+       vf  §6.6  0,140 × 8 × 4 456,3384         = 4 991,0989 → 4.991 mm/min
+     ═══════════════════════════════════════════════════════════════════════════════════════ -->
+
+<div style="max-width:1440px;width:100%;margin:0 auto;padding:24px;display:flex;flex-direction:column;gap:16px">
+
+  <div class="card" style="display:flex;align-items:center;gap:24px;padding:12px 24px;flex-wrap:wrap">
+    <div class="brand" role="img" aria-label="Marca do produto — placeholder, o asset definitivo ainda não existe">
+      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><rect x="4.75" y="4.75" width="14.5" height="14.5" rx="2" stroke-dasharray="4 3"></rect></svg>
+    </div>
+    <div class="zid" style="flex-grow:1;min-width:280px">
+      <span class="zidval">Três geometrias de Fresar, com tudo o mais igual</span>
+      <span class="zidrule" aria-hidden="true"></span>
+      <span style="display:inline-flex;align-items:baseline;gap:6px"><span class="zidlbl">Material</span><span class="zidval">Aço 1045</span></span>
+      <span style="display:inline-flex;align-items:baseline;gap:6px"><span class="zidlbl">Diâmetro (D)</span><span class="zidval"><span class="num">10</span> mm</span></span>
+      <span style="display:inline-flex;align-items:baseline;gap:6px"><span class="zidlbl">Avanço por dente (fz)</span><span class="zidval"><span class="num">0,140</span> mm/dente</span></span>
+      <span style="display:inline-flex;align-items:baseline;gap:6px"><span class="zidlbl">Balanço (L)</span><span class="zidval"><span class="num">30</span> mm</span></span>
+    </div>
+  </div>
+
+  <div style="display:flex;gap:16px;align-items:stretch;flex-wrap:wrap">
+
+    <!-- ══ 1. ALTO AVANÇO ══ o campo próprio é o ângulo de posição, e ele entra na conta da
+         espessura média pelo sin κ (§6.4). É o único dos três em que a penetração de partida
+         é maior que metade do diâmetro: 8 mm num Ø10. -->
+    <div style="flex:1 1 400px;min-width:0;display:flex;flex-direction:column;gap:16px">
+      <div class="card" style="display:flex;flex-direction:column;gap:12px;flex-grow:1">
+        <div style="display:flex;align-items:baseline;gap:12px;flex-wrap:wrap">
+          <span style="font-size:16px;font-weight:600;color:var(--tx-1)">Fresa de Alto Avanço</span>
+          <span class="lbl">Metal duro · pastilhada</span>
+        </div>
+        <hr class="sep">
+        <div class="lbl">DIMENSÕES DA FERRAMENTA</div>
+        <div class="vgrid">
+          <div class="field"><label class="lbl" for="a-d">Diâmetro da ferramenta (<span class="sym">D</span>)</label>
+              <div class="sctl">
+                <button type="button" class="step" aria-label="Diminuir diâmetro da ferramenta em 0,1 mm">−</button>
+                <div class="fbox"><input class="num fval fin" id="a-d" type="text" inputmode="decimal" value="10"><span class="funit">mm</span></div>
+                <button type="button" class="step" aria-label="Aumentar diâmetro da ferramenta em 0,1 mm">+</button>
+              </div>
+            </div>
+          <div class="field"><label class="lbl" for="a-k">Ângulo de posição (<span class="sym">κ</span>)</label>
+              <div class="sctl">
+                <button type="button" class="step" aria-label="Diminuir ângulo de posição em 1 grau">−</button>
+                <div class="fbox"><input class="num fval fin" id="a-k" type="text" inputmode="decimal" value="15"><span class="funit">°</span></div>
+                <button type="button" class="step" aria-label="Aumentar ângulo de posição em 1 grau">+</button>
+              </div>
+            </div>
+        </div>
+        <div class="lbl">VALORES DESTA MONTAGEM</div>
+        <div class="vgrid">
+          <div class="field"><label class="lbl" for="a-z">Número de arestas (<span class="sym">Z</span>)</label>
+              <div class="sctl">
+                <button type="button" class="step" aria-label="Diminuir número de arestas em 1">−</button>
+                <div class="fbox"><input class="num fval fin" id="a-z" type="text" inputmode="decimal" value="3"></div>
+                <button type="button" class="step" aria-label="Aumentar número de arestas em 1">+</button>
+              </div>
+            </div>
+          <div class="field"><label class="lbl" for="a-ap">Profundidade de corte (<span class="sym">ap</span>)</label>
+              <div class="sctl">
+                <button type="button" class="step" aria-label="Diminuir profundidade de corte em 0,05 mm">−</button>
+                <div class="fbox"><input class="num fval fin" id="a-ap" type="text" inputmode="decimal" value="1,0"><span class="funit">mm</span></div>
+                <button type="button" class="step" aria-label="Aumentar profundidade de corte em 0,05 mm">+</button>
+              </div>
+            </div>
+          <div class="field" style="grid-column:span 2"><label class="lbl" for="a-ae">Penetração de trabalho (<span class="sym">ae</span>)</label>
+              <div class="sctl">
+                <button type="button" class="step" aria-label="Diminuir penetração de trabalho em 0,1 mm">−</button>
+                <div class="fbox"><input class="num fval fin" id="a-ae" type="text" inputmode="decimal" value="8,0"><span class="funit">mm</span></div>
+                <button type="button" class="step" aria-label="Aumentar penetração de trabalho em 0,1 mm">+</button>
+              </div>
+            </div>
+        </div>
+      </div>
+      <div class="rcard">
+        <div class="lbl">Rotação (<span class="sym">n</span>)</div>
+        <div class="rtall-row">
+          <button type="button" class="step" aria-label="Diminuir rotação 10%">−</button>
+          <div class="rval"><span class="raddr">S</span><span class="rbig">4.456</span><span class="funit">rpm</span></div>
+          <button type="button" class="step" aria-label="Aumentar rotação 10%">+</button>
+        </div>
+      </div>
+      <div class="rcard">
+        <div class="lbl">Velocidade de avanço da mesa (<span class="sym">vf</span>)</div>
+        <div class="rtall-row">
+          <button type="button" class="step" aria-label="Diminuir velocidade de avanço 10%">−</button>
+          <div class="rval"><span class="raddr">F</span><span class="rbig">1.872</span><span class="funit">mm/min</span></div>
+          <button type="button" class="step" aria-label="Aumentar velocidade de avanço 10%">+</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- ══ 2. CHANFRAR ══ o campo próprio é o diâmetro menor, e ele não é decoração: o cálculo
+         roda sobre a média dos dois (§6.2), o que muda a rotação em 43% contra as outras duas
+         colunas, todas com o mesmo Ø10 nominal. -->
+    <div style="flex:1 1 400px;min-width:0;display:flex;flex-direction:column;gap:16px">
+      <div class="card" style="display:flex;flex-direction:column;gap:12px;flex-grow:1">
+        <div style="display:flex;align-items:baseline;gap:12px;flex-wrap:wrap">
+          <span style="font-size:16px;font-weight:600;color:var(--tx-1)">Fresa de Chanfrar</span>
+          <span class="lbl">Metal duro · inteiriça</span>
+        </div>
+        <hr class="sep">
+        <div class="lbl">DIMENSÕES DA FERRAMENTA</div>
+        <div class="vgrid">
+          <div class="field"><label class="lbl" for="c-d">Diâmetro da ferramenta (<span class="sym">D</span>)</label>
+              <div class="sctl">
+                <button type="button" class="step" aria-label="Diminuir diâmetro da ferramenta em 0,1 mm">−</button>
+                <div class="fbox"><input class="num fval fin" id="c-d" type="text" inputmode="decimal" value="10"><span class="funit">mm</span></div>
+                <button type="button" class="step" aria-label="Aumentar diâmetro da ferramenta em 0,1 mm">+</button>
+              </div>
+            </div>
+          <div class="field"><label class="lbl" for="c-dmin">Diâmetro menor (<span class="sym">Dmin</span>)</label>
+              <div class="sctl">
+                <button type="button" class="step" aria-label="Diminuir diâmetro menor em 0,1 mm">−</button>
+                <div class="fbox"><input class="num fval fin" id="c-dmin" type="text" inputmode="decimal" value="4,0"><span class="funit">mm</span></div>
+                <button type="button" class="step" aria-label="Aumentar diâmetro menor em 0,1 mm">+</button>
+              </div>
+            </div>
+          <!-- Leitura derivada: a conta roda sobre a média, e a tela mostra qual é. -->
+          <div class="field" style="grid-column:span 2"><span class="lbl">Diâmetro efetivo (<span class="sym">De</span>)</span>
+              <div class="fbox" style="background:none;border-color:var(--border-subtle)"><span class="mval">7,0</span><span class="funit">mm</span></div>
+              <span class="lbl">= (diâmetro menor + diâmetro da ferramenta) ÷ 2</span>
+            </div>
+        </div>
+        <div class="lbl">VALORES DESTA MONTAGEM</div>
+        <div class="vgrid">
+          <div class="field"><label class="lbl" for="c-z">Número de arestas (<span class="sym">Z</span>)</label>
+              <div class="sctl">
+                <button type="button" class="step" aria-label="Diminuir número de arestas em 1">−</button>
+                <div class="fbox"><input class="num fval fin" id="c-z" type="text" inputmode="decimal" value="4"></div>
+                <button type="button" class="step" aria-label="Aumentar número de arestas em 1">+</button>
+              </div>
+            </div>
+          <div class="field"><label class="lbl" for="c-ap">Profundidade de corte (<span class="sym">ap</span>)</label>
+              <div class="sctl">
+                <button type="button" class="step" aria-label="Diminuir profundidade de corte em 0,05 mm">−</button>
+                <div class="fbox"><input class="num fval fin" id="c-ap" type="text" inputmode="decimal" value="1,0"><span class="funit">mm</span></div>
+                <button type="button" class="step" aria-label="Aumentar profundidade de corte em 0,05 mm">+</button>
+              </div>
+            </div>
+          <div class="field" style="grid-column:span 2"><label class="lbl" for="c-ae">Penetração de trabalho (<span class="sym">ae</span>)</label>
+              <div class="sctl">
+                <button type="button" class="step" aria-label="Diminuir penetração de trabalho em 0,1 mm">−</button>
+                <div class="fbox"><input class="num fval fin" id="c-ae" type="text" inputmode="decimal" value="1,0"><span class="funit">mm</span></div>
+                <button type="button" class="step" aria-label="Aumentar penetração de trabalho em 0,1 mm">+</button>
+              </div>
+            </div>
+        </div>
+      </div>
+      <div class="rcard">
+        <div class="lbl">Rotação (<span class="sym">n</span>)</div>
+        <div class="rtall-row">
+          <button type="button" class="step" aria-label="Diminuir rotação 10%">−</button>
+          <div class="rval"><span class="raddr">S</span><span class="rbig">6.366</span><span class="funit">rpm</span></div>
+          <button type="button" class="step" aria-label="Aumentar rotação 10%">+</button>
+        </div>
+      </div>
+      <div class="rcard">
+        <div class="lbl">Velocidade de avanço da mesa (<span class="sym">vf</span>)</div>
+        <div class="rtall-row">
+          <button type="button" class="step" aria-label="Diminuir velocidade de avanço 10%">−</button>
+          <div class="rval"><span class="raddr">F</span><span class="rbig">3.565</span><span class="funit">mm/min</span></div>
+          <button type="button" class="step" aria-label="Aumentar velocidade de avanço 10%">+</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- ══ 3. DISCO / SERRA ══ nenhum campo novo: os mesmos dois campos das outras colunas,
+         com OUTRO NOME e outro significado físico. É a variação mais traiçoeira das três,
+         porque nada na forma da tela avisa que mudou — só o rótulo. -->
+    <div style="flex:1 1 400px;min-width:0;display:flex;flex-direction:column;gap:16px">
+      <div class="card" style="display:flex;flex-direction:column;gap:12px;flex-grow:1">
+        <div style="display:flex;align-items:baseline;gap:12px;flex-wrap:wrap">
+          <span style="font-size:16px;font-weight:600;color:var(--tx-1)">Fresa de Disco / Serra</span>
+          <span class="lbl">Metal duro · pastilhada</span>
+        </div>
+        <hr class="sep">
+        <div class="lbl">DIMENSÕES DA FERRAMENTA</div>
+        <div class="vgrid">
+          <div class="field" style="grid-column:span 2"><label class="lbl" for="d-d">Diâmetro da ferramenta (<span class="sym">D</span>)</label>
+              <div class="sctl">
+                <button type="button" class="step" aria-label="Diminuir diâmetro da ferramenta em 0,1 mm">−</button>
+                <div class="fbox"><input class="num fval fin" id="d-d" type="text" inputmode="decimal" value="10"><span class="funit">mm</span></div>
+                <button type="button" class="step" aria-label="Aumentar diâmetro da ferramenta em 0,1 mm">+</button>
+              </div>
+            </div>
+        </div>
+        <div class="lbl">VALORES DESTA MONTAGEM</div>
+        <div class="vgrid">
+          <div class="field"><label class="lbl" for="d-z">Número de arestas (<span class="sym">Z</span>)</label>
+              <div class="sctl">
+                <button type="button" class="step" aria-label="Diminuir número de arestas em 1">−</button>
+                <div class="fbox"><input class="num fval fin" id="d-z" type="text" inputmode="decimal" value="8"></div>
+                <button type="button" class="step" aria-label="Aumentar número de arestas em 1">+</button>
+              </div>
+            </div>
+          <div class="field"><label class="lbl" for="d-b">Largura da fresa (<span class="sym">b</span>)</label>
+              <div class="sctl">
+                <button type="button" class="step" aria-label="Diminuir largura da fresa em 0,05 mm">−</button>
+                <div class="fbox"><input class="num fval fin" id="d-b" type="text" inputmode="decimal" value="5,0"><span class="funit">mm</span></div>
+                <button type="button" class="step" aria-label="Aumentar largura da fresa em 0,05 mm">+</button>
+              </div>
+            </div>
+          <div class="field" style="grid-column:span 2"><label class="lbl" for="d-ae">Penetração de trabalho radial (<span class="sym">ae</span>)</label>
+              <div class="sctl">
+                <button type="button" class="step" aria-label="Diminuir penetração de trabalho radial em 0,1 mm">−</button>
+                <div class="fbox"><input class="num fval fin" id="d-ae" type="text" inputmode="decimal" value="3,0"><span class="funit">mm</span></div>
+                <button type="button" class="step" aria-label="Aumentar penetração de trabalho radial em 0,1 mm">+</button>
+              </div>
+            </div>
+        </div>
+      </div>
+      <div class="rcard">
+        <div class="lbl">Rotação (<span class="sym">n</span>)</div>
+        <div class="rtall-row">
+          <button type="button" class="step" aria-label="Diminuir rotação 10%">−</button>
+          <div class="rval"><span class="raddr">S</span><span class="rbig">4.456</span><span class="funit">rpm</span></div>
+          <button type="button" class="step" aria-label="Aumentar rotação 10%">+</button>
+        </div>
+      </div>
+      <div class="rcard">
+        <div class="lbl">Velocidade de avanço da mesa (<span class="sym">vf</span>)</div>
+        <div class="rtall-row">
+          <button type="button" class="step" aria-label="Diminuir velocidade de avanço 10%">−</button>
+          <div class="rval"><span class="raddr">F</span><span class="rbig">4.991</span><span class="funit">mm/min</span></div>
+          <button type="button" class="step" aria-label="Aumentar velocidade de avanço 10%">+</button>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+</div>
+</x-dc>
+</body>
+</html>

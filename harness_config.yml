@@ -1,0 +1,196 @@
+version: "1.0"
+project: "tooloptimizer"
+description: "Configuração canônica do Harness de Governança e Orquestração Multi-Agente do ToolOptimizer CNC"
+
+# Matriz de Agentes e Princípio do Menor Privilégio
+agents:
+  skinner:
+    role: "orchestrator"
+    model: "claude-3-opus"
+    description: "Orquestrador mestre. Conduz o fluxo, distribui tarefas via grafo, confere entregas e commita."
+    tools:
+      - "mcp_send_message"
+      - "filesystem_read"
+      - "git_cli"
+    file_permissions:
+      read:
+        - "**/*"
+      write:
+        - "Skinner/**"
+        - "ESTADO.md"
+        - "tasks.md"
+        - "harness_config.yml"
+        - "grafo_fluxo.json"
+      deny:
+        - "src/**"
+        - "Docs_inicial/canonicos/**"
+    limits:
+      max_iterations: 15
+      timeout_seconds: 300
+      max_retries_correction: 3
+
+  gemini:
+    role: "executor"
+    model: "gemini-3.8-flash"
+    description: "Executor de engenharia de software, cálculo CNC, infraestrutura de testes e harness."
+    tools:
+      - "filesystem_read"
+      - "filesystem_write"
+      - "test_runner"
+      - "typecheck"
+    file_permissions:
+      read:
+        - "**/*"
+      write:
+        - "src/**"
+        - "package.json"
+        - "tsconfig.json"
+        - "vitest.config.ts"
+        - "testes/**"
+        - "scripts/**"
+      deny:
+        - "Docs_inicial/canonicos/**"
+        - "Skinner/SKINNER.md"
+        - "harness_config.yml"
+        - "grafo_fluxo.json"
+    limits:
+      max_iterations: 10
+      timeout_seconds: 180
+      max_tokens_budget: 150000
+
+  dexter:
+    role: "executor"
+    model: "claude-3-opus"
+    description: "Executor de design, UI/UX, layouts, CSS e gabaritos de apresentação."
+    tools:
+      - "filesystem_read"
+      - "filesystem_write"
+    file_permissions:
+      read:
+        - "**/*"
+      write:
+        - "src/ui/**"
+        - "Docs_inicial/construcao/prototipo/**"
+        - "Docs_inicial/construcao/folhas/**"
+      deny:
+        - "src/core/**"
+        - "Docs_inicial/canonicos/**"
+    limits:
+      max_iterations: 10
+      timeout_seconds: 180
+
+  icaro:
+    role: "executor"
+    model: "claude-3-opus"
+    description: "Executor de documentação técnica, especificações de produto e reconciliação de canônicos."
+    tools:
+      - "filesystem_read"
+      - "filesystem_write"
+    file_permissions:
+      read:
+        - "**/*"
+      write:
+        - "Docs_inicial/**"
+        - "docs/**"
+        - "spec.md"
+      deny:
+        - "src/**"
+        - "package.json"
+    limits:
+      max_iterations: 10
+      timeout_seconds: 180
+
+  morfeu:
+    role: "verifier"
+    model: "claude-3-5-sonnet"
+    description: "Verificador independente e auditor mecânico. Avalia entregas com contexto isolado e emite notas."
+    tools:
+      - "filesystem_read"
+      - "test_runner"
+      - "typecheck"
+      - "linter"
+    file_permissions:
+      read:
+        - "**/*"
+      write:
+        - "Docs_inicial/relatorios/auditoria/**"
+      deny:
+        - "src/**"
+        - "package.json"
+        - "Docs_inicial/canonicos/**"
+    limits:
+      max_iterations: 5
+      timeout_seconds: 120
+
+  mestre:
+    role: "human_decider"
+    description: "Decisor de produto e autoridade suprema do projeto. Ponto final de escalada e aprovação."
+    tools:
+      - "all"
+
+# Protocolo ReAct (Thought -> Action -> Observation)
+react_policy:
+  enforce_loop: true
+  max_consecutive_identical_actions: 2
+  break_on_no_progress_iterations: 3
+  record_observations: true
+
+# Protocolo de Verificação Isolada e Gates de Qualidade
+verification_policy:
+  threshold_minimo: 85
+  zero_critical_tolerated: true
+  clean_context_enforced: true
+  categories:
+    - name: "integridade_mecanica"
+      weight: 35
+      validator_command: "npm run check"
+      description: "Compilação TypeScript sem erros e 100% de testes unitários passando."
+    - name: "aderencia_ao_contrato"
+      weight: 35
+      description: "Conformidade estrita com ACs de spec.md e contratos de tipos."
+    - name: "nao_regressao_fisica"
+      weight: 20
+      validator_command: "node Docs_inicial/construcao/prototipo/testes/test_suite_dinamica.js"
+      description: "Validação dos 50 testes dinâmicos dos Cenários A a I e motor de usinagem."
+    - name: "higiene_de_codigo"
+      weight: 10
+      description: "Princípio No Invention, ausência de dependências de DOM no Core, sem arquivos sujos."
+  severity_matrix:
+    CRITICA:
+      blocks_merge: true
+      penalty_score: 100
+      examples:
+        - "Quebra da suíte de testes do Core"
+        - "Alteração não autorizada de constantes físicas dos canônicos"
+        - "Import de pacote de UI no Core"
+    MEDIA:
+      blocks_merge: false
+      penalty_score: 15
+      examples:
+        - "Falta de comentários rastreando o AC correspondente"
+        - "Tipo 'any' não justificado"
+    BAIXA:
+      blocks_merge: false
+      penalty_score: 5
+      examples:
+        - "Formatação inconsistente"
+        - "Documentação com pequenos desvios tipográficos"
+
+# Checkpoints e Intervenção Humana
+checkpoints:
+  pre_execution:
+    action: "validate_task_contract"
+    required_fields: ["task_id", "assigned_agent", "acceptance_criteria", "dependencies"]
+  post_execution:
+    action: "trigger_independent_verification"
+    verifier_agent: "morfeu"
+  pre_commit:
+    action: "run_full_regression_check"
+    command: "npm run check"
+    require_clean_git_tree: true
+  human_escalation:
+    triggers:
+      - "max_retries_exceeded: 3 reprovações de verificação consecutivas"
+      - "attempted_write_to_canonical_docs: alteração em Docs_inicial/canonicos/"
+      - "destructive_operation: comandos git reset, checkout forçado ou remoção em massa"
+      - "core_physics_inconsistency: divergência entre fórmulas de usinagem e canônicos"
