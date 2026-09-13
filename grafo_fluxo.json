@@ -1,0 +1,230 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "version": "1.0",
+  "project": "fenix",
+  "name": "Grafo Canônico de Execução e Orquestração Multi-Agente",
+  "description": "Topologia de dependências, ramos paralelos, verificação isolada e convergência controlada do Fenix",
+  "nodes": [
+    {
+      "id": "node_01_intencao_mestre",
+      "name": "Definição de Intenção e Requisitos de Negócio",
+      "type": "intent",
+      "assigned_agent": "mestre",
+      "allowed_tools": ["all"],
+      "dependencies": [],
+      "is_parallel": false,
+      "inputs": ["Necessidade de oficina ou evolução do produto"],
+      "outputs": ["Especificação de Intenção / Issue"],
+      "on_success": "node_02_planejamento_skinner",
+      "on_failure": null
+    },
+    {
+      "id": "node_02_planejamento_skinner",
+      "name": "Decomposição de Tarefas e Alocação de Ramos",
+      "type": "orchestrator",
+      "assigned_agent": "skinner",
+      "allowed_tools": ["filesystem_read", "mcp_send_message"],
+      "dependencies": ["node_01_intencao_mestre"],
+      "is_parallel": false,
+      "inputs": ["Especificação de Intenção / Issue", "ESTADO.md", "spec.md"],
+      "outputs": ["Prompts de Despacho", "Atualização de tasks.md"],
+      "on_success": ["node_03_ramo_engenharia", "node_04_ramo_design", "node_05_ramo_docs"],
+      "on_failure": "node_checkpoint_escalada_mestre"
+    },
+    {
+      "id": "node_03_ramo_engenharia",
+      "name": "Execução de Engenharia de Software (Core / Harness / Tests)",
+      "type": "task_branch",
+      "assigned_agent": "gemini",
+      "allowed_tools": ["filesystem_read", "filesystem_write", "test_runner", "typecheck"],
+      "dependencies": ["node_02_planejamento_skinner"],
+      "is_parallel": true,
+      "inputs": ["Prompt de Engenharia", "spec.md", "src/core/**"],
+      "outputs": ["Código TypeScript", "Testes Vitest", "Diff de Implementação"],
+      "react_loop": {
+        "enabled": true,
+        "max_iterations": 10,
+        "timeout_seconds": 180
+      },
+      "on_success": "node_06_verificacao_engenharia",
+      "on_failure": "node_07_correcao_engenharia"
+    },
+    {
+      "id": "node_04_ramo_design",
+      "name": "Execução de Design e Apresentação (UI / UX)",
+      "type": "task_branch",
+      "assigned_agent": "dexter",
+      "allowed_tools": ["filesystem_read", "filesystem_write"],
+      "dependencies": ["node_02_planejamento_skinner"],
+      "is_parallel": true,
+      "inputs": ["Prompt de Design", "Gabarito de Tela", "src/ui/**"],
+      "outputs": ["Layouts CSS", "Componentes React", "Folhas .dc.html"],
+      "react_loop": {
+        "enabled": true,
+        "max_iterations": 10,
+        "timeout_seconds": 180
+      },
+      "on_success": "node_08_verificacao_design",
+      "on_failure": "node_09_correcao_design"
+    },
+    {
+      "id": "node_05_ramo_docs",
+      "name": "Execução de Documentação e Canônicos",
+      "type": "task_branch",
+      "assigned_agent": "icaro",
+      "allowed_tools": ["filesystem_read", "filesystem_write"],
+      "dependencies": ["node_02_planejamento_skinner"],
+      "is_parallel": true,
+      "inputs": ["Prompt de Documentação", "Relatórios de Pesquisa", "Docs_inicial/**"],
+      "outputs": ["Documentos Canônicos Atualizados", "ADRs", "Atualização spec.md"],
+      "react_loop": {
+        "enabled": true,
+        "max_iterations": 8,
+        "timeout_seconds": 180
+      },
+      "on_success": "node_10_verificacao_docs",
+      "on_failure": "node_11_correcao_docs"
+    },
+    {
+      "id": "node_06_verificacao_engenharia",
+      "name": "Verificação Independente de Engenharia",
+      "type": "verifier",
+      "assigned_agent": "morfeu",
+      "allowed_tools": ["filesystem_read", "test_runner", "typecheck", "linter"],
+      "dependencies": ["node_03_ramo_engenharia"],
+      "is_parallel": false,
+      "isolated_context": true,
+      "inputs": ["Diff de Engenharia", "spec.md", "Critérios de Aceite"],
+      "outputs": ["Relatório de Auditoria de Código"],
+      "acceptance_policy": {
+        "threshold_score": 85,
+        "zero_critical_errors": true,
+        "required_commands": ["npm run check", "node Docs_inicial/construcao/prototipo/testes/test_suite_dinamica.js"]
+      },
+      "on_success": "node_12_convergencia_ramos",
+      "on_failure": "node_07_correcao_engenharia"
+    },
+    {
+      "id": "node_07_correcao_engenharia",
+      "name": "Loop de Correção de Engenharia",
+      "type": "correction_loop",
+      "assigned_agent": "gemini",
+      "allowed_tools": ["filesystem_read", "filesystem_write", "test_runner", "typecheck"],
+      "dependencies": ["node_06_verificacao_engenharia"],
+      "is_parallel": false,
+      "inputs": ["Relatório de Falhas do Verificador", "Código Atual"],
+      "outputs": ["Código Corrigido"],
+      "max_retries": 3,
+      "on_success": "node_06_verificacao_engenharia",
+      "on_exhausted_retries": "node_checkpoint_escalada_mestre"
+    },
+    {
+      "id": "node_08_verificacao_design",
+      "name": "Verificação Independente de Design e Usabilidade",
+      "type": "verifier",
+      "assigned_agent": "morfeu",
+      "allowed_tools": ["filesystem_read"],
+      "dependencies": ["node_04_ramo_design"],
+      "is_parallel": false,
+      "isolated_context": true,
+      "inputs": ["Entregáveis de Design", "Gabaritos de Tela"],
+      "outputs": ["Relatório de Auditoria Visual"],
+      "acceptance_policy": {
+        "threshold_score": 85,
+        "zero_critical_errors": true
+      },
+      "on_success": "node_12_convergencia_ramos",
+      "on_failure": "node_09_correcao_design"
+    },
+    {
+      "id": "node_09_correcao_design",
+      "name": "Loop de Correção de Design",
+      "type": "correction_loop",
+      "assigned_agent": "dexter",
+      "allowed_tools": ["filesystem_read", "filesystem_write"],
+      "dependencies": ["node_08_verificacao_design"],
+      "is_parallel": false,
+      "inputs": ["Relatório de Falhas de UI", "Código Visual Atual"],
+      "outputs": ["Componentes e Estilos Corrigidos"],
+      "max_retries": 3,
+      "on_success": "node_08_verificacao_design",
+      "on_exhausted_retries": "node_checkpoint_escalada_mestre"
+    },
+    {
+      "id": "node_10_verificacao_docs",
+      "name": "Verificação Independente de Documentação",
+      "type": "verifier",
+      "assigned_agent": "morfeu",
+      "allowed_tools": ["filesystem_read"],
+      "dependencies": ["node_05_ramo_docs"],
+      "is_parallel": false,
+      "isolated_context": true,
+      "inputs": ["Documentos Modificados", "Regra No Invention"],
+      "outputs": ["Relatório de Auditoria de Docs"],
+      "acceptance_policy": {
+        "threshold_score": 85,
+        "zero_critical_errors": true
+      },
+      "on_success": "node_12_convergencia_ramos",
+      "on_failure": "node_11_correcao_docs"
+    },
+    {
+      "id": "node_11_correcao_docs",
+      "name": "Loop de Correção de Documentação",
+      "type": "correction_loop",
+      "assigned_agent": "icaro",
+      "allowed_tools": ["filesystem_read", "filesystem_write"],
+      "dependencies": ["node_10_verificacao_docs"],
+      "is_parallel": false,
+      "inputs": ["Relatório de Inconsistências de Docs"],
+      "outputs": ["Documentação Corrigida"],
+      "max_retries": 3,
+      "on_success": "node_10_verificacao_docs",
+      "on_exhausted_retries": "node_checkpoint_escalada_mestre"
+    },
+    {
+      "id": "node_12_convergencia_ramos",
+      "name": "Ponto de Convergência e Validação Integrada",
+      "type": "convergence",
+      "assigned_agent": "skinner",
+      "allowed_tools": ["filesystem_read", "mcp_send_message"],
+      "dependencies": [
+        "node_06_verificacao_engenharia",
+        "node_08_verificacao_design",
+        "node_10_verificacao_docs"
+      ],
+      "is_parallel": false,
+      "inputs": ["Todos os relatórios de verificação aprovados"],
+      "outputs": ["Entrega Consolidada", "Registro em ESTADO.md"],
+      "acceptance_criteria": "Todos os ramos ativos devem ter verificação aprovada com score >= 85 e zero erros críticos",
+      "on_success": "node_13_checkpoint_final_commit",
+      "on_failure": "node_checkpoint_escalada_mestre"
+    },
+    {
+      "id": "node_13_checkpoint_final_commit",
+      "name": "Checkpoint Final e Commit",
+      "type": "checkpoint",
+      "assigned_agent": "skinner",
+      "allowed_tools": ["git_cli", "filesystem_read"],
+      "dependencies": ["node_12_convergencia_ramos"],
+      "is_parallel": false,
+      "inputs": ["Árvore de trabalho limpa", "Suíte completa verde"],
+      "outputs": ["Commit no Repositório Git"],
+      "on_success": null,
+      "on_failure": "node_checkpoint_escalada_mestre"
+    },
+    {
+      "id": "node_checkpoint_escalada_mestre",
+      "name": "Escalada para Intervenção Humana (Mestre)",
+      "type": "checkpoint",
+      "assigned_agent": "mestre",
+      "allowed_tools": ["all"],
+      "dependencies": [],
+      "is_parallel": false,
+      "inputs": ["Relatório de Falha Persistente ou Operação Crítica"],
+      "outputs": ["Decisão / Resolução Manual do Mestre"],
+      "on_success": "node_02_planejamento_skinner",
+      "on_failure": null
+    }
+  ]
+}

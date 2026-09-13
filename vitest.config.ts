@@ -1,27 +1,10 @@
 import { defineConfig } from 'vitest/config';
-import path from 'path';
-import pkg from './package.json' with { type: 'json' };
 
 export default defineConfig({
-  define: {
-    __APP_VERSION__: JSON.stringify(pkg.version),
-  },
   test: {
     globals: true,
-    environment: 'jsdom',
-    setupFiles: ['./tests/setup.ts'],
-    passWithNoTests: true,
-    exclude: ['Sistema_Desktop_Pen_driver/**', 'node_modules/**', '.claude/**', '.aiox-core/**'],
-    coverage: {
-      provider: 'v8',
-      reporter: ['text', 'html'],
-      include: ['src/**/*.{ts,tsx}'],
-      exclude: ['src/main.tsx', 'src/app/**'],
-    },
-  },
-  resolve: {
-    alias: {
-      '@': path.resolve(__dirname, './src'),
-    },
+    // O core é TypeScript puro: não depende do DOM nem da rede (design.md §1.1).
+    environment: 'node',
+    include: ['src/**/*.spec.ts', 'src/**/*.spec.tsx'],
   },
 });
