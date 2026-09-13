@@ -1,5 +1,5 @@
 /**
- * Tipos do núcleo de cálculo do Fenix.
+ * Tipos do núcleo de cálculo do ToolOptimizer CNC.
  *
  * Nomenclatura: o core usa os símbolos dos canônicos (`n`, `vf`, `hm`, `Pc`, `Mc`),
  * não os rótulos de tela. O painel chama `n` de "S (rotação)" e `vf` de "F (avanço)"

@@ -1,9 +1,9 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "version": "1.0",
-  "project": "fenix",
+  "project": "tooloptimizer",
   "name": "Grafo Canônico de Execução e Orquestração Multi-Agente",
-  "description": "Topologia de dependências, ramos paralelos, verificação isolada e convergência controlada do Fenix",
+  "description": "Topologia de dependências, ramos paralelos, verificação isolada e convergência controlada do ToolOptimizer CNC",
   "nodes": [
     {
       "id": "node_01_intencao_mestre",

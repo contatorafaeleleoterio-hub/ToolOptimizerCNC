@@ -2,8 +2,128 @@
 <html lang="pt-BR">
 <head>
   <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Fenix — Calculadora de Parâmetros de Corte CNC</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <title>ToolOptimizer CNC — Calculadora de Parâmetros de Corte</title>
+
+  <!-- Base SEO -->
+  <meta name="description" content="Calculadora profissional de parâmetros de corte CNC. Calcule RPM, Avanço e Potência com precisão física e segurança. Fresamento, furação, roscamento e mandrilamento com modelo de Kienzle." />
+  <meta name="keywords" content="CNC, fresamento, furação, roscamento, mandrilamento, parâmetros de corte, RPM, avanço, potência, velocidade de corte, calculadora CNC, usinagem, Kienzle, Vc, fz, mestre CNC" />
+  <meta name="robots" content="index, follow" />
+  <meta name="author" content="Mestre CNC" />
+
+  <!-- Favicon -->
+  <link rel="icon" href="/favicon.ico" sizes="any" />
+  <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png" />
+  <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png" />
+  <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png" />
+  <meta name="theme-color" content="#0F3D5C" />
+
+  <!-- Open Graph -->
+  <meta property="og:type" content="website" />
+  <meta property="og:title" content="ToolOptimizer CNC — Calculadora de Parâmetros de Corte" />
+  <meta property="og:description" content="Calculadora profissional de parâmetros de corte CNC. Calcule RPM, Avanço e Potência em 2 segundos com segurança." />
+  <meta property="og:url" content="https://app.tooloptimizercnc.com.br/" />
+  <meta property="og:image" content="https://app.tooloptimizercnc.com.br/og-image.png" />
+  <meta property="og:site_name" content="ToolOptimizer CNC" />
+  <meta property="og:locale" content="pt_BR" />
+
+  <!-- Twitter Card -->
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content="ToolOptimizer CNC — Calculadora de Parâmetros de Corte" />
+  <meta name="twitter:description" content="Calculadora profissional de parâmetros de corte CNC. Calcule RPM, Avanço e Potência em 2 segundos com segurança." />
+  <meta name="twitter:image" content="https://app.tooloptimizercnc.com.br/og-image.png" />
+
+  <!-- Canonical -->
+  <link rel="canonical" href="https://app.tooloptimizercnc.com.br/" />
+
+  <!-- Schema.org JSON-LD — SoftwareApplication -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "SoftwareApplication",
+    "name": "ToolOptimizer CNC",
+    "applicationCategory": "ProductivityApplication",
+    "operatingSystem": "Web Browser, Windows",
+    "description": "Sistema profissional para cálculo de parâmetros de corte CNC. Calcule RPM, Avanço e Potência com precisão física e segurança. Suporta 4 famílias de usinagem com modelo de Kienzle.",
+    "url": "https://app.tooloptimizercnc.com.br/",
+    "inLanguage": "pt-BR",
+    "offers": {
+      "@type": "Offer",
+      "price": "0",
+      "priceCurrency": "BRL"
+    },
+    "author": {
+      "@type": "Person",
+      "name": "Mestre CNC",
+      "url": "https://mestrecnc.com.br",
+      "jobTitle": "Especialista em Usinagem CNC",
+      "description": "Programador e operador CNC com 17+ anos de experiência em moldes de injeção"
+    },
+    "featureList": [
+      "4 famílias completas de usinagem: fresar, furar, roscar e mandrilar",
+      "Modelo vivo bidirecional com ajuste tátil de ±5%",
+      "Força de corte e potência baseadas no modelo canônico de Kienzle",
+      "Suporte a brocas de aço rápido (HSS) e metal duro integral",
+      "Persistência local offline-first em IndexedDB",
+      "Validação e semáforo visual de segurança contra quebra de ferramenta"
+    ]
+  }
+  </script>
+
+  <!-- Schema.org JSON-LD — FAQPage -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
+    "mainEntity": [
+      {
+        "@type": "Question",
+        "name": "Como calcular RPM para fresamento CNC?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "O RPM é calculado pela fórmula: RPM = (Vc × 1000) / (π × D), onde Vc é a velocidade de corte em m/min e D é o diâmetro da ferramenta em mm. O ToolOptimizer realiza este cálculo automaticamente ao inserir os parâmetros."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "O ToolOptimizer CNC é gratuito?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Sim, o ToolOptimizer CNC é completamente gratuito, sem necessidade de cadastro, sem anúncios e com funcionamento direto no navegador."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "O sistema funciona sem internet (offline)?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Sim. O ToolOptimizer CNC opera como Progressive Web App (PWA) e utiliza armazenamento local IndexedDB, funcionando 100% offline no chão de fábrica."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "Quais operações são suportadas?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "O sistema suporta as 4 principais operações de usinagem CNC: Fresamento (topo reto, toroidal, esférica, alto avanço, facear), Furação (broca helicoidal HSS e MD), Roscamento (machos de corte e conformação) e Mandrilamento (cabeçote micrométrico)."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "O sistema usa o modelo de Kienzle?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Sim. O ToolOptimizer utiliza o modelo de Kienzle para cálculo da força específica de corte (kc) e potência de usinagem, parametrizado com constantes canônicas para diversas classes de materiais."
+        }
+      }
+    ]
+  }
+  </script>
+
+  <!-- Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;600;700&display=swap" rel="stylesheet" />
 </head>
 <body>
   <div id="root"></div>

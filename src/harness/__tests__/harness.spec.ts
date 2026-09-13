@@ -1,6 +1,6 @@
 /**
  * src/harness/__tests__/harness.spec.ts
- * Suíte de testes do Harness, Grafo de Execução, ReAct e Verificação Isolada do Fenix.
+ * Suíte de testes do Harness, Grafo de Execução, ReAct e Verificação Isolada do ToolOptimizer CNC.
  */
 
 import { describe, it, expect } from 'vitest';

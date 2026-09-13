@@ -289,7 +289,7 @@ export default function SettingsView({ onClose }: SettingsViewProps) {
     <div className="config-wrap" style={{ padding: '24px', maxWidth: '1100px', margin: '0 auto' }}>
       {/* MOLDURA SUPERIOR */}
       <div className="config-head">
-        <div className="plate">FENIX</div>
+        <div className="plate">TOOLOPTIMIZER</div>
         <div className="htitle">Configurações</div>
         <button
           type="button"

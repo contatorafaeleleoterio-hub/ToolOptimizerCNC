@@ -4,11 +4,11 @@ import { render, screen, fireEvent } from '@testing-library/react';
 import App from '../App';
 
 describe('App Component — Inicialização da Toolchain UI (TASK-009)', () => {
-  it('deve renderizar a casca principal com a marca FENIX', () => {
+  it('deve renderizar a casca principal com a marca TOOLOPTIMIZER', () => {
     render(<App />);
-    const brandElement = screen.getByRole('img', { name: /marca fenix/i });
+    const brandElement = screen.getByRole('img', { name: /marca tooloptimizer/i });
     expect(brandElement).toBeDefined();
-    expect(brandElement.textContent).toBe('FENIX');
+    expect(brandElement.textContent).toBe('TOOLOPTIMIZER');
   });
 
   it('deve conter a navegação das 4 famílias canônicas', () => {

@@ -227,7 +227,7 @@ export function parseHarnessYaml(content: string): HarnessConfig {
 
   return {
     version: '1.0',
-    project: 'fenix',
+    project: 'tooloptimizer',
     description: 'Harness canônico extraído diretamente do YAML',
     agents: agents as any,
     react_policy: {

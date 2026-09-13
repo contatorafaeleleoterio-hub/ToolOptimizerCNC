@@ -3,7 +3,7 @@ import type { IDBPDatabase } from 'idb';
 import type { Material, AppConfig } from './types.js';
 import { FACTORY_MATERIALS } from './materials.js';
 
-const DB_NAME = 'fenix_db';
+const DB_NAME = 'tooloptimizer_db';
 const DB_VERSION = 2; // Incremented for config store
 const STORE_MATERIALS = 'materials';
 const STORE_TOOLS = 'tools';

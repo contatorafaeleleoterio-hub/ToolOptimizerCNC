@@ -1,6 +1,6 @@
 version: "1.0"
-project: "fenix"
-description: "Configuração canônica do Harness de Governança e Orquestração Multi-Agente do Fenix"
+project: "tooloptimizer"
+description: "Configuração canônica do Harness de Governança e Orquestração Multi-Agente do ToolOptimizer CNC"
 
 # Matriz de Agentes e Princípio do Menor Privilégio
 agents:

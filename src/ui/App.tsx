@@ -16,13 +16,13 @@ function Painel() {
   const { activeFamily } = useCalculator();
 
   return (
-    <div className="fenix-app">
+    <div className="tool-app">
       <main id="viewport-container" className="viewport-wrapper">
         {/* O título de documento. Sem um h1 o leitor de tela não tem onde
             ancorar, e a página não tem estrutura para saltar. R10 do brief,
             defeito K da especificação estrutural. É visualmente a placa de
             marca, que o HeaderZ1 desenha. */}
-        <h1 className="sr-only">Fenix — calculadora de parâmetros de corte</h1>
+        <h1 className="sr-only">ToolOptimizer CNC — Calculadora de Parâmetros de Corte</h1>
 
         {/* CABEÇALHO Z1 */}
         <HeaderZ1 onOpenSettings={() => setShowSettings(!showSettings)} />

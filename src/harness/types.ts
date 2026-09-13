@@ -1,6 +1,6 @@
 /**
  * src/harness/types.ts
- * Contratos de tipos para o sistema de Harness, Grafo de Execução e Verificação do Fenix.
+ * Contratos de tipos para o sistema de Harness, Grafo de Execução e Verificação do ToolOptimizer CNC.
  */
 
 export type AgentRole = 'orchestrator' | 'executor' | 'verifier' | 'human_decider';

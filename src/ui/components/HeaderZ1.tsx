@@ -12,8 +12,8 @@ export default function HeaderZ1({ onOpenSettings }: HeaderZ1Props) {
 
   return (
     <section className="card z1-card" aria-label="Cabeçalho do Sistema">
-      <div className="brand-plate" role="img" aria-label="Marca Fenix">
-        FENIX
+      <div className="brand-plate" role="img" aria-label="Marca ToolOptimizer CNC">
+        TOOLOPTIMIZER
       </div>
       <div className="zid" id="z1-identidade">
         {/* CHIP DE MATERIAL */}
