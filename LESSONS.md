@@ -170,3 +170,23 @@ foi escrito sem conferir o código do validador.
 **Regra:** critério de pronto que cita código de saída de script se escreve **lendo o script**, não
 de memória. E, ao encontrar a divergência, registrar — não "ajustar" o validador para o critério
 fechar, ainda mais quando ele está congelado por hash.
+
+## 12. "Confirmado" de revisão não substitui a contagem · 13/09/2026
+
+O plano de migração dizia 17 pontos de identidade, e a revisão marcou **Confirmado**. A própria
+tabela tinha 18 linhas com "Fenix" — e 19 com o `harness.spec.ts:3` que a mesma revisão achou. Um
+número errado passou por dois leitores porque ninguém contou.
+
+**Regra:** número de ocorrências se grava depois de `grep -n` no alvo, nunca copiado de plano ou de
+revisão.
+
+## 13. Pasta com DENY de leitura: o agente entrega o comando, o Mestre roda · 13/09/2026
+
+`git ls-files --others` acusou `Permission denied` numa pasta do gauntlet. O `icacls` mostrou
+`USUARIO:(DENY)(R)` explícito, com o grupo `CodexSandboxUsers` no ACL. Mexer em permissão de
+segurança não é ação do agente, nem com autorização no chat — o Mestre não entendeu por que o "pode"
+dele não bastava.
+
+**Regra:** explicar em 1 frase que a trava é do Windows, não do chat, e entregar o comando pronto
+(`icacls "<pasta>" /remove:d "<MÁQUINA>\USUARIO"`) para ele rodar. Depois, conferir com `icacls` e com
+o git.

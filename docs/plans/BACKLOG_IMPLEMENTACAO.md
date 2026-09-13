@@ -1,8 +1,8 @@
 # Backlog de Implementação — ToolOptimizer CNC
 
-> **Última atualização:** 16/08/2026 (item 19 concluído — etapas A–E; E2 do item 17 desbloqueado)
+> **Última atualização:** 13/09/2026 (item 20 registrado — migração Fenix → ToolOptimizerCNC v2, pronta para a Fase 0)
 > **Versão atual:** v0.12.1
-> **Total de planos pendentes:** 2 — item 17 (experimento isolado, **E2 pronto para começar**, não altera produção) e item 18 (especificação de motor, aplicar quando a codificação real começar)
+> **Total de planos pendentes:** 3 — item 17 (experimento isolado, **E2 pronto para começar**, não altera produção), item 18 (especificação de motor, aplicar quando a codificação real começar) e item 20 (migração Fenix — a Fase 1 arquiva `gauntlet-calculadora-cnc*/`, o que afeta o item 17)
 
 Esta lista define a ordem de implementação dos planos criados e ainda não executados.
 A ordem garante estabilidade progressiva: bugs corrigidos antes de features, features antes de polish.
@@ -33,6 +33,7 @@ A ordem garante estabilidade progressiva: bugs corrigidos antes de features, fea
 | 17 | [Gauntlet v2 — Redo com protocolo revisado](#17-gauntlet-v2--redo-com-protocolo-revisado) | 🧪 Experimento isolado | — (nenhuma) | Pasta `gauntlet-calculadora-cnc-v2/`, **zero `src/`** | 🔁 Construção aprovada (91/100, 8/8); refactor visual **desbloqueado em 16/08/2026 — E2 pronto para começar**, não executado |
 | 18 | [Motor da Calculadora Multi-Ferramenta](#18-motor-da-calculadora-multi-ferramenta) | 📄 Spec / Engine | a definir | Especificação — aplicar em `src/engine/` quando a codificação real começar | ⬜ Pendente |
 | 19 | [Diretrizes do Painel da Calculadora](#19-diretrizes-do-painel-da-calculadora) | 📄 Spec / UX | — | `docs/specs/` + reescrita de contrato, cenários e goldens da sandbox v2 | ✅ Concluído (16/08/2026, etapas A–E) |
+| 20 | [Migração Fenix → ToolOptimizerCNC v2](#20-migração-fenix--tooloptimizercnc-v2) | 🏗️ Migração | v2.0.0 | Repo inteiro: arquiva o legado em `archive/legacy-v1/`, transplanta o código do Fenix, identidade, docs, publicação | ⬜ Pendente — Fase 0 |
 
 ---
 
@@ -365,6 +366,22 @@ pode tocar em contrato, testes ou dados sem derrubar a blindagem.
 - Categoria 1 do Juiz continua com 12 pontos, medindo integridade + cobertura da zona de resultado.
 - `FREEZE.json` regravado. Placar de partida do E2: **regressão 23/23 · invariantes 3/3 · golden 1/1
   · alvos 2/21** (R11 e R14).
+
+### 20. Migração Fenix → ToolOptimizerCNC v2
+
+**Documento:** `PLANO_MIGRACAO.md` (raiz) | **Versão alvo:** v2.0.0
+**Status:** ⬜ Pendente — Fase 0. Revisão de 10/09/2026 aplicada em 12/09 (A-01..A-08, S-01, S-02);
+defeitos D-01..D-03 corrigidos em 13/09 (`PLANO_CORRECAO_DEFEITOS_MIGRACAO.md`).
+
+**Objetivo:** um único produto, ToolOptimizerCNC, rodando a implementação do Fenix — que herda a
+marca, o domínio e a infraestrutura do repo publicado — com a documentação do Fenix como oficial e a
+antiga arquivada sem autoridade.
+
+**Fases:** 0 verificações e tag `pre-migracao` · 1 arquivar legado · 2 transplantar código · 3
+identidade · 4 documentação · 5 publicação · 6 validação e merge · 7 encerrar repo Fenix. 5 sessões.
+
+**Em aberto:** decisão A/B do Mestre sobre registrar no plano que site e APK nunca tiveram usuários
+(ver `HANDOFF.md`).
 
 ---
 

@@ -9,6 +9,8 @@
 
 > **Nota:** este arquivo ficou vários ciclos sem atualização (última entrada era v0.8.0) — o histórico completo v0.9→v0.11 está em `docs/PROXIMA_SESSAO.md` e `docs/plans/BACKLOG_IMPLEMENTACAO.md`, que são a fonte de verdade mais confiável. Reconciliação completa deste arquivo fica pendente.
 
+> **13/09/2026:** o trabalho ativo é a migração Fenix → ToolOptimizerCNC v2 (`PLANO_MIGRACAO.md` na raiz, pronto para a Fase 0). Site e APK nunca foram lançados — sair do ar não afeta ninguém. Estado atual em `HANDOFF.md`.
+
 | Item | Valor |
 |------|-------|
 | **Versão** | `0.12.0` (DS + 80/20 + Mobile concluído localmente) |

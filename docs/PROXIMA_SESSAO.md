@@ -3,6 +3,24 @@
 > **Ponto de entrada da sessão:** `docs/ROADMAP_SESSAO_ATUAL.md` — ler este primeiro!
 
 ---
+## 📄 Sessão da migração — correções do plano Fenix → ToolOptimizerCNC v2 (12–13/09/2026)
+
+Zero `src/**`. Trabalho só em `PLANO_MIGRACAO.md` e nos documentos de fechamento.
+
+- **Revisão aplicada:** A-01 (`npm install` antes do portão da Fase 2), A-02 (validação pré-merge no
+  preview do Worker; produção só depois do deploy), A-03 (órfãos da raiz arquivados, conferidos com
+  `git ls-files`), A-04 (`index.html` antigo → `archive/legacy-v1/index.html`), A-05 (logo gerada com
+  `sharp`), A-06 (102 testes no Fenix, medido), A-07 (`harness.spec.ts:3`, 19 pontos), A-08
+  (`validate` = `npm run check`), S-01 (tag `pre-migracao` na Fase 0), S-02 (plano de volta na Fase 6).
+- **Defeitos corrigidos:** D-01 (copiar `src/vite-env.d.ts`), D-02 (sai a exclusão manual de
+  `archive/` — ESLint arquivado, configs do Fenix só olham `src/`), D-03 (`dist/` fora do `git mv`).
+- **Permissão:** o Mestre removeu o DENY de leitura de uma pasta de `gauntlet-calculadora-cnc-v2/state/reprovados/`.
+- **Git:** push nos dois repos. ToolOptimizerCNC `c717c8b`, `abcf1a6`, `c3519c0`, `2e45279` (+9
+  commits locais antigos); Fenix `37f71fc`, `4db6e41`, `28441f6`. Deploy e APK verdes; CI vermelho
+  por causa conhecida (specs Playwright do gauntlet).
+- **Fato registrado:** site e APK nunca foram lançados — sair do ar não afeta ninguém.
+
+---
 ## 📄 Sessão de Orquestrador — item 19, etapa E: goldens e integridade (16/08/2026)
 
 Commits `c192f51` (etapa E) e `9fe42b5` (reorganização de `docs/plans/`), **locais, sem push**. Zero

@@ -32,10 +32,10 @@
 | **Testes** | **1017 passando, 0 falhas** (medido em 16/08/2026). ⚠️ Rodar `npx vitest run` **sem escopo** coleta 5 arquivos Playwright das sandboxes `gauntlet-calculadora-cnc*/tests/` e marca 5 suítes como falha de coleta, sem nenhum teste falhando — usar `npx vitest run tests/` |
 | **TypeScript** | **zero erros** (medido em 16/08/2026) |
 | **Build** | **limpo** |
-| **Remote** | `origin/main` — último commit pushado `757309d`; **local à frente**: Sessão 8, etapas A–E do item 19 e a reorganização de `docs/plans/` ainda sem push |
+| **Remote** | `origin/main` sincronizado com o local (push em 13/09/2026, fechamento da sessão da migração) |
 | **Worker** | ✅ LIVE — `https://tooloptimizercnc.contatorafaeleleoterio.workers.dev` |
 | **Custom Domains** | ✅ `tooloptimizercnc.com.br` + `app.tooloptimizercnc.com.br` |
-| **GitHub Actions** | ✅ deploy automático ao push para main |
+| **GitHub Actions** | ✅ deploy automático ao push para main (deploy e APK verdes em `2e45279`). ⚠️ CI vermelho desde `d87d20f` (13/08): `npm test` coleta 5 specs Playwright do gauntlet — 65 arquivos passam, 0 teste falha |
 
 ```bash
 # Verificação rápida ao iniciar
@@ -71,6 +71,7 @@ npx tsc --noEmit
 | 17 | Gauntlet v2 — Refactor visual da calculadora (DS real, ajuste fino, blindagem anti-trapaça) — `docs/plans/PLAN_GAUNTLET_V2_REFACTOR.md` | 🎨 Redesign (zero `src/`) | — | ▶️ **E2 desbloqueado — pronto para o ciclo 1** (16/08/2026). O item 19 fechou: 48 cenários, 99 goldens recapturados, `FREEZE.json` regravado, placar de partida **regressão 23/23 · invariantes 3/3 · golden 1/1 · alvos 2/21**. Construção aprovada (91/100, ciclo 3) |
 | 18 | Motor da Calculadora Multi-Ferramenta (deflexão, vida de ferramenta, custo, materiais 30+) — `docs/plans/PLAN_MOTOR_CALCULADORA_V2.md` | 📄 Spec / Engine | a definir | ⬜ Pendente |
 | 19 | Diretrizes do Painel da Calculadora (5 decisões fechadas) — `docs/specs/SPEC_PAINEL_CALCULADORA_PARAMETROS.md` | 📄 Spec / UX | — | ✅ **Concluído — A, B, C, D e E** (16/08/2026). ✅ A: DS com marca `#E85D04` / seleção `#3730A3` + `check-tokens.mjs`. ✅ B: catálogo de 33 entradas (17 geometrias × substratos), campo material da ferramenta removido, "Tipo de Usinagem". ✅ C: contrato do Construtor + `TESTID_CONTRACT.md` + gate 9 do Juiz. ✅ D: 48 cenários (23 regressão + 3 invariantes + 1 golden + 21 alvos). ✅ E: 99 goldens recapturados **sem os números** (decisão do Mestre: o mockup é o documento canônico da tela, o motor definitivo vem depois) + `FREEZE.json` regravado. **Desbloqueia o E2 do item 17** |
+| 20 | Migração Fenix → ToolOptimizerCNC v2 (Fases 0–7, 5 sessões; revisão aplicada 12/09, defeitos D-01..D-03 corrigidos 13/09) — `PLANO_MIGRACAO.md` (raiz) | 🏗️ Migração | v2.0.0 | ⬜ Pendente — Fase 0 (decisão A/B do Mestre em aberto, ver `HANDOFF.md`) |
 
 ### ✅ Reestruturação Documental (v0.6.0) — CONCLUÍDA
 
@@ -301,6 +302,7 @@ Quando uma nova implementação for planejada durante a sessão:
 | Tailwind v4 translate vs transform | `-translate-x-1/2` ≠ `style={{ transform }}` | Usar apenas uma das duas no mesmo elemento |
 | Worktree branch ≠ main | Commits em worktree não aparecem em main | Merge explícito + push após terminar |
 | Floating-point boundary | `0.075/0.1 ≠ 0.75` exatamente | Usar valores com margem clara em testes |
+| CI vermelho após push na `main` | `npm test` coleta specs Playwright de `gauntlet-calculadora-cnc*/tests/` | Ver quais suítes falharam (`gh run view --log-failed`); deploy e APK rodam em workflows separados |
 
 ---
 
