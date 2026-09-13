@@ -1,0 +1,998 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Design System Fenix — tema claro</title>
+
+<style>
+/* ==========================================================================
+   DESIGN SYSTEM FENIX — TEMA CLARO — CANÔNICO (Gabarito v1.6)
+   Os tokens abaixo SÃO o design system. A página é construída com eles e
+   com nada além deles — é a própria prova de que o sistema fecha.
+   Tema claro, único e deliberado. Zero requisição de rede.
+   Sincronizado com: prototipo/css/prototipo.css e DESIGN_SYSTEM_FENIX.md §3.
+   ========================================================================== */
+:root {
+  /* superfícies — níveis refinados com elevação sutil */
+  --bg-page:             #F7F5F1;
+  --surface-card:        #FFFFFF;
+  --surface-card-subtle: #EFEFF0;
+  --surface-input:       #FFFFFF;
+  --surface-input-muted: #EFEFF0;
+  --border-subtle:       #CDCFD1;
+  --border-control:      #85868A;
+  --border-control-focus:#0F3D5C;
+  --shadow-sm:           0 1px 2px rgba(15, 23, 42, 0.05);
+  --shadow-card:         0 1px 3px rgba(15, 23, 42, 0.06), 0 4px 16px -2px rgba(15, 23, 42, 0.05);
+
+  /* texto — três níveis com alto contraste */
+  --tx-1: #22252A;
+  --tx-2: #2E3238;
+  --tx-3: #696C71;
+
+  /* marca e seleção */
+  --brand-fill:    #0F3D5C;
+  --brand-hover:   #0C3049;
+  --brand-active:  #092437;
+  --action-fill:   #A96208;
+  --action-hover:  #8F5307;
+  --action-active: #754406;
+  --tx-on-brand:   #FFFFFF;
+  --nav-active-bg: #0F3D5C;
+  --nav-active-tx: #FFFFFF;
+  --brand-accent:  #E4BF90;
+  --accent-blue:   #506E82;
+  --select-ink:    #0F3D5C;
+
+  /* estado — rampa única */
+  --st-normal-ink: #104237;  --st-normal-bg: #ECF3F1;  --st-normal-bd: #C6DAD6;  --st-normal-accent: #1B6E5C;
+  --st-warn-ink:   #754406;  --st-warn-bg:   #FAF3EB;  --st-warn-bd:   #F0DBC1;  --st-warn-accent:   #C4720A;
+  --st-crit-ink:   #6E2A11;  --st-crit-bg:   #F9F0EC;  --st-crit-bd:   #EDD0C6;  --st-crit-accent:   #B8461D;
+  /* Informação neutra não é diagnóstico (§2.4) — não tem matiz própria, aponta para os neutros */
+  --st-info-ink: var(--tx-1);  --st-info-bg: var(--surface-card-subtle);  --st-info-bd: var(--border-subtle);  --st-info-accent: var(--tx-3);
+
+  /* interação */
+  --surface-hover-field: #EFEFF0;
+  --surface-hover-card:  #EBEFF1;
+  --surface-pressed:     #CDCFD1;
+
+  /* tipografia local — zero rede */
+  --font-sans: Inter, "Segoe UI Variable", "Segoe UI", system-ui, -apple-system, sans-serif;
+  --font-mono: "JetBrains Mono", "Cascadia Mono", Consolas, ui-monospace, monospace;
+
+  /* espaço, raio, tempo */
+  --sp-1: 4px;  --sp-2: 8px;  --sp-3: 12px; --sp-4: 16px;
+  --sp-5: 24px; --sp-6: 32px; --sp-7: 48px;
+  --r-chip: 4px; --r-field: 6px; --r-card: 10px; --r-pill: 999px;
+  --t-control: 140ms; --t-panel: 200ms;
+
+  /* alvos de toque */
+  --h-target: 44px; --h-cta: 52px;
+}
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+[hidden] { display: none !important; }
+
+body {
+  margin: 0;
+  background: var(--bg-page);
+  color: var(--tx-2);
+  font-family: var(--font-sans);
+  font-size: 13px;
+  line-height: 1.5;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* --- casca ------------------------------------------------------------- */
+.sheet {
+  max-width: 960px;
+  margin: 0 auto;
+  padding: var(--sp-6) var(--sp-4) var(--sp-7);
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-6);
+}
+
+/* --- cabeçalho --------------------------------------------------------- */
+.masthead { display: flex; flex-direction: column; gap: var(--sp-4); }
+.brandrow { display: flex; align-items: center; gap: var(--sp-3); flex-wrap: wrap; }
+
+.wordmark {
+  display: inline-block;
+  background: var(--brand-fill);
+  color: var(--tx-on-brand);
+  border-radius: var(--r-field);
+  padding: 6px 14px;
+  font-size: 16px;
+  font-weight: 700;
+  letter-spacing: .08em;
+}
+.wordmark-note { color: var(--tx-3); font-size: 11px; font-weight: 600; letter-spacing: .04em; }
+
+.masthead h1 {
+  font-size: 28px;
+  line-height: 1.15;
+  font-weight: 700;
+  color: var(--tx-1);
+  text-wrap: balance;
+}
+.deck { max-width: 68ch; color: var(--tx-2); }
+
+.warnbar {
+  border-left: 4px solid var(--st-info-accent);
+  background: var(--st-info-bg);
+  border-top: 1px solid var(--st-info-bd);
+  border-right: 1px solid var(--st-info-bd);
+  border-bottom: 1px solid var(--st-info-bd);
+  color: var(--st-info-ink);
+  border-radius: var(--r-card);
+  padding: var(--sp-3) var(--sp-4);
+  max-width: 72ch;
+}
+.warnbar strong { color: var(--tx-1); }
+
+/* --- seções ------------------------------------------------------------ */
+.sec { display: flex; flex-direction: column; gap: var(--sp-4); }
+.sec > header {
+  display: flex;
+  align-items: baseline;
+  gap: var(--sp-3);
+  border-bottom: 1px solid var(--border-subtle);
+  padding-bottom: var(--sp-2);
+}
+.sec-num {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  font-weight: 700;
+  color: var(--tx-3);
+  letter-spacing: .04em;
+}
+.sec h2 { font-size: 16px; font-weight: 600; color: var(--tx-1); }
+.sec-note { max-width: 72ch; color: var(--tx-2); }
+
+.rule {
+  border-left: 4px solid var(--brand-fill);
+  padding-left: var(--sp-4);
+  font-size: 16px;
+  font-weight: 600;
+  color: var(--tx-1);
+  max-width: 65ch;
+}
+
+/* --- placa / cartões --------------------------------------------------- */
+.plate {
+  background: var(--surface-card);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--r-card);
+  box-shadow: var(--shadow-card);
+  padding: var(--sp-4);
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-3);
+}
+.plate-label {
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: .06em;
+  text-transform: uppercase;
+  color: var(--tx-3);
+}
+.grid2 { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: var(--sp-4); }
+
+/* --- amostra de token -------------------------------------------------- */
+.swatchlist { display: flex; flex-direction: column; gap: var(--sp-2); }
+.swatch {
+  display: grid;
+  grid-template-columns: 44px 1fr auto;
+  align-items: center;
+  gap: var(--sp-3);
+  padding: var(--sp-2) 0;
+  border-bottom: 1px solid var(--border-subtle);
+}
+.swatchlist .swatch:last-child { border-bottom: 0; }
+.chipcolor {
+  height: 32px;
+  border-radius: var(--r-field);
+  border: 1px solid var(--border-control);
+}
+.swatch-name { font-family: var(--font-mono); font-size: 13px; color: var(--tx-1); }
+.swatch-use { display: block; font-family: var(--font-sans); font-size: 11px; color: var(--tx-3); }
+.ratio {
+  font-family: var(--font-mono);
+  font-variant-numeric: tabular-nums;
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--tx-1);
+  white-space: nowrap;
+}
+.ratio small { display: block; font-family: var(--font-sans); font-size: 11px; font-weight: 600; color: var(--tx-3); }
+.ratio.fail { color: var(--st-crit-ink); }
+
+/* --- empilhamento de superfície ---------------------------------------- */
+.stack {
+  background: var(--bg-page);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--r-card);
+  padding: var(--sp-4);
+}
+.stack-card {
+  background: var(--surface-card);
+  border-radius: var(--r-field);
+  box-shadow: var(--shadow-card);
+  padding: var(--sp-4);
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-3);
+}
+.stack-field {
+  background: var(--surface-input);
+  border: 1px solid var(--border-control);
+  border-radius: var(--r-field);
+  padding: var(--sp-3);
+}
+.stack-field-muted {
+  background: var(--surface-input-muted);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--r-field);
+  padding: var(--sp-3);
+}
+.tag { font-family: var(--font-mono); font-size: 11px; color: var(--tx-3); }
+
+/* --- texto de amostra --------------------------------------------------- */
+.specimen-1 { color: var(--tx-1); font-size: 20px; font-weight: 700; font-family: var(--font-mono); }
+.specimen-2 { color: var(--tx-2); }
+.specimen-3 { color: var(--tx-3); font-size: 11px; font-weight: 600; }
+
+/* --- rampa de estado ---------------------------------------------------- */
+.msg {
+  border: 1px solid;
+  border-left-width: 4px;
+  border-radius: var(--r-field);
+  padding: var(--sp-3) var(--sp-4);
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-1);
+}
+.msg-head {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-2);
+  font-weight: 700;
+  font-size: 11px;
+  letter-spacing: .08em;
+}
+.msg-body { color: var(--tx-2); max-width: 68ch; }
+.msg-body b { font-family: var(--font-mono); font-variant-numeric: tabular-nums; font-weight: 700; color: var(--tx-1); }
+.msg.normal { background: var(--st-normal-bg); border-color: var(--st-normal-bd); border-left-color: var(--st-normal-accent); }
+.msg.normal .msg-head { color: var(--st-normal-ink); }
+.msg.warn   { background: var(--st-warn-bg);   border-color: var(--st-warn-bd); border-left-color: var(--st-warn-accent); }
+.msg.warn   .msg-head { color: var(--st-warn-ink); }
+.msg.crit   { background: var(--st-crit-bg);   border-color: var(--st-crit-bd); border-left-color: var(--st-crit-accent); }
+.msg.crit   .msg-head { color: var(--st-crit-ink); }
+.msg.info   { background: var(--st-info-bg);   border-color: var(--st-info-bd); border-left-color: var(--st-info-accent); }
+.msg.info   .msg-head { color: var(--st-info-ink); }
+
+.dot { width: 8px; height: 8px; border-radius: var(--r-pill); background: currentColor; flex: none; }
+
+/* --- marca de origem ---------------------------------------------------- */
+.origin {
+  display: inline-block;
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: .06em;
+  text-transform: uppercase;
+  color: var(--tx-3);
+}
+
+/* --- números ------------------------------------------------------------ */
+.bignum {
+  font-family: var(--font-mono);
+  font-variant-numeric: tabular-nums;
+  font-size: 32px;
+  font-weight: 700;
+  color: var(--tx-1);
+  line-height: 1.1;
+}
+.bignum.stale { color: var(--tx-3); }
+.numlabel { font-size: 11px; font-weight: 600; letter-spacing: .06em; text-transform: uppercase; color: var(--tx-3); }
+.numunit { font-family: var(--font-mono); font-size: 13px; color: var(--tx-3); }
+
+/* --- escala tipográfica -------------------------------------------------- */
+.typerow {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  gap: var(--sp-4);
+  align-items: baseline;
+  padding: var(--sp-3) 0;
+  border-bottom: 1px solid var(--border-subtle);
+}
+.typerow:last-child { border-bottom: 0; }
+.typemeta { font-family: var(--font-mono); font-size: 11px; color: var(--tx-3); white-space: nowrap; }
+
+/* --- escala de espaço ---------------------------------------------------- */
+.spacerow { display: flex; align-items: center; gap: var(--sp-3); }
+.spacebar { height: 14px; background: var(--brand-fill); border-radius: var(--r-chip); }
+.radiusrow { display: flex; gap: var(--sp-3); flex-wrap: wrap; }
+.radiusbox {
+  width: 64px;
+  height: 64px;
+  background: var(--surface-card-subtle);
+  border: 1px solid var(--border-control);
+  display: grid;
+  place-items: center;
+  font-family: var(--font-mono);
+  font-size: 11px;
+  color: var(--tx-2);
+}
+
+/* --- primitivo: campo ---------------------------------------------------- */
+.field { display: flex; flex-direction: column; gap: 6px; }
+.field > label { font-size: 11px; font-weight: 600; letter-spacing: .04em; color: var(--tx-2); }
+.field-box {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-2);
+  background: var(--surface-input);
+  border: 1px solid var(--border-control);
+  border-radius: var(--r-field);
+  min-height: var(--h-target);
+  padding: 0 var(--sp-3);
+  transition: background var(--t-control), border-color var(--t-control);
+}
+.field-box:hover { background: var(--surface-hover-field); }
+.field-box:focus-within {
+  border-color: var(--border-control-focus);
+  box-shadow: 0 0 0 3px rgba(15,61,92,.25);
+}
+.field-box input {
+  flex: 1;
+  min-width: 0;
+  border: 0;
+  background: transparent;
+  outline: none;
+  font-family: var(--font-mono);
+  font-variant-numeric: tabular-nums;
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--tx-1);
+}
+.field-box input::placeholder {
+  font-weight: 400;
+  color: var(--tx-3);
+}
+.field-box .unit { font-family: var(--font-mono); font-size: 13px; color: var(--tx-3); }
+.field-box.muted {
+  background: var(--surface-input-muted);
+  border-color: var(--border-subtle);
+}
+.field-help { font-size: 11px; color: var(--tx-3); }
+.field.error .field-box { border-color: var(--st-crit-accent); }
+.field.error .field-help { color: var(--st-crit-ink); font-weight: 600; }
+
+/* --- primitivo: escolha segmentada --------------------------------------- */
+.segmented {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(96px, 1fr));
+  gap: var(--sp-2);
+  max-width: 480px;
+}
+.segmented input { position: absolute; opacity: 0; pointer-events: none; }
+.segmented label {
+  display: grid;
+  place-items: center;
+  min-height: var(--h-target);
+  padding: 0 var(--sp-3);
+  background: var(--surface-card);
+  border: 1px solid var(--border-control);
+  border-radius: var(--r-field);
+  color: var(--tx-2);
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background var(--t-control), color var(--t-control), border-color var(--t-control);
+}
+.segmented label:hover { background: rgba(15,61,92,.06); border-color: var(--brand-fill); color: var(--tx-1); }
+.segmented input:checked + label {
+  background: var(--nav-active-bg);
+  border-color: var(--nav-active-bg);
+  color: var(--nav-active-tx);
+}
+.segmented input:focus-visible + label {
+  outline: 2px solid var(--select-ink);
+  outline-offset: 2px;
+  box-shadow: 0 0 0 3px rgba(15,61,92,.35);
+}
+
+/* --- primitivo: ação (Botão Calcular) ------------------------------------- */
+.btn-action {
+  min-height: var(--h-cta);
+  padding: 0 var(--sp-6);
+  background: var(--action-fill);
+  color: var(--tx-on-brand);
+  border: 0;
+  border-radius: var(--r-field);
+  font-family: var(--font-sans);
+  font-size: 13px;
+  font-weight: 700;
+  letter-spacing: .04em;
+  cursor: pointer;
+  transition: background var(--t-control);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+.btn-action:hover { background: var(--action-hover); }
+.btn-action:active { background: var(--action-active); }
+.btn-action:focus-visible {
+  outline: 2px solid var(--select-ink);
+  outline-offset: 2px;
+  box-shadow: 0 0 0 3px rgba(15,61,92,.35);
+}
+
+/* --- primitivo: botões de apoio e ajuste tátil --------------------------- */
+.btn-step {
+  width: var(--h-target);
+  height: var(--h-target);
+  background: var(--surface-card);
+  border: 1px solid var(--border-control);
+  border-radius: var(--r-field);
+  color: var(--accent-blue);
+  font-family: var(--font-mono);
+  font-size: 18px;
+  font-weight: 700;
+  cursor: pointer;
+  display: grid;
+  place-items: center;
+  transition: background var(--t-control), border-color var(--t-control);
+}
+.btn-step:hover { background: var(--surface-hover-field); border-color: var(--accent-blue); }
+
+/* --- primitivo: cartão de resultado D7 ----------------------------------- */
+.res-card-high {
+  background: var(--surface-card);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--r-card);
+  box-shadow: var(--shadow-card);
+  padding: var(--sp-3) var(--sp-4);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+.res-card-low {
+  background: var(--surface-card);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--r-card);
+  box-shadow: var(--shadow-sm);
+  padding: var(--sp-2) var(--sp-3);
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-1);
+}
+
+/* --- revelação WAI-ARIA ------------------------------------------------- */
+.disclosure { display: flex; flex-direction: column; gap: var(--sp-2); }
+.disc-trigger-row { display: flex; align-items: center; gap: var(--sp-2); }
+.disc-trigger {
+  width: 24px;
+  height: 24px;
+  display: grid;
+  place-items: center;
+  background: transparent;
+  border: 0;
+  border-radius: var(--r-chip);
+  color: var(--accent-blue);
+  cursor: pointer;
+  transition: background var(--t-control);
+}
+.disc-trigger:hover { background: var(--surface-card-subtle); }
+.disc-panel {
+  background: var(--surface-card-subtle);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--r-field);
+  padding: var(--sp-3);
+  display: grid;
+  grid-template-columns: auto 1fr;
+  gap: var(--sp-2) var(--sp-3);
+}
+.disc-panel dt { font-weight: 600; color: var(--tx-1); font-size: 11px; text-transform: uppercase; }
+.disc-panel dd { margin: 0; color: var(--tx-2); font-size: 12px; }
+
+/* --- tabela de dados ---------------------------------------------------- */
+.tablewrap { overflow-x: auto; }
+table { width: 100%; border-collapse: collapse; font-size: 13px; }
+th, td { text-align: left; padding: var(--sp-2) var(--sp-3); border-bottom: 1px solid var(--border-subtle); }
+th { font-size: 11px; font-weight: 600; letter-spacing: .06em; text-transform: uppercase; color: var(--tx-3); }
+td { color: var(--tx-2); }
+td.num { font-family: var(--font-mono); font-variant-numeric: tabular-nums; color: var(--tx-1); white-space: nowrap; }
+td.tok { font-family: var(--font-mono); color: var(--tx-1); }
+tr.fail td, tr.fail td.num, tr.fail td.tok { color: var(--st-crit-ink); }
+
+/* --- checklist ---------------------------------------------------------- */
+.checklist {
+  list-style: none;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+  gap: var(--sp-2) var(--sp-5);
+}
+.checklist li {
+  display: grid;
+  grid-template-columns: 18px 1fr;
+  gap: var(--sp-2);
+  align-items: start;
+  color: var(--tx-2);
+}
+.checkbox {
+  width: 16px;
+  height: 16px;
+  margin-top: 2px;
+  border: 1px solid var(--border-control);
+  border-radius: var(--r-chip);
+  display: grid;
+  place-items: center;
+  color: var(--st-normal-accent);
+  font-size: 11px;
+  font-weight: 700;
+}
+
+/* --- rodapé ------------------------------------------------------------- */
+.foot {
+  border-top: 1px solid var(--border-subtle);
+  padding-top: var(--sp-4);
+  color: var(--tx-3);
+  font-size: 11px;
+  max-width: 72ch;
+}
+
+:focus-visible {
+  outline: 2px solid var(--select-ink);
+  outline-offset: 2px;
+  box-shadow: 0 0 0 3px rgba(15,61,92,.35);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { animation: none !important; transition: none !important; }
+}
+</style>
+</head>
+<body>
+
+<div class="sheet">
+
+  <!-- ============================================================ -->
+  <header class="masthead">
+    <div class="brandrow">
+      <span class="wordmark">FENIX</span>
+      <span class="wordmark-note">marca canônica · azul-petróleo (#0F3D5C)</span>
+    </div>
+    <h1>Design System Fenix — tema claro</h1>
+    <p class="deck">
+      Folha de verificação visual dos tokens, superfícies, cores de estado e primitivos de interação.
+      Esta página é construída com os 61 tokens oficiais do Fenix: ela espelha visualmente o contrato
+      do painel e a régua de conformidade com a norma industrial ISA-101 e WCAG 2.1 AA.
+    </p>
+    <div class="warnbar">
+      <strong>Isto é o Design System, não o painel de corte.</strong> Nenhum arranjo desta página dita o layout
+      do processo. Cada componente aqui existe isolado para validação de forma, contraste e comportamento.
+    </div>
+  </header>
+
+  <!-- ============================================================ -->
+  <section class="sec">
+    <header><span class="sec-num">§1</span><h2>A regra que amarra tudo</h2></header>
+    <p class="rule">Marca fica na moldura. Área de trabalho é cinza. Cor é estado.</p>
+    <p class="sec-note">
+      Isso vem de norma de painel industrial (ISA-101): <strong>cor é reservada para anomalia</strong>.
+      A marca (<span class="tag">--brand-fill #0F3D5C</span>) vive na identidade, na aba ativa e na seleção.
+      A ação (<span class="tag">--action-fill #A96208</span>) vive exclusivamente no botão que dispara o cálculo.
+      Identidade de parâmetro não usa matiz — <span class="tag">vc</span>, <span class="tag">fz</span>,
+      <span class="tag">ae</span> e <span class="tag">ap</span> se distinguem por rótulo, posição e ordem.
+      A cor que aparecer perto de um deles é o <em>estado</em> dele.
+    </p>
+  </section>
+
+  <!-- ============================================================ -->
+  <section class="sec">
+    <header><span class="sec-num">§2.1</span><h2>Superfícies</h2></header>
+    <p class="sec-note">
+      Ordem de claridade: Cartão (<span class="tag">#FFFFFF</span>) → Página (<span class="tag">#F7F5F1</span>)
+      → Superfície Rebaixada (<span class="tag">#EFEFF0</span>). O campo editável é branco e o campo em
+      leitura afunda: é a inversão tátil que produz a leitura imediata de <em>“aqui eu digito, ali eu só leio”</em>.
+    </p>
+    <div class="grid2">
+      <div class="stack">
+        <span class="tag">--bg-page · #F7F5F1 (fundo da página)</span>
+        <div class="stack-card" style="margin-top:8px">
+          <span class="tag">--surface-card · #FFFFFF (cartão de resultado)</span>
+          <div class="stack-field"><span class="tag">--surface-input · #FFFFFF (campo editável)</span></div>
+          <div class="stack-field-muted"><span class="tag">--surface-input-muted · #EFEFF0 (campo em leitura)</span></div>
+        </div>
+      </div>
+      <div class="plate">
+        <span class="plate-label">Bordas e elevação</span>
+        <div class="swatchlist">
+          <div class="swatch">
+            <span class="chipcolor" style="background:#CDCFD1"></span>
+            <span class="swatch-name">--border-subtle<span class="swatch-use">separador, borda de cartão</span></span>
+            <span class="ratio">#CDCFD1</span>
+          </div>
+          <div class="swatch">
+            <span class="chipcolor" style="background:#85868A"></span>
+            <span class="swatch-name">--border-control<span class="swatch-use">borda de controle interativo</span></span>
+            <span class="ratio">3,16:1<small>mín. 3:1 (WCAG AA)</small></span>
+          </div>
+          <div class="swatch">
+            <span class="chipcolor" style="background:#0F3D5C"></span>
+            <span class="swatch-name">--border-control-focus<span class="swatch-use">foco de controle</span></span>
+            <span class="ratio">9,92:1<small>alto contraste</small></span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============================================================ -->
+  <section class="sec">
+    <header><span class="sec-num">§2.2</span><h2>Texto — três níveis, e só três</h2></header>
+    <div class="plate">
+      <div class="swatchlist">
+        <div class="swatch">
+          <span class="chipcolor" style="background:#22252A"></span>
+          <span class="swatch-name">--tx-1 <span class="specimen-1" style="font-size:13px">4.456 rpm</span><span class="swatch-use">número, título, valor principal</span></span>
+          <span class="ratio">13,38:1<small>na pior superfície</small></span>
+        </div>
+        <div class="swatch">
+          <span class="chipcolor" style="background:#2E3238"></span>
+          <span class="swatch-name">--tx-2 <span class="specimen-2">corpo e texto corrido</span><span class="swatch-use">corpo, rótulo, prosa explicativa</span></span>
+          <span class="ratio">11,21:1<small>na pior superfície</small></span>
+        </div>
+        <div class="swatch">
+          <span class="chipcolor" style="background:#696C71"></span>
+          <span class="swatch-name">--tx-3 <span class="specimen-3">MM/MIN · EXTRAPOLADO</span><span class="swatch-use">unidade, legenda, texto de espera (peso 400)</span></span>
+          <span class="ratio">4,59:1<small>mín. 4,5:1 (WCAG AA)</small></span>
+        </div>
+      </div>
+      <p class="field-help" style="margin-top:8px">
+        <strong>A distinção entre texto de espera e valor digitado é o peso (400 vs 700)</strong>, nunca a cor.
+        Dois tons de cinza abaixo de 4,59:1 reprovariam contraste na tela de oficina.
+      </p>
+    </div>
+  </section>
+
+  <!-- ============================================================ -->
+  <section class="sec">
+    <header><span class="sec-num">§2.3</span><h2>Marca, ação e seleção</h2></header>
+    <div class="grid2">
+      <div class="plate">
+        <span class="plate-label">Identidade & Ação (distintas)</span>
+        <div style="display:flex;gap:12px;align-items:center;flex-wrap:wrap">
+          <span class="wordmark">FENIX</span>
+          <button class="btn-action" type="button">CALCULAR</button>
+        </div>
+        <p class="field-help" style="margin-top:4px">
+          <span class="tag">--brand-fill #0F3D5C</span> com <span class="tag">--tx-on-brand #FFFFFF</span> (<strong>11,40:1</strong>).<br>
+          <span class="tag">--action-fill #A96208</span> com <span class="tag">--tx-on-brand #FFFFFF</span> (<strong>4,73:1</strong>).<br>
+          O botão CALCULAR tem altura 52px (<span class="tag">--h-cta</span>) e é a única ação principal da tela.
+        </p>
+      </div>
+      <div class="plate">
+        <span class="plate-label">Seleção e foco</span>
+        <div class="segmented">
+          <input type="radio" name="fam" id="fam-1" checked>
+          <label for="fam-1">Fresar</label>
+          <input type="radio" name="fam" id="fam-2">
+          <label for="fam-2">Furar</label>
+          <input type="radio" name="fam" id="fam-3">
+          <label for="fam-3">Roscar</label>
+          <input type="radio" name="fam" id="fam-4">
+          <label for="fam-4">Mandrilar</label>
+        </div>
+        <p class="field-help" style="margin-top:4px">
+          <span class="tag">--select-ink #0F3D5C</span> — 9,92:1 na pior superfície.
+          Compartilha a matiz da marca para não colidir com a rampa de estado.
+          Anel de foco: traço 2px + halo 3px <span class="tag">rgba(15,61,92,.35)</span>.
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============================================================ -->
+  <section class="sec">
+    <header><span class="sec-num">§2.4</span><h2>Estado — uma rampa, e só ela</h2></header>
+    <p class="sec-note">
+      Três níveis diagnósticos calibrados para WCAG AA em qualquer superfície do produto.
+      Informação neutra aponta para a paleta de neutros, garantindo que <strong>cor só apareça onde há condição de processo</strong>.
+    </p>
+
+    <div class="msg normal">
+      <span class="msg-head"><span class="dot"></span>NORMAL</span>
+      <span class="msg-body">Parâmetros dentro da zona recomendada e estável de usinagem.</span>
+    </div>
+
+    <div class="msg warn">
+      <span class="msg-head"><span class="dot"></span>ATENÇÃO</span>
+      <span class="msg-body">
+        Relação balanço/diâmetro (L/D) = <b>4,5</b> excede a rigidez de barra comum.
+        Direção sugerida: reduza a penetração de trabalho (ae) para até 25% de D.
+      </span>
+    </div>
+
+    <div class="msg crit">
+      <span class="msg-head"><span class="dot"></span>CRÍTICO</span>
+      <span class="msg-body">
+        Penetração de trabalho (ae) <b>12 mm</b> excede o diâmetro <b>Ø10</b> da ferramenta.
+        Aresta em sobrecarga: risco imediato de colisão e quebra.
+      </span>
+    </div>
+
+    <div class="msg info">
+      <span class="msg-head"><span class="dot"></span>INFORMAÇÃO</span>
+      <span class="msg-body">Margem de segurança global ativa: escala rotação e avanço, preservando saídas físicas.</span>
+    </div>
+
+    <div class="tablewrap">
+      <table>
+        <thead>
+          <tr><th>Nível</th><th>-ink (texto)</th><th>Pior sup.</th><th>-accent (faixa)</th><th>Pior sup.</th><th>-bg</th><th>-bd</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>NORMAL</td><td class="tok">#104237</td><td class="num">9,84:1</td><td class="tok">#1B6E5C</td><td class="num">5,33:1</td><td class="tok">#ECF3F1</td><td class="tok">#C6DAD6</td></tr>
+          <tr><td>ATENÇÃO</td><td class="tok">#754406</td><td class="num">7,07:1</td><td class="tok">#C4720A</td><td class="num">3,17:1</td><td class="tok">#FAF3EB</td><td class="tok">#F0DBC1</td></tr>
+          <tr><td>CRÍTICO</td><td class="tok">#6E2A11</td><td class="num">9,13:1</td><td class="tok">#B8461D</td><td class="num">4,65:1</td><td class="tok">#F9F0EC</td><td class="tok">#EDD0C6</td></tr>
+          <tr><td>INFORMAÇÃO</td><td class="tok">var(--tx-1)</td><td class="num">13,38:1</td><td class="tok">var(--tx-3)</td><td class="num">4,59:1</td><td class="tok">#EFEFF0</td><td class="tok">#CDCFD1</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <!-- ============================================================ -->
+  <section class="sec">
+    <header><span class="sec-num">§2.5 · §2.6</span><h2>Marca de origem e desatualizado</h2></header>
+    <div class="grid2">
+      <div class="plate">
+        <span class="plate-label">Marca de origem — texto neutro</span>
+        <div style="display:flex;gap:12px;flex-wrap:wrap">
+          <span class="origin">Extrapolado</span>
+          <span class="origin">Editado</span>
+          <span class="origin">Manual</span>
+          <span class="origin">Fábrica</span>
+        </div>
+        <p class="field-help" style="margin-top:6px">
+          Descrevem a <em>procedência</em> do número, não a condição da máquina.
+          Usar cor de estado aqui geraria alarme falso no operador.
+        </p>
+      </div>
+      <div class="plate">
+        <span class="plate-label">Desatualizado</span>
+        <div style="display:flex;gap:32px;flex-wrap:wrap">
+          <div>
+            <span class="numlabel">Rotação</span>
+            <div class="bignum">4.456 <span class="numunit">rpm</span></div>
+            <span class="tag">atualizado</span>
+          </div>
+          <div>
+            <span class="numlabel">Rotação</span>
+            <div class="bignum stale">4.456 <span class="numunit">rpm</span></div>
+            <span class="origin">Recalculando</span>
+          </div>
+        </div>
+        <p class="field-help" style="margin-top:6px">
+          Cai de <span class="tag">--tx-1</span> para <span class="tag">--tx-3</span>.
+          <strong>Zero `opacity`</strong> (que destrói o contraste). O alerta e o estado <strong>nunca</strong> esmaecem.
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============================================================ -->
+  <section class="sec">
+    <header><span class="sec-num">§2.8</span><h2>Tipografia & Regras Numéricas</h2></header>
+    <p class="sec-note">
+      Escala estrita: 4 tamanhos de texto (11, 13, 16 e 20px) + 1 numérico principal (32px mono).
+      Toda saída numérica com <span class="tag">tabular-nums</span> para evitar salto de layout durante o cálculo ao vivo.
+    </p>
+    <div class="plate">
+      <div class="typerow">
+        <span style="font-size:11px;font-weight:600;letter-spacing:.04em;color:var(--tx-2)">PENETRAÇÃO DE TRABALHO (ae)</span>
+        <span class="typemeta">11px · 600 · sans (rótulo / legenda)</span>
+      </div>
+      <div class="typerow">
+        <span style="font-size:13px;color:var(--tx-2)">Reduza a penetração para aliviar a deflexão radial.</span>
+        <span class="typemeta">13px · 400/600 · sans (corpo / controle)</span>
+      </div>
+      <div class="typerow">
+        <span style="font-size:16px;font-weight:600;color:var(--tx-1)">Parâmetros Geométricos da Ferramenta</span>
+        <span class="typemeta">16px · 600 · sans (título de bloco)</span>
+      </div>
+      <div class="typerow">
+        <span style="font-family:var(--font-mono);font-size:20px;font-weight:700;color:var(--tx-1);font-variant-numeric:tabular-nums">0,060 mm</span>
+        <span class="typemeta">20px · 700 · mono (verificação física)</span>
+      </div>
+      <div class="typerow">
+        <span class="bignum">4.456 <span class="numunit" style="font-size:20px">rpm</span></span>
+        <span class="typemeta">32px · 700 · mono (Hero Number)</span>
+      </div>
+    </div>
+    <div class="warnbar" style="margin-top:8px">
+      <strong>Regra D8 de Pontuação:</strong> Milhar com ponto (<span class="tag">4.456 rpm</span>),
+      decimal com vírgula (<span class="tag">0,060 mm</span>), <strong>nenhum separador é espaço</strong>.
+    </div>
+  </section>
+
+  <!-- ============================================================ -->
+  <section class="sec">
+    <header><span class="sec-num">§2.9</span><h2>Espaço, Raio e Toque</h2></header>
+    <div class="grid2">
+      <div class="plate">
+        <span class="plate-label">Escala de espaçamento</span>
+        <div style="display:flex;flex-direction:column;gap:8px">
+          <div class="spacerow"><span class="spacebar" style="width:4px"></span><span class="tag">4px (--sp-1)</span></div>
+          <div class="spacerow"><span class="spacebar" style="width:8px"></span><span class="tag">8px (--sp-2)</span></div>
+          <div class="spacerow"><span class="spacebar" style="width:12px"></span><span class="tag">12px (--sp-3)</span></div>
+          <div class="spacerow"><span class="spacebar" style="width:16px"></span><span class="tag">16px (--sp-4)</span></div>
+          <div class="spacerow"><span class="spacebar" style="width:24px"></span><span class="tag">24px (--sp-5)</span></div>
+          <div class="spacerow"><span class="spacebar" style="width:32px"></span><span class="tag">32px (--sp-6)</span></div>
+          <div class="spacerow"><span class="spacebar" style="width:48px"></span><span class="tag">48px (--sp-7)</span></div>
+        </div>
+      </div>
+      <div class="plate">
+        <span class="plate-label">Raios canônicos</span>
+        <div class="radiusrow">
+          <div class="radiusbox" style="border-radius:var(--r-chip)">4px<br><small>chip</small></div>
+          <div class="radiusbox" style="border-radius:var(--r-field)">6px<br><small>campo</small></div>
+          <div class="radiusbox" style="border-radius:var(--r-card)">10px<br><small>cartão</small></div>
+          <div class="radiusbox" style="border-radius:var(--r-pill);width:72px">999px<br><small>pill</small></div>
+        </div>
+        <p class="field-help" style="margin-top:12px">
+          <strong>Alvo de toque:</strong> mínimo 44px (<span class="tag">--h-target</span>) em todo controle interativo.
+          Ação principal: 52px (<span class="tag">--h-cta</span>). O operador usa luvas no chão de fábrica.
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============================================================ -->
+  <section class="sec">
+    <header><span class="sec-num">§4</span><h2>Primitivos de Componente</h2></header>
+    <div class="grid2">
+      <div class="plate">
+        <span class="plate-label">Entrada editável vs leitura</span>
+        <div class="field">
+          <label for="f-d">Diâmetro de corte (D) — editável</label>
+          <div class="field-box">
+            <input id="f-d" type="text" value="10,0" inputmode="decimal">
+            <span class="unit">mm</span>
+          </div>
+          <span class="field-help">Fundo branco: indica campo digitável pelo operador.</span>
+        </div>
+        <div class="field" style="margin-top:8px">
+          <label for="f-ap">Profundidade aparente (ap) — derivado</label>
+          <div class="field-box muted">
+            <input id="f-ap" type="text" value="2,5" readonly>
+            <span class="unit">mm</span>
+          </div>
+          <span class="field-help">Fundo rebaixado (--surface-input-muted): campo calculado em leitura.</span>
+        </div>
+      </div>
+
+      <div class="plate">
+        <span class="plate-label">Cartões de resultado (D7)</span>
+        <div class="res-card-high">
+          <div>
+            <span class="numlabel">Rotação da ferramenta (S)</span>
+            <div class="bignum">5.093 <span class="numunit">rpm</span></div>
+          </div>
+          <div style="display:flex;gap:6px">
+            <button class="btn-step" type="button" aria-label="Reduzir 5%">−</button>
+            <button class="btn-step" type="button" aria-label="Aumentar 5%">+</button>
+          </div>
+        </div>
+        <div class="res-card-low" style="margin-top:8px">
+          <span class="numlabel">Potência estimada (Pc)</span>
+          <div style="font-family:var(--font-mono);font-size:20px;font-weight:700;color:var(--tx-1)">
+            1,42 <span class="numunit">kW</span>
+          </div>
+        </div>
+        <p class="field-help">
+          Apenas os 2 Hero Numbers (S e F) têm ajuste tátil (±5%). As saídas físicas são de verificação e não têm botões.
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============================================================ -->
+  <section class="sec">
+    <header><span class="sec-num">§6</span><h2>Contrastes Verificados (WCAG 2.1 AA)</h2></header>
+    <p class="sec-note">
+      Saída direta do teste mecânico <span class="tag">Docs_inicial/construcao/prototipo/testes/test_contraste.js</span>
+      medido contra a pior superfície de cada par. Mínimo 4,5:1 para texto normal, 3:1 para componentes.
+    </p>
+    <div class="tablewrap">
+      <table>
+        <thead><tr><th>Par de Cores</th><th>Razão Medida</th><th>Mínimo</th><th>Situação</th></tr></thead>
+        <tbody>
+          <tr><td class="tok">--tx-1 na pior superfície</td><td class="num">13,38:1</td><td class="num">4,5:1</td><td>✅ Aprovado</td></tr>
+          <tr><td class="tok">--tx-2 na pior superfície</td><td class="num">11,21:1</td><td class="num">4,5:1</td><td>✅ Aprovado</td></tr>
+          <tr><td class="tok">--tx-3 na pior superfície</td><td class="num">4,59:1</td><td class="num">4,5:1</td><td>✅ Aprovado</td></tr>
+          <tr><td class="tok">--accent-blue na pior superfície</td><td class="num">4,69:1</td><td class="num">4,5:1</td><td>✅ Aprovado</td></tr>
+          <tr><td class="tok">--border-control na pior superfície</td><td class="num">3,16:1</td><td class="num">3,0:1</td><td>✅ Aprovado</td></tr>
+          <tr><td class="tok">--select-ink na pior superfície</td><td class="num">9,92:1</td><td class="num">3,0:1</td><td>✅ Aprovado</td></tr>
+          <tr><td class="tok">--tx-on-brand sobre --brand-fill</td><td class="num">11,40:1</td><td class="num">4,5:1</td><td>✅ Aprovado</td></tr>
+          <tr><td class="tok">--tx-on-brand sobre --action-fill</td><td class="num">4,73:1</td><td class="num">4,5:1</td><td>✅ Aprovado</td></tr>
+          <tr><td class="tok">--tx-on-brand sobre --action-hover</td><td class="num">6,16:1</td><td class="num">4,5:1</td><td>✅ Aprovado</td></tr>
+          <tr><td class="tok">--tx-on-brand sobre --action-active</td><td class="num">8,12:1</td><td class="num">4,5:1</td><td>✅ Aprovado</td></tr>
+          <tr><td class="tok">--brand-accent sobre --brand-fill</td><td class="num">6,60:1</td><td class="num">3,0:1</td><td>✅ Aprovado</td></tr>
+          <tr><td class="tok">NORMAL ink / accent</td><td class="num">9,84:1 / 5,33:1</td><td class="num">4,5:1 / 3:1</td><td>✅ Aprovado</td></tr>
+          <tr><td class="tok">ATENÇÃO ink / accent</td><td class="num">7,07:1 / 3,17:1</td><td class="num">4,5:1 / 3:1</td><td>✅ Aprovado</td></tr>
+          <tr><td class="tok">CRÍTICO ink / accent</td><td class="num">9,13:1 / 4,65:1</td><td class="num">4,5:1 / 3:1</td><td>✅ Aprovado</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <!-- ============================================================ -->
+  <section class="sec">
+    <header><span class="sec-num">§7</span><h2>O que NÃO existe no produto</h2></header>
+    <div class="plate">
+      <ul style="padding-left:20px;display:flex;flex-direction:column;gap:6px;color:var(--tx-2)">
+        <li><strong>Sem tema escuro:</strong> Fenix é estritamente tema claro para ambientes industriais iluminados.</li>
+        <li><strong>Sem gradientes e sem glassmorphism:</strong> Proibidos por ISA-101 para não degradar contraste.</li>
+        <li><strong>Sem fontes externas ou CDN:</strong> O sistema opera 100% offline no chão de fábrica.</li>
+        <li><strong>Sem cor própria por parâmetro:</strong> <em>vc</em>, <em>fz</em>, <em>ae</em> não possuem cor própria; cor é reservada para estado.</li>
+        <li><strong>Sem controles desabilitados:</strong> Campo que não se aplica não existe (não aparece cinza/apagado).</li>
+        <li><strong>Sem medidores de arco ou ponteiro (gauges):</strong> Sugerem precisão artificial inexistente no modelo de corte.</li>
+      </ul>
+    </div>
+  </section>
+
+  <!-- ============================================================ -->
+  <section class="sec">
+    <header><span class="sec-num">§9</span><h2>Checklist de Conformidade</h2></header>
+    <ul class="checklist">
+      <li><span class="checkbox">✓</span><span>Nenhuma cor fora dos tokens canônicos da §3</span></li>
+      <li><span class="checkbox">✓</span><span>--brand-fill só em identidade e seleção</span></li>
+      <li><span class="checkbox">✓</span><span>--action-fill só no botão de calcular</span></li>
+      <li><span class="checkbox">✓</span><span>Nenhum botão de ação dentro do painel de resultado</span></li>
+      <li><span class="checkbox">✓</span><span>Texto sobre marca e ação sempre --tx-on-brand (#FFFFFF)</span></li>
+      <li><span class="checkbox">✓</span><span>Seleção e foco em azul-petróleo (--select-ink)</span></li>
+      <li><span class="checkbox">✓</span><span>Uma única rampa diagnóstica de 3 níveis</span></li>
+      <li><span class="checkbox">✓</span><span>Rampa de informação neutralizada (--st-info-*)</span></li>
+      <li><span class="checkbox">✓</span><span>--brand-accent (#E4BF90) apenas sobre --brand-fill</span></li>
+      <li><span class="checkbox">✓</span><span>Entradas e resultados em escala de cinza</span></li>
+      <li><span class="checkbox">✓</span><span>Alerta e diagnóstico nunca esmaecidos</span></li>
+      <li><span class="checkbox">✓</span><span>Todo estado tem texto e posição além da cor</span></li>
+      <li><span class="checkbox">✓</span><span>Contrastes aferidos por test_contraste.js (WCAG AA)</span></li>
+      <li><span class="checkbox">✓</span><span>Teto de 4 tamanhos de texto + 1 numérico (ISA-101)</span></li>
+      <li><span class="checkbox">✓</span><span>Todo número em mono com tabular-nums</span></li>
+      <li><span class="checkbox">✓</span><span>Milhar com ponto, decimal com vírgula (sem espaço)</span></li>
+      <li><span class="checkbox">✓</span><span>Resultados agrupados em cartões com 2 alturas (D7)</span></li>
+      <li><span class="checkbox">✓</span><span>Incremento ± exclusivo de Rotação (S) e Avanço (F)</span></li>
+      <li><span class="checkbox">✓</span><span>Foco visível em 100% dos elementos navegáveis</span></li>
+      <li><span class="checkbox">✓</span><span>Alvo de toque ≥ 44px; ação principal 52px</span></li>
+      <li><span class="checkbox">✓</span><span>Zero requisição de rede e zero telemetria</span></li>
+    </ul>
+  </section>
+
+  <!-- ============================================================ -->
+  <footer class="foot">
+    Fonte única: <span class="tag">Docs_inicial/construcao/DESIGN_SYSTEM_FENIX.md</span>.
+    Contrato do painel: <span class="tag">Docs_inicial/construcao/prototipo/index.html</span>.
+    Verificado por máquina: <span class="tag">testes/test_contraste.js</span>.
+  </footer>
+
+</div>
+
+<script>
+// Script mínimo local de verificação de disclosure
+document.querySelectorAll(".disc-trigger").forEach(function (btn) {
+  var panel = document.getElementById(btn.getAttribute("aria-controls"));
+  if (!panel) return;
+  btn.addEventListener("click", function () {
+    var isExpanded = btn.getAttribute("aria-expanded") === "true";
+    btn.setAttribute("aria-expanded", String(!isExpanded));
+    panel.hidden = isExpanded;
+  });
+});
+</script>
+</body>
+</html>

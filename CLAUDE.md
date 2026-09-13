@@ -1,216 +1,60 @@
-﻿# ToolOptimizer CNC - Contexto do Projeto
+# CLAUDE.md — ToolOptimizer CNC v2
 
-## ⚡ Regra de Início de Sessão (OBRIGATÓRIO)
-**PRIMEIRA AÇÃO de toda sessão:** Ler os arquivos abaixo nesta ordem:
-
-**1. Ponto de entrada principal (prioridades + protocolo):**
-```
-C:\Users\USUARIO\Desktop\INICIO_TOOLOPTIMIZERCNC\docs\ROADMAP_SESSAO_ATUAL.md
-```
-- Contém: estado atual, prioridades da sessão, protocolo fim de sessão.
-- **Se PRIORIDADE 1 tiver itens `⬜ Pendente` → executar antes de qualquer outra coisa.**
-- Se PRIORIDADE 1 estiver toda `✅ Concluído` → oferecer opções da PRIORIDADE 2.
-
-**2. Requisições do admin (ler SEMPRE — contém tarefas criadas pelo Rafael):**
-```
-C:\Users\USUARIO\Desktop\INICIO_TOOLOPTIMIZERCNC\docs\admin-requests.json
-```
-- Contém: tarefas/requisições criadas em `/admin/tasks` — gravadas automaticamente via Vite plugin.
-- **Se houver tarefas com `status: "aberta"` ou `"em_progresso"` → considerar como contexto adicional.**
-
-**3. Histórico de sessões (apenas se precisar de contexto detalhado):**
-```
-C:\Users\USUARIO\Desktop\INICIO_TOOLOPTIMIZERCNC\docs\PROXIMA_SESSAO.md
-```
-- Contém: histórico completo de sessões anteriores, commits, decisões.
+**Projeto:** ToolOptimizer CNC — Calculadora Industrial de Parâmetros de Corte CNC.  
+**Versão:** 2.0.0 (Núcleo canônico do Fenix integrado ao produto ToolOptimizerCNC).  
+**Ponto de entrada:** [`ESTADO.md`](ESTADO.md) e [`CONTEXT.md`](CONTEXT.md).
 
 ---
 
-## Stack
-- **Framework:** React 18 + TypeScript (strict mode, zero `any`)
-- **Build:** Vite 6
-- **State:** Zustand
-- **Styling:** Tailwind CSS v4 (dark theme, glassmorphism)
-- **Testing:** Vitest + Testing Library
-- **Storage:** localStorage (single-user, sem backend)
-- **Platform:** Desktop only (min-width: 1360px)
+## 1. Estrutura do Repositório
 
-## Objetivo
-Sistema desktop para cálculo e recomendação de parâmetros de corte CNC.
-Operadores calculam RPM, Avanço e Potência em < 2 segundos com segurança.
+| Diretório / Arquivo | Função |
+|---|---|
+| `src/core/` | Motores matemáticos canônicos (Kienzle, cinemática, materiais, IndexedDB `storage.ts`) |
+| `src/ui/` | Componentes React 19, hooks, `CalculatorContext.tsx`, tokens WCAG AA em `index.css` |
+| `src/harness/` | Governança multi-agente, validação de grafos de execução DAG |
+| `Docs_inicial/` | Documentação técnica oficial e canônica (fórmulas, requisitos, relatórios de auditoria) |
+| `public/` | Favicons, manifest PWA, ícones, robots.txt, sitemap.xml |
+| `landing/` | Landing page institucional (Cloudflare Pages: `www.tooloptimizercnc.com.br`) |
+| `archive/legacy-v1/` | Histórico v1 arquivado (sem autoridade decisória) |
+| `DOCUMENTACAO_MARKETING_MONETIZACAO/` | Estratégia de SEO, posicionamento e monetização |
+| `wrangler.jsonc` | Configuração do Cloudflare Worker (Static Assets SPA) |
 
-## Domínio CNC - Fórmulas Principais
-- **RPM** = (Vc × 1000) / (π × D)
-- **Avanço (F)** = fz × Z × RPM
-- **Kienzle** = kc1.1 × h^(1-mc) × b
-- **CTF** = 1/√(1-(1-2ae/D)²) quando ae < 50% de D, senão CTF = 1.0
-- **L/D ratio**: ≤3 verde, 3-4 amarelo, 4-6 vermelho, >6 BLOQUEADO
+---
 
-## Validação de Segurança (Semáforo)
-- Verde: parâmetros seguros
-- Amarelo: alerta de vibração
-- Vermelho: crítico, sugerir redução
-- Bloqueado: L/D > 6 no MVP
+## 2. Comandos e Quality Gates
 
-## Limites de Máquina (Default)
-- maxRPM: 12000
-- maxPower: 15 kW
-- maxTorque: 80 Nm
-- maxFeed: 5000 mm/min
-- efficiency: 0.85
-- Safety factor: 0.7-0.8
+### Comandos de Desenvolvimento
+- `npm run dev`: Inicia o servidor de desenvolvimento local (Vite).
+- `npm run typecheck`: Executa validação de tipos TypeScript (`tsc --noEmit`).
+- `npm run test`: Executa a suíte de testes unitários (`vitest run`).
+- `npm run check`: Quality gate obrigatório — roda `typecheck` e `test` (102 testes).
+- `npm run build`: Gera o bundle estático de produção em `dist/`.
+- `npm run preview`: Build local e emulação com o runtime Cloudflare (`wrangler dev`).
+- `npm run deploy`: Build e deploy direto para o Cloudflare Worker (`wrangler deploy`).
+- `npm run icons`: Regenera favicons e ícones PWA a partir de `logo_p_favcon.png`.
 
-## Estrutura de Pastas
-```
-src/              # Código fonte (React + TS)
-tests/            # Testes (Vitest)
-docs/specs/       # PRDs e especificações
-docs/technical/   # Dados técnicos (Kienzle, Vc, test cases)
-docs/design/      # UI specs, branding, dashboard prototype
-docs/architecture/# ADRs e visão arquitetural
-docs/plans/       # Backlog e planos de implementação
-docs/ai/          # Protocolos, comandos e memória de engenharia
-docs/_archive/    # Sessões, stories e planos concluídos/arquivados
-scripts/          # Scripts auxiliares
-.claude/          # Context Engineering
-```
+### Quality Gate Obrigatório Antes de Qualquer Commit
+1. `npm run check` deve passar 100% verde (0 erros de tipo, 102/102 testes passando).
+2. `npm run build` deve compilar com exit code 0 e gerar `dist/`.
+3. `git status` limpo antes de novos fluxos.
 
-## Convenções
-- **Arquivos:** kebab-case (`cutting-force.ts`)
-- **Componentes:** PascalCase (`ConfigPanel.tsx`)
-- **Testes:** `*.test.ts` ou `*.test.tsx`
-- **Commits:** conventional commits (`feat:`, `fix:`, `test:`, `docs:`, `refactor:`)
-- **UI text:** Português (BR)
-- **Code/comments:** English
-- **Números no UI:** font-mono (JetBrains Mono)
+---
 
-## Design Tokens
-- Primary: `#00D9FF` (cyan neon)
-- Secondary: `#39FF14` (green neon)
-- Background: `#0F1419` (dark)
-- Verde: `#2ecc71`
-- Amarelo: `#f39c12`
-- Vermelho: `#e74c3c`
+## 3. Arquitetura de Deploy e Domínios (Cloudflare)
 
-## Regras Críticas
-1. NUNCA commit sem testes para funções de cálculo
-2. SEMPRE validar inputs antes de calcular (ranges de D, ap, ae, fz, L/D)
-3. L/D > 6 = BLOQUEADO no MVP
-4. Safety factor 0.7-0.8 em todos os valores calculados
-5. Materiais "Estimado" devem mostrar badge de warning
-6. O sistema RECOMENDA, o operador DECIDE (disclaimer obrigatório)
-7. **Store NÃO auto-recalcula:** `setMaterial/setFerramenta/setTipoOperacao/setParametros/setSafetyFactor` zerão `resultado=null` mas NÃO chamam `calcular()`. Usuário deve clicar em "Simular". Exceção: `setLimitesMaquina` ainda chama `calcular()`.
-8. **Testes do store:** chamar `getState().calcular()` explicitamente após `setParametros/setFerramenta` nos testes — NÃO depender de auto-recalc.
-9. **Ao criar plano de implementação:** SEMPRE atualizar (1) `docs/plans/BACKLOG_IMPLEMENTACAO.md` (adicionar entrada na tabela + detalhe), (2) tabela PRIORIDADE 1 em `docs/ROADMAP_SESSAO_ATUAL.md`. Incrementar contagem total de planos. NÃO adicionar em `docs/PROXIMA_SESSAO.md` — esse arquivo é só histórico.
-10. **Protocolo "fim de sessão":** Quando Rafael disser "fim de sessão", executar o checklist completo descrito na seção "PROTOCOLO FIM DE SESSÃO" de `docs/ROADMAP_SESSAO_ATUAL.md`.
+O ecossistema opera em **Dual-Domain**:
+- **Calculadora (App):** `https://app.tooloptimizercnc.com.br/`
+  - Servido via **Cloudflare Worker Static Assets** com `not_found_handling: single-page-application` configurado em `wrangler.jsonc`.
+  - Deploy automatizado via GitHub Actions ([.github/workflows/deploy-cloudflare.yml](.github/workflows/deploy-cloudflare.yml)) no push para a branch `main`.
+- **Landing Page Institucional:** `https://www.tooloptimizercnc.com.br/`
+  - Servido via **Cloudflare Pages** a partir do diretório `landing/`.
 
-## Estado Atual do Código (atualizado 15/03/2026)
+---
 
-### Componentes Implementados
-- `bidirectional-slider.tsx` — Slider -150% a +150%, botões +/-, tick marks, RGB glow
-- `results-panel.tsx` — Inclui sliders RPM/Feed via BigNumber + reset warning amarelo
-- `fine-tune-panel.tsx` — Inclui BidirectionalSlider para Vc, fz, ae, ap
-- `config-panel.tsx` — Botão Simular com spinner animado (450ms loading)
+## 4. Regras de Código e Governança
 
-### Hooks Implementados
-- `use-simulation-animation.ts` — Loading 450ms, Gauge 1350ms, Pulse 1500ms
-- `use-reset-feedback.ts` — Detecta mudança de params, aciona aviso visual 800ms
-- `use-is-mobile.ts` — Detecção de viewport mobile
-
-### Animações CSS (`src/index.css`)
-- `spinner` — rotação do ícone no botão Simular
-- `fadeInUp` — entrada suave de elementos
-- `subtlePulse` — pulse nos resultados pós-simulação
-- `gaugeRoll` — gauge durante animação
-- `fadeOut` — opacidade reduzida ao zerar painel
-
-## Documentos de Referência
-- PRD completo: `docs/specs/PRD_TOOLOPTIMIZER_CNC_MVP.md`
-- PRD condensado: `docs/specs/PRD_MASTER.md`
-- Validação: `docs/specs/DECISOES_VALIDACAO_PRD.md`
-- Dados Kienzle: `docs/technical/DADOS_TECNICOS_KIENZLE_E_VC.md`
-- Velocidades corte: `docs/technical/PRD_Velocidades_Corte_CNC.md`
-- Casos teste: `docs/technical/CASOS_TESTE_REFERENCIA.md`
-- Types TS: `docs/technical/srctypes.md`
-- Dashboard UI: `docs/design/DASHBOARD.md`
-- UI spec: `docs/design/UI_DESIGN_SPEC_FINAL.md`
-- Branding: `docs/design/UI_BRANDING.md`
-- FENIX AI System: `docs/ai/AI_SYSTEM.md`
-- Comandos de sessao: `docs/ai/commands/SESSION_COMMANDS.md`
-- Protocolos: `docs/ai/protocols/`
-- Protocolo de revisao: `docs/ai/protocols/REVIEW_PROTOCOL.md`
-- Memoria de engenharia: `docs/ai/memory/`
-
-## Build Desktop (.exe Portátil — Electron)
-- **Guia completo:** `docs/architecture/ADR-005-electron-desktop-build.md`
-- **Pasta de trabalho:** `Sistema_Desktop_Pen_driver/` (clone isolado, NUNCA alterar projeto web)
-- **Comando:** `npm run electron-build` (dentro da pasta desktop)
-- **Resultado:** `dist-electron/ToolOptimizer-CNC-{version}-portable.exe`
-- **REGRA:** Sempre clonar fresh do repo antes de rebuild
-- **Problemas comuns e soluções:** Ver tabela "Quick Reference" no ADR-005
-
-## Versionamento (SemVer)
-- **Estratégia:** `docs/architecture/ADR-006-estrategia-versionamento.md`
-- **Formato:** `MAJOR.MINOR.PATCH` (ex: `0.2.0`)
-- **Regra:** Story completa = MINOR bump, fix = PATCH bump, MVP completo = MAJOR bump
-- **Versão atual:** verificar `package.json` → `"version"`
-- **Desktop .exe herda** a versão do package.json automaticamente
-- **Como bumpar:** Editar `"version"` no `package.json` → commit → opcional: `git tag vX.Y.Z`
-
-## Framework de Desenvolvimento: Synkra AIOS (Adaptado)
-
-Este projeto segue princípios do Synkra AIOS Framework. Detalhes completos em `docs/AIOS_INTEGRATION.md`.
-
-### Regras Obrigatórias
-1. **Story-Driven:** Toda feature tem story em `docs/stories/`
-2. **Architect-First:** Documentar antes de codar
-3. **Quality Gates:** build + test + typecheck ANTES de commit
-4. **No Invention:** Não inventar — pesquisar ou perguntar
-5. **Map Before Modify:** Documentar estado atual antes de alterar
-6. **Sem arquivos fora do projeto:** Tudo dentro de `INICIO_TOOLOPTIMIZERCNC/`
-
-### ADRs (Architecture Decision Records)
-Decisões arquiteturais documentadas em `docs/architecture/ADR-NNN-*.md`
-
-### Referência AIOS Completa
-- Repositório: `C:\Users\USUARIO\Desktop\Synkra_AIOS\aios-core\`
-- Integração: `docs/AIOS_INTEGRATION.md`
-- ADR de adoção: `docs/architecture/ADR-004-adocao-synkra-aios.md`
-
-## Skill: Interface Design (Consistência Visual)
-
-**Fonte:** [Dammyjay93/interface-design](https://github.com/Dammyjay93/interface-design)
-**Design Direction:** Boldness & Clarity
-**System file:** `.interface-design/system.md`
-
-### Comandos Disponíveis
-| Comando | Função |
-|---------|--------|
-| `/interface-design-init` | Inicializar design system, aplicar padrões ao desenvolvimento |
-| `/interface-design-status` | Ver configuração atual do sistema (tokens, patterns, rules) |
-| `/interface-design-audit <path>` | Validar código contra padrões (spacing, depth, cores, patterns) |
-| `/interface-design-extract` | Extrair padrões do código existente para system.md |
-| `/interface-design-critique` | Review de craft visual (composição, hierarquia, detalhes) |
-
-### Trigger de Ativação
-Quando o usuário disser **"executar skill Design"**:
-1. Ler `.interface-design/system.md` (design tokens e regras do projeto)
-2. Ler `.claude/skills/interface-design/SKILL.md` (princípios de craft)
-3. Aplicar tokens e padrões ao desenvolvimento atual
-4. Validar componentes criados/modificados contra o system.md
-5. Ao final, sugerir `/interface-design-audit` para validação formal
-
-## Skill: Session Planner (Divisão de Planos em Sessões)
-
-**Objetivo:** Dividir planos de implementação em sessões otimizadas para contexto 200K tokens (Pro)
-**Skill file:** `.claude/skills/session-planner/SKILL.md`
-
-### Quando Ativar
-- Ao final de qualquer plano aprovado com >5 ações
-- Quando o usuário disser "dividir em sessões" ou "protocolo de sessões"
-
-### Limites por Sessão
-- **~96K tokens úteis** (60% de 200K, após overhead do sistema)
-- **8-12 ações significativas** (leituras + edições + builds)
-- **Peso máximo:** 24 pontos por sessão (cada ação tem peso 1-6)
-- **Checkpoint:** commit parcial a cada 3 sessões
+1. **A regra que organiza o cálculo:** Nenhuma fórmula, constante ou limiar físico entra sem fonte citada em `Docs_inicial/`. O modelo de corte é o de Kienzle.
+2. **Offline-First:** O aplicativo não depende de APIs ou backend para calcular. Persistência de configurações e materiais customizados é estritamente local em IndexedDB (`tooloptimizer_db`).
+3. **Design System & Acessibilidade:** Uso exclusivo de CSS nativo com design tokens em `src/ui/index.css`. Todos os contrastes de texto e controles devem cumprir WCAG AA (mínimo 4.5:1 para texto normal, 3.0:1 para controles).
+4. **Sem frameworks desnecessários:** Tailwind, Zustand e React-Router foram removidos e não devem ser reintroduzidos. O estado reativo é gerido por React Context (`CalculatorContext.tsx`).

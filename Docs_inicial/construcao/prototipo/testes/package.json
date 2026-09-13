@@ -1,0 +1,4 @@
+{
+  "//": "As suites do prototipo sao CommonJS e rodam com `node <caminho>` a partir da raiz. O package.json da raiz declara `type: module` (Fase 2), o que as quebraria; este arquivo devolve o escopo CommonJS a esta pasta e nada mais.",
+  "type": "commonjs"
+}

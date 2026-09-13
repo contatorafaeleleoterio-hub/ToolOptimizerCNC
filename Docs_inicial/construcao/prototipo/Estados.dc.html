@@ -1,0 +1,319 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <script src="./support.js"></script>
+</head>
+<body>
+<!-- AVISO DE ARTEFATO CONGELADO — inserido em 08/09/2026. Não remover sem decisão do Mestre. -->
+<aside role="note" style="all:initial;display:block;box-sizing:border-box;width:100%;padding:14px 20px;
+  background:#3B2E12;color:#F7F0E2;font-family:system-ui,-apple-system,'Segoe UI',sans-serif;
+  font-size:13px;line-height:1.55;border-bottom:4px solid #C4720A">
+  <strong style="display:block;font-size:14px;letter-spacing:.02em;margin-bottom:6px">
+    FOLHA HISTÓRICA — CONGELADA EM 05/09/2026. NÃO É O PRODUTO ATUAL.
+  </strong>
+  Esta artboard é <strong>registro de intenção de desenho</strong>, não contrato. Por decisão do Mestre
+  de 08/09/2026, o contrato do painel é o protótipo interativo. Divergências conhecidas e
+  <strong>deliberadamente não corrigidas</strong>: as cores são a paleta anterior (a marca é laranja, e
+  hoje é azul-petróleo); o passo dos <code style="font-family:ui-monospace,Consolas,monospace">±</code>
+  aparece como 10%, e a emenda de 07/09/2026 mudou para 5%; os Cenários A a I e a área Configurações
+  editável não existem aqui. <strong>Os números desenhados aqui não são resultado de cálculo</strong> —
+  são preenchimento de maquete e não conferem com a cadeia canônica. Nenhum valor desta folha deve ser
+  copiado para especificação, teste ou código.
+  <span style="display:block;margin-top:8px">
+    <a href="index.html" style="color:#F0C88A;font-weight:700">→ Abrir o protótipo interativo, que é o contrato</a>
+  </span>
+</aside>
+
+<x-dc>
+<helmet>
+  <style>
+    :root{
+      /* superfícies */
+      --bg-page:#F3F4F6; --surface-card:#FFFFFF; --surface-input:#E9EBEF;
+      --border-subtle:#D1D5DB; --border-control:#7A8494;
+      --shadow-card:0 1px 2px rgba(16,24,40,.06), 0 4px 12px rgba(16,24,40,.08);
+      /* texto */
+      --tx-1:#111827; --tx-2:#374151; --tx-3:#475569;
+      /* marca e seleção */
+      --brand-fill:#E85D04; --tx-on-brand:#0F1419; --select-ink:#3730A3;
+      /* estado — rampa única */
+      --st-normal-ink:#116631; --st-normal-bg:#E8F5EC; --st-normal-bd:#A8D5B8;
+      --st-warn-ink:#7A4F00; --st-warn-bg:#FDF3E2; --st-warn-bd:#E3C98A;
+      --st-crit-ink:#A81E16; --st-crit-bg:#FCEBEA; --st-crit-bd:#EFB3AE;
+      --st-info-ink:#005E77; --st-info-bg:#E6F1F6; --st-info-bd:#A8CEDD;
+      /* interação */
+      --surface-hover-field:#DDE1E7; --surface-hover-card:#F7F8FA; --surface-pressed:#CFD4DC;
+      /* tipografia */
+      --font-sans:Inter,"Segoe UI Variable","Segoe UI",system-ui,-apple-system,sans-serif;
+      --font-mono:"JetBrains Mono","Cascadia Mono",Consolas,ui-monospace,monospace;
+      /* espaço, raio, tempo */
+      --sp-1:4px; --sp-2:8px; --sp-3:12px; --sp-4:16px; --sp-5:24px; --sp-6:32px; --sp-7:48px;
+      --r-chip:2px; --r-field:4px; --r-card:8px; --r-pill:999px;
+      --t-control:120ms; --t-panel:180ms;
+      /* alvo — toque impreciso, tela em pé na máquina */
+      --h-target:44px; --h-cta:56px;
+    }
+    *{box-sizing:border-box}
+    body{margin:0;background:var(--bg-page);font-family:var(--font-sans);color:var(--tx-2);font-size:13px;line-height:1.5}
+    a{color:var(--tx-2);text-decoration:underline} a:hover{color:var(--tx-1)}
+    button{font:inherit;color:inherit}
+    :focus-visible{outline:2px solid var(--select-ink);outline-offset:2px;box-shadow:0 0 0 3px rgba(55, 48, 163, .35)}
+    @media (prefers-reduced-motion: reduce){*, *::before, *::after{animation:none !important;transition:none !important}}
+    .num{font-family:var(--font-mono);font-variant-numeric:tabular-nums}
+    .lbl{font-size:11px;font-weight:600;letter-spacing:.07em;text-transform:uppercase;color:var(--tx-3)}
+    .sym{text-transform:none}
+    .card{background:var(--surface-card);border-radius:var(--r-card);box-shadow:var(--shadow-card);padding:16px;display:flex;flex-direction:column;gap:12px}
+    .band{border-radius:var(--r-field);padding:12px 16px;display:flex;gap:12px;align-items:flex-start}
+    .chip{border-radius:var(--r-chip);padding:4px 8px;font-size:11px;font-weight:700;letter-spacing:.08em;flex:none;border:1px solid}
+    .fbox{display:flex;align-items:center;justify-content:space-between;gap:8px;background:var(--surface-input);border:1px solid var(--border-control);border-radius:var(--r-field);min-height:44px;padding:0 12px}
+    .fval{font-family:var(--font-mono);font-variant-numeric:tabular-nums;font-size:16px;font-weight:600;color:var(--tx-1)}
+    .funit{font-size:11px;font-weight:600;color:var(--tx-3)}
+    .field{display:flex;flex-direction:column;gap:4px}
+    .rule{color:var(--tx-3);max-width:70ch;text-wrap:pretty}
+    .h{font-size:16px;font-weight:600;color:var(--tx-1)}
+    .mval{font-family:var(--font-mono);font-variant-numeric:tabular-nums;font-size:16px;font-weight:600;color:var(--tx-1)}
+    .linkrow{display:flex;align-items:center;gap:8px;min-height:44px;color:var(--tx-2);font-size:13px;font-weight:600}
+    .linkrow span{border-bottom:1px solid var(--border-control)}
+    .rcard{background:var(--surface-card);border:1px solid var(--border-subtle);border-radius:var(--r-card);padding:12px 16px;display:flex;flex-direction:column;gap:8px}
+    .rtall-row{display:flex;align-items:center;gap:12px}
+    .step{width:var(--h-target);height:var(--h-target);flex:none;display:flex;align-items:center;justify-content:center;background:var(--surface-input);border:1px solid var(--border-control);border-radius:var(--r-field);font-size:20px;font-weight:600;color:var(--tx-1);cursor:pointer}
+    .rval{flex-grow:1;display:flex;align-items:baseline;justify-content:center;gap:8px}
+    .raddr{font-family:var(--font-mono);font-size:20px;font-weight:700;color:var(--tx-3)}
+    .rbig{font-family:var(--font-mono);font-variant-numeric:tabular-nums;font-size:32px;font-weight:700;color:var(--tx-1)}
+    .drawer{border:1px solid var(--border-subtle);border-radius:var(--r-field);background:var(--surface-card)}
+    .dtrigger{width:100%;display:flex;align-items:center;gap:10px;min-height:44px;padding:0 12px;background:none;border:0;cursor:pointer;text-align:left}
+    .dsum{font-family:var(--font-mono);font-variant-numeric:tabular-nums;font-size:11px;color:var(--tx-3);flex-grow:1}
+    .dhint{font-size:11px;color:var(--tx-3);flex-grow:1;font-weight:400;text-transform:none;letter-spacing:0}
+    .dbody{padding:4px 12px 12px 34px;display:grid;grid-template-columns:96px minmax(0,1fr);gap:6px 12px;font-size:13px}
+  </style>
+</helmet>
+
+<div style="width:1080px;padding:24px;display:flex;flex-direction:column;gap:16px">
+
+  <div class="card" style="padding:16px 24px;gap:4px">
+    <div style="display:flex;align-items:center;gap:16px">
+      <div style="background:var(--brand-fill);color:var(--tx-on-brand);border-radius:var(--r-field);padding:8px 12px;font-size:16px;font-weight:700;letter-spacing:.08em">FENIX</div>
+      <div class="h" style="flex-grow:1">Estados do painel — folha de contrato</div>
+    </div>
+    <div class="rule">Uma rampa de estado só. Cor nunca é o único portador: todo estado tem também rótulo e posição fixa. Quem for construir a tela copia daqui.</div>
+  </div>
+
+  <!-- 1 -->
+  <div class="card">
+    <div class="lbl">1 · Os três níveis de diagnóstico — sempre no mesmo lugar</div>
+
+    <div class="band" style="background:var(--st-normal-bg);border:1px solid var(--st-normal-bd)">
+      <div class="chip" style="background:var(--st-normal-bg);color:var(--st-normal-ink)">NORMAL</div>
+      <div style="display:flex;flex-direction:column;gap:4px">
+        <div style="font-size:13px;font-weight:600;color:var(--tx-1)">Nada fora da faixa entre as condições verificadas</div>
+        <div>Nenhum dos 17 gatilhos está ativo. Não é garantia — é a ausência das condições que o sistema sabe conferir.</div>
+      </div>
+    </div>
+
+    <div class="band" style="background:var(--st-warn-bg);border:1px solid var(--st-warn-bd)">
+      <div class="chip" style="background:var(--st-warn-bg);color:var(--st-warn-ink)">ATENÇÃO</div>
+      <div style="display:flex;flex-direction:column;gap:4px">
+        <div style="font-size:13px;font-weight:600;color:var(--tx-1)">Relação balanço/diâmetro (L/D) <span class="num">4,5</span>, acima do limiar de <span class="num">4,0</span> da haste comum <span class="num" style="color:var(--st-warn-ink);font-weight:700">(+13%)</span></div>
+        <div>A ferramenta flete e tende a vibrar: a deflexão cresce com o cubo dessa relação, e a 4,5 ela é 42% maior que no limiar.</div>
+      </div>
+    </div>
+
+    <div class="band" style="background:var(--st-crit-bg);border:1px solid var(--st-crit-bd)">
+      <div class="chip" style="background:var(--st-crit-bg);color:var(--st-crit-ink)">CRÍTICO</div>
+      <div style="display:flex;flex-direction:column;gap:4px">
+        <div style="font-size:13px;font-weight:600;color:var(--tx-1)">Penetração de trabalho (ae) <span class="num">12,0 mm</span>, maior que o diâmetro da ferramenta (D) <span class="num">10,0 mm</span> <span class="num" style="color:var(--st-crit-ink);font-weight:700">(+2,0 mm)</span></div>
+        <div>A fresa corta no máximo a própria largura: o número na tela não descreve a peça que vai sair.</div>
+        <div class="lbl">Mais uma condição ativa — ver "o que vai acontecer"</div>
+      </div>
+    </div>
+
+    <div class="rule">O alerta descreve o risco e situa o valor; nunca instrui. Nenhum nível impede o resultado: os dois números continuam na tela, e a edição continua viva. Um resultado por vez — trocar a ferramenta substitui o anterior.</div>
+  </div>
+
+  <!-- 2 -->
+  <div class="card">
+    <div class="lbl">2 · Erro de digitação — validação de entrada, não risco de processo</div>
+    <div style="display:flex;gap:24px;align-items:flex-start">
+      <div class="field" style="width:300px">
+        <div class="lbl">Balanço (<span class="sym">L</span>)</div>
+        <div class="fbox" style="border-color:var(--st-crit-ink)"><span class="num fval">3.000</span><span class="funit">mm</span></div>
+        <div style="color:var(--st-crit-ink);font-weight:600">Confira a digitação: a faixa do campo é 5 a 300 mm. O resultado saiu com 3.000 mm.</div>
+      </div>
+      <div class="rule" style="padding-top:16px">Um zero a mais é erro de digitação, não condição de processo — por isso ele <strong>não move o nível de diagnóstico</strong>. Dizer "risco" quando o operador errou a tecla ensina que o alerta mente, e o alerta verdadeiro morre junto. Mesmo assim nada trava: o número foi aceito e o resultado saiu.</div>
+    </div>
+  </div>
+
+  <!-- 3 -->
+  <div class="card">
+    <div class="lbl">3 · Check ao calcular</div>
+    <div style="display:flex;gap:24px;align-items:flex-start">
+      <div style="width:300px;display:flex;flex-direction:column;gap:8px">
+        <div style="display:flex;align-items:center;justify-content:center;min-height:56px;background:var(--brand-fill);color:var(--tx-on-brand);border-radius:var(--r-field);font-size:13px;font-weight:600;letter-spacing:.04em">Calcular</div>
+        <div style="display:flex;align-items:center;gap:6px;color:var(--tx-3);font-size:11px;justify-content:center">
+          <svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 8.5 L6.5 12 L13 4.5"></path></svg>
+          Cálculo atualizado
+        </div>
+      </div>
+      <div class="rule" style="padding-top:8px">Ao acionar Calcular, o painel dá um retorno curto de que o cálculo rodou — um check. Sem ele, o operador aciona duas vezes. O check confirma que <strong>rodou</strong>, não que o resultado está bom — isso é o nível de diagnóstico (§1). E não fica na tela para sempre: a partir da próxima mudança, quem fala é o estado desatualizado (§4).</div>
+    </div>
+  </div>
+
+  <!-- 4 -->
+  <div class="card">
+    <div class="lbl">4 · Desatualizado — o número espera, o alerta não</div>
+    <div style="display:flex;gap:24px;align-items:flex-start">
+      <div style="width:520px;display:flex;flex-direction:column;gap:12px">
+        <div class="band" style="background:var(--st-warn-bg);border:1px solid var(--st-warn-bd)">
+          <div class="chip" style="background:var(--st-warn-bg);color:var(--st-warn-ink)">ATENÇÃO</div>
+          <div style="display:flex;flex-direction:column;gap:4px">
+            <div style="font-size:13px;font-weight:600;color:var(--tx-1)">Relação balanço/diâmetro (L/D) <span class="num">4,5</span>, acima do limiar de <span class="num">4,0</span> da haste comum</div>
+            <div>A ferramenta flete e tende a vibrar: a deflexão cresce com o cubo dessa relação, e a 4,5 ela é 42% maior que no limiar.</div>
+          </div>
+        </div>
+        <div style="display:flex;flex-direction:column;gap:8px">
+          <div class="lbl">Aguardando recálculo</div>
+          <div style="display:flex;gap:16px">
+            <div class="rcard" style="flex:1">
+              <div class="lbl">Rotação (<span class="sym">n</span>)</div>
+              <div class="rtall-row">
+                <button class="step" style="color:var(--tx-3)" aria-label="Diminuir rotação 10%">−</button>
+                <div class="rval"><span class="raddr">S</span><span class="rbig" style="color:var(--tx-3)">4.456</span><span class="funit">rpm</span></div>
+                <button class="step" style="color:var(--tx-3)" aria-label="Aumentar rotação 10%">+</button>
+              </div>
+            </div>
+            <div class="rcard" style="flex:1">
+              <div class="lbl">Velocidade de avanço da mesa (<span class="sym">vf</span>)</div>
+              <div class="rtall-row">
+                <button class="step" style="color:var(--tx-3)" aria-label="Diminuir velocidade de avanço 10%">−</button>
+                <div class="rval"><span class="raddr">F</span><span class="rbig" style="color:var(--tx-3)">1.070</span><span class="funit">mm/min</span></div>
+                <button class="step" style="color:var(--tx-3)" aria-label="Aumentar velocidade de avanço 10%">+</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="rule" style="padding-top:8px">Sem horário de cálculo na tela, é <strong>este estado</strong> que diz que o número envelheceu. Entre a mudança e o resultado novo, os números caem de tinta (de <span class="num">--tx-1</span> para <span class="num">--tx-3</span>) e ganham o marcador "aguardando recálculo" — nunca opacidade, que derrubaria o contraste com o número ainda na tela para ser lido. O alerta e o nível ficam em tinta cheia: esmaecer alarme ativo é o oposto do que um painel industrial deve fazer (R7).</div>
+    </div>
+  </div>
+
+  <!-- 5 -->
+  <div class="card">
+    <div class="lbl">5 · A tela se reconfigura sob a mão — e diz o que mudou</div>
+    <div class="band" style="background:var(--st-info-bg);border:1px solid var(--st-info-bd)">
+      <div class="chip" style="background:var(--st-info-bg);color:var(--st-info-ink)">MUDOU</div>
+      <div style="display:flex;flex-direction:column;gap:4px">
+        <div style="font-size:13px;font-weight:600;color:var(--tx-1)">A ferramenta mudou os campos desta montagem</div>
+        <div>Raio de canto (r) entrou. Ângulo de ponta e passo de rosca saíram. Diâmetro, balanço e número de arestas foram preservados e revalidados.</div>
+      </div>
+    </div>
+    <div class="band" style="background:var(--st-info-bg);border:1px solid var(--st-info-bd)">
+      <div class="chip" style="background:var(--st-info-bg);color:var(--st-info-ink)">FIXADO</div>
+      <div style="display:flex;flex-direction:column;gap:4px">
+        <div style="font-size:13px;font-weight:600;color:var(--tx-1)">Rotação fixada em <span class="num">4.456 rpm</span> — mantida com o diâmetro novo</div>
+        <div>Com Ø<span class="num">12 mm</span>, essa rotação corresponde a uma velocidade de corte de <span class="num">168,0 m/min</span>. O valor que você fixou não se move sozinho: os outros são recalculados a partir dele.</div>
+      </div>
+    </div>
+    <div class="rule">Campo que não se aplica não existe — nunca aparece desabilitado. Não há estado desabilitado no sistema. Fixar aqui é travar um parâmetro para o cálculo resolver os demais em cima dele; não é guardar uma condição para comparar lado a lado — isso ficou fora do MVP.</div>
+  </div>
+
+  <!-- 6 -->
+  <div class="card">
+    <div class="lbl">6 · Prosa e gaveta nascem recolhidas — só o alerta abre</div>
+    <div class="rule">O painel é uma calculadora; o que ele entrega é número. Toda prosa, aviso, nota e gaveta de instrução <strong>nasce recolhida e continua recolhida depois do cálculo</strong>. Calcular produz números, não leitura. A única exceção é a linha de alerta: nasce aberta, fica aberta, nunca esmaece (R7). O gatilho de um bloco recolhido mostra o que há dentro — nunca só a seta.</div>
+
+    <div style="display:flex;flex-direction:column;gap:8px;max-width:560px">
+      <div class="drawer">
+        <button class="dtrigger" aria-expanded="false" aria-controls="e-z5">
+          <svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" style="color:var(--tx-3)"><path d="M6 3.5 L11 8 L6 12.5"></path></svg>
+          <span class="lbl" style="flex:none">O que vai acontecer</span>
+          <span class="dhint">vibração pela relação balanço/diâmetro</span>
+        </button>
+        <div id="e-z5" class="dbody" hidden></div>
+      </div>
+      <div class="drawer">
+        <button class="dtrigger" aria-expanded="false" aria-controls="e-z6">
+          <svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" style="color:var(--tx-3)"><path d="M6 3.5 L11 8 L6 12.5"></path></svg>
+          <span class="lbl" style="flex:none">O que mexer</span>
+          <span class="dhint">2 direções · uma resolve o alerta</span>
+        </button>
+        <div id="e-z6" class="dbody" hidden></div>
+      </div>
+    </div>
+
+    <div class="lbl" style="margin-top:8px">Gaveta de instrução por parâmetro (<span class="sym">D11</span>) — recolhida por padrão, assim por dentro</div>
+    <div style="display:flex;flex-direction:column;gap:8px;max-width:560px">
+      <div class="drawer">
+        <button class="dtrigger" aria-expanded="false" aria-controls="e-fzc">
+          <svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" style="color:var(--tx-3)"><path d="M6 3.5 L11 8 L6 12.5"></path></svg>
+          <span class="lbl" style="flex:none">Avanço por dente (<span class="sym">fz</span>)</span>
+          <span class="dsum">0,060 mm/dente</span>
+        </button>
+        <div id="e-fzc" class="dbody" hidden></div>
+      </div>
+      <div class="drawer">
+        <button class="dtrigger" aria-expanded="true" aria-controls="e-fzo">
+          <svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" style="color:var(--tx-3)"><path d="M3.5 6 L8 11 L12.5 6"></path></svg>
+          <span class="lbl" style="flex:none">Avanço por dente (<span class="sym">fz</span>)</span>
+          <span class="dsum">0,060 mm/dente</span>
+        </button>
+        <div id="e-fzo" class="dbody">
+          <span class="lbl">O que é</span><span>Espessura do cavaco que cada aresta tira por passagem.</span>
+          <span class="lbl">▲ aumentar</span><span>Remove mais rápido · mais força · vibra e pode quebrar</span>
+          <span class="lbl">▼ diminuir</span><span>Acabamento mais fino · menos esforço · rende menos</span>
+          <span class="lbl">Equilíbrio</span><span>Fino demais, a aresta esfrega em vez de cortar — a tela avisa.</span>
+        </div>
+      </div>
+    </div>
+    <div class="rule">Quatro linhas, uma por movimento. As setas <strong>▲</strong> e <strong>▼</strong> ficam no tom de texto normal, <strong>sem cor</strong>: verde e vermelho já são a rampa de estado (normal / crítico), e uma seta verde em "aumentar" diria que aumentar é seguro. A direção fica legível pela forma da seta e pelo rótulo escrito ao lado (R8).</div>
+  </div>
+
+  <!-- 7 -->
+  <div class="card">
+    <div class="lbl">7 · Blocos de entrada recolhidos — o cabeçalho mostra os valores</div>
+    <div style="display:flex;flex-direction:column;gap:8px">
+      <div style="display:flex;align-items:center;gap:12px;min-height:44px;background:var(--surface-card);border:1px solid var(--border-subtle);border-radius:var(--r-field);padding:0 12px">
+        <svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" style="color:var(--tx-3)"><path d="M6 3.5 L11 8 L6 12.5"></path></svg>
+        <span class="lbl" style="flex:none">Ferramenta</span>
+        <span class="num" style="color:var(--tx-3);font-size:11px;flex-grow:1">Toroidal · Ø10 r1,0 · Z4 · L45 · ap 1,0</span>
+      </div>
+      <div style="display:flex;align-items:center;gap:12px;min-height:44px;background:var(--surface-card);border:1px solid var(--st-crit-bd);border-radius:var(--r-field);padding:0 12px">
+        <svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" style="color:var(--tx-3)"><path d="M3.5 6 L8 11 L12.5 6"></path></svg>
+        <span class="lbl" style="flex:none">Geometria</span>
+        <span style="color:var(--st-crit-ink);font-weight:600;font-size:11px;flex-grow:1">Aberto — número de arestas (Z) está vazio</span>
+      </div>
+    </div>
+    <div class="rule">O cabeçalho recolhido traz <strong>os valores</strong>, não a contagem de campos — "3 campos" não deixa conferir; <span class="num">Ø10 · Z4 · L45</span> deixa. O estado de cada bloco persiste entre sessões. Duas travas: bloco com campo obrigatório vazio ou inválido <strong>não recolhe</strong>, e abre sozinho se o erro surgir; trocar o tipo de ferramenta <strong>reabre</strong> a geometria, porque campo novo recolhido é campo preenchido sem ninguém olhar. Sem gaveta dentro de gaveta. No celular, antes do 1º cálculo a Montagem fica aberta e no topo.</div>
+  </div>
+
+  <!-- 8 -->
+  <div class="card">
+    <div class="lbl">8 · Dados do material — visíveis na tela de cálculo, editados em Configurações</div>
+    <div style="display:flex;gap:24px;flex-wrap:wrap;align-items:flex-start">
+      <div style="width:320px;display:flex;flex-direction:column;gap:10px">
+        <div style="display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px 16px">
+          <div class="field"><span class="lbl">Classe ISO</span><span class="mval">P</span></div>
+          <div class="field"><span class="lbl">Dureza</span><span class="mval">170–220 <span class="funit">HB</span></span></div>
+          <div class="field"><span class="lbl">Força específica de corte (<span class="sym">kc1.1</span>)</span><span class="mval">1.500 <span class="funit">N/mm²</span></span></div>
+          <div class="field"><span class="lbl">Expoente (<span class="sym">mc</span>)</span><span class="mval">0,21</span></div>
+          <div class="field" style="grid-column:span 2"><span class="lbl">Velocidade de corte (<span class="sym">vc</span>)</span><span class="mval">140 <span class="funit">m/min</span></span></div>
+        </div>
+        <div class="linkrow">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"></circle><path d="M19 12a7 7 0 0 0-.1-1l2-1.6-2-3.4-2.4 1a7 7 0 0 0-1.7-1L14.5 3h-5l-.3 2.4a7 7 0 0 0-1.7 1l-2.4-1-2 3.4L3 11a7 7 0 0 0 0 2l-2 1.6 2 3.4 2.4-1a7 7 0 0 0 1.7 1L9.5 21h5l.3-2.4a7 7 0 0 0 1.7-1l2.4 1 2-3.4-2-1.6a7 7 0 0 0 .1-1Z"></path></svg>
+          <span>Editar em Configurações</span>
+        </div>
+      </div>
+      <div class="rule" style="padding-top:0">Os cinco dados que produzem o número — classe ISO, dureza, força específica de corte (kc1.1), expoente (mc) e faixa de velocidade de corte — ficam <strong>visíveis</strong> ao lado do material, para o operador conferir com que números o cálculo foi feito. Aparecem como texto, não em campo afundado: aqui não se digita. <strong>Editar</strong> esses valores, e <strong>criar material novo</strong>, acontece na área Configurações — de propósito fora do fluxo de cálculo, porque dado de material é estático e só muda quando o fornecedor passa valor novo. O sistema não carimba o dado com nenhuma marca de origem: o valor está na tela, quem quiser confere.</div>
+    </div>
+  </div>
+
+  <!-- 9 -->
+  <div class="card">
+    <div class="lbl">9 · O que esta tela nunca vai ter</div>
+    <div class="rule">Nenhum medidor de ponteiro, arco ou barra proporcional. Nenhum índice de 0 a 100, nenhuma nota de saúde, nenhum "% do limite" — não existe perfil de máquina, logo não existe teto contra o qual medir. Nenhuma trilha de posição relativa nem faixa recomendada desenhada — é função futura. Nenhuma marca de origem nos números, nenhuma fonte, nenhuma tela de fórmulas: a procedência é disciplina de quem escreve o projeto, não informação de tela. Nenhum selo de origem por linha. Nenhum controle travado, nenhum gesto de liberar valor, nenhuma marca por passar do recomendado. Nenhuma matiz de identidade por parâmetro: a cor perto de um número é sempre o estado dele. As setas ▲/▼ das gavetas não têm cor — verde e vermelho são a rampa de estado.</div>
+  </div>
+
+</div>
+</x-dc>
+</body>
+</html>
