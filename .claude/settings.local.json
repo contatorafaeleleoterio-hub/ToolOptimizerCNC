@@ -92,7 +92,8 @@
       "Bash(find /c/Users/USUARIO/Desktop/INICIO_TOOLOPTIMIZERCNC -name .env* -o -name *.env)",
       "Bash(grep -rn \"window\\\\.\\\\|document\\\\.\\\\|eval\\\\|Function\\\\|with {\\\\|setTimeout\\\\|setInterval\" /c/Users/USUARIO/Desktop/INICIO_TOOLOPTIMIZERCNC/src --include=*.tsx --include=*.ts)",
       "Bash(find /c/Users/USUARIO/Desktop/INICIO_TOOLOPTIMIZERCNC -name *worker* -o -name *wrangler*)",
-      "Bash(grep -r \"telegram\\\\|bot\\\\|webhook\\\\|máquina virtual\\\\|requisição.*mobile\" C:/Users/USUARIO/Desktop/INICIO_TOOLOPTIMIZERCNC --include=*.md --include=*.txt)"
+      "Bash(grep -r \"telegram\\\\|bot\\\\|webhook\\\\|máquina virtual\\\\|requisição.*mobile\" C:/Users/USUARIO/Desktop/INICIO_TOOLOPTIMIZERCNC --include=*.md --include=*.txt)",
+      "Bash(rtk read *)"
     ]
   },
   "hooks": {
