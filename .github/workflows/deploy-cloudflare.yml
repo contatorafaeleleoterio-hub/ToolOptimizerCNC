@@ -19,7 +19,7 @@ jobs:
 
       - uses: actions/setup-node@v4
         with:
-          node-version: 20
+          node-version: 22
           cache: npm
 
       - name: Install dependencies
@@ -35,6 +35,7 @@ jobs:
         with:
           apiToken: ${{ secrets.CF_API_TOKEN }}
           accountId: ${{ secrets.CF_ACCOUNT_ID }}
+          wranglerVersion: "4.68.0"
           command: deploy
 
   # Landing page deploy (requires Cloudflare Pages project "tooloptimizer-landing" to exist)
@@ -53,7 +54,9 @@ jobs:
 
       - name: Deploy landing to Cloudflare Pages
         uses: cloudflare/wrangler-action@v3
+        continue-on-error: true
         with:
           apiToken: ${{ secrets.CF_API_TOKEN }}
           accountId: ${{ secrets.CF_ACCOUNT_ID }}
+          wranglerVersion: "4.68.0"
           command: pages deploy landing --project-name=tooloptimizer-landing --commit-dirty=true
