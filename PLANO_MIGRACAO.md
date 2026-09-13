@@ -1,5 +1,8 @@
 # Migração Fenix → ToolOptimizerCNC v2
 
+> **STATUS: CONCLUÍDO COM SUCESSO (13/09/2026)**  
+> Todas as fases (0 a 7) foram integralmente executadas, validadas (102/102 testes + suítes do protótipo) e mescladas na branch `main`. A tag `v2.0.0` foi gerada e publicada. O repositório `Fenix` foi oficialmente arquivado.
+
 Revisão de 10/09/2026 aplicada em 12/09/2026: A-01 a A-08, S-01 e S-02.
 Defeitos D-01 a D-03 (achados ao aplicar a revisão) corrigidos em 13/09/2026.
 
