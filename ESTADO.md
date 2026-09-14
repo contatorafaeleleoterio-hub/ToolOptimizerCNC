@@ -1,6 +1,22 @@
-# Estado — ToolOptimizer CNC — 13/09/2026
+# Estado — ToolOptimizer CNC — 14/09/2026
 
 Arquivo de retomada e fonte única do estado do produto. É o documento que o operador ou qualquer agente carrega ao iniciar uma sessão.
+
+---
+
+## 📱 Experiência Mobile Dedicada & Deploy de Produção (14/09/2026)
+
+Conclusão da investigação de UX e implementação da interface mobile dedicada para o ToolOptimizer CNC, além da publicação em produção na Cloudflare:
+- **Diagnóstico UX:** Identificação de causas-raízes do layout mobile (overflow horizontal em StepperInput devido a estilos inline em `.vgrid`, fadiga de rolagem de > 3.200px e desconexão entre o botão de cálculo e o painel de resultados).
+- **Arquitetura Dedicada:** Criação do hook `useIsMobile(768)` e dos componentes mobile dedicados em `src/ui/components/mobile/`:
+  - `MobileHeader`: Cabeçalho ultra-compacto (48px) com resumo do contexto ativo e acesso a configurações.
+  - `MobileFamilyTabs`: Seletor deslizante horizontal das 4 famílias com total acessibilidade WAI-ARIA.
+  - `MobileStickyBar`: Barra fixa inferior na *thumb zone* com exibição em tempo real dos números de comando ($S$ e $F$) e nível de segurança Kienzle.
+  - `MobileResultsSheet`: Bottom Sheet modal deslizante com controles táteis de $\pm 5\%$, diagnóstico Z2 e verificação física Z7.
+  - `MobileCalculator`: Shell integrador com formulário sanfona em 1 coluna (sem corte de inputs) e compensação vertical.
+- **Preservação Integral:** Desktop intacto (zero regressão nos 102 testes legados), mesma lógica física e de storage IndexedDB em `src/core/` e `CalculatorContext.tsx`.
+- **Quality Gate:** `npm run check` 100% verde (0 erros de tipo TypeScript, 16 arquivos de teste e 105/105 testes passando).
+- **Publicação Online:** Deploy do Cloudflare Worker (`tooloptimizercnc`) via Wrangler com compilação de produção Vite (`npm run build`). Verificação ativa em `app.tooloptimizercnc.com.br` e `tooloptimizercnc.com.br` confirmando entrega dos novos pacotes compilados.
 
 ---
 
