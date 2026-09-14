@@ -15,7 +15,7 @@ interface StepperInputProps {
   onChange: (val: number | undefined) => void;
 }
 
-function StepperInput({
+export function StepperInput({
   id,
   label,
   sym,
@@ -101,7 +101,7 @@ interface D11DrawerProps {
   equilibrio?: string;
 }
 
-function D11Drawer({ id, title, oQueE, aumentar, diminuir, equilibrio }: D11DrawerProps) {
+export function D11Drawer({ id, title, oQueE, aumentar, diminuir, equilibrio }: D11DrawerProps) {
   const [open, setOpen] = useState(false);
 
   return (
@@ -374,7 +374,7 @@ export default function ConfigForm() {
             )}
 
             <div className="lbl">VARIÁVEIS DA GEOMETRIA DESTA MONTAGEM</div>
-            <div className="vgrid" style={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: '12px' }}>
+            <div className="vgrid">
               {activeFamily === 'fresar' && (
                 <>
                   <StepperInput
