@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { useCalculator } from '../context/CalculatorContext';
 
 interface HeaderZ1Props {
@@ -8,12 +8,37 @@ interface HeaderZ1Props {
 export default function HeaderZ1({ onOpenSettings }: HeaderZ1Props) {
   const { activeFamily, selectedMaterial, selectedTool, selectedSubstrate, currentInputs, safetyMargin } = useCalculator();
 
+  const [theme, setTheme] = useState<'claro' | 'escuro'>('claro');
+
+  useEffect(() => {
+    const saved = (localStorage.getItem('to_theme') as 'claro' | 'escuro') || 'claro';
+    setTheme(saved);
+    document.documentElement.setAttribute('data-theme', saved);
+    document.body.setAttribute('data-theme', saved);
+  }, []);
+
+  const toggleTheme = () => {
+    const next = theme === 'claro' ? 'escuro' : 'claro';
+    setTheme(next);
+    localStorage.setItem('to_theme', next);
+    document.documentElement.setAttribute('data-theme', next);
+    document.body.setAttribute('data-theme', next);
+  };
+
   const inp = currentInputs;
 
   return (
     <section className="card z1-card" aria-label="Cabeçalho do Sistema">
-      <div className="brand-plate" role="img" aria-label="Marca ToolOptimizer CNC">
-        TOOLOPTIMIZER
+      <div className="z1-brand-group">
+        <div className="brand-plate" role="img" aria-label="Marca ToolOptimizer CNC" style={{ display: 'inline-flex', alignItems: 'center', gap: '8px' }}>
+          <svg width="22" height="22" viewBox="0 0 500 500" style={{ flexShrink: 0 }}>
+            <path d="M 70 340 A 180 180 0 0 1 116 220 L 179 276 A 95 95 0 0 0 155 340 Z" fill="#16202C" stroke="#19E4BB" strokeWidth="8"/>
+            <path d="M 125 210 A 180 180 0 0 1 370 206 L 314 269 A 95 95 0 0 0 184 272 Z" fill="#0E7C69" stroke="#19E4BB" strokeWidth="8"/>
+            <path d="M 379 215 A 180 180 0 0 1 430 340 L 345 340 A 95 95 0 0 0 318 274 Z" fill="#19E4BB" stroke="#19E4BB" strokeWidth="8"/>
+            <path d="M 115 450 L 210 270 L 248 305 L 345 170 L 330 155 L 410 95 L 385 195 L 368 188 L 262 335 L 222 298 Z" fill="#BDFF4B" stroke="#E4FF94" strokeWidth="6"/>
+          </svg>
+          <span>TOOLOPTIMIZER</span>
+        </div>
       </div>
       <div className="zid" id="z1-identidade">
         {/* CHIP DE MATERIAL */}
@@ -120,19 +145,51 @@ export default function HeaderZ1({ onOpenSettings }: HeaderZ1Props) {
         )}
       </div>
 
-      <button
-        type="button"
-        className="hbtn"
-        id="btn-nav-configuracoes"
-        onClick={onOpenSettings}
-        aria-label="Abrir Configurações"
-      >
-        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" strokeLinejoin="round">
-          <circle cx="12" cy="12" r="3" />
-          <path d="M19 12a7 7 0 0 0-.1-1l2-1.6-2-3.4-2.4 1a7 7 0 0 0-1.7-1L14.5 3h-5l-.3 2.4a7 7 0 0 0-1.7 1l-2.4-1-2 3.4L3 11a7 7 0 0 0 0 2l-2 1.6 2 3.4 2.4-1a7 7 0 0 0 1.7 1L9.5 21h5l.3-2.4a7 7 0 0 0 1.7-1l2.4 1 2-3.4-2-1.6a7 7 0 0 0 .1-1Z" />
-        </svg>
-        Configurações
-      </button>
+      <div style={{ display: 'flex', alignItems: 'center', gap: '8px', flexWrap: 'wrap' }}>
+        <a
+          href="/site-model.html"
+          className="hbtn"
+          style={{ textDecoration: 'none', display: 'inline-flex', alignItems: 'center', gap: '6px', fontSize: '11px', fontWeight: 700 }}
+          title="Abrir o Flagship Website de Referência"
+        >
+          <span style={{ width: '6px', height: '6px', borderRadius: '50%', background: 'var(--brand-fill)' }}></span>
+          Site Modelo ↗
+        </a>
+
+        <a
+          href="/showcase.html"
+          className="hbtn"
+          style={{ textDecoration: 'none', display: 'inline-flex', alignItems: 'center', gap: '6px', fontSize: '11px', fontWeight: 700 }}
+          title="Abrir Catálogo do Design System"
+        >
+          Design System ↗
+        </a>
+
+        <button
+          type="button"
+          className="hbtn"
+          onClick={toggleTheme}
+          aria-label="Alternar Tema Claro / Escuro"
+          title={theme === 'claro' ? 'Mudar para Tema Escuro' : 'Mudar para Tema Claro'}
+          style={{ display: 'inline-flex', alignItems: 'center', gap: '4px', fontSize: '11px', fontWeight: 700 }}
+        >
+          {theme === 'claro' ? '☀️ Claro' : '🌙 Escuro'}
+        </button>
+
+        <button
+          type="button"
+          className="hbtn"
+          id="btn-nav-configuracoes"
+          onClick={onOpenSettings}
+          aria-label="Abrir Configurações"
+        >
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" strokeLinejoin="round">
+            <circle cx="12" cy="12" r="3" />
+            <path d="M19 12a7 7 0 0 0-.1-1l2-1.6-2-3.4-2.4 1a7 7 0 0 0-1.7-1L14.5 3h-5l-.3 2.4a7 7 0 0 0-1.7 1l-2.4-1-2 3.4L3 11a7 7 0 0 0 0 2l-2 1.6 2 3.4 2.4-1a7 7 0 0 0 1.7 1L9.5 21h5l.3-2.4a7 7 0 0 0 1.7-1l2.4 1 2-3.4-2-1.6a7 7 0 0 0 .1-1Z" />
+          </svg>
+          Configurações
+        </button>
+      </div>
     </section>
   );
 }

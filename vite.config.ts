@@ -13,8 +13,8 @@ export default defineConfig({
         name: 'ToolOptimizer CNC',
         short_name: 'ToolOptimizer',
         description: 'Calculadora de Parâmetros de Corte Industrial',
-        theme_color: '#0F3D5C',
-        background_color: '#0F3D5C',
+        theme_color: '#080C12',
+        background_color: '#080C12',
         display: 'standalone',
         orientation: 'portrait',
         icons: [
@@ -38,6 +38,8 @@ export default defineConfig({
       },
       workbox: {
         globPatterns: ['**/*.{js,css,html,ico,png,svg,woff,woff2}'],
+        skipWaiting: true,
+        clientsClaim: true,
       },
     }),
   ],

@@ -1,64 +1,150 @@
-/* ==========================================================================
-   DESIGN SYSTEM TOOLOPTIMIZER CNC — TEMA CLARO — CANÔNICO (Gabarito v1.6)
-   ========================================================================== */
-
 :root {
-  /* superfícies — níveis refinados com elevação sutil */
-  --bg-page:             #F7F5F1;
-  --surface-card:        #FFFFFF;
-  --surface-card-subtle: #EFEFF0;
-  --surface-input:       #FFFFFF;
-  --surface-input-muted: #EFEFF0;
-  --border-subtle:       #CDCFD1;
-  --border-control:      #85868A;
-  --border-control-focus:#0F3D5C;
-  --shadow-sm:           0 1px 2px rgba(15, 23, 42, 0.05);
-  --shadow-card:         0 1px 3px rgba(15, 23, 42, 0.06), 0 4px 16px -2px rgba(15, 23, 42, 0.05);
+  /* ==========================================================================
+     TOOLOPTIMIZER CNC — CANONICAL DESIGN SYSTEM (PRECISION SURGICAL MACHINING)
+     TEMA 1: CLARO (DEFAULT / PADRÃO OPERACIONAL DE FÁBRICA)
+     ========================================================================== */
+  --bg-page:              #F4F6F9;
+  --surface-card:         #FFFFFF;
+  --surface-card-subtle:  #F8FAFC;
+  --surface-input:        #FFFFFF;
+  --surface-input-muted:  #F1F5F9;
+  --border-subtle:        #E2E8F0;
+  --border-control:       #CBD5E1;
+  --border-control-focus: #0F766E;
+  --shadow-sm:            0 1px 3px rgba(15, 23, 42, 0.05);
+  --shadow-card:          0 4px 16px rgba(15, 23, 42, 0.06);
 
-  /* texto — três níveis com alto contraste */
-  --tx-1: #22252A;
-  --tx-2: #2E3238;
-  --tx-3: #696C71;
+  /* Texto — três níveis estritos WCAG AA */
+  --tx-1: #0F172A;
+  --tx-2: #334155;
+  --tx-3: #64748B;
 
-  /* marca e seleção */
-  --brand-fill:    #0F3D5C;
-  --brand-hover:   #0C3049;
-  --brand-active:  #092437;
-  --action-fill:   #A96208;
-  --action-hover:  #8F5307;
-  --action-active: #754406;
+  /* Marca canônica & ações */
+  --brand-fill:    #0F766E;  /* Ciano cirúrgico industrial profundo (>5.4:1 WCAG AA) */
+  --brand-hover:   #115E59;
+  --brand-active:  #134E4A;
+  --action-fill:   #3F700B;  /* Lime/oliva técnico de alto impacto (>5.9:1 WCAG AA) */
+  --action-hover:  #325807;
+  --action-active: #274505;
   --tx-on-brand:   #FFFFFF;
-  --nav-active-bg: #0F3D5C;
+  --tx-on-action:  #FFFFFF;
+  --nav-active-bg: #0F766E;
   --nav-active-tx: #FFFFFF;
-  --brand-accent:  #E4BF90;
-  --accent-blue:   #506E82;
-  --select-ink:    #0F3D5C;
+  --brand-accent:  #14B8A6;
+  --accent-blue:   #0F766E;
+  --select-ink:    #0F766E;
 
-  /* estado — rampa única */
-  --st-normal-ink: #104237;  --st-normal-bg: #ECF3F1;  --st-normal-bd: #C6DAD6;  --st-normal-accent: #1B6E5C;
-  --st-warn-ink:   #754406;  --st-warn-bg:   #FAF3EB;  --st-warn-bd:   #F0DBC1;  --st-warn-accent:   #C4720A;
-  --st-crit-ink:   #6E2A11;  --st-crit-bg:   #F9F0EC;  --st-crit-bd:   #EDD0C6;  --st-crit-accent:   #B8461D;
-  /* Informacao neutra nao e diagnostico (§2.4) — nao tem matiz propria, aponta para os neutros.
-     Antes o accent era #0F3D5C, hex identico ao --brand-fill: duas barras iguais, sentidos diferentes. */
-  --st-info-ink: var(--tx-1);  --st-info-bg: var(--surface-card-subtle);  --st-info-bd: var(--border-subtle);  --st-info-accent: var(--tx-3);
+  /* Estado — normas industriais */
+  --st-normal-ink:    #166534;
+  --st-normal-bg:     #DCFCE7;
+  --st-normal-bd:     #86EFAC;
+  --st-normal-accent: #166534;
 
-  /* interação */
-  --surface-hover-field: #EFEFF0;
-  --surface-hover-card:  #EBEFF1;
-  --surface-pressed:     #CDCFD1;
+  --st-warn-ink:      #854D0E;
+  --st-warn-bg:       #FEF9C3;
+  --st-warn-bd:       #FDE047;
+  --st-warn-accent:   #854D0E;
 
-  /* tipografia local — zero rede */
-  --font-sans: Inter, "Segoe UI Variable", "Segoe UI", system-ui, -apple-system, sans-serif;
-  --font-mono: "JetBrains Mono", "Cascadia Mono", Consolas, ui-monospace, monospace;
+  --st-crit-ink:      #991B1B;
+  --st-crit-bg:       #FEE2E2;
+  --st-crit-bd:       #FCA5A5;
+  --st-crit-accent:   #991B1B;
 
-  /* espaço, raio, tempo */
+  --st-info-ink:      var(--tx-1);
+  --st-info-bg:       var(--surface-card-subtle);
+  --st-info-bd:       var(--border-subtle);
+  --st-info-accent:   var(--tx-3);
+
+  /* Interação e elevação */
+  --surface-hover-field: #EDF2F7;
+  --surface-hover-card:  #F1F5F9;
+  --surface-pressed:     #E2E8F0;
+
+  /* Tipografia oficial canônica */
+  --font-sans: 'Urbanist', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  --font-mono: 'JetBrains Mono', Consolas, ui-monospace, monospace;
+
+  /* Espaçamento, raios e tempos */
   --sp-1: 4px;  --sp-2: 8px;  --sp-3: 12px; --sp-4: 16px;
   --sp-5: 24px; --sp-6: 32px; --sp-7: 48px;
-  --r-chip: 4px; --r-field: 6px; --r-card: 10px; --r-pill: 999px;
+  --r-chip: 6px; --r-field: 8px; --r-card: 14px; --r-pill: 999px;
   --t-control: 140ms; --t-panel: 200ms;
 
-  /* alvos de toque */
+  /* Alvos de toque industriais */
   --h-target: 44px; --h-cta: 52px;
+}
+
+/* ==========================================================================
+   TEMA 2: ESCURO (DARK TITANIUM OBSIDIAN CIRÚRGICO)
+   ========================================================================== */
+[data-theme="escuro"] {
+  --bg-page:              #080C12;
+  --surface-card:         #131B29;
+  --surface-card-subtle:  #182234;
+  --surface-input:        #0E141F;
+  --surface-input-muted:  #182234;
+  --border-subtle:        rgba(255, 255, 255, 0.08);
+  --border-control:       rgba(255, 255, 255, 0.16);
+  --border-control-focus: #19E4BB;
+  --shadow-sm:            0 2px 8px rgba(0, 0, 0, 0.4);
+  --shadow-card:          0 8px 30px rgba(0, 0, 0, 0.55);
+
+  --tx-1: #FFFFFF;
+  --tx-2: #C7D3E3;
+  --tx-3: #8E9FB8;
+
+  --brand-fill:    #19E4BB;  /* Ciano Cirúrgico Neon */
+  --brand-hover:   #42ECD1;
+  --brand-active:  #13C4A0;
+  --action-fill:   #BDFF4B;  /* Lime Elétrico */
+  --action-hover:  #C7FD40;
+  --action-active: #A2E62E;
+  --tx-on-brand:   #050B08;
+  --tx-on-action:  #070F02;
+  --nav-active-bg: rgba(25, 228, 187, 0.16);
+  --nav-active-tx: #19E4BB;
+  --brand-accent:  #19E4BB;
+  --accent-blue:   #19E4BB;
+  --select-ink:    #19E4BB;
+
+  --st-normal-ink:    #00E5A3;
+  --st-normal-bg:     rgba(0, 229, 163, 0.12);
+  --st-normal-bd:     rgba(0, 229, 163, 0.32);
+  --st-normal-accent: #00E5A3;
+
+  --st-warn-ink:      #FFB020;
+  --st-warn-bg:       rgba(255, 176, 32, 0.12);
+  --st-warn-bd:       rgba(255, 176, 32, 0.32);
+  --st-warn-accent:   #FFB020;
+
+  --st-crit-ink:      #FF4D4D;
+  --st-crit-bg:       rgba(255, 77, 77, 0.14);
+  --st-crit-bd:       rgba(255, 77, 77, 0.36);
+  --st-crit-accent:   #FF4D4D;
+
+  --st-info-ink:      var(--tx-1);
+  --st-info-bg:       var(--surface-card-subtle);
+  --st-info-bd:       var(--border-subtle);
+  --st-info-accent:   var(--tx-3);
+
+  --surface-hover-field: #212D42;
+  --surface-hover-card:  #1A2436;
+  --surface-pressed:     #2A3852;
+}
+
+[data-theme="escuro"] .brand-plate {
+  color: #050B08;
+  box-shadow: 0 0 16px rgba(25, 228, 187, 0.35);
+}
+
+[data-theme="escuro"] .hbtn {
+  background: var(--surface-card-subtle);
+  color: var(--tx-1);
+  border-color: var(--border-control);
+}
+[data-theme="escuro"] .hbtn:hover {
+  border-color: var(--brand-fill);
+  color: var(--brand-fill);
 }
 
 /* Reset e base */
