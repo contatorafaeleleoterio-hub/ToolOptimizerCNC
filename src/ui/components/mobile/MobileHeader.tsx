@@ -8,10 +8,10 @@ interface MobileHeaderProps {
 export default function MobileHeader({ onOpenSettings }: MobileHeaderProps) {
   const { selectedMaterial, selectedTool, selectedSubstrate, safetyMargin } = useCalculator();
 
-  const [theme, setTheme] = React.useState<'claro' | 'escuro'>('claro');
+  const [theme, setTheme] = React.useState<'claro' | 'escuro'>('escuro');
 
   React.useEffect(() => {
-    const saved = (localStorage.getItem('to_theme') as 'claro' | 'escuro') || 'claro';
+    const saved = (localStorage.getItem('to_theme') as 'claro' | 'escuro') || 'escuro';
     setTheme(saved);
     document.documentElement.setAttribute('data-theme', saved);
     document.body.setAttribute('data-theme', saved);

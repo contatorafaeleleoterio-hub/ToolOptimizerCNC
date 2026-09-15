@@ -167,7 +167,7 @@ button, input, select, textarea { font: inherit; color: inherit; }
 :focus-visible {
   outline: 2px solid var(--select-ink);
   outline-offset: 2px;
-  box-shadow: 0 0 0 3px rgba(15, 61, 92, .35);
+  box-shadow: 0 0 0 3px rgba(15, 118, 110, .25);
 }
 
 @media (prefers-reduced-motion: reduce) {
@@ -311,17 +311,19 @@ button, input, select, textarea { font: inherit; color: inherit; }
   flex: none;
 }
 .brand-plate {
-  display: flex;
+  display: inline-flex;
   align-items: center;
   justify-content: center;
-  background: var(--brand-fill);
+  gap: 8px;
+  background: #0B0F17;
   color: #FFFFFF;
-  border-radius: 6px;
+  border: 1px solid rgba(25, 228, 187, 0.4);
+  border-radius: var(--r-field);
   padding: 6px 14px;
-  font-size: 16px;
+  font-size: 15px;
   font-weight: 800;
   letter-spacing: .08em;
-  box-shadow: 0 2px 4px rgba(15, 61, 92, 0.25);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3), 0 0 12px rgba(25, 228, 187, 0.2);
   min-height: 40px;
   flex: none;
 }
@@ -340,7 +342,6 @@ button, input, select, textarea { font: inherit; color: inherit; }
   font-size: 11px;
   color: var(--tx-3);
 }
-
 .zid {
   display: flex;
   align-items: center;
@@ -436,7 +437,7 @@ button, input, select, textarea { font: inherit; color: inherit; }
 }
 .sctl:focus-within {
   border-color: var(--border-control-focus);
-  box-shadow: 0 0 0 3px rgba(37, 99, 235, .2);
+  box-shadow: 0 0 0 3px rgba(15, 118, 110, .25);
 }
 .sctl.error {
   border-color: var(--st-crit-accent) !important;
@@ -490,7 +491,7 @@ button, input, select, textarea { font: inherit; color: inherit; }
 }
 .fbox:focus-within {
   border-color: var(--border-control-focus);
-  box-shadow: 0 0 0 3px rgba(37, 99, 235, .2);
+  box-shadow: 0 0 0 3px rgba(15, 118, 110, .25);
 }
 .fbox.error {
   border-color: var(--st-crit-accent) !important;
@@ -537,7 +538,7 @@ button, input, select, textarea { font: inherit; color: inherit; }
   transition: border-color var(--t-control), box-shadow var(--t-control);
 }
 .fsel:hover { border-color: var(--tx-2); }
-.fsel:focus { outline: none; border-color: var(--border-control-focus); box-shadow: 0 0 0 3px rgba(37, 99, 235, .2); }
+.fsel:focus { outline: none; border-color: var(--border-control-focus); box-shadow: 0 0 0 3px rgba(15, 118, 110, .25); }
 .selcv {
   position: absolute;
   right: 12px;
@@ -596,13 +597,13 @@ button, input, select, textarea { font: inherit; color: inherit; }
   letter-spacing: .06em;
   text-transform: uppercase;
   cursor: pointer;
-  box-shadow: 0 2px 4px rgba(169, 98, 8, 0.25), 0 4px 12px rgba(169, 98, 8, 0.18);
+  box-shadow: 0 2px 6px rgba(63, 112, 11, 0.25), 0 4px 14px rgba(63, 112, 11, 0.18);
   transition: all var(--t-control) ease;
 }
 .btn-cta:hover {
   background: var(--action-hover);
   transform: translateY(-1px);
-  box-shadow: 0 4px 8px rgba(169, 98, 8, 0.3), 0 8px 20px rgba(169, 98, 8, 0.22);
+  box-shadow: 0 4px 8px rgba(63, 112, 11, 0.3), 0 8px 20px rgba(63, 112, 11, 0.22);
 }
 .btn-cta:active {
   background: var(--action-active);
@@ -616,8 +617,8 @@ button, input, select, textarea { font: inherit; color: inherit; }
 
 /* Estado de Cálculo Concluído / Atualizado */
 .btn-cta.is-calculated {
-  background: #1B6E5C;
-  border-color: #155849;
+  background: var(--brand-fill);
+  border-color: var(--brand-hover);
   color: #FFFFFF;
   box-shadow: 0 2px 4px rgba(27, 110, 92, 0.25), 0 4px 14px rgba(27, 110, 92, 0.2);
 }
@@ -1597,3 +1598,176 @@ button, input, select, textarea { font: inherit; color: inherit; }
   gap: 4px;
 }
 
+
+
+/* ==========================================================================
+   REFINAMENTOS ESPECÍFICOS DO DESIGN SYSTEM CANÔNICO (CLARO & ESCURO)
+   ========================================================================== */
+[data-theme="escuro"] body {
+  background: #080C12;
+  color: #C7D3E3;
+}
+
+[data-theme="escuro"] .card,
+[data-theme="escuro"] .rcard {
+  background: var(--surface-card);
+  border-color: var(--border-subtle);
+  box-shadow: var(--shadow-card);
+}
+
+[data-theme="escuro"] .brand-plate {
+  background: #06090E;
+  color: #FFFFFF;
+  border: 1px solid #19E4BB;
+  box-shadow: 0 0 18px rgba(25, 228, 187, 0.35);
+}
+
+[data-theme="escuro"] .nav-families {
+  background: #0E141F;
+  border-color: rgba(255, 255, 255, 0.08);
+}
+
+[data-theme="escuro"] .nav-tab {
+  color: var(--tx-3);
+}
+
+[data-theme="escuro"] .nav-tab:hover {
+  background: rgba(255, 255, 255, 0.06);
+  color: #FFFFFF;
+}
+
+[data-theme="escuro"] .nav-tab.active {
+  background: rgba(25, 228, 187, 0.16);
+  color: #19E4BB;
+  border-color: rgba(25, 228, 187, 0.5);
+  box-shadow: 0 0 16px rgba(25, 228, 187, 0.25);
+}
+
+[data-theme="escuro"] .nav-tab.active .tab-icon {
+  color: #19E4BB;
+}
+
+[data-theme="escuro"] .rcard-hero {
+  border-top: 3px solid #19E4BB;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5), inset 0 1px 0 rgba(25, 228, 187, 0.15);
+}
+
+[data-theme="escuro"] .rbig {
+  color: #FFFFFF;
+  text-shadow: 0 0 20px rgba(25, 228, 187, 0.25);
+}
+
+[data-theme="escuro"] .hero-addr-badge {
+  background: rgba(25, 228, 187, 0.14);
+  color: #19E4BB;
+  border: 1px solid rgba(25, 228, 187, 0.35);
+}
+
+[data-theme="escuro"] .hero-step-btn {
+  background: #0E141F;
+  border-color: rgba(255, 255, 255, 0.16);
+  color: #FFFFFF;
+}
+
+[data-theme="escuro"] .hero-step-btn:hover {
+  background: #212D42;
+  border-color: #19E4BB;
+  color: #19E4BB;
+}
+
+[data-theme="escuro"] .btn-cta {
+  background: #BDFF4B;
+  color: #070F02;
+  box-shadow: 0 0 20px rgba(189, 255, 75, 0.35);
+}
+
+[data-theme="escuro"] .btn-cta:hover {
+  background: #C7FD40;
+  box-shadow: 0 0 26px rgba(189, 255, 75, 0.5);
+}
+
+[data-theme="escuro"] .btn-cta.is-calculated {
+  background: rgba(25, 228, 187, 0.2);
+  border-color: #19E4BB;
+  color: #19E4BB;
+  box-shadow: 0 0 16px rgba(25, 228, 187, 0.3);
+}
+
+[data-theme="escuro"] .sctl {
+  background: #0E141F;
+  border-color: rgba(255, 255, 255, 0.16);
+}
+
+[data-theme="escuro"] .sctl:focus-within {
+  border-color: #19E4BB;
+  box-shadow: 0 0 0 3px rgba(25, 228, 187, 0.25);
+}
+
+[data-theme="escuro"] .sctl .step {
+  background: #182234;
+  color: #C7D3E3;
+}
+
+[data-theme="escuro"] .sctl .step:hover {
+  background: #212D42;
+  color: #FFFFFF;
+}
+
+[data-theme="escuro"] .fbox {
+  background: #0E141F;
+  border-color: rgba(255, 255, 255, 0.16);
+}
+
+[data-theme="escuro"] .fsel {
+  background: #0E141F;
+  border-color: rgba(255, 255, 255, 0.16);
+  color: #FFFFFF;
+}
+
+[data-theme="escuro"] .fsel:focus {
+  border-color: #19E4BB;
+  box-shadow: 0 0 0 3px rgba(25, 228, 187, 0.25);
+}
+
+[data-theme="escuro"] .z1-chip {
+  background: #182234;
+  border-color: rgba(255, 255, 255, 0.08);
+}
+
+[data-theme="escuro"] .z3 {
+  background: #131B29;
+  border-color: rgba(255, 255, 255, 0.08);
+}
+
+[data-theme="escuro"] .z3pair {
+  background: #182234;
+  border-color: rgba(255, 255, 255, 0.08);
+}
+
+[data-theme="escuro"] .drawer {
+  background: #131B29;
+  border-color: rgba(255, 255, 255, 0.08);
+}
+
+[data-theme="escuro"] .dbody {
+  background: #131B29;
+  border-color: rgba(255, 255, 255, 0.08);
+}
+
+[data-theme="escuro"] .chip.normal {
+  background: rgba(0, 229, 163, 0.16);
+  color: #00E5A3;
+  border-color: rgba(0, 229, 163, 0.35);
+}
+
+[data-theme="escuro"] .chip.warning {
+  background: rgba(255, 176, 32, 0.16);
+  color: #FFB020;
+  border-color: rgba(255, 176, 32, 0.35);
+}
+
+[data-theme="escuro"] .chip.critical {
+  background: rgba(255, 77, 77, 0.18);
+  color: #FF4D4D;
+  border-color: rgba(255, 77, 77, 0.4);
+}
