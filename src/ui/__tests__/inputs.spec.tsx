@@ -90,7 +90,7 @@ describe('ConfigForm & Geometry-based Inputs (TASK-011)', () => {
     const zInput = screen.getByLabelText(/arestas \(z\)/i);
     const lInput = screen.getByLabelText(/balanço/i);
     const apInput = screen.getByLabelText(/profundidade de corte \(ap\)/i);
-    const aeInput = screen.getByLabelText(/penetração \(ae\)/i);
+    const aeInput = screen.getByLabelText(/engajamento radial|penetração/i);
     const vcInput = screen.getByLabelText(/velocidade de corte \(vc\)/i);
     const fzInput = screen.getByLabelText(/avanço por dente \(fz\)/i);
 
@@ -131,7 +131,7 @@ describe('ConfigForm & Geometry-based Inputs (TASK-011)', () => {
     fireEvent.change(apInput, { target: { value: '0.2' } });
     expect(apInput.value).toBe('0.2');
 
-    // Digita '5' -> '0.25' (não deve truncar para 1 decimal mesmo ap tendo step=0.5)
+    // Digita '5' -> '0.25'
     fireEvent.change(apInput, { target: { value: '0.25' } });
     expect(apInput.value).toBe('0.25');
 
@@ -140,7 +140,7 @@ describe('ConfigForm & Geometry-based Inputs (TASK-011)', () => {
     expect(apInput.value).toBe('0.25');
   });
 
-  it('Suporte a Teclado Mobile com Vírgula Brasileira: "0,2" e "1,5"', () => {
+  it('Suporte a Teclado Mobile com Vírgula Brasileira: "0,2" e "0,15"', () => {
     renderWithProvider();
 
     const matSelect = screen.getByLabelText(/material/i);
@@ -156,8 +156,8 @@ describe('ConfigForm & Geometry-based Inputs (TASK-011)', () => {
     expect(apInput.value).toBe('0,2');
 
     fireEvent.blur(apInput);
-    // No blur normaliza para valor numérico formatado
-    expect(apInput.value).toBe('0.2');
+    // No blur normaliza para valor numérico formatado com 2 casas decimais
+    expect(apInput.value).toBe('0.20');
   });
 
   it('Edição e Limpeza: apagar com Backspace não força restauração involuntária', () => {
@@ -192,18 +192,62 @@ describe('ConfigForm & Geometry-based Inputs (TASK-011)', () => {
     fireEvent.change(toolSelect, { target: { value: 'fresa-topo-reto' } });
 
     const apInput = screen.getByLabelText(/profundidade de corte \(ap\)/i) as HTMLInputElement;
-    fireEvent.change(apInput, { target: { value: '0.2' } });
+    fireEvent.change(apInput, { target: { value: '0.20' } });
 
-    // Clica no botão + (passo de 0.5 em ap)
+    // Clica no botão + (passo de 0.1 em ap com 2 casas)
     const plusBtn = screen.getByRole('button', { name: /aumentar passo \(ap\)/i });
     fireEvent.click(plusBtn);
 
-    // 0.2 + 0.5 = 0.7 (sem 0.7000000000000001)
-    expect(apInput.value).toBe('0.7');
+    // 0.20 + 0.1 = 0.30
+    expect(apInput.value).toBe('0.30');
 
     // Clica no botão -
     const minusBtn = screen.getByRole('button', { name: /diminuir passo \(ap\)/i });
     fireEvent.click(minusBtn);
-    expect(apInput.value).toBe('0.2');
+    expect(apInput.value).toBe('0.20');
+  });
+
+  it('AP e Engajamento Radial aceitam livremente "0,15", "0,20", "0,35", "1,25" com 2 casas decimais', () => {
+    renderWithProvider();
+
+    const matSelect = screen.getByLabelText(/material/i);
+    const toolSelect = screen.getByLabelText(/ferramenta/i);
+    fireEvent.change(matSelect, { target: { value: '1045' } });
+    fireEvent.change(toolSelect, { target: { value: 'fresa-topo-reto' } });
+
+    const apInput = screen.getByLabelText(/profundidade de corte \(ap\)/i) as HTMLInputElement;
+    const aeInput = screen.getByLabelText(/engajamento radial/i) as HTMLInputElement;
+
+    // Teste com 0.15 no AP
+    fireEvent.focus(apInput);
+    fireEvent.change(apInput, { target: { value: '0,15' } });
+    expect(apInput.value).toBe('0,15');
+    fireEvent.blur(apInput);
+    expect(apInput.value).toBe('0.15');
+
+    // Teste com 0.35 no AP
+    fireEvent.focus(apInput);
+    fireEvent.change(apInput, { target: { value: '0.35' } });
+    fireEvent.blur(apInput);
+    expect(apInput.value).toBe('0.35');
+
+    // Teste com 0.15 no AE
+    fireEvent.focus(aeInput);
+    fireEvent.change(aeInput, { target: { value: '0,15' } });
+    expect(aeInput.value).toBe('0,15');
+    fireEvent.blur(aeInput);
+    expect(aeInput.value).toBe('0.15');
+
+    // Teste com 1.25 no AE
+    fireEvent.focus(aeInput);
+    fireEvent.change(aeInput, { target: { value: '1.25' } });
+    fireEvent.blur(aeInput);
+    expect(aeInput.value).toBe('1.25');
+
+    // Teste com 0.20 no AE (não deve truncar para 0.2)
+    fireEvent.focus(aeInput);
+    fireEvent.change(aeInput, { target: { value: '0.20' } });
+    fireEvent.blur(aeInput);
+    expect(aeInput.value).toBe('0.20');
   });
 });

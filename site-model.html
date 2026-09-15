@@ -1,0 +1,1752 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ToolOptimizer CNC — Inteligência Preditiva para Usinagem de Alta Precisão</title>
+  
+  <!-- Tipografia Oficial do Design System -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700;800&family=Urbanist:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+  
+  <style>
+    /* ==========================================================================
+       SISTEMA DE TOKENS CANÔNICOS (LIGHT DEFAULT & DARK TITANIUM)
+       ========================================================================== */
+    :root {
+      --sans: 'Urbanist', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      --mono: 'JetBrains Mono', Consolas, ui-monospace, monospace;
+
+      /* Escala Modular Base 4px */
+      --sp-1: 4px;   --sp-2: 8px;   --sp-3: 12px;  --sp-4: 16px;
+      --sp-5: 20px;  --sp-6: 24px;  --sp-8: 32px;  --sp-10: 40px;  --sp-12: 48px;  --sp-16: 64px; --sp-20: 80px;
+
+      /* Raios de Canto */
+      --r-xs: 3px;
+      --r-chip: 6px;
+      --r-field: 8px;
+      --r-card: 14px;
+      --r-modal: 20px;
+      --r-pill: 999px;
+
+      /* Alturas de Toque e Layout */
+      --h-target-sm: 36px;
+      --h-target-md: 44px;
+      --h-target-lg: 52px;
+      --container-max: 1280px;
+
+      /* Dinâmica e Transições */
+      --t-fast: 0.15s ease;
+      --t: 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+      --t-smooth: 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    /* TEMA CLARO (LIGHT THEME — PADRÃO DE FÁBRICA / DEFAULT) */
+    [data-theme="claro"] {
+      --bg-page:              #F4F6F9;
+      --bg-surface:           #FFFFFF;
+      --surface-card:         #FFFFFF;
+      --surface-card-subtle:  #F8FAFC;
+      --surface-hover-field:  #EDF2F7;
+      --surface-elevated:     #FFFFFF;
+      --surface-dark-block:   #0B0F17;
+      
+      --border-subtle:        #E2E8F0;
+      --border-control:       #CBD5E1;
+      --border-strong:        #94A3B8;
+      --border-technical:     rgba(13, 148, 136, 0.35);
+
+      --tx-1: #0F172A;
+      --tx-2: #334155;
+      --tx-3: #64748B;
+      --tx-muted: #94A3B8;
+      --tx-inverse: #FFFFFF;
+
+      --brand-fill:    #0D9488;
+      --brand-accent:  #0F766E;
+      --brand-bg-soft: #CCFBF1;
+      --brand-border:  #5EEAD4;
+
+      --action-fill:   #4D7C0F;
+      --action-accent: #3F6212;
+      --action-bg-soft:#ECFCCB;
+      --action-border: #BEF264;
+
+      --st-normal-ink: #166534;
+      --st-normal-bg:  #DCFCE7;
+      --st-normal-bd:  #86EFAC;
+
+      --st-warn-ink:   #854D0E;
+      --st-warn-bg:    #FEF9C3;
+      --st-warn-bd:    #FDE047;
+
+      --st-crit-ink:   #991B1B;
+      --st-crit-bg:    #FEE2E2;
+      --st-crit-bd:    #FCA5A5;
+
+      --shadow-sm:   0 1px 3px rgba(15, 23, 42, 0.06);
+      --shadow-card: 0 4px 20px rgba(15, 23, 42, 0.07);
+      --shadow-lg:   0 16px 40px rgba(15, 23, 42, 0.1);
+      --glow-cyan:   0 0 20px rgba(13, 148, 136, 0.2);
+      --focus-ring:  0 0 0 2px #FFFFFF, 0 0 0 4px #0D9488;
+      --grid-line:   rgba(15, 23, 42, 0.04);
+    }
+
+    /* TEMA ESCURO (DARK THEME — SALA DE CONTROLE TITANIUM OBSIDIAN) */
+    [data-theme="escuro"] {
+      --bg-page:              #070A0F;
+      --bg-surface:           #0D121B;
+      --surface-card:         #121926;
+      --surface-card-subtle:  #172030;
+      --surface-hover-field:  #1F2B40;
+      --surface-elevated:     #1A2436;
+      --surface-dark-block:   #040609;
+      
+      --border-subtle:        rgba(255, 255, 255, 0.08);
+      --border-control:       rgba(255, 255, 255, 0.16);
+      --border-strong:        rgba(255, 255, 255, 0.26);
+      --border-technical:     rgba(25, 228, 187, 0.35);
+
+      --tx-1: #FFFFFF;
+      --tx-2: #C7D3E3;
+      --tx-3: #8E9FB8;
+      --tx-muted: #5A6675;
+      --tx-inverse: #070A0F;
+
+      --brand-fill:    #19E4BB;
+      --brand-accent:  #42ECD1;
+      --brand-bg-soft: rgba(25, 228, 187, 0.12);
+      --brand-border:  rgba(25, 228, 187, 0.35);
+
+      --action-fill:   #BDFF4B;
+      --action-accent: #C7FD40;
+      --action-bg-soft:rgba(189, 255, 75, 0.12);
+      --action-border: rgba(189, 255, 75, 0.35);
+
+      --st-normal-ink: #00E5A3;
+      --st-normal-bg:  rgba(0, 229, 163, 0.12);
+      --st-normal-bd:  rgba(0, 229, 163, 0.32);
+
+      --st-warn-ink:   #FFB020;
+      --st-warn-bg:    rgba(255, 176, 32, 0.12);
+      --st-warn-bd:    rgba(255, 176, 32, 0.32);
+
+      --st-crit-ink:   #FF4D4D;
+      --st-crit-bg:    rgba(255, 77, 77, 0.14);
+      --st-crit-bd:    rgba(255, 77, 77, 0.36);
+
+      --shadow-sm:   0 2px 8px rgba(0, 0, 0, 0.4);
+      --shadow-card: 0 8px 32px rgba(0, 0, 0, 0.6);
+      --shadow-lg:   0 20px 56px rgba(0, 0, 0, 0.75);
+      --glow-cyan:   0 0 24px rgba(25, 228, 187, 0.25);
+      --focus-ring:  0 0 0 2px #070A0F, 0 0 0 4px #19E4BB;
+      --grid-line:   rgba(255, 255, 255, 0.03);
+    }
+
+    /* Reset e Tipografia Global */
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; }
+    body {
+      background-color: var(--bg-page);
+      color: var(--tx-2);
+      font-family: var(--sans);
+      font-size: 15px;
+      line-height: 1.6;
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+      transition: background-color var(--t) ease, color var(--t) ease;
+      background-image: 
+        linear-gradient(var(--grid-line) 1px, transparent 1px),
+        linear-gradient(90deg, var(--grid-line) 1px, transparent 1px);
+      background-size: 40px 40px;
+    }
+
+    /* Foco acessível */
+    :focus-visible {
+      outline: none;
+      box-shadow: var(--focus-ring) !important;
+    }
+
+    /* ==========================================================================
+       HEADER & BARRA DE NAVEGAÇÃO PRINCIPAL
+       ========================================================================== */
+    .site-header {
+      position: sticky;
+      top: 0;
+      z-index: 120;
+      background: var(--bg-surface);
+      border-bottom: 1px solid var(--border-subtle);
+      backdrop-filter: blur(14px);
+      transition: background-color var(--t) ease;
+    }
+    .header-inner {
+      max-width: var(--container-max);
+      margin: 0 auto;
+      padding: 0 28px;
+      height: 72px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 20px;
+    }
+
+    .brand-group {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      text-decoration: none;
+    }
+    .brand-logo-svg {
+      height: 38px;
+      width: auto;
+    }
+
+    .system-status-indicator {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      font-family: var(--mono);
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--brand-fill);
+      background: var(--brand-bg-soft);
+      border: 1px solid var(--brand-border);
+      padding: 3px 8px;
+      border-radius: var(--r-chip);
+    }
+    .pulse-dot {
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: currentColor;
+      box-shadow: 0 0 6px currentColor;
+    }
+
+    /* Links de Navegação Principal */
+    .header-nav {
+      display: flex;
+      align-items: center;
+      gap: 24px;
+    }
+    .nav-link {
+      font-size: 13px;
+      font-weight: 700;
+      color: var(--tx-2);
+      text-decoration: none;
+      transition: color var(--t-fast);
+      letter-spacing: 0.01em;
+    }
+    .nav-link:hover {
+      color: var(--brand-fill);
+    }
+    .nav-link.ds-link {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      padding: 5px 10px;
+      background: var(--surface-card-subtle);
+      border: 1px solid var(--border-control);
+      border-radius: var(--r-chip);
+      font-family: var(--mono);
+      font-size: 11px;
+    }
+    .nav-link.ds-link:hover {
+      border-color: var(--brand-fill);
+      color: var(--brand-fill);
+    }
+
+    /* Ações do Topo */
+    .header-actions {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+    }
+
+    .theme-toggle-btn {
+      background: var(--surface-card-subtle);
+      border: 1px solid var(--border-control);
+      border-radius: var(--r-pill);
+      padding: 6px 12px;
+      color: var(--tx-1);
+      font-family: var(--sans);
+      font-size: 12px;
+      font-weight: 700;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      transition: all var(--t-fast);
+    }
+    .theme-toggle-btn:hover {
+      background: var(--surface-hover-field);
+      border-color: var(--border-strong);
+    }
+
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      font-family: var(--sans);
+      font-weight: 800;
+      font-size: 13px;
+      letter-spacing: 0.02em;
+      border: 1px solid transparent;
+      border-radius: var(--r-pill);
+      padding: 10px 22px;
+      cursor: pointer;
+      transition: all var(--t-fast);
+      text-decoration: none;
+      white-space: nowrap;
+      min-height: var(--h-target-md);
+    }
+    .btn.lg {
+      padding: 14px 30px;
+      font-size: 15px;
+      min-height: var(--h-target-lg);
+    }
+    .btn-primary {
+      background: var(--brand-fill);
+      color: #FFFFFF;
+      box-shadow: var(--shadow-sm);
+    }
+    [data-theme="escuro"] .btn-primary {
+      color: #070A0F;
+    }
+    .btn-primary:hover {
+      background: var(--brand-accent);
+      box-shadow: var(--glow-cyan);
+      transform: translateY(-1px);
+    }
+
+    .btn-action {
+      background: var(--action-fill);
+      color: #FFFFFF;
+      box-shadow: var(--shadow-sm);
+    }
+    [data-theme="escuro"] .btn-action {
+      color: #070A0F;
+    }
+    .btn-action:hover {
+      background: var(--action-accent);
+      transform: translateY(-1px);
+      box-shadow: 0 0 16px rgba(189, 255, 75, 0.4);
+    }
+
+    .btn-secondary {
+      background: var(--surface-card);
+      color: var(--tx-1);
+      border-color: var(--border-control);
+    }
+    .btn-secondary:hover {
+      background: var(--surface-hover-field);
+      border-color: var(--border-strong);
+      color: var(--tx-1);
+    }
+
+    .mobile-nav-toggle {
+      display: none;
+      background: var(--surface-card-subtle);
+      border: 1px solid var(--border-control);
+      border-radius: var(--r-chip);
+      padding: 8px 12px;
+      cursor: pointer;
+      color: var(--tx-1);
+      font-size: 18px;
+    }
+
+    /* ==========================================================================
+       SEÇÃO HERO: COMPOSIÇÃO EDITORIAL & TÉCNICA
+       ========================================================================== */
+    .hero-section {
+      padding: 72px 28px 80px;
+      max-width: var(--container-max);
+      margin: 0 auto;
+    }
+    .hero-grid {
+      display: grid;
+      grid-template-columns: 1.15fr 0.85fr;
+      gap: 48px;
+      align-items: center;
+    }
+
+    .hero-eyebrow {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      font-family: var(--mono);
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--brand-fill);
+      margin-bottom: 16px;
+      padding: 4px 10px;
+      border-radius: var(--r-chip);
+      background: var(--brand-bg-soft);
+      border: 1px solid var(--brand-border);
+    }
+
+    .hero-title {
+      font-size: 46px;
+      line-height: 1.12;
+      font-weight: 900;
+      color: var(--tx-1);
+      letter-spacing: -0.03em;
+      margin-bottom: 20px;
+    }
+    .hero-title span.accent {
+      color: var(--brand-fill);
+    }
+
+    .hero-lead {
+      font-size: 17px;
+      line-height: 1.6;
+      color: var(--tx-2);
+      max-width: 580px;
+      margin-bottom: 32px;
+    }
+
+    .hero-cta-group {
+      display: flex;
+      gap: 14px;
+      flex-wrap: wrap;
+      align-items: center;
+      margin-bottom: 36px;
+    }
+
+    .hero-meta-badges {
+      display: flex;
+      gap: 20px;
+      flex-wrap: wrap;
+      padding-top: 20px;
+      border-top: 1px solid var(--border-subtle);
+    }
+    .meta-badge-item {
+      display: flex;
+      flex-direction: column;
+    }
+    .meta-badge-label {
+      font-family: var(--mono);
+      font-size: 10px;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: var(--tx-3);
+    }
+    .meta-badge-val {
+      font-size: 13px;
+      font-weight: 800;
+      color: var(--tx-1);
+      margin-top: 2px;
+    }
+
+    /* Módulo Visual Hero: Live Machine Parameter Inspector */
+    .hero-inspector-card {
+      background: var(--surface-card);
+      border: 2px solid var(--border-technical);
+      border-radius: var(--r-modal);
+      padding: 24px;
+      box-shadow: var(--shadow-lg);
+      position: relative;
+      overflow: hidden;
+    }
+    .inspector-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding-bottom: 14px;
+      border-bottom: 1px solid var(--border-subtle);
+      margin-bottom: 18px;
+    }
+    .inspector-title {
+      font-size: 13px;
+      font-weight: 800;
+      color: var(--tx-1);
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .inspector-tag {
+      font-family: var(--mono);
+      font-size: 10px;
+      font-weight: 700;
+      color: var(--action-fill);
+      background: var(--action-bg-soft);
+      padding: 2px 7px;
+      border-radius: var(--r-xs);
+    }
+
+    .inspector-stream-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+      margin-bottom: 18px;
+    }
+    .stream-cell {
+      background: var(--surface-card-subtle);
+      border: 1px solid var(--border-subtle);
+      border-radius: var(--r-field);
+      padding: 12px 14px;
+    }
+    .stream-sym {
+      font-family: var(--mono);
+      font-size: 11px;
+      font-weight: 700;
+      color: var(--brand-fill);
+    }
+    .stream-num {
+      font-family: var(--mono);
+      font-size: 20px;
+      font-weight: 800;
+      color: var(--tx-1);
+      margin-top: 2px;
+      font-variant-numeric: tabular-nums;
+    }
+    .stream-sub {
+      font-size: 11px;
+      color: var(--tx-3);
+    }
+
+    .inspector-material-box {
+      background: var(--surface-card-subtle);
+      border: 1px solid var(--border-subtle);
+      border-radius: var(--r-field);
+      padding: 12px 14px;
+      margin-bottom: 18px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .mat-info-title {
+      font-size: 12px;
+      font-weight: 700;
+      color: var(--tx-1);
+    }
+    .mat-info-desc {
+      font-size: 11px;
+      color: var(--tx-3);
+    }
+    .mat-badge {
+      font-family: var(--mono);
+      font-size: 11px;
+      font-weight: 800;
+      color: var(--st-normal-ink);
+      background: var(--st-normal-bg);
+      border: 1px solid var(--st-normal-bd);
+      padding: 3px 8px;
+      border-radius: var(--r-xs);
+    }
+
+    .inspector-progress-row {
+      margin-bottom: 16px;
+    }
+    .progress-labels {
+      display: flex;
+      justify-content: space-between;
+      font-size: 11px;
+      font-weight: 700;
+      margin-bottom: 6px;
+      color: var(--tx-2);
+    }
+    .progress-bar-track {
+      height: 7px;
+      background: var(--border-control);
+      border-radius: var(--r-pill);
+      overflow: hidden;
+    }
+    .progress-bar-fill {
+      height: 100%;
+      width: 78%;
+      background: linear-gradient(90deg, var(--brand-fill) 0%, var(--action-fill) 100%);
+      border-radius: var(--r-pill);
+      transition: width var(--t-smooth);
+    }
+
+    .inspector-footer-bar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-family: var(--mono);
+      font-size: 11px;
+      color: var(--tx-3);
+      padding-top: 10px;
+      border-top: 1px solid var(--border-subtle);
+    }
+
+    /* ==========================================================================
+       SEÇÃO DE VALOR / ENGENHARIA E FÍSICA DE CORTE
+       ========================================================================== */
+    .section-container {
+      max-width: var(--container-max);
+      margin: 0 auto;
+      padding: 64px 28px;
+    }
+
+    .section-header-centered {
+      text-align: center;
+      max-width: 720px;
+      margin: 0 auto 52px;
+    }
+    .section-eyebrow {
+      font-family: var(--mono);
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--brand-fill);
+      margin-bottom: 8px;
+    }
+    .section-headline {
+      font-size: 34px;
+      font-weight: 800;
+      color: var(--tx-1);
+      letter-spacing: -0.02em;
+      margin-bottom: 14px;
+    }
+    .section-description {
+      font-size: 16px;
+      color: var(--tx-3);
+      line-height: 1.6;
+    }
+
+    /* Grid Assimétrico de Motores de Cálculo */
+    .physics-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(340px, 1fr));
+      gap: 24px;
+    }
+    .physics-card {
+      background: var(--surface-card);
+      border: 1px solid var(--border-subtle);
+      border-radius: var(--r-card);
+      padding: 30px;
+      box-shadow: var(--shadow-card);
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      transition: transform var(--t-fast), border-color var(--t-fast);
+      position: relative;
+    }
+    .physics-card:hover {
+      transform: translateY(-2px);
+      border-color: var(--brand-border);
+    }
+    .physics-card-num {
+      font-family: var(--mono);
+      font-size: 12px;
+      font-weight: 700;
+      color: var(--brand-fill);
+      margin-bottom: 12px;
+    }
+    .physics-card-title {
+      font-size: 20px;
+      font-weight: 800;
+      color: var(--tx-1);
+      margin-bottom: 12px;
+      letter-spacing: -0.01em;
+    }
+    .physics-card-body {
+      font-size: 14px;
+      color: var(--tx-3);
+      line-height: 1.6;
+      margin-bottom: 20px;
+    }
+    .physics-formula-pill {
+      background: var(--surface-card-subtle);
+      border: 1px solid var(--border-control);
+      border-radius: var(--r-field);
+      padding: 10px 14px;
+      font-family: var(--mono);
+      font-size: 12px;
+      font-weight: 600;
+      color: var(--brand-fill);
+      margin-top: auto;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    /* ==========================================================================
+       SEÇÃO: PRODUTO EM AÇÃO / OTIMIZADOR MULTIEIXOS
+       ========================================================================== */
+    .workbench-section {
+      background: var(--surface-dark-block);
+      color: #FFFFFF;
+      padding: 80px 28px;
+      border-top: 1px solid rgba(255, 255, 255, 0.08);
+      border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+      margin: 40px 0;
+    }
+    .workbench-inner {
+      max-width: var(--container-max);
+      margin: 0 auto;
+    }
+    .workbench-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-end;
+      margin-bottom: 40px;
+      flex-wrap: wrap;
+      gap: 20px;
+    }
+    .workbench-title-group h2 {
+      font-size: 32px;
+      font-weight: 800;
+      color: #FFFFFF;
+      letter-spacing: -0.02em;
+    }
+    .workbench-title-group p {
+      color: #8E9FB8;
+      font-size: 15px;
+      margin-top: 6px;
+      max-width: 600px;
+    }
+
+    .workbench-console {
+      background: #0E141F;
+      border: 1px solid rgba(255, 255, 255, 0.12);
+      border-radius: var(--r-modal);
+      padding: 28px;
+      box-shadow: 0 24px 64px rgba(0, 0, 0, 0.8);
+    }
+    .console-topbar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding-bottom: 16px;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+      margin-bottom: 24px;
+      flex-wrap: wrap;
+      gap: 12px;
+    }
+    .console-tool-info {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+    .tool-avatar {
+      width: 38px;
+      height: 38px;
+      border-radius: var(--r-field);
+      background: rgba(25, 228, 187, 0.15);
+      border: 1px solid rgba(25, 228, 187, 0.4);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-family: var(--mono);
+      font-size: 13px;
+      font-weight: 800;
+      color: #19E4BB;
+    }
+
+    .console-body-grid {
+      display: grid;
+      grid-template-columns: 1fr 1.2fr;
+      gap: 32px;
+    }
+
+    .console-controls-column {
+      display: flex;
+      flex-direction: column;
+      gap: 18px;
+    }
+    .interactive-slider-block {
+      background: #151D2C;
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      border-radius: var(--r-field);
+      padding: 16px;
+    }
+    .slider-header-row {
+      display: flex;
+      justify-content: space-between;
+      font-size: 12px;
+      font-weight: 700;
+      color: #C7D3E3;
+      margin-bottom: 8px;
+    }
+    .slider-header-row span.val {
+      font-family: var(--mono);
+      color: #19E4BB;
+    }
+    input[type="range"].console-range {
+      -webkit-appearance: none;
+      width: 100%;
+      height: 6px;
+      border-radius: var(--r-pill);
+      background: linear-gradient(90deg, rgba(255,255,255,0.1) 0%, #19E4BB 100%);
+      outline: none;
+    }
+    input[type="range"].console-range::-webkit-slider-thumb {
+      -webkit-appearance: none;
+      width: 20px;
+      height: 20px;
+      border-radius: 50%;
+      background: #FFFFFF;
+      border: 3px solid #19E4BB;
+      cursor: pointer;
+    }
+
+    .console-telemetry-column {
+      background: #121926;
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      border-radius: var(--r-field);
+      padding: 20px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      gap: 20px;
+    }
+    .telemetry-metrics-row {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 14px;
+    }
+    .metric-box {
+      background: #172132;
+      border: 1px solid rgba(255, 255, 255, 0.06);
+      border-radius: var(--r-field);
+      padding: 12px;
+    }
+    .metric-label {
+      font-size: 11px;
+      font-weight: 700;
+      color: #8E9FB8;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+    }
+    .metric-value {
+      font-family: var(--mono);
+      font-size: 22px;
+      font-weight: 800;
+      color: #FFFFFF;
+      margin-top: 4px;
+      font-variant-numeric: tabular-nums;
+    }
+
+    /* Gráfico SVG de Curva de Estabilidade */
+    .stability-graph-box {
+      background: #0D121B;
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      border-radius: var(--r-field);
+      padding: 16px;
+    }
+    .graph-title-row {
+      display: flex;
+      justify-content: space-between;
+      font-family: var(--mono);
+      font-size: 11px;
+      color: #8E9FB8;
+      margin-bottom: 8px;
+    }
+    .stability-svg {
+      width: 100%;
+      height: 110px;
+      overflow: visible;
+    }
+
+    /* ==========================================================================
+       SEÇÃO: ESPECIFICAÇÕES TÉCNICAS E COMPATIBILIDADE CNC
+       ========================================================================== */
+    .specs-table-wrapper {
+      background: var(--surface-card);
+      border: 1px solid var(--border-subtle);
+      border-radius: var(--r-card);
+      overflow-x: auto;
+      box-shadow: var(--shadow-card);
+    }
+    .specs-table {
+      width: 100%;
+      border-collapse: collapse;
+      text-align: left;
+      font-size: 13px;
+    }
+    .specs-table th {
+      background: var(--surface-card-subtle);
+      padding: 14px 20px;
+      font-size: 11px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: var(--tx-3);
+      border-bottom: 1px solid var(--border-subtle);
+    }
+    .specs-table td {
+      padding: 16px 20px;
+      border-bottom: 1px solid var(--border-subtle);
+      color: var(--tx-2);
+      font-variant-numeric: tabular-nums;
+    }
+    .specs-table tr:hover td {
+      background: var(--surface-hover-field);
+    }
+
+    /* ==========================================================================
+       SEÇÃO: GUIAS DE ENGENHARIA & CONHECIMENTO
+       ========================================================================== */
+    .guides-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+      gap: 24px;
+    }
+    .guide-card {
+      background: var(--surface-card);
+      border: 1px solid var(--border-subtle);
+      border-radius: var(--r-card);
+      padding: 24px;
+      display: flex;
+      flex-direction: column;
+      box-shadow: var(--shadow-sm);
+      transition: all var(--t-fast);
+    }
+    .guide-card:hover {
+      border-color: var(--brand-fill);
+      transform: translateY(-2px);
+    }
+    .guide-tag {
+      font-family: var(--mono);
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--brand-fill);
+      margin-bottom: 10px;
+    }
+    .guide-title {
+      font-size: 18px;
+      font-weight: 800;
+      color: var(--tx-1);
+      margin-bottom: 8px;
+      line-height: 1.3;
+    }
+    .guide-desc {
+      font-size: 13px;
+      color: var(--tx-3);
+      line-height: 1.6;
+      margin-bottom: 16px;
+    }
+    .guide-link {
+      font-size: 12px;
+      font-weight: 800;
+      color: var(--brand-fill);
+      text-decoration: none;
+      margin-top: auto;
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+    }
+
+    /* ==========================================================================
+       SEÇÃO: CTA FINAL DE ENGENHARIA
+       ========================================================================== */
+    .final-cta-section {
+      padding: 90px 28px;
+      background: linear-gradient(135deg, var(--bg-surface) 0%, var(--surface-card-subtle) 100%);
+      border-top: 1px solid var(--border-subtle);
+      border-bottom: 1px solid var(--border-subtle);
+      text-align: center;
+    }
+    .final-cta-inner {
+      max-width: 760px;
+      margin: 0 auto;
+    }
+    .final-cta-title {
+      font-size: 38px;
+      font-weight: 900;
+      color: var(--tx-1);
+      letter-spacing: -0.02em;
+      margin-bottom: 16px;
+    }
+    .final-cta-desc {
+      font-size: 16px;
+      color: var(--tx-3);
+      line-height: 1.6;
+      margin-bottom: 32px;
+    }
+
+    /* ==========================================================================
+       RODAPÉ INDUSTRIAL ESTRUTURADO
+       ========================================================================== */
+    .site-footer {
+      background: var(--surface-dark-block);
+      color: #94A3B8;
+      padding: 64px 28px 36px;
+      font-size: 13px;
+    }
+    .footer-inner {
+      max-width: var(--container-max);
+      margin: 0 auto;
+    }
+    .footer-grid {
+      display: grid;
+      grid-template-columns: 2fr 1fr 1fr 1fr;
+      gap: 40px;
+      margin-bottom: 48px;
+    }
+    .footer-col-title {
+      font-family: var(--mono);
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: #FFFFFF;
+      margin-bottom: 16px;
+    }
+    .footer-links {
+      list-style: none;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+    .footer-links a {
+      color: #8E9FB8;
+      text-decoration: none;
+      transition: color var(--t-fast);
+    }
+    .footer-links a:hover {
+      color: #19E4BB;
+    }
+    .footer-bottom {
+      border-top: 1px solid rgba(255, 255, 255, 0.08);
+      padding-top: 24px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 16px;
+      font-family: var(--mono);
+      font-size: 11px;
+      color: #64748B;
+    }
+
+    /* Responsividade */
+    @media (max-width: 1024px) {
+      .hero-grid {
+        grid-template-columns: 1fr;
+      }
+      .console-body-grid {
+        grid-template-columns: 1fr;
+      }
+      .footer-grid {
+        grid-template-columns: 1fr 1fr;
+      }
+    }
+    @media (max-width: 768px) {
+      .header-nav {
+        display: none;
+      }
+      .mobile-nav-toggle {
+        display: block;
+      }
+      .hero-title {
+        font-size: 34px;
+      }
+      .footer-grid {
+        grid-template-columns: 1fr;
+      }
+      .section-headline {
+        font-size: 26px;
+      }
+      .telemetry-metrics-row {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
+</head>
+<body data-theme="claro">
+
+  <!-- ==========================================================================
+       HEADER & BARRA DE NAVEGAÇÃO
+       ========================================================================== -->
+  <header class="site-header">
+    <div class="header-inner">
+      <a href="site-model.html" class="brand-group" aria-label="ToolOptimizer CNC Home">
+        <svg class="brand-logo-svg" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 300">
+          <defs>
+            <linearGradient id="g-sec1" x1="0%" y1="100%" x2="100%" y2="0%">
+              <stop offset="0%" stop-color="#16202C"/>
+              <stop offset="100%" stop-color="#1E2C3D"/>
+            </linearGradient>
+            <linearGradient id="g-sec2" x1="0%" y1="100%" x2="100%" y2="0%">
+              <stop offset="0%" stop-color="#0E7C69"/>
+              <stop offset="60%" stop-color="#13A88D"/>
+              <stop offset="100%" stop-color="#19E4BB"/>
+            </linearGradient>
+            <linearGradient id="g-sec3" x1="0%" y1="0%" x2="100%" y2="100%">
+              <stop offset="0%" stop-color="#19E4BB"/>
+              <stop offset="100%" stop-color="#13B896"/>
+            </linearGradient>
+            <linearGradient id="g-arrow" x1="0%" y1="100%" x2="100%" y2="0%">
+              <stop offset="0%" stop-color="#7BC71E"/>
+              <stop offset="40%" stop-color="#A3F527"/>
+              <stop offset="100%" stop-color="#BDFF4B"/>
+            </linearGradient>
+            <linearGradient id="g-frame" x1="0%" y1="0%" x2="100%" y2="0%">
+              <stop offset="0%" stop-color="#19E4BB" stop-opacity="0.8"/>
+              <stop offset="60%" stop-color="#64F0A4" stop-opacity="0.5"/>
+              <stop offset="100%" stop-color="#BDFF4B" stop-opacity="0.8"/>
+            </linearGradient>
+            <filter id="f-glow" x="-20%" y="-20%" width="140%" height="140%">
+              <feDropShadow dx="0" dy="0" stdDeviation="5" flood-color="#BDFF4B" flood-opacity="0.4"/>
+            </filter>
+          </defs>
+
+          <path d="M 230 115 L 910 115 A 45 45 0 0 1 955 160 L 955 165 A 45 45 0 0 1 910 210 L 195 210" 
+                fill="none" stroke="url(#g-frame)" stroke-width="3" stroke-linecap="round"/>
+
+          <g transform="translate(15, 10) scale(0.52)">
+            <path d="M 70.00 340.00 A 180 180 0 0 1 116.23 219.56 L 179.40 276.43 A 95 95 0 0 0 155.00 340.00 Z" fill="url(#g-sec1)" stroke="rgba(25, 228, 187, 0.25)" stroke-width="2"/>
+            <path d="M 124.96 210.52 A 180 180 0 0 1 370.44 206.23 L 313.57 269.40 A 95 95 0 0 0 184.01 271.66 Z" fill="url(#g-sec2)" stroke="rgba(25, 228, 187, 0.45)" stroke-width="2"/>
+            <path d="M 379.48 214.96 A 180 180 0 0 1 430.00 340.00 L 345.00 340.00 A 95 95 0 0 0 318.34 274.01 Z" fill="url(#g-sec3)" stroke="#19E4BB" stroke-width="2"/>
+            <path d="M 115 450 L 210 270 L 248 305 L 345 170 L 330 155 L 410 95 L 385 195 L 368 188 L 262 335 L 222 298 L 115 450 Z" fill="url(#g-arrow)" filter="url(#f-glow)" stroke="#E4FF94" stroke-width="1.5"/>
+          </g>
+
+          <text x="270" y="180">
+            <tspan style="font-family:'Urbanist',sans-serif; font-weight:800; font-size:88px; fill:currentColor;">Tool</tspan>
+            <tspan style="font-family:'Urbanist',sans-serif; font-weight:600; font-size:88px; fill:#19E4BB;">Optimizer</tspan>
+          </text>
+          <text x="275" y="245" style="font-family:'Urbanist',sans-serif; font-weight:700; font-size:19px; fill:#8E9AA8; letter-spacing:0.28em;">CNC PRECISION SUITE</text>
+        </svg>
+
+        <div class="system-status-indicator">
+          <span class="pulse-dot"></span>
+          <span>ENGINE v2.4 OPERACIONAL</span>
+        </div>
+      </a>
+
+      <!-- Menu Principal -->
+      <nav class="header-nav">
+        <a href="#solucao" class="nav-link">Soluções</a>
+        <a href="#fisica" class="nav-link">Física de Corte</a>
+        <a href="#bancada" class="nav-link">Console Interativo</a>
+        <a href="#especificacoes" class="nav-link">Compatibilidade CNC</a>
+        <a href="#conhecimento" class="nav-link">Guias Técnicos</a>
+        <a href="showcase.html" class="nav-link ds-link" title="Visualizar Design System Canônico">
+          <span>📐</span>
+          <span>Design System Docs</span>
+        </a>
+      </nav>
+
+      <!-- Ações do Topo -->
+      <div class="header-actions">
+        <button type="button" class="theme-toggle-btn" id="theme-btn" onclick="toggleTheme()" aria-label="Alternar Tema">
+          <span id="theme-icon">🌙</span>
+          <span id="theme-label">Dark</span>
+        </button>
+
+        <a href="#bancada" class="btn btn-action">
+          Testar Otimizador
+        </a>
+
+        <button class="mobile-nav-toggle" onclick="toggleMobileNav()" aria-label="Abrir Menu">☰</button>
+      </div>
+    </div>
+  </header>
+
+  <!-- ==========================================================================
+       HERO EDITORIAL & TÉCNICO
+       ========================================================================== -->
+  <section class="hero-section" id="solucao">
+    <div class="hero-grid">
+      
+      <!-- Coluna de Comunicação & Autoridade -->
+      <div>
+        <div class="hero-eyebrow">
+          <span>PRECISION INDUSTRIAL SUITE · CANONICAL 2026</span>
+        </div>
+
+        <h1 class="hero-title">
+          Otimização Preditiva de Usinagem CNC com <span class="accent">Rigor Cirúrgico</span>.
+        </h1>
+
+        <p class="hero-lead">
+          Substitua tabelas empíricas por modelos físicos determinísticos. O ToolOptimizer calcula parâmetros de corte ideais ($V_c, f_z, P_c, Q$), estende a vida útil da ferramenta segundo Taylor e elimina vibrações harmônicas em tempo real.
+        </p>
+
+        <div class="hero-cta-group">
+          <a href="#bancada" class="btn btn-primary lg">
+            ⚡ Iniciar Otimização de Corte
+          </a>
+          <a href="showcase.html" class="btn btn-secondary lg">
+            Especificação de Componentes ↗
+          </a>
+        </div>
+
+        <div class="hero-meta-badges">
+          <div class="meta-badge-item">
+            <span class="meta-badge-label">Modelo Físico</span>
+            <span class="meta-badge-val">Kienzle ($k_c$) & Taylor ($T$)</span>
+          </div>
+          <div class="meta-badge-item">
+            <span class="meta-badge-label">Materiais Suportados</span>
+            <span class="meta-badge-val">Classes ISO P, M, K, N, S, H</span>
+          </div>
+          <div class="meta-badge-item">
+            <span class="meta-badge-label">Pós-Processadores</span>
+            <span class="meta-badge-val">Siemens, Fanuc, Heidenhain, Haas</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Coluna de Instrumentação Técnica: Painel Interativo de Bancada -->
+      <div>
+        <div class="hero-inspector-card">
+          <div class="inspector-header">
+            <div class="inspector-title">
+              <span>● FUSO PRINCIPAL · TELEMETRIA ATIVA</span>
+            </div>
+            <span class="inspector-tag">5 EIXOS DINÂMICOS</span>
+          </div>
+
+          <div class="inspector-material-box">
+            <div>
+              <div class="mat-info-title">Aço ABNT 1045 (220 HB)</div>
+              <div class="mat-info-desc">Fresa Metal Duro Ø 12.0 mm · 4 Cortes (Z=4)</div>
+            </div>
+            <span class="mat-badge">ISO P</span>
+          </div>
+
+          <div class="inspector-stream-grid">
+            <div class="stream-cell">
+              <div class="stream-sym">n (Rotação)</div>
+              <div class="stream-num" id="hero-rpm">4.244 <span style="font-size:12px; font-weight:500;">RPM</span></div>
+              <div class="stream-sub">Vc: 160 m/min</div>
+            </div>
+            <div class="stream-cell">
+              <div class="stream-sym">vf (Avanço Mesa)</div>
+              <div class="stream-num" id="hero-vf">1.018 <span style="font-size:12px; font-weight:500;">mm/min</span></div>
+              <div class="stream-sub">fz: 0.060 mm/z</div>
+            </div>
+            <div class="stream-cell">
+              <div class="stream-sym">Pc (Potência)</div>
+              <div class="stream-num" id="hero-pc">3.42 <span style="font-size:12px; font-weight:500;">kW</span></div>
+              <div class="stream-sub">Carga Motor: 45%</div>
+            </div>
+            <div class="stream-cell">
+              <div class="stream-sym">Q (Taxa Cavaco)</div>
+              <div class="stream-num" id="hero-q">61.1 <span style="font-size:12px; font-weight:500;">cm³/min</span></div>
+              <div class="stream-sub">ap=5mm · ae=12mm</div>
+            </div>
+          </div>
+
+          <div class="inspector-progress-row">
+            <div class="progress-labels">
+              <span>Rendimento de Remoção Kienzle</span>
+              <span id="hero-eff">78.5% Ótimo</span>
+            </div>
+            <div class="progress-bar-track">
+              <div class="progress-bar-fill" id="hero-bar" style="width: 78.5%;"></div>
+            </div>
+          </div>
+
+          <div class="inspector-footer-bar">
+            <span>TOLERÂNCIA DIN 6580</span>
+            <span style="color:var(--brand-fill);">CHATTER SUPRIMIDO ✓</span>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- ==========================================================================
+       SEÇÃO DE VALOR & MOTORES FÍSICOS DE CORTE
+       ========================================================================== -->
+  <section class="section-container" id="fisica">
+    <div class="section-header-centered">
+      <div class="section-eyebrow">Fundamentação Mecânica Rigorosa</div>
+      <h2 class="section-headline">Três Pilares Físicos. Zero Suposições Empíricas.</h2>
+      <p class="section-description">
+        O ToolOptimizer CNC é projetado para engenheiros que não toleram aproximações. Cada parâmetro gerado deriva das equações canônicas de usinagem e dinâmica de materiais.
+      </p>
+    </div>
+
+    <div class="physics-grid">
+      
+      <!-- Pilar 1 -->
+      <div class="physics-card">
+        <div>
+          <div class="physics-card-num">PILAR 01</div>
+          <h3 class="physics-card-title">Equação Específica de Corte Kienzle</h3>
+          <p class="physics-card-body">
+            Calcula a força real tangencial ($F_c$) exercida na ponta do inserto considerando a espessura média de cavaco ($h_m$) e o expoente de conformação ($1 - m_c$). Impede que o fuso entre em sobrecarga térmica ou estol.
+          </p>
+        </div>
+        <div class="physics-formula-pill">
+          <span>k_c = k_{c1.1} · h^{-m_c}</span>
+          <span style="color:var(--tx-3);">DIN 6584</span>
+        </div>
+      </div>
+
+      <!-- Pilar 2 -->
+      <div class="physics-card">
+        <div>
+          <div class="physics-card-num">PILAR 02</div>
+          <h3 class="physics-card-title">Modelo Estendido de Desgaste Taylor</h3>
+          <p class="physics-card-body">
+            Modela a relação não-linear entre velocidade de corte, temperatura na zona primária de cisalhamento e desgaste de flanco ($V_B$). Permite programar trocas preventivas de ferramentas antes de ocorrer microrruptura.
+          </p>
+        </div>
+        <div class="physics-formula-pill">
+          <span>V_c · T^n · f_z^y = C</span>
+          <span style="color:var(--tx-3);">ISO 3685</span>
+        </div>
+      </div>
+
+      <!-- Pilar 3 -->
+      <div class="physics-card">
+        <div>
+          <div class="physics-card-num">PILAR 03</div>
+          <h3 class="physics-card-title">Estabilidade Harmônica & Anti-Chatter</h3>
+          <p class="physics-card-body">
+            Mapeia os lóbulos de estabilidade regenerativa da montagem máquina-ferramenta-peça. Ajusta as rotações de spindle para zonas de corte estável onde a vibração autoexcitada é cancelada pela frequência de passagem dos dentes.
+          </p>
+        </div>
+        <div class="physics-formula-pill">
+          <span>\omega_c = Z · n / 60</span>
+          <span style="color:var(--tx-3);">Estabilidade Lobe</span>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- ==========================================================================
+       PRODUTO EM AÇÃO / CONSOLE INTERATIVO DE BANCADA
+       ========================================================================== -->
+  <section class="workbench-section" id="bancada">
+    <div class="workbench-inner">
+      <div class="workbench-header">
+        <div class="workbench-title-group">
+          <h2>Console de Otimização Dinâmica em Tempo Real</h2>
+          <p>
+            Altere a velocidade de corte ($V_c$) e o avanço por dente ($f_z$) para observar a resposta imediata da curva de potência e taxa de remoção de cavaco ($Q$).
+          </p>
+        </div>
+        <div>
+          <a href="showcase.html#sec-cockpit" class="btn btn-secondary">
+            Ver Cockpit Completo do Chão de Fábrica ↗
+          </a>
+        </div>
+      </div>
+
+      <div class="workbench-console">
+        <div class="console-topbar">
+          <div class="console-tool-info">
+            <div class="tool-avatar">Ø12</div>
+            <div>
+              <div style="font-weight:800; font-size:14px; color:#FFFFFF;">Centro CNC Vertical Haas VF-2SS (11 kW Spindle)</div>
+              <div style="font-size:12px; color:#8E9FB8;">Fresa Toroidal 4 Cortes · Aço Ferramenta ABNT 1045 · Refrigeração Ativa</div>
+            </div>
+          </div>
+          <div style="display:flex; gap:10px;">
+            <span class="system-status-indicator" style="background:rgba(25,228,187,0.15); border-color:#19E4BB; color:#19E4BB;">
+              FÍSICA ATIVA
+            </span>
+          </div>
+        </div>
+
+        <div class="console-body-grid">
+          
+          <!-- Controles Interativos -->
+          <div class="console-controls-column">
+            
+            <div class="interactive-slider-block">
+              <div class="slider-header-row">
+                <span>Velocidade de Corte Periférica (Vc)</span>
+                <span class="val" id="ctrl-vc-display">160 m/min</span>
+              </div>
+              <input type="range" class="console-range" id="ctrl-vc" min="80" max="260" value="160" oninput="syncWorkbench()">
+              <div style="display:flex; justify-content:space-between; font-size:10px; color:#64748B; font-family:var(--mono); margin-top:6px;">
+                <span>80 m/min (Preservação)</span>
+                <span>160 m/min (Nominal)</span>
+                <span>260 m/min (Agressivo)</span>
+              </div>
+            </div>
+
+            <div class="interactive-slider-block">
+              <div class="slider-header-row">
+                <span>Avanço por Dente (fz)</span>
+                <span class="val" id="ctrl-fz-display">0.060 mm/dente</span>
+              </div>
+              <input type="range" class="console-range" id="ctrl-fz" min="0.025" max="0.120" step="0.005" value="0.060" oninput="syncWorkbench()">
+              <div style="display:flex; justify-content:space-between; font-size:10px; color:#64748B; font-family:var(--mono); margin-top:6px;">
+                <span>0.025 mm (Acabamento)</span>
+                <span>0.060 mm (Médio)</span>
+                <span>0.120 mm (Desbaste)</span>
+              </div>
+            </div>
+
+            <div style="background:#151D2C; border:1px solid rgba(255,255,255,0.08); border-radius:var(--r-field); padding:16px;">
+              <div style="font-size:12px; font-weight:700; color:#C7D3E3; margin-bottom:8px;">
+                Diagnóstico de Segurança da Pastilha
+              </div>
+              <div style="font-size:13px; color:#8E9FB8; line-height:1.5;" id="ctrl-diag-msg">
+                ✓ Força de corte estimada em 1.480 N. Tensão de cisalhamento compatível com fixação ISO 40.
+              </div>
+            </div>
+
+          </div>
+
+          <!-- Telemetria e Gráfico Dinâmico -->
+          <div class="console-telemetry-column">
+            
+            <div class="telemetry-metrics-row">
+              <div class="metric-box">
+                <div class="metric-label">Rotação Spindle</div>
+                <div class="metric-value" id="bench-rpm">4.244</div>
+                <div style="font-size:11px; color:#8E9FB8; margin-top:2px;">RPM (Máx 12.000)</div>
+              </div>
+
+              <div class="metric-box">
+                <div class="metric-label">Avanço de Mesa</div>
+                <div class="metric-value" id="bench-vf">1.018</div>
+                <div style="font-size:11px; color:#8E9FB8; margin-top:2px;">mm/min (vf)</div>
+              </div>
+
+              <div class="metric-box">
+                <div class="metric-label">Potência Líquida</div>
+                <div class="metric-value" id="bench-pc" style="color:#BDFF4B;">3.42</div>
+                <div style="font-size:11px; color:#8E9FB8; margin-top:2px;">kW (Fuso 11 kW)</div>
+              </div>
+            </div>
+
+            <!-- Gráfico SVG Interativo de Estabilidade Harmônica -->
+            <div class="stability-graph-box">
+              <div class="graph-title-row">
+                <span>LÓBULO DE ESTABILIDADE DINÂMICA (CHATTER LIMIT)</span>
+                <span id="bench-lobe-status" style="color:#19E4BB;">ZONA LIVRE DE RESSONÂNCIA</span>
+              </div>
+              <svg class="stability-svg" viewBox="0 0 400 110">
+                <!-- Eixos -->
+                <line x1="20" y1="95" x2="390" y2="95" stroke="rgba(255,255,255,0.15)" stroke-width="1"/>
+                <line x1="20" y1="10" x2="20" y2="95" stroke="rgba(255,255,255,0.15)" stroke-width="1"/>
+                
+                <!-- Curva de Lóbulos de Chatter -->
+                <path d="M 30,95 Q 60,20 90,95 Q 120,30 150,95 Q 190,15 230,95 Q 280,25 330,95 Q 360,35 380,95" 
+                      fill="none" stroke="rgba(25, 228, 187, 0.4)" stroke-width="2"/>
+
+                <!-- Ponto Operacional Atual -->
+                <circle id="bench-point" cx="170" cy="55" r="6" fill="#BDFF4B" stroke="#070A0F" stroke-width="2" style="transition: all 0.2s;"/>
+                <text id="bench-point-label" x="180" y="52" fill="#BDFF4B" font-family="'JetBrains Mono', monospace" font-size="11" font-weight="700">Operação Ativa</text>
+              </svg>
+            </div>
+
+          </div>
+
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ==========================================================================
+       ESPECIFICAÇÕES TÉCNICAS & COMPATIBILIDADE CNC
+       ========================================================================== -->
+  <section class="section-container" id="especificacoes">
+    <div class="section-header-centered">
+      <div class="section-eyebrow">Interoperabilidade Industrial</div>
+      <h2 class="section-headline">Compatibilidade Nativa com Controladores CNC</h2>
+      <p class="section-description">
+        Sem necessidade de pós-processadores customizados obscuros. A saída de parâmetros integra-se diretamente à sintaxe padrão dos principais CNCs do mercado.
+      </p>
+    </div>
+
+    <div class="specs-table-wrapper">
+      <table class="specs-table">
+        <thead>
+          <tr>
+            <th>Controlador CNC</th>
+            <th>Sintaxe de Código</th>
+            <th>Compatibilidade de Ciclos</th>
+            <th>Avanço Look-Ahead</th>
+            <th>Status de Homologação</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><strong>Siemens Sinumerik 840D sl / ONE</strong></td>
+            <td><code>G01 / F / S / CYCLE832</code></td>
+            <td>Fresamento High-Speed, Moldes e Matrizes</td>
+            <td>Suporte a 1.000 blocos (Look-Ahead Dinâmico)</td>
+            <td><span style="color:var(--st-normal-ink); font-weight:700;">✓ Homologado</span></td>
+          </tr>
+          <tr>
+            <td><strong>Fanuc Series 31i / 0i-MF Plus</strong></td>
+            <td><code>G01 / G05.1 Q1 (AICC II)</code></td>
+            <td>Controle de Aceleração com Nano-Interpolação</td>
+            <td>Otimização automática de avanço por bloco</td>
+            <td><span style="color:var(--st-normal-ink); font-weight:700;">✓ Homologado</span></td>
+          </tr>
+          <tr>
+            <td><strong>Heidenhain TNC 640 / TNC 7</strong></td>
+            <td><code>Klartext / ISO DIN 66025</code></td>
+            <td>Ciclo Dynamic Precision & Ciclo 32</td>
+            <td>Calibração de aceleração angular e jerk</td>
+            <td><span style="color:var(--st-normal-ink); font-weight:700;">✓ Homologado</span></td>
+          </tr>
+          <tr>
+            <td><strong>Haas CNC Controller (NextGen)</strong></td>
+            <td><code>G01 / G187 (High Speed Machining)</code></td>
+            <td>Controle de Tolerância de Contorno P1–P3</td>
+            <td>Ajuste dinâmico de suavização de canto</td>
+            <td><span style="color:var(--st-normal-ink); font-weight:700;">✓ Homologado</span></td>
+          </tr>
+          <tr>
+            <td><strong>Mazak Mazatrol SmoothX / SmoothG</strong></td>
+            <td><code>EIA / ISO & Mazatrol Conversacional</code></td>
+            <td>Smooth Corner Control & Intelligent Pocket</td>
+            <td>Compensação térmica de fuso</td>
+            <td><span style="color:var(--st-normal-ink); font-weight:700;">✓ Homologado</span></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <!-- ==========================================================================
+       BASE DE CONHECIMENTO & GUIAS DE ENGENHARIA
+       ========================================================================== -->
+  <section class="section-container" id="conhecimento">
+    <div class="section-header-centered">
+      <div class="section-eyebrow">Documentação de Engenharia</div>
+      <h2 class="section-headline">Guias de Aplicação Prática no Chão de Fábrica</h2>
+      <p class="section-description">
+        Conteúdos fundamentados em bibliografia técnica consagrada (Diniz, Trent, Astakhov, DIN 6580) para consulta de programadores CAM e operadores.
+      </p>
+    </div>
+
+    <div class="guides-grid">
+      
+      <div class="guide-card">
+        <span class="guide-tag">GUIA MECÂNICO 01</span>
+        <h3 class="guide-title">Cálculo Preciso da Espessura Média de Cavaco ($h_m$)</h3>
+        <p class="guide-desc">
+          Entenda por que o afinamento de cavaco em fresamentos de canto com engajamento radial inferior a 50% exige compensação de avanço para evitar brunimento da ferramenta.
+        </p>
+        <a href="showcase.html#sec-telemetria" class="guide-link">Ver Parâmetros no Design System →</a>
+      </div>
+
+      <div class="guide-card">
+        <span class="guide-tag">GUIA MECÂNICO 02</span>
+        <h3 class="guide-title">Relação de Balanço $L/D$ e Deflexão Elástica</h3>
+        <p class="guide-desc">
+          A rigidez de uma haste cilíndrica diminui com o cubo de seu comprimento. Saiba quando utilizar adaptadores antivibratórios de metal pesado ou metal duro integral.
+        </p>
+        <a href="showcase.html#sec-dados" class="guide-link">Consultar Tabela de Limites →</a>
+      </div>
+
+      <div class="guide-card">
+        <span class="guide-tag">GUIA MECÂNICO 03</span>
+        <h3 class="guide-title">Vida Útil de Inserto vs. Temperatura de Corte</h3>
+        <p class="guide-desc">
+          Como o coeficiente de Taylor determina a perda de dureza a quente do revestimento (TiAlN / AlCrN) e qual a taxa de desgaste admissível antes do colapso da aresta.
+        </p>
+        <a href="showcase.html#sec-cockpit" class="guide-link">Abrir Simulador de Taylor →</a>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- ==========================================================================
+       CTA FINAL EDITORIAL
+       ========================================================================== -->
+  <section class="final-cta-section">
+    <div class="final-cta-inner">
+      <h2 class="final-cta-title">Eleve a Eficiência de Usinagem da sua Fábrica.</h2>
+      <p class="final-cta-desc">
+        Elimine o desperdício de ferramenta e o tempo ocioso de máquina com uma solução projetada para a mais alta exigência industrial.
+      </p>
+      <div style="display:flex; gap:16px; justify-content:center; flex-wrap:wrap;">
+        <a href="#bancada" class="btn btn-action lg">
+          ⚡ Experimentar Console Interativo
+        </a>
+        <a href="showcase.html" class="btn btn-secondary lg">
+          Consultar Design System Canônico ↗
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <!-- ==========================================================================
+       RODAPÉ INDUSTRIAL
+       ========================================================================== -->
+  <footer class="site-footer">
+    <div class="footer-inner">
+      <div class="footer-grid">
+        
+        <div>
+          <div style="font-weight:900; font-size:18px; color:#FFFFFF; margin-bottom:8px;">ToolOptimizer CNC</div>
+          <p style="font-size:13px; color:#8E9FB8; line-height:1.6; max-width:320px;">
+            Plataforma preditiva para otimização de parâmetros de usinagem, dimensionamento de fuso e garantia de estabilidade dinâmica em máquinas CNC.
+          </p>
+          <div style="margin-top:16px; font-family:var(--mono); font-size:11px; color:#19E4BB;">
+            ● SISTEMA OPERACIONAL CANÔNICO v2.4
+          </div>
+        </div>
+
+        <div>
+          <div class="footer-col-title">Plataforma</div>
+          <ul class="footer-links">
+            <li><a href="#solucao">Visão Geral</a></li>
+            <li><a href="#fisica">Motores Físicos</a></li>
+            <li><a href="#bancada">Console de Bancada</a></li>
+            <li><a href="#especificacoes">Controladores CNC</a></li>
+          </ul>
+        </div>
+
+        <div>
+          <div class="footer-col-title">Design System</div>
+          <ul class="footer-links">
+            <li><a href="showcase.html#sec-overview">Visão Canônica</a></li>
+            <li><a href="showcase.html#sec-cores">Tokens de Cor & WCAG</a></li>
+            <li><a href="showcase.html#sec-botoes">Componentes Core</a></li>
+            <li><a href="showcase.html#sec-cockpit">Simulador Cockpit CNC</a></li>
+          </ul>
+        </div>
+
+        <div>
+          <div class="footer-col-title">Normas Técnicas</div>
+          <ul class="footer-links">
+            <li><span style="color:#64748B;">DIN 6580 (Movimentos)</span></li>
+            <li><span style="color:#64748B;">ISO 3002 (Geometria)</span></li>
+            <li><span style="color:#64748B;">ISO 513 (Classes Pastilhas)</span></li>
+            <li><span style="color:#64748B;">DIN 6584 (Forças Kienzle)</span></li>
+          </ul>
+        </div>
+
+      </div>
+
+      <div class="footer-bottom">
+        <div>
+          © 2026 ToolOptimizer CNC. Todos os direitos reservados.
+        </div>
+        <div>
+          Homologado para Chão de Fábrica · WCAG AA Compliance
+        </div>
+      </div>
+    </div>
+  </footer>
+
+  <!-- ==========================================================================
+       SCRIPTS: SINCRONIZAÇÃO DE TEMAS & DINÂMICA DO CONSOLE
+       ========================================================================== -->
+  <script>
+    // 1. Controle e Sincronização do Tema (Light Padrão / Dark)
+    function applyTheme(theme) {
+      document.body.setAttribute('data-theme', theme);
+      localStorage.setItem('to_theme', theme);
+
+      const icon = document.getElementById('theme-icon');
+      const label = document.getElementById('theme-label');
+
+      if (theme === 'escuro') {
+        icon.textContent = '☀️';
+        label.textContent = 'Light';
+      } else {
+        icon.textContent = '🌙';
+        label.textContent = 'Dark';
+      }
+    }
+
+    function toggleTheme() {
+      const current = document.body.getAttribute('data-theme') || 'claro';
+      const next = current === 'claro' ? 'escuro' : 'claro';
+      applyTheme(next);
+    }
+
+    // Inicialização respeitando o default 'claro'
+    (function init() {
+      const saved = localStorage.getItem('to_theme') || 'claro';
+      applyTheme(saved);
+    })();
+
+    // 2. Menu Mobile Simples
+    function toggleMobileNav() {
+      const nav = document.querySelector('.header-nav');
+      if (nav.style.display === 'flex') {
+        nav.style.display = 'none';
+      } else {
+        nav.style.display = 'flex';
+        nav.style.flexDirection = 'column';
+        nav.style.position = 'absolute';
+        nav.style.top = '72px';
+        nav.style.left = '0';
+        nav.style.right = '0';
+        nav.style.background = 'var(--bg-surface)';
+        nav.style.padding = '20px';
+        nav.style.borderBottom = '1px solid var(--border-subtle)';
+      }
+    }
+
+    // 3. Sincronização do Console Interativo de Bancada
+    function syncWorkbench() {
+      const vc = parseFloat(document.getElementById('ctrl-vc').value);
+      const fz = parseFloat(document.getElementById('ctrl-fz').value);
+
+      document.getElementById('ctrl-vc-display').textContent = vc + ' m/min';
+      document.getElementById('ctrl-fz-display').textContent = fz.toFixed(3) + ' mm/dente';
+
+      // Constantes de usinagem: D=12mm, Z=4, ap=5mm, ae=12mm, kc=1850 N/mm²
+      const D = 12.0;
+      const Z = 4;
+      const ap = 5.0;
+      const ae = 12.0;
+      const kc = 1850.0;
+
+      const rpm = Math.round((vc * 1000) / (Math.PI * D));
+      const vf = Math.round(rpm * fz * Z);
+      const Q = ((ap * ae * vf) / 1000).toFixed(1);
+      const Pc = ((ap * ae * vf * kc) / (60 * 1000000 * 0.85)).toFixed(2);
+      const Fc = Math.round(kc * (fz * Math.sin(Math.PI/2)) * ap);
+
+      // Atualizar valores do console
+      document.getElementById('bench-rpm').textContent = rpm.toLocaleString('pt-BR');
+      document.getElementById('bench-vf').textContent = vf.toLocaleString('pt-BR');
+      document.getElementById('bench-pc').textContent = Pc;
+
+      // Atualizar também no Hero Inspector para harmonia visual
+      document.getElementById('hero-rpm').innerHTML = rpm.toLocaleString('pt-BR') + ' <span style="font-size:12px; font-weight:500;">RPM</span>';
+      document.getElementById('hero-vf').innerHTML = vf.toLocaleString('pt-BR') + ' <span style="font-size:12px; font-weight:500;">mm/min</span>';
+      document.getElementById('hero-pc').innerHTML = Pc + ' <span style="font-size:12px; font-weight:500;">kW</span>';
+      document.getElementById('hero-q').innerHTML = Q + ' <span style="font-size:12px; font-weight:500;">cm³/min</span>';
+
+      const efficiency = Math.min(99, Math.max(30, Math.round((parseFloat(Pc) / 5.0) * 100)));
+      document.getElementById('hero-eff').textContent = efficiency + '% Ótimo';
+      document.getElementById('hero-bar').style.width = efficiency + '%';
+
+      // Atualizar diagnóstico
+      const diagMsg = document.getElementById('ctrl-diag-msg');
+      const point = document.getElementById('bench-point');
+      const lobeStatus = document.getElementById('bench-lobe-status');
+
+      if (vc > 220) {
+        diagMsg.innerHTML = '<span style="color:var(--st-warn-ink); font-weight:700;">⚠️ Atenção Térmica:</span> Desgaste acelerado de flanco (Taylor T &lt; 25 min). Aumente vazão de refrigeração.';
+        point.setAttribute('cx', '310');
+        point.setAttribute('cy', '35');
+        point.setAttribute('fill', '#FFB020');
+        lobeStatus.textContent = 'PROXIMIDADE DE ZONA HARMÔNICA';
+        lobeStatus.style.color = '#FFB020';
+      } else if (fz > 0.09) {
+        diagMsg.innerHTML = '<span style="color:var(--st-warn-ink); font-weight:700;">⚠️ Carga Elevada:</span> Força tangencial ' + Fc + ' N. Verifique fixação da morsa hidráulica.';
+        point.setAttribute('cx', '240');
+        point.setAttribute('cy', '65');
+        point.setAttribute('fill', '#FFB020');
+        lobeStatus.textContent = 'ZONA DE CARGA ELEVADA';
+        lobeStatus.style.color = '#FFB020';
+      } else {
+        diagMsg.innerHTML = '✓ Força de corte estimada em ' + Fc + ' N. Regime laminar livre de ressonância harmônica.';
+        point.setAttribute('cx', '170');
+        point.setAttribute('cy', '55');
+        point.setAttribute('fill', '#BDFF4B');
+        lobeStatus.textContent = 'ZONA LIVRE DE RESSONÂNCIA';
+        lobeStatus.style.color = '#19E4BB';
+      }
+    }
+
+    // Inicializar no carregamento
+    window.addEventListener('DOMContentLoaded', syncWorkbench);
+  </script>
+</body>
+</html>

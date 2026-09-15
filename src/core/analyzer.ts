@@ -64,8 +64,8 @@ export function analyzeMilling(input: MillingInput, derived: { LD: number; vcRea
       trigger: '3',
       level: 'CRÍTICO',
       message:
-        `Penetração de trabalho (ae) ${formatNumber(ae, 1)} mm contra o máximo que o diâmetro entrega, ` +
-        `${formatNumber(D, 1)} mm (+${formatNumber(ae - D, 1)} mm): o resultado descreve remoção fora da aresta física.`,
+        `Penetração de trabalho (ae) ${formatNumber(ae, 2)} mm contra o máximo que o diâmetro entrega, ` +
+        `${formatNumber(D, 1)} mm (+${formatNumber(ae - D, 2)} mm): o resultado descreve remoção fora da aresta física.`,
     });
   } else if (ae >= FULL_SLOT_RATIO * D) {
     // Gatilho 2 — rasgo cheio. Exclusivo do 3: acima de D a condição já é outra.
@@ -73,7 +73,7 @@ export function analyzeMilling(input: MillingInput, derived: { LD: number; vcRea
       trigger: '2',
       level: 'ATENÇÃO',
       message:
-        `Penetração de trabalho (ae) ${formatNumber(ae, 1)} mm contra o diâmetro ${formatNumber(D, 1)} mm ` +
+        `Penetração de trabalho (ae) ${formatNumber(ae, 2)} mm contra o diâmetro ${formatNumber(D, 1)} mm ` +
         `(${formatNumber((ae / D) * 100, 0)}% de D): é rasgo cheio — corte concordante e discordante ao mesmo tempo, sem saída para o calor.`,
     });
   }

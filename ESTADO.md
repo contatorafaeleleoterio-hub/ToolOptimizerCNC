@@ -1,6 +1,26 @@
-# Estado — ToolOptimizer CNC — 14/09/2026
+# Estado — ToolOptimizer CNC — 15/09/2026
 
 Arquivo de retomada e fonte única do estado do produto. É o documento que o operador ou qualquer agente carrega ao iniciar uma sessão.
+
+---
+
+## 🎯 Suporte a Duas Casas Decimais em AP & Engajamento Radial (ae) (15/09/2026)
+
+Revisão técnica de engenharia e implementação de precisão decimal de duas casas para os parâmetros **AP (profundidade de corte)** e **Engajamento Radial (ae)** na seção de Condições/Condução de Corte do **ToolOptimizer CNC**:
+- **Diagnóstico e Análise do Motor Físico:**
+  - Mapeamento das equações dependentes: diâmetro efetivo $D_e = 2\sqrt{ap(D-ap)}$ (fresa esférica), engajamento radial $\epsilon = \min(1, ae/D)$, arco engajado $\phi_{max} = \arccos(1-2\epsilon)$, espessura média $h_m$, afinamento de cavaco $CTF = 1/\sqrt{1-(1-2\epsilon)^2}$, força de Kienzle $k_c$, taxa de remoção $Q = (ap \cdot ae \cdot v_f)/1000$, potência $P_c$ e torque $M_c$.
+  - Constatado que o motor físico em `src/core/calculator.ts` preserva números de ponto flutuante com total estabilidade e sem singularidades para passes finos (como $0,15\text{ mm}$).
+- **Fontes de Arredondamento Sanadas:**
+  - `ConfigForm.tsx` & `MobileCalculator.tsx`: Campos `input-ap` e `input-ae` atualizados para `decimals={2}`, `step={0.1}`, `placeholder="Ex: 2.00"` / `"Ex: 2.50"` e rotulagem "Engajamento radial".
+  - `ResultsPanel.tsx`: Chips de exibição Z3 de $AP$ e $AE$ em fresamento atualizados de `formatDec(..., 1)` para `formatDec(..., 2)`. $AP$ de mandrilamento também ajustado para 2 decimais.
+  - `MobileResultsSheet.tsx`: $AP$ de mandrilamento ajustado para 2 decimais.
+  - `analyzer.ts`: Mensagens dos gatilhos 2 e 3 de fresamento atualizadas para `formatNumber(ae, 2)`.
+  - Correção de erro de compilação TS2532 em `ConfigForm.tsx` e `SettingsView.tsx`.
+- **Quality Gate:**
+  - 114 testes automatizados em 16 arquivos de teste passando com 100% de sucesso (`npm run check` verde).
+  - Novos testes para livre digitação de `0,15`, `0,20`, `0,35`, `1,25`, vírgula pt-BR e preservação de 2 decimais.
+  - Novos testes em `milling.spec.ts` validando passes finos de $0,15\text{ mm}$ em topo reto e esférica.
+  - Build estático Vite (`npm run build`) compilado com exit code 0.
 
 ---
 

@@ -1,0 +1,2528 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ToolOptimizer CNC — Design System & Especificação Canônica</title>
+  
+  <!-- Fontes Oficiais do Design System -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700&family=Urbanist:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  
+  <style>
+    /* ==========================================================================
+       TOKENS GLOBAIS E MAPEAMENTO DUAL DE TEMAS (LIGHT DEFAULT & DARK TITANIUM)
+       ========================================================================== */
+    :root {
+      --sans: 'Urbanist', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      --mono: 'JetBrains Mono', Consolas, ui-monospace, monospace;
+
+      /* Escala de Espaçamento Base 4px */
+      --sp-1: 4px;   --sp-2: 8px;   --sp-3: 12px;  --sp-4: 16px;
+      --sp-5: 20px;  --sp-6: 24px;  --sp-8: 32px;  --sp-10: 40px;  --sp-12: 48px;  --sp-16: 64px;
+
+      /* Raios de Canto Técnicos */
+      --r-xs: 3px;
+      --r-chip: 6px;
+      --r-field: 8px;
+      --r-card: 14px;
+      --r-modal: 18px;
+      --r-pill: 999px;
+
+      /* Dimensões Ergonomicamente Otimizadas para Indústria e Touch */
+      --h-target-sm: 34px;
+      --h-target-md: 42px;
+      --h-target-lg: 48px;
+      --sidebar-w: 280px;
+
+      /* Transições e Animações Funcionais */
+      --t-fast: 0.12s ease;
+      --t: 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+      --t-smooth: 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    /* ==========================================================================
+       TEMA 1 — CLARO (LIGHT THEME — PADRÃO / DEFAULT)
+       Ambiente industrial de alta precisão ótica sob iluminação de chão de fábrica
+       ========================================================================== */
+    [data-theme="claro"] {
+      --bg-page:              #F4F6F9;
+      --bg-surface:           #FFFFFF;
+      --surface-card:         #FFFFFF;
+      --surface-card-subtle:  #F8FAFC;
+      --surface-hover-field:  #EDF2F7;
+      --surface-elevated:     #FFFFFF;
+      --surface-code:         #0F172A;
+      
+      --border-subtle:        #E2E8F0;
+      --border-control:       #CBD5E1;
+      --border-strong:        #94A3B8;
+      --border-control-focus: #0D9488;
+
+      --tx-1: #0F172A;
+      --tx-2: #334155;
+      --tx-3: #64748B;
+      --tx-muted: #94A3B8;
+      --tx-on-code: #E2E8F0;
+
+      /* Acentos cromáticos adaptados para contraste estrito (>4.5:1) */
+      --brand-fill:    #0D9488;  /* Ciano industrial profundo */
+      --brand-accent:  #0F766E;
+      --brand-bg-soft: #CCFBF1;
+      --brand-border:  #5EEAD4;
+
+      --action-fill:   #4D7C0F;  /* Lime/oliva técnico */
+      --action-accent: #3F6212;
+      --action-bg-soft:#ECFCCB;
+      --action-border: #BEF264;
+
+      --brand-nav-bg:  #0B0F17;  /* Sidebar técnica profunda inspirada em painel CNC */
+      --brand-nav-tx:  #94A3B8;
+      --brand-nav-act: #14B8A6;
+
+      --st-normal-ink: #166534;
+      --st-normal-bg:  #DCFCE7;
+      --st-normal-bd:  #86EFAC;
+
+      --st-warn-ink:   #854D0E;
+      --st-warn-bg:    #FEF9C3;
+      --st-warn-bd:    #FDE047;
+
+      --st-crit-ink:   #991B1B;
+      --st-crit-bg:    #FEE2E2;
+      --st-crit-bd:    #FCA5A5;
+
+      --shadow-sm:   0 1px 3px rgba(15, 23, 42, 0.05), 0 1px 2px rgba(15, 23, 42, 0.04);
+      --shadow-card: 0 4px 16px rgba(15, 23, 42, 0.06), 0 1px 3px rgba(15, 23, 42, 0.04);
+      --shadow-lg:   0 12px 36px rgba(15, 23, 42, 0.09), 0 4px 12px rgba(15, 23, 42, 0.05);
+      --glow-active: 0 0 0 3px rgba(13, 148, 136, 0.25);
+      --focus-ring:  0 0 0 2px #FFFFFF, 0 0 0 4px #0D9488;
+    }
+
+    /* ==========================================================================
+       TEMA 2 — ESCURO (DARK THEME — TITANIUM OBSIDIAN CIRÚRGICO)
+       Estética Titanium Deep Obsidian com Luminescência de Sala de Controle
+       ========================================================================== */
+    [data-theme="escuro"] {
+      --bg-page:              #080C12;
+      --bg-surface:           #0E141F;
+      --surface-card:         #131B29;
+      --surface-card-subtle:  #182234;
+      --surface-hover-field:  #212D42;
+      --surface-elevated:     #1A2436;
+      --surface-code:         #06080C;
+      
+      --border-subtle:        rgba(255, 255, 255, 0.08);
+      --border-control:       rgba(255, 255, 255, 0.16);
+      --border-strong:        rgba(255, 255, 255, 0.26);
+      --border-control-focus: #19E4BB;
+
+      --tx-1: #FFFFFF;
+      --tx-2: #C7D3E3;
+      --tx-3: #8E9FB8;
+      --tx-muted: #5A6675;
+      --tx-on-code: #A7F3D0;
+
+      /* Acentos cromáticos neon cirúrgicos calibrados */
+      --brand-fill:    #19E4BB;  /* Ciano Cirúrgico */
+      --brand-accent:  #42ECD1;
+      --brand-bg-soft: rgba(25, 228, 187, 0.12);
+      --brand-border:  rgba(25, 228, 187, 0.35);
+
+      --action-fill:   #BDFF4B;  /* Lime Elétrico */
+      --action-accent: #C7FD40;
+      --action-bg-soft:rgba(189, 255, 75, 0.12);
+      --action-border: rgba(189, 255, 75, 0.35);
+
+      --brand-nav-bg:  #06080C;
+      --brand-nav-tx:  #8E9FB8;
+      --brand-nav-act: #19E4BB;
+
+      --st-normal-ink: #00E5A3;
+      --st-normal-bg:  rgba(0, 229, 163, 0.12);
+      --st-normal-bd:  rgba(0, 229, 163, 0.32);
+
+      --st-warn-ink:   #FFB020;
+      --st-warn-bg:    rgba(255, 176, 32, 0.12);
+      --st-warn-bd:    rgba(255, 176, 32, 0.32);
+
+      --st-crit-ink:   #FF4D4D;
+      --st-crit-bg:    rgba(255, 77, 77, 0.14);
+      --st-crit-bd:    rgba(255, 77, 77, 0.36);
+
+      --shadow-sm:   0 2px 8px rgba(0, 0, 0, 0.4);
+      --shadow-card: 0 8px 30px rgba(0, 0, 0, 0.55);
+      --shadow-lg:   0 16px 48px rgba(0, 0, 0, 0.7);
+      --glow-active: 0 0 16px rgba(25, 228, 187, 0.35);
+      --focus-ring:  0 0 0 2px #080C12, 0 0 0 4px #19E4BB;
+    }
+
+    /* Reset e Fundamentos Estruturais */
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; }
+    body {
+      background-color: var(--bg-page);
+      color: var(--tx-2);
+      font-family: var(--sans);
+      font-size: 14px;
+      line-height: 1.55;
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+      transition: background-color var(--t) ease, color var(--t) ease;
+    }
+
+    /* Utilitário de foco acessível cirúrgico */
+    :focus-visible {
+      outline: none;
+      box-shadow: var(--focus-ring) !important;
+    }
+
+    /* ==========================================================================
+       LAYOUT ARQUITETURAL: ROOT + SIDEBAR PERSISTENTE + ÁREA PRINCIPAL
+       ========================================================================== */
+    .layout-root {
+      display: flex;
+      min-height: 100vh;
+    }
+
+    /* Sidebar Fixa à Esquerda */
+    .sidebar-nav {
+      position: fixed;
+      inset: 0 auto 0 0;
+      width: var(--sidebar-w);
+      background: var(--brand-nav-bg);
+      border-right: 1px solid rgba(255, 255, 255, 0.08);
+      display: flex;
+      flex-direction: column;
+      z-index: 100;
+      transition: transform var(--t-smooth);
+    }
+
+    .sidebar-header {
+      padding: 20px 22px 18px;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .sidebar-logo {
+      width: 100%;
+      height: 42px;
+    }
+    .sidebar-logo svg {
+      width: 100%;
+      height: 100%;
+      display: block;
+    }
+
+    .sidebar-badge-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .sidebar-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      font-family: var(--mono);
+      font-size: 10px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.12em;
+      color: var(--brand-nav-act);
+      background: rgba(25, 228, 187, 0.1);
+      padding: 3px 8px;
+      border-radius: var(--r-chip);
+      border: 1px solid rgba(25, 228, 187, 0.25);
+    }
+    .sidebar-badge::before {
+      content: '';
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: var(--brand-nav-act);
+      box-shadow: 0 0 8px var(--brand-nav-act);
+    }
+
+    .sidebar-ver {
+      font-family: var(--mono);
+      font-size: 10px;
+      color: #64748B;
+    }
+
+    /* Cartão de Destaque na Sidebar: Acesso ao Modelo de Site */
+    .sidebar-site-model-promo {
+      margin: 12px 16px 4px;
+      padding: 12px 14px;
+      background: linear-gradient(135deg, rgba(25, 228, 187, 0.12) 0%, rgba(189, 255, 75, 0.08) 100%);
+      border: 1px solid rgba(25, 228, 187, 0.3);
+      border-radius: var(--r-field);
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+    .promo-tag {
+      font-family: var(--mono);
+      font-size: 9px;
+      font-weight: 700;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: var(--brand-nav-act);
+      display: flex;
+      align-items: center;
+      gap: 5px;
+    }
+    .promo-tag::before {
+      content: '★';
+      font-size: 10px;
+    }
+    .promo-title {
+      font-size: 12px;
+      font-weight: 700;
+      color: #FFFFFF;
+      line-height: 1.3;
+    }
+    .promo-desc {
+      font-size: 11px;
+      color: #94A3B8;
+      line-height: 1.4;
+    }
+    .promo-link {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      margin-top: 4px;
+      padding: 6px 10px;
+      background: var(--brand-fill);
+      color: #080C12 !important;
+      text-decoration: none;
+      font-weight: 700;
+      font-size: 11px;
+      border-radius: var(--r-chip);
+      transition: all var(--t-fast);
+    }
+    .promo-link:hover {
+      background: #FFFFFF;
+      box-shadow: 0 0 12px rgba(25, 228, 187, 0.5);
+    }
+
+    .sidebar-scroll {
+      overflow-y: auto;
+      flex: 1;
+      padding: 12px 0 24px;
+    }
+    .sidebar-scroll::-webkit-scrollbar {
+      width: 4px;
+    }
+    .sidebar-scroll::-webkit-scrollbar-thumb {
+      background: rgba(255, 255, 255, 0.14);
+      border-radius: 2px;
+    }
+
+    .nav-group-title {
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: 0.16em;
+      text-transform: uppercase;
+      color: #64748B;
+      padding: 16px 22px 6px;
+    }
+
+    .sidebar-nav a.nav-item {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 8px 22px;
+      color: var(--brand-nav-tx);
+      text-decoration: none;
+      font-size: 13px;
+      font-weight: 600;
+      border-left: 3px solid transparent;
+      transition: all 0.15s ease;
+    }
+    .sidebar-nav a.nav-item .n {
+      font-family: var(--mono);
+      font-size: 11px;
+      color: #64748B;
+      min-width: 20px;
+    }
+    .sidebar-nav a.nav-item:hover {
+      color: #FFFFFF;
+      background: rgba(255, 255, 255, 0.04);
+    }
+    .sidebar-nav a.nav-item.active {
+      color: #FFFFFF;
+      border-left-color: var(--brand-nav-act);
+      background: linear-gradient(90deg, rgba(20, 184, 166, 0.16), transparent 80%);
+    }
+    .sidebar-nav a.nav-item.active .n {
+      color: var(--brand-nav-act);
+      font-weight: 700;
+    }
+
+    .sidebar-footer {
+      padding: 14px 22px;
+      border-top: 1px solid rgba(255, 255, 255, 0.08);
+      font-size: 11px;
+      font-family: var(--mono);
+      color: #64748B;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    /* Backdrop para Telas Menores */
+    .sidebar-scrim {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(0, 0, 0, 0.65);
+      backdrop-filter: blur(4px);
+      z-index: 95;
+    }
+
+    /* Área Principal de Conteúdo */
+    .main-content {
+      margin-left: var(--sidebar-w);
+      flex: 1;
+      min-width: 0;
+      display: flex;
+      flex-direction: column;
+    }
+
+    /* Barra Superior Fixa de Controle de Temas */
+    .theme-bar {
+      position: sticky;
+      top: 0;
+      z-index: 90;
+      background: var(--bg-surface);
+      border-bottom: 1px solid var(--border-subtle);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 12px 36px;
+      box-shadow: var(--shadow-sm);
+      backdrop-filter: blur(14px);
+    }
+
+    .theme-bar-title {
+      font-size: 13px;
+      font-weight: 700;
+      color: var(--tx-1);
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .theme-bar-actions {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+    }
+
+    .topbar-site-model-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      font-family: var(--sans);
+      font-size: 12px;
+      font-weight: 700;
+      color: var(--tx-1);
+      background: var(--surface-card-subtle);
+      border: 1px solid var(--border-control);
+      border-radius: var(--r-pill);
+      padding: 6px 14px;
+      text-decoration: none;
+      transition: all var(--t-fast);
+    }
+    .topbar-site-model-btn:hover {
+      background: var(--surface-hover-field);
+      border-color: var(--brand-fill);
+      color: var(--brand-fill);
+    }
+    .pulse-dot-cyan {
+      width: 7px;
+      height: 7px;
+      border-radius: 50%;
+      background: var(--brand-fill);
+      box-shadow: 0 0 8px var(--brand-fill);
+      animation: pulse 2s infinite ease-in-out;
+    }
+    @keyframes pulse {
+      0%, 100% { transform: scale(1); opacity: 1; }
+      50% { transform: scale(1.3); opacity: 0.6; }
+    }
+
+    .theme-toggles {
+      display: inline-flex;
+      background: var(--surface-card-subtle);
+      padding: 3px;
+      border-radius: var(--r-pill);
+      border: 1px solid var(--border-subtle);
+    }
+
+    .theme-btn {
+      font-family: var(--sans);
+      font-size: 12px;
+      font-weight: 700;
+      color: var(--tx-3);
+      background: transparent;
+      border: none;
+      border-radius: var(--r-pill);
+      padding: 6px 14px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      transition: all 0.15s ease;
+    }
+    .theme-btn:hover {
+      color: var(--tx-1);
+    }
+    .theme-btn.active {
+      background: var(--brand-fill);
+      color: #FFFFFF;
+      box-shadow: var(--shadow-sm);
+    }
+    [data-theme="escuro"] .theme-btn.active {
+      color: #080C12;
+      font-weight: 800;
+    }
+
+    .mobile-menu-btn {
+      display: none;
+      background: var(--surface-card-subtle);
+      border: 1px solid var(--border-subtle);
+      border-radius: var(--r-chip);
+      padding: 7px 12px;
+      cursor: pointer;
+      color: var(--tx-1);
+      font-size: 18px;
+    }
+
+    /* Container Central das Seções */
+    .content-wrapper {
+      max-width: 1240px;
+      width: 100%;
+      margin: 0 auto;
+      padding: 36px 36px 80px;
+    }
+
+    /* Card de Apresentação Hero da Documentação */
+    .docs-banner-hero {
+      background: var(--surface-card);
+      border: 1px solid var(--border-subtle);
+      border-left: 4px solid var(--brand-fill);
+      border-radius: var(--r-card);
+      padding: 28px 32px;
+      margin-bottom: 36px;
+      box-shadow: var(--shadow-card);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 24px;
+      flex-wrap: wrap;
+    }
+    .docs-banner-left {
+      flex: 1;
+      min-width: 280px;
+    }
+    .docs-banner-eyebrow {
+      font-family: var(--mono);
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--brand-fill);
+      margin-bottom: 6px;
+    }
+    .docs-banner-title {
+      font-size: 24px;
+      font-weight: 800;
+      color: var(--tx-1);
+      letter-spacing: -0.02em;
+      margin-bottom: 6px;
+    }
+    .docs-banner-desc {
+      font-size: 14px;
+      color: var(--tx-3);
+      max-width: 680px;
+      line-height: 1.6;
+    }
+    .docs-banner-actions {
+      display: flex;
+      gap: 12px;
+      align-items: center;
+    }
+
+    /* Seções e Títulos */
+    section.ds-section {
+      scroll-margin-top: 80px;
+      margin-bottom: 48px;
+      background: var(--surface-card);
+      border: 1px solid var(--border-subtle);
+      border-radius: var(--r-card);
+      padding: 32px;
+      box-shadow: var(--shadow-card);
+      transition: background-color var(--t) ease, border-color var(--t) ease;
+    }
+
+    .section-header {
+      margin-bottom: 24px;
+      padding-bottom: 18px;
+      border-bottom: 1px solid var(--border-subtle);
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      flex-wrap: wrap;
+      gap: 14px;
+    }
+
+    .section-title {
+      font-size: 22px;
+      font-weight: 800;
+      color: var(--tx-1);
+      letter-spacing: -0.02em;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .section-num {
+      font-family: var(--mono);
+      font-size: 13px;
+      font-weight: 700;
+      color: var(--brand-fill);
+      background: var(--brand-bg-soft);
+      border: 1px solid var(--brand-border);
+      padding: 2px 8px;
+      border-radius: var(--r-chip);
+    }
+
+    .section-desc {
+      color: var(--tx-3);
+      font-size: 14px;
+      margin-top: 6px;
+      max-width: 820px;
+      line-height: 1.6;
+    }
+
+    /* Metadados Técnicos de Componentes (Props, Tokens, Boas Práticas) */
+    .component-meta-panel {
+      background: var(--surface-card-subtle);
+      border: 1px solid var(--border-subtle);
+      border-radius: var(--r-field);
+      padding: 14px 18px;
+      margin-bottom: 20px;
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 16px;
+      font-size: 12px;
+    }
+    .meta-col-title {
+      font-family: var(--mono);
+      font-size: 10px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      color: var(--tx-3);
+      margin-bottom: 4px;
+    }
+    .meta-col-val {
+      color: var(--tx-1);
+      font-weight: 600;
+    }
+    .meta-col-val code {
+      font-family: var(--mono);
+      font-size: 11px;
+      background: var(--bg-surface);
+      padding: 1px 5px;
+      border-radius: var(--r-xs);
+      border: 1px solid var(--border-subtle);
+      color: var(--brand-fill);
+    }
+
+    /* Caixas de Demonstração */
+    .demo-box {
+      background: var(--surface-card-subtle);
+      border: 1px solid var(--border-subtle);
+      border-radius: var(--r-field);
+      padding: 24px;
+      margin-top: 18px;
+    }
+
+    .demo-label {
+      font-size: 11px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      color: var(--tx-3);
+      margin-bottom: 16px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .demo-label::after {
+      content: '';
+      flex: 1;
+      height: 1px;
+      background: var(--border-subtle);
+    }
+
+    /* Grid de Swatches de Cores */
+    .swatches-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+      gap: 14px;
+    }
+
+    .swatch-item {
+      background: var(--bg-surface);
+      border: 1px solid var(--border-subtle);
+      border-radius: var(--r-field);
+      overflow: hidden;
+      box-shadow: var(--shadow-sm);
+      display: flex;
+      flex-direction: column;
+      transition: transform var(--t-fast), border-color var(--t-fast);
+    }
+    .swatch-item:hover {
+      transform: translateY(-2px);
+      border-color: var(--border-strong);
+    }
+
+    .swatch-color {
+      height: 56px;
+      width: 100%;
+      position: relative;
+      border-bottom: 1px solid var(--border-subtle);
+    }
+
+    .swatch-info {
+      padding: 12px 14px;
+    }
+    .swatch-name {
+      font-weight: 700;
+      font-size: 13px;
+      color: var(--tx-1);
+    }
+    .swatch-token {
+      font-family: var(--mono);
+      font-size: 11px;
+      color: var(--tx-3);
+      margin-top: 2px;
+    }
+    .swatch-hex {
+      font-family: var(--mono);
+      font-size: 11px;
+      font-weight: 600;
+      color: var(--tx-2);
+      margin-top: 3px;
+    }
+    .swatch-badge {
+      display: inline-block;
+      margin-top: 8px;
+      font-family: var(--mono);
+      font-size: 10px;
+      font-weight: 700;
+      padding: 2px 7px;
+      border-radius: var(--r-xs);
+      background: var(--st-normal-bg);
+      color: var(--st-normal-ink);
+      border: 1px solid var(--st-normal-bd);
+    }
+
+    /* Tipografia Amostras */
+    .type-sample-row {
+      display: flex;
+      align-items: baseline;
+      justify-content: space-between;
+      padding: 14px 0;
+      border-bottom: 1px solid var(--border-subtle);
+      flex-wrap: wrap;
+      gap: 12px;
+    }
+    .type-meta {
+      font-family: var(--mono);
+      font-size: 12px;
+      color: var(--tx-3);
+      min-width: 180px;
+    }
+    .type-render {
+      flex: 1;
+      min-width: 260px;
+    }
+
+    /* Botões & Matriz de Estados */
+    .btn-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+      align-items: center;
+    }
+
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      font-family: var(--sans);
+      font-weight: 700;
+      font-size: 13px;
+      letter-spacing: 0.02em;
+      border: 1px solid transparent;
+      border-radius: var(--r-pill);
+      padding: 9px 20px;
+      cursor: pointer;
+      transition: all var(--t-fast);
+      text-decoration: none;
+      outline: none;
+      white-space: nowrap;
+      min-height: var(--h-target-md);
+    }
+    .btn.lg { padding: 12px 28px; font-size: 14px; min-height: var(--h-target-lg); }
+    .btn.sm { padding: 6px 14px; font-size: 12px; min-height: var(--h-target-sm); }
+
+    .btn-primary {
+      background: var(--brand-fill);
+      color: #FFFFFF;
+      box-shadow: var(--shadow-sm);
+    }
+    [data-theme="escuro"] .btn-primary {
+      color: #080C12;
+      font-weight: 800;
+    }
+    .btn-primary:hover {
+      background: var(--brand-accent);
+      box-shadow: var(--glow-active);
+      transform: translateY(-1px);
+    }
+    .btn-primary:active {
+      transform: translateY(1px);
+      box-shadow: none;
+    }
+
+    .btn-action {
+      background: var(--action-fill);
+      color: #FFFFFF;
+      box-shadow: var(--shadow-sm);
+    }
+    [data-theme="escuro"] .btn-action {
+      color: #080C12;
+      font-weight: 800;
+    }
+    .btn-action:hover {
+      background: var(--action-accent);
+      transform: translateY(-1px);
+      box-shadow: 0 0 14px rgba(189, 255, 75, 0.4);
+    }
+    .btn-action:active {
+      transform: translateY(1px);
+    }
+
+    .btn-secondary {
+      background: var(--surface-card);
+      color: var(--tx-1);
+      border-color: var(--border-control);
+    }
+    .btn-secondary:hover {
+      background: var(--surface-hover-field);
+      border-color: var(--border-strong);
+      color: var(--tx-1);
+    }
+
+    .btn-ghost {
+      background: transparent;
+      color: var(--tx-2);
+      border-color: var(--border-control);
+    }
+    .btn-ghost:hover {
+      background: var(--surface-card-subtle);
+      color: var(--tx-1);
+      border-color: var(--border-strong);
+    }
+
+    .btn-danger {
+      background: var(--st-crit-bg);
+      color: var(--st-crit-ink);
+      border-color: var(--st-crit-bd);
+    }
+    .btn-danger:hover {
+      background: var(--st-crit-ink);
+      color: #FFFFFF;
+    }
+
+    .btn:disabled, .btn[disabled] {
+      opacity: 0.45;
+      cursor: not-allowed !important;
+      transform: none !important;
+      box-shadow: none !important;
+      pointer-events: none;
+    }
+
+    /* Botão com Estado de Carregamento (Loading Spinner) */
+    .btn.loading {
+      position: relative;
+      cursor: wait;
+      pointer-events: none;
+    }
+    .btn-spinner {
+      width: 14px;
+      height: 14px;
+      border: 2px solid currentColor;
+      border-right-color: transparent;
+      border-radius: 50%;
+      animation: spin 0.7s linear infinite;
+    }
+    @keyframes spin {
+      to { transform: rotate(360deg); }
+    }
+
+    /* Split Button */
+    .split-btn {
+      display: inline-flex;
+    }
+    .split-btn .btn:first-child {
+      border-top-right-radius: 0;
+      border-bottom-right-radius: 0;
+    }
+    .split-btn .btn:last-child {
+      border-top-left-radius: 0;
+      border-bottom-left-radius: 0;
+      padding: 9px 12px;
+      border-left: 1px solid rgba(255, 255, 255, 0.2);
+    }
+
+    /* Controles de Formulário e Entradas de Dados */
+    .form-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 22px;
+    }
+
+    .form-group {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+
+    .form-label {
+      font-size: 12px;
+      font-weight: 700;
+      color: var(--tx-2);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .form-label .sub {
+      color: var(--tx-3);
+      font-family: var(--mono);
+      font-weight: 500;
+    }
+
+    .form-control {
+      background: var(--bg-surface);
+      border: 1px solid var(--border-control);
+      border-radius: var(--r-field);
+      color: var(--tx-1);
+      font-family: var(--sans);
+      font-size: 14px;
+      padding: 10px 14px;
+      outline: none;
+      transition: border-color var(--t-fast), box-shadow var(--t-fast);
+      min-height: var(--h-target-md);
+    }
+    .form-control:focus {
+      border-color: var(--brand-fill);
+      box-shadow: 0 0 0 3px var(--brand-bg-soft);
+    }
+    .form-control:disabled {
+      background: var(--surface-card-subtle);
+      color: var(--tx-muted);
+      cursor: not-allowed;
+      border-color: var(--border-subtle);
+    }
+
+    /* Estado de Erro / Validação Técnica */
+    .form-group.has-error .form-control {
+      border-color: var(--st-crit-ink);
+      background: var(--st-crit-bg);
+      color: var(--tx-1);
+    }
+    .form-helper-text {
+      font-size: 11px;
+      color: var(--tx-3);
+      margin-top: 4px;
+    }
+    .form-helper-text.error {
+      color: var(--st-crit-ink);
+      font-weight: 600;
+      display: flex;
+      align-items: center;
+      gap: 4px;
+    }
+
+    /* Stepper com microajuste ± */
+    .stepper-field {
+      display: inline-flex;
+      align-items: center;
+      background: var(--bg-surface);
+      border: 1px solid var(--border-control);
+      border-radius: var(--r-pill);
+      padding: 3px;
+      width: fit-content;
+    }
+    .stepper-btn {
+      width: 34px;
+      height: 34px;
+      border-radius: 50%;
+      background: var(--surface-card-subtle);
+      border: 1px solid var(--border-subtle);
+      color: var(--tx-1);
+      font-size: 16px;
+      font-weight: bold;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: all var(--t-fast);
+    }
+    .stepper-btn:hover {
+      background: var(--brand-fill);
+      color: #FFFFFF;
+    }
+    [data-theme="escuro"] .stepper-btn:hover {
+      color: #080C12;
+    }
+    .stepper-val-input {
+      width: 76px;
+      text-align: center;
+      background: transparent;
+      border: none;
+      color: var(--tx-1);
+      font-family: var(--mono);
+      font-size: 14px;
+      font-weight: 700;
+      outline: none;
+    }
+
+    /* Precision Slider com Régua de Ticks */
+    .precision-slider-box {
+      background: var(--bg-surface);
+      border: 1px solid var(--border-subtle);
+      border-radius: var(--r-field);
+      padding: 16px 18px;
+    }
+    .slider-scale {
+      display: flex;
+      justify-content: space-between;
+      padding: 0 4px;
+      margin-bottom: 8px;
+    }
+    .slider-tick {
+      width: 1px;
+      height: 6px;
+      background: var(--border-strong);
+    }
+    .slider-tick.major {
+      height: 12px;
+      background: var(--brand-fill);
+      width: 2px;
+    }
+    input[type="range"].precision-range {
+      -webkit-appearance: none;
+      appearance: none;
+      width: 100%;
+      height: 6px;
+      border-radius: var(--r-pill);
+      background: linear-gradient(90deg, var(--border-control) 0%, var(--brand-fill) 100%);
+      outline: none;
+    }
+    input[type="range"].precision-range::-webkit-slider-thumb {
+      -webkit-appearance: none;
+      width: 22px;
+      height: 22px;
+      border-radius: 50%;
+      background: #FFFFFF;
+      border: 3px solid var(--brand-fill);
+      box-shadow: var(--shadow-sm);
+      cursor: pointer;
+      transition: transform 0.1s, box-shadow 0.1s;
+    }
+    input[type="range"].precision-range::-webkit-slider-thumb:hover {
+      transform: scale(1.15);
+      box-shadow: 0 0 10px var(--brand-fill);
+    }
+
+    /* Switches e Checkboxes */
+    .switch-label {
+      display: inline-flex;
+      align-items: center;
+      gap: 12px;
+      cursor: pointer;
+      user-select: none;
+      font-weight: 600;
+      color: var(--tx-1);
+      font-size: 13px;
+    }
+    .switch-track {
+      width: 44px;
+      height: 24px;
+      border-radius: var(--r-pill);
+      background: var(--border-control);
+      position: relative;
+      transition: background-color var(--t-fast);
+    }
+    .switch-thumb {
+      width: 18px;
+      height: 18px;
+      border-radius: 50%;
+      background: #FFFFFF;
+      position: absolute;
+      top: 3px;
+      left: 3px;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.3);
+      transition: transform var(--t-fast);
+    }
+    input[type="checkbox"].switch-input {
+      display: none;
+    }
+    input[type="checkbox"].switch-input:checked + .switch-track {
+      background: var(--brand-fill);
+    }
+    input[type="checkbox"].switch-input:checked + .switch-track .switch-thumb {
+      transform: translateX(20px);
+    }
+
+    /* Badges de Diagnóstico e Status */
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 4px 12px;
+      border-radius: var(--r-pill);
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 0.05em;
+      font-family: var(--mono);
+    }
+    .badge-dot {
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: currentColor;
+    }
+    .badge-normal { background: var(--st-normal-bg); color: var(--st-normal-ink); border: 1px solid var(--st-normal-bd); }
+    .badge-warn   { background: var(--st-warn-bg);   color: var(--st-warn-ink);   border: 1px solid var(--st-warn-bd); }
+    .badge-crit   { background: var(--st-crit-bg);   color: var(--st-crit-ink);   border: 1px solid var(--st-crit-bd); }
+
+    /* Cartão de Telemetria com Sparkline SVG */
+    .telemetry-card {
+      background: var(--bg-surface);
+      border: 1px solid var(--border-subtle);
+      border-radius: var(--r-field);
+      padding: 18px 20px;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      position: relative;
+      box-shadow: var(--shadow-sm);
+    }
+    .telemetry-card-top {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .telemetry-card-title {
+      font-size: 11px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: var(--tx-3);
+    }
+    .telemetry-card-delta {
+      font-family: var(--mono);
+      font-size: 11px;
+      font-weight: 700;
+      padding: 2px 6px;
+      border-radius: var(--r-xs);
+    }
+    .telemetry-card-delta.up { background: var(--st-normal-bg); color: var(--st-normal-ink); }
+    .telemetry-card-delta.down { background: var(--st-crit-bg); color: var(--st-crit-ink); }
+    
+    .telemetry-val-row {
+      display: flex;
+      align-items: baseline;
+      gap: 6px;
+    }
+    .telemetry-val {
+      font-family: var(--mono);
+      font-size: 28px;
+      font-weight: 800;
+      color: var(--tx-1);
+      font-variant-numeric: tabular-nums;
+    }
+    .telemetry-unit {
+      font-size: 13px;
+      color: var(--tx-3);
+      font-weight: 600;
+    }
+
+    .sparkline-svg {
+      width: 100%;
+      height: 36px;
+      stroke: var(--brand-fill);
+      stroke-width: 2;
+      fill: none;
+    }
+
+    /* FamilyNav (Tabs em Chips Industriais) */
+    .family-nav {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+      background: var(--surface-card-subtle);
+      padding: 6px;
+      border-radius: var(--r-field);
+      border: 1px solid var(--border-subtle);
+    }
+    .family-tab {
+      padding: 8px 18px;
+      border-radius: var(--r-chip);
+      font-size: 13px;
+      font-weight: 700;
+      color: var(--tx-3);
+      background: transparent;
+      border: none;
+      cursor: pointer;
+      transition: all 0.15s;
+    }
+    .family-tab:hover {
+      color: var(--tx-1);
+    }
+    .family-tab.active {
+      background: var(--bg-surface);
+      color: var(--brand-fill);
+      box-shadow: var(--shadow-sm);
+    }
+
+    /* D11Drawer (Accordion Técnico com Chevron Animado) */
+    .d11-drawer {
+      border: 1px solid var(--border-subtle);
+      border-radius: var(--r-field);
+      background: var(--bg-surface);
+      overflow: hidden;
+      margin-top: 10px;
+    }
+    .d11-trigger {
+      width: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 14px 18px;
+      background: var(--surface-card-subtle);
+      border: none;
+      color: var(--tx-1);
+      font-family: var(--sans);
+      font-size: 13px;
+      font-weight: 700;
+      cursor: pointer;
+      text-align: left;
+    }
+    .d11-chevron {
+      width: 16px;
+      height: 16px;
+      stroke: currentColor;
+      fill: none;
+      stroke-width: 2;
+      transition: transform var(--t-smooth);
+    }
+    .d11-drawer.open .d11-chevron {
+      transform: rotate(180deg);
+    }
+    .d11-body {
+      display: none;
+      padding: 18px;
+      border-top: 1px solid var(--border-subtle);
+      font-size: 13px;
+      line-height: 1.6;
+      color: var(--tx-2);
+    }
+    .d11-drawer.open .d11-body {
+      display: block;
+    }
+
+    /* Banners e Alertas de Feedback */
+    .alert-banner {
+      display: flex;
+      align-items: flex-start;
+      gap: 14px;
+      padding: 16px 20px;
+      border-radius: var(--r-field);
+      border: 1px solid transparent;
+      margin-bottom: 14px;
+    }
+    .alert-banner.info {
+      background: var(--brand-bg-soft);
+      border-color: var(--brand-border);
+      color: var(--brand-fill);
+    }
+    .alert-banner.warn {
+      background: var(--st-warn-bg);
+      border-color: var(--st-warn-bd);
+      color: var(--st-warn-ink);
+    }
+    .alert-banner.crit {
+      background: var(--st-crit-bg);
+      border-color: var(--st-crit-bd);
+      color: var(--st-crit-ink);
+    }
+
+    /* Tabela de Dados e Parâmetros Kienzle */
+    .data-table-wrap {
+      overflow-x: auto;
+      border: 1px solid var(--border-subtle);
+      border-radius: var(--r-field);
+      background: var(--bg-surface);
+    }
+    .data-table {
+      width: 100%;
+      border-collapse: collapse;
+      text-align: left;
+      font-size: 13px;
+    }
+    .data-table th {
+      background: var(--surface-card-subtle);
+      padding: 12px 18px;
+      font-size: 11px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: var(--tx-3);
+      border-bottom: 1px solid var(--border-subtle);
+    }
+    .data-table td {
+      padding: 14px 18px;
+      border-bottom: 1px solid var(--border-subtle);
+      color: var(--tx-2);
+      font-variant-numeric: tabular-nums;
+    }
+    .data-table tr:hover td {
+      background: var(--surface-hover-field);
+      color: var(--tx-1);
+    }
+
+    /* ==========================================================================
+       SEÇÃO 10: SIMULADOR COCKPIT OPERACIONAL CNC CANÔNICO
+       ========================================================================== */
+    .cockpit-panel {
+      background: var(--bg-surface);
+      border: 2px solid var(--brand-border);
+      border-radius: var(--r-modal);
+      padding: 28px;
+      box-shadow: var(--shadow-lg);
+    }
+    .cockpit-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 24px;
+      flex-wrap: wrap;
+      gap: 16px;
+    }
+    .cockpit-stats-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 16px;
+      margin-bottom: 28px;
+    }
+    .stat-tile {
+      background: var(--surface-card-subtle);
+      border: 1px solid var(--border-subtle);
+      border-radius: var(--r-field);
+      padding: 18px;
+      position: relative;
+      overflow: hidden;
+    }
+    .stat-tile::before {
+      content: '';
+      position: absolute;
+      left: 0;
+      top: 0;
+      bottom: 0;
+      width: 4px;
+      background: var(--brand-fill);
+    }
+    .stat-tile.action-tile::before {
+      background: var(--action-fill);
+    }
+    .stat-sym {
+      font-family: var(--mono);
+      font-size: 18px;
+      font-weight: 700;
+      color: var(--brand-fill);
+      margin-bottom: 4px;
+    }
+    .stat-sym.action-sym {
+      color: var(--action-fill);
+    }
+    .stat-title {
+      font-size: 11px;
+      font-weight: 700;
+      color: var(--tx-3);
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+    }
+    .stat-number {
+      font-family: var(--mono);
+      font-size: 26px;
+      font-weight: 800;
+      color: var(--tx-1);
+      margin-top: 4px;
+      font-variant-numeric: tabular-nums;
+    }
+    .stat-unit {
+      font-size: 12px;
+      color: var(--tx-3);
+      font-weight: 500;
+      margin-left: 4px;
+    }
+    .cockpit-center {
+      display: grid;
+      grid-template-columns: 320px 1fr;
+      gap: 28px;
+      align-items: center;
+    }
+    .gauge-display-box {
+      background: var(--surface-card-subtle);
+      border: 1px solid var(--border-subtle);
+      border-radius: 14px;
+      padding: 22px;
+      text-align: center;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+    .gauge-render {
+      width: 210px;
+      height: 170px;
+      margin-bottom: 10px;
+    }
+
+    /* Responsividade */
+    @media (max-width: 960px) {
+      .sidebar-nav {
+        transform: translateX(-100%);
+      }
+      .sidebar-nav.open {
+        transform: translateX(0);
+      }
+      .sidebar-scrim.open {
+        display: block;
+      }
+      .main-content {
+        margin-left: 0;
+      }
+      .mobile-menu-btn {
+        display: block;
+      }
+      .cockpit-center {
+        grid-template-columns: 1fr;
+      }
+      .content-wrapper {
+        padding: 20px 16px 60px;
+      }
+      .docs-banner-hero {
+        flex-direction: column;
+        align-items: flex-start;
+      }
+    }
+  </style>
+</head>
+<body data-theme="claro">
+
+<div class="layout-root">
+  
+  <!-- Backdrop para mobile -->
+  <div class="sidebar-scrim" id="sidebar-scrim" onclick="toggleMobileSidebar()"></div>
+
+  <!-- ==========================================================================
+       SIDEBAR PERSISTENTE (ESTILO CANÔNICO FLOWNC)
+       ========================================================================== -->
+  <aside class="sidebar-nav" id="sidebar-nav">
+    <div class="sidebar-header">
+      <div class="sidebar-logo">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 300" width="100%" height="100%">
+          <defs>
+            <linearGradient id="grad-sector1-lg" x1="0%" y1="100%" x2="100%" y2="0%">
+              <stop offset="0%" stop-color="#16202C"/>
+              <stop offset="100%" stop-color="#1E2C3D"/>
+            </linearGradient>
+            <linearGradient id="grad-sector2-lg" x1="0%" y1="100%" x2="100%" y2="0%">
+              <stop offset="0%" stop-color="#0E7C69"/>
+              <stop offset="60%" stop-color="#13A88D"/>
+              <stop offset="100%" stop-color="#19E4BB"/>
+            </linearGradient>
+            <linearGradient id="grad-sector3-lg" x1="0%" y1="0%" x2="100%" y2="100%">
+              <stop offset="0%" stop-color="#19E4BB"/>
+              <stop offset="100%" stop-color="#13B896"/>
+            </linearGradient>
+            <linearGradient id="grad-arrow-lg" x1="0%" y1="100%" x2="100%" y2="0%">
+              <stop offset="0%" stop-color="#7BC71E"/>
+              <stop offset="40%" stop-color="#A3F527"/>
+              <stop offset="100%" stop-color="#BDFF4B"/>
+            </linearGradient>
+            <linearGradient id="grad-frame" x1="0%" y1="0%" x2="100%" y2="0%">
+              <stop offset="0%" stop-color="#19E4BB" stop-opacity="0.8"/>
+              <stop offset="60%" stop-color="#64F0A4" stop-opacity="0.5"/>
+              <stop offset="100%" stop-color="#BDFF4B" stop-opacity="0.8"/>
+            </linearGradient>
+            <filter id="glow-arrow-lg" x="-20%" y="-20%" width="140%" height="140%">
+              <feDropShadow dx="0" dy="0" stdDeviation="5" flood-color="#BDFF4B" flood-opacity="0.5"/>
+            </filter>
+          </defs>
+
+          <style>
+            .txt-tool {
+              font-family: 'Urbanist', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+              font-weight: 700;
+              font-size: 88px;
+              fill: #FFFFFF;
+              letter-spacing: -0.02em;
+            }
+            .txt-opt {
+              font-family: 'Urbanist', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+              font-weight: 500;
+              font-size: 88px;
+              fill: #19E4BB;
+              letter-spacing: -0.02em;
+            }
+            .txt-sub {
+              font-family: 'Urbanist', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+              font-weight: 600;
+              font-size: 19px;
+              fill: #AEAEAE;
+              letter-spacing: 0.28em;
+              text-transform: uppercase;
+            }
+          </style>
+
+          <!-- Moldura técnica externa com cantos chanfrados e arredondados contornando o texto -->
+          <path d="M 230 115 L 910 115 A 45 45 0 0 1 955 160 L 955 165 A 45 45 0 0 1 910 210 L 195 210" 
+                fill="none" 
+                stroke="url(#grad-frame)" 
+                stroke-width="3" 
+                stroke-linecap="round"/>
+
+          <!-- Símbolo do Gauge posicionado à esquerda (escala 0.52, translação x=15, y=10) -->
+          <g transform="translate(15, 10) scale(0.52)">
+            <path d="M 70.00 340.00 A 180 180 0 0 1 116.23 219.56 L 179.40 276.43 A 95 95 0 0 0 155.00 340.00 Z" fill="url(#grad-sector1-lg)" stroke="rgba(25, 228, 187, 0.25)" stroke-width="2"/>
+            <path d="M 124.96 210.52 A 180 180 0 0 1 370.44 206.23 L 313.57 269.40 A 95 95 0 0 0 184.01 271.66 Z" fill="url(#grad-sector2-lg)" stroke="rgba(25, 228, 187, 0.45)" stroke-width="2"/>
+            <path d="M 379.48 214.96 A 180 180 0 0 1 430.00 340.00 L 345.00 340.00 A 95 95 0 0 0 318.34 274.01 Z" fill="url(#grad-sector3-lg)" stroke="#19E4BB" stroke-width="2"/>
+            <path d="M 115 450 L 210 270 L 248 305 L 345 170 L 330 155 L 410 95 L 385 195 L 368 188 L 262 335 L 222 298 L 115 450 Z" fill="url(#grad-arrow-lg)" filter="url(#glow-arrow-lg)" stroke="#E4FF94" stroke-width="1.5"/>
+          </g>
+
+          <text x="270" y="180">
+            <tspan class="txt-tool">Tool</tspan>
+            <tspan class="txt-opt">Optimizer</tspan>
+          </text>
+          
+          <text x="275" y="245" class="txt-sub">CNC INDUSTRIAL PRECISION</text>
+        </svg>
+      </div>
+      <div class="sidebar-badge-row">
+        <div class="sidebar-badge">DS CANÔNICO</div>
+        <div class="sidebar-ver">v2.0</div>
+      </div>
+    </div>
+
+    <!-- Banner de Acesso Rápido ao Modelo de Site -->
+    <div class="sidebar-site-model-promo">
+      <div class="promo-tag">EXPERIÊNCIA REAL</div>
+      <div class="promo-title">Modelo de Site Flagship</div>
+      <div class="promo-desc">Implementação completa de marketing, produto e engenharia.</div>
+      <a href="site-model.html" class="promo-link">Ver Modelo de Site ↗</a>
+    </div>
+
+    <div class="sidebar-scroll">
+      <div class="nav-group-title">Visão Geral</div>
+      <a href="#sec-overview" class="nav-item active"><span class="n">00</span>Overview & North Star</a>
+      <a href="#sec-brand" class="nav-item"><span class="n">01</span>Identidade & Marca</a>
+
+      <div class="nav-group-title">Foundations (Tokens)</div>
+      <a href="#sec-cores" class="nav-item"><span class="n">02</span>Cores & WCAG AA</a>
+      <a href="#sec-tipografia" class="nav-item"><span class="n">03</span>Tipografia & Escalas</a>
+      <a href="#sec-geometria" class="nav-item"><span class="n">04</span>Espaço, Raios & Sombra</a>
+
+      <div class="nav-group-title">Componentes Core</div>
+      <a href="#sec-botoes" class="nav-item"><span class="n">05</span>Botões & Ações</a>
+      <a href="#sec-formularios" class="nav-item"><span class="n">06</span>Formulários & Sliders</a>
+      <a href="#sec-telemetria" class="nav-item"><span class="n">07</span>Telemetria & Gauges</a>
+      <a href="#sec-navegacao" class="nav-item"><span class="n">08</span>Navegação & Gavetas</a>
+      <a href="#sec-dados" class="nav-item"><span class="n">09</span>Tabelas & Feedback</a>
+
+      <div class="nav-group-title">Ambiente de Aplicação</div>
+      <a href="#sec-cockpit" class="nav-item"><span class="n">10</span>Cockpit Operacional CNC</a>
+    </div>
+
+    <div class="sidebar-footer">
+      <span>WCAG AA Calibrado</span>
+      <span>2026 · v2.0</span>
+    </div>
+  </aside>
+
+  <!-- ==========================================================================
+       ÁREA PRINCIPAL DE CONTEÚDO
+       ========================================================================== -->
+  <main class="main-content">
+    
+    <!-- Top Bar Adesiva com Seletor de Temas e Link para Site Model -->
+    <header class="theme-bar">
+      <div class="theme-bar-title">
+        <button class="mobile-menu-btn" onclick="toggleMobileSidebar()" aria-label="Abrir Menu">☰</button>
+        <span>ToolOptimizer CNC · Design System Specification</span>
+      </div>
+
+      <div class="theme-bar-actions">
+        <a href="site-model.html" class="topbar-site-model-btn">
+          <span class="pulse-dot-cyan"></span>
+          <span>Modelo de Site Flagship ↗</span>
+        </a>
+
+        <div class="theme-toggles">
+          <button type="button" class="theme-btn active" id="btn-theme-claro" onclick="setTheme('claro')">
+            ☀️ Light Theme
+          </button>
+          <button type="button" class="theme-btn" id="btn-theme-escuro" onclick="setTheme('escuro')">
+            🌙 Dark Theme
+          </button>
+        </div>
+      </div>
+    </header>
+
+    <div class="content-wrapper">
+
+      <!-- Banner de Apresentação Hero -->
+      <div class="docs-banner-hero">
+        <div class="docs-banner-left">
+          <div class="docs-banner-eyebrow">Engenharia de Precisão Cirúrgica</div>
+          <h1 class="docs-banner-title">ToolOptimizer CNC Design System</h1>
+          <p class="docs-banner-desc">
+            Documentação técnica de tokens, estados, componentes e ambiente operacional. Desenvolvido para sustentação de interfaces de controle numérico computadorizado de alta performance.
+          </p>
+        </div>
+        <div class="docs-banner-actions">
+          <a href="site-model.html" class="btn btn-action">
+            Explorar Modelo de Site ↗
+          </a>
+          <a href="#sec-cockpit" class="btn btn-secondary">
+            Simulador Cockpit ↓
+          </a>
+        </div>
+      </div>
+
+      <!-- ==========================================================================
+           00. OVERVIEW & CREATIVE NORTH STAR
+           ========================================================================== -->
+      <section class="ds-section" id="sec-overview">
+        <div class="section-header">
+          <div>
+            <h2 class="section-title">
+              <span class="section-num">00</span>
+              Visão Geral & Creative North Star
+            </h2>
+            <p class="section-desc">
+              O Design System <strong>ToolOptimizer CNC</strong> traduz o rigor, alto contraste e precisão ótica das interfaces médico-cirúrgicas (referência robótica VITASILIX) para o chão de fábrica e a usinagem CNC de alto rendimento.
+            </p>
+          </div>
+          <span class="badge badge-normal">PRECISION SURGICAL MACHINING</span>
+        </div>
+
+        <div class="demo-box">
+          <div class="demo-label">Pilares Arquiteturais do Sistema</div>
+          <div style="display:grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap:18px;">
+            <div style="background:var(--bg-surface); padding:18px; border-radius:var(--r-field); border:1px solid var(--border-subtle);">
+              <div style="font-weight:700; color:var(--brand-fill); margin-bottom:6px; font-size:14px;">1. Alta Densidade & Clareza Óptica</div>
+              <p style="font-size:13px; color:var(--tx-3); line-height:1.6;">Superfícies limpas com contraste WCAG AA validado para visualização contínua sob luz industrial ou telas touch de comando numérico.</p>
+            </div>
+            <div style="background:var(--bg-surface); padding:18px; border-radius:var(--r-field); border:1px solid var(--border-subtle);">
+              <div style="font-weight:700; color:var(--action-fill); margin-bottom:6px; font-size:14px;">2. Telemetria Ativa & Numérica Tabular</div>
+              <p style="font-size:13px; color:var(--tx-3); line-height:1.6;">Exibição de coordenadas, rotações e potências com <code>JetBrains Mono</code> tabular para evitar trepidação visual durante atualizações.</p>
+            </div>
+            <div style="background:var(--bg-surface); padding:18px; border-radius:var(--r-field); border:1px solid var(--border-subtle);">
+              <div style="font-weight:700; color:var(--tx-1); margin-bottom:6px; font-size:14px;">3. Arquitetura Dual Nativa</div>
+              <p style="font-size:13px; color:var(--tx-3); line-height:1.6;">Desenvolvido com Light Theme padrão e Dark Theme alternativo intercambiáveis instantaneamente através de tokens semânticos.</p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ==========================================================================
+           01. IDENTIDADE DA MARCA (BRAND MASTER)
+           ========================================================================== -->
+      <section class="ds-section" id="sec-brand">
+        <div class="section-header">
+          <div>
+            <h2 class="section-title">
+              <span class="section-num">01</span>
+              Identidade Visual & Logomarca Refatorada
+            </h2>
+            <p class="section-desc">
+              A logomarca oficial do ToolOptimizer CNC teve sua <strong>geometria original 100% preservada</strong> (gauge semicircular com 3 setores radiais e seta de avanço), sendo harmonizada nos novos tokens de cor e tipografia.
+            </p>
+          </div>
+          <span class="badge badge-normal">INVARIÂNCIA ESTRUTURAL HOMOLOGADA</span>
+        </div>
+
+        <div class="demo-box">
+          <div class="demo-label">Ativos Oficiais Vetoriais</div>
+          <div style="display:grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap:20px; align-items:center;">
+            <div style="background:#080C12; padding:28px; border-radius:var(--r-field); border:1px solid rgba(255,255,255,0.1); text-align:center;">
+              <div style="height:52px; max-width:340px; margin:0 auto;">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 300" width="100%" height="100%">
+                  <path d="M 230 115 L 910 115 A 45 45 0 0 1 955 160 L 955 165 A 45 45 0 0 1 910 210 L 195 210" fill="none" stroke="url(#grad-frame)" stroke-width="3" stroke-linecap="round"/>
+                  <g transform="translate(15, 10) scale(0.52)">
+                    <path d="M 70.00 340.00 A 180 180 0 0 1 116.23 219.56 L 179.40 276.43 A 95 95 0 0 0 155.00 340.00 Z" fill="url(#grad-sector1-lg)" stroke="rgba(25, 228, 187, 0.25)" stroke-width="2"/>
+                    <path d="M 124.96 210.52 A 180 180 0 0 1 370.44 206.23 L 313.57 269.40 A 95 95 0 0 0 184.01 271.66 Z" fill="url(#grad-sector2-lg)" stroke="rgba(25, 228, 187, 0.45)" stroke-width="2"/>
+                    <path d="M 379.48 214.96 A 180 180 0 0 1 430.00 340.00 L 345.00 340.00 A 95 95 0 0 0 318.34 274.01 Z" fill="url(#grad-sector3-lg)" stroke="#19E4BB" stroke-width="2"/>
+                    <path d="M 115 450 L 210 270 L 248 305 L 345 170 L 330 155 L 410 95 L 385 195 L 368 188 L 262 335 L 222 298 L 115 450 Z" fill="url(#grad-arrow-lg)" filter="url(#glow-arrow-lg)" stroke="#E4FF94" stroke-width="1.5"/>
+                  </g>
+                  <text x="270" y="180">
+                    <tspan class="txt-tool">Tool</tspan>
+                    <tspan class="txt-opt">Optimizer</tspan>
+                  </text>
+                  <text x="275" y="245" class="txt-sub">CNC INDUSTRIAL PRECISION</text>
+                </svg>
+              </div>
+              <div style="font-size:11px; color:#8E9FB8; margin-top:14px; font-family:var(--mono);">Logo_ToolOptimizer.svg (Horizontal Master)</div>
+            </div>
+
+            <div style="background:#080C12; padding:28px; border-radius:var(--r-field); border:1px solid rgba(255,255,255,0.1); text-align:center;">
+              <div style="width:64px; height:64px; margin:0 auto;">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 500 500" width="100%" height="100%">
+                  <defs>
+                    <linearGradient id="grad-bg-iso" x1="0%" y1="0%" x2="100%" y2="100%">
+                      <stop offset="0%" stop-color="#0F141C"/>
+                      <stop offset="100%" stop-color="#080A0E"/>
+                    </linearGradient>
+                  </defs>
+                  <rect width="500" height="500" rx="100" fill="url(#grad-bg-iso)"/>
+                  <path d="M 70.00 340.00 A 180 180 0 0 1 116.23 219.56 L 179.40 276.43 A 95 95 0 0 0 155.00 340.00 Z" fill="url(#grad-sector1-lg)" stroke="rgba(25, 228, 187, 0.2)" stroke-width="1.5"/>
+                  <path d="M 124.96 210.52 A 180 180 0 0 1 370.44 206.23 L 313.57 269.40 A 95 95 0 0 0 184.01 271.66 Z" fill="url(#grad-sector2-lg)" stroke="rgba(25, 228, 187, 0.4)" stroke-width="1.5"/>
+                  <path d="M 379.48 214.96 A 180 180 0 0 1 430.00 340.00 L 345.00 340.00 A 95 95 0 0 0 318.34 274.01 Z" fill="url(#grad-sector3-lg)" stroke="#19E4BB" stroke-width="1.5"/>
+                  <path d="M 115 450 L 210 270 L 248 305 L 345 170 L 330 155 L 410 95 L 385 195 L 368 188 L 262 335 L 222 298 L 115 450 Z" fill="url(#grad-arrow-lg)" filter="url(#glow-arrow-lg)" stroke="#E4FF94" stroke-width="1.2"/>
+                </svg>
+              </div>
+              <div style="font-size:11px; color:#8E9FB8; margin-top:14px; font-family:var(--mono);">Logo_Icon.svg (Símbolo / Gauge Isolado)</div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ==========================================================================
+           02. FOUNDATIONS — CORES & WCAG AA
+           ========================================================================== -->
+      <section class="ds-section" id="sec-cores">
+        <div class="section-header">
+          <div>
+            <h2 class="section-title">
+              <span class="section-num">02</span>
+              Foundations — Cores & Conformidade WCAG AA
+            </h2>
+            <p class="section-desc">
+              Paleta cromática balanceada. No tema claro, as cores são aprofundadas para garantir contraste estrito (&gt;4.5:1); no tema escuro, ganham luminescência cirúrgica neon calibrada.
+            </p>
+          </div>
+        </div>
+
+        <div class="demo-label">Cores de Marca & Ação</div>
+        <div class="swatches-grid">
+          <div class="swatch-item">
+            <div class="swatch-color" style="background:var(--brand-fill);"></div>
+            <div class="swatch-info">
+              <div class="swatch-name">Ciano Primário</div>
+              <div class="swatch-token">--brand-fill</div>
+              <div class="swatch-hex">#0D9488 (L) / #19E4BB (D)</div>
+              <span class="swatch-badge">WCAG AA Pass</span>
+            </div>
+          </div>
+
+          <div class="swatch-item">
+            <div class="swatch-color" style="background:var(--action-fill);"></div>
+            <div class="swatch-info">
+              <div class="swatch-name">Lime Ação / Turbo</div>
+              <div class="swatch-token">--action-fill</div>
+              <div class="swatch-hex">#4D7C0F (L) / #BDFF4B (D)</div>
+              <span class="swatch-badge">WCAG AA Pass</span>
+            </div>
+          </div>
+
+          <div class="swatch-item">
+            <div class="swatch-color" style="background:var(--surface-card);"></div>
+            <div class="swatch-info">
+              <div class="swatch-name">Superfície Card</div>
+              <div class="swatch-token">--surface-card</div>
+              <div class="swatch-hex">#FFFFFF (L) / #131B29 (D)</div>
+              <span class="swatch-badge">Superfície</span>
+            </div>
+          </div>
+
+          <div class="swatch-item">
+            <div class="swatch-color" style="background:var(--bg-page);"></div>
+            <div class="swatch-info">
+              <div class="swatch-name">Fundo da Página</div>
+              <div class="swatch-token">--bg-page</div>
+              <div class="swatch-hex">#F4F6F9 (L) / #080C12 (D)</div>
+              <span class="swatch-badge">Base Canvas</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="demo-label" style="margin-top:24px;">Estados Semânticos de Telemetria Industrial</div>
+        <div class="swatches-grid">
+          <div class="swatch-item">
+            <div class="swatch-color" style="background:var(--st-normal-ink);"></div>
+            <div class="swatch-info">
+              <div class="swatch-name">Nominal / Seguro</div>
+              <div class="swatch-token">--st-normal-ink</div>
+              <span class="swatch-badge">Estabilidade Máxima</span>
+            </div>
+          </div>
+
+          <div class="swatch-item">
+            <div class="swatch-color" style="background:var(--st-warn-ink);"></div>
+            <div class="swatch-info">
+              <div class="swatch-name">Carga Elevada / Alerta</div>
+              <div class="swatch-token">--st-warn-ink</div>
+              <span class="swatch-badge" style="background:var(--st-warn-bg); color:var(--st-warn-ink); border-color:var(--st-warn-bd);">Atenção Térmica</span>
+            </div>
+          </div>
+
+          <div class="swatch-item">
+            <div class="swatch-color" style="background:var(--st-crit-ink);"></div>
+            <div class="swatch-info">
+              <div class="swatch-name">Crítico / Colisão</div>
+              <div class="swatch-token">--st-crit-ink</div>
+              <span class="swatch-badge" style="background:var(--st-crit-bg); color:var(--st-crit-ink); border-color:var(--st-crit-bd);">Risco Iminente</span>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ==========================================================================
+           03. FOUNDATIONS — TIPOGRAFIA & ESCALAS
+           ========================================================================== -->
+      <section class="ds-section" id="sec-tipografia">
+        <div class="section-header">
+          <div>
+            <h2 class="section-title">
+              <span class="section-num">03</span>
+              Foundations — Tipografia & Escala Modular
+            </h2>
+            <p class="section-desc">
+              Dois eixos tipográficos complementares: <strong>Urbanist</strong> para autoridade, legibilidade e clareza de interface; <strong>JetBrains Mono</strong> para parâmetros técnicos, coordenadas numéricas e código G.
+            </p>
+          </div>
+        </div>
+
+        <div class="demo-box">
+          <div class="type-sample-row">
+            <div class="type-meta">Display · 32px / 40px (Bold)</div>
+            <div class="type-render" style="font-size:32px; font-weight:800; color:var(--tx-1);">Centro de Usinagem 5 Eixos</div>
+          </div>
+          <div class="type-sample-row">
+            <div class="type-meta">H1 · 24px / 32px (Bold)</div>
+            <div class="type-render" style="font-size:24px; font-weight:700; color:var(--tx-1);">Otimização de Parâmetros de Corte</div>
+          </div>
+          <div class="type-sample-row">
+            <div class="type-meta">H2 · 20px / 28px (SemiBold)</div>
+            <div class="type-render" style="font-size:20px; font-weight:600; color:var(--tx-1);">Fresa Metal Duro Ø 12.0 mm (Z=4)</div>
+          </div>
+          <div class="type-sample-row">
+            <div class="type-meta">Body · 14px / 22px (Regular)</div>
+            <div class="type-render" style="font-size:14px; color:var(--tx-2); line-height:1.6;">
+              Controle de avanço por dente e vida útil estimada segundo fórmula de Taylor para usinagem pesada em aços ligados.
+            </div>
+          </div>
+          <div class="type-sample-row">
+            <div class="type-meta">Mono Tabular · 13px</div>
+            <div class="type-render" style="font-family:var(--mono); font-size:13px; font-weight:600; color:var(--brand-fill); font-variant-numeric:tabular-nums;">
+              N0120 G00 X120.450 Y-45.200 Z5.000 S4244 M03 F1018
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ==========================================================================
+           04. FOUNDATIONS — ESPAÇO, RAIOS & SOMBRAS
+           ========================================================================== -->
+      <section class="ds-section" id="sec-geometria">
+        <div class="section-header">
+          <div>
+            <h2 class="section-title">
+              <span class="section-num">04</span>
+              Foundations — Espaçamento, Raios & Sombras
+            </h2>
+            <p class="section-desc">
+              Grid modular construído sobre o padrão base de 4px, alvos de toque ergonômicos para luvas industriais e elevações sutis que evitam poluição visual.
+            </p>
+          </div>
+        </div>
+
+        <div class="demo-box">
+          <div class="demo-label">Escala de Espaçamento Modular (Base 4px)</div>
+          <div style="display:flex; flex-wrap:wrap; gap:16px; align-items:flex-end;">
+            <div><div style="width:4px; height:36px; background:var(--brand-fill); border-radius:2px;"></div><div style="font-family:var(--mono); font-size:11px; color:var(--tx-3); margin-top:4px;">4px</div></div>
+            <div><div style="width:8px; height:36px; background:var(--brand-fill); border-radius:2px;"></div><div style="font-family:var(--mono); font-size:11px; color:var(--tx-3); margin-top:4px;">8px</div></div>
+            <div><div style="width:12px; height:36px; background:var(--brand-fill); border-radius:2px;"></div><div style="font-family:var(--mono); font-size:11px; color:var(--tx-3); margin-top:4px;">12px</div></div>
+            <div><div style="width:16px; height:36px; background:var(--brand-fill); border-radius:2px;"></div><div style="font-family:var(--mono); font-size:11px; color:var(--tx-3); margin-top:4px;">16px</div></div>
+            <div><div style="width:24px; height:36px; background:var(--brand-fill); border-radius:2px;"></div><div style="font-family:var(--mono); font-size:11px; color:var(--tx-3); margin-top:4px;">24px</div></div>
+            <div><div style="width:32px; height:36px; background:var(--brand-fill); border-radius:2px;"></div><div style="font-family:var(--mono); font-size:11px; color:var(--tx-3); margin-top:4px;">32px</div></div>
+            <div><div style="width:48px; height:36px; background:var(--brand-fill); border-radius:2px;"></div><div style="font-family:var(--mono); font-size:11px; color:var(--tx-3); margin-top:4px;">48px</div></div>
+          </div>
+        </div>
+
+        <div class="demo-box">
+          <div class="demo-label">Raios de Canto (Border Radii)</div>
+          <div style="display:grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap:16px;">
+            <div style="background:var(--bg-surface); border:1px solid var(--border-control); border-radius:var(--r-chip); padding:16px; text-align:center;">
+              <div style="font-weight:700; color:var(--tx-1);">Chip (6px)</div>
+              <div style="font-family:var(--mono); font-size:11px; color:var(--tx-3);">--r-chip</div>
+            </div>
+            <div style="background:var(--bg-surface); border:1px solid var(--border-control); border-radius:var(--r-field); padding:16px; text-align:center;">
+              <div style="font-weight:700; color:var(--tx-1);">Field / Input (8px)</div>
+              <div style="font-family:var(--mono); font-size:11px; color:var(--tx-3);">--r-field</div>
+            </div>
+            <div style="background:var(--bg-surface); border:1px solid var(--border-control); border-radius:var(--r-card); padding:16px; text-align:center;">
+              <div style="font-weight:700; color:var(--tx-1);">Card (14px)</div>
+              <div style="font-family:var(--mono); font-size:11px; color:var(--tx-3);">--r-card</div>
+            </div>
+            <div style="background:var(--bg-surface); border:1px solid var(--border-control); border-radius:var(--r-pill); padding:16px; text-align:center;">
+              <div style="font-weight:700; color:var(--tx-1);">Pill (999px)</div>
+              <div style="font-family:var(--mono); font-size:11px; color:var(--tx-3);">--r-pill</div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ==========================================================================
+           05. COMPONENTES — BOTÕES & AÇÕES
+           ========================================================================== -->
+      <section class="ds-section" id="sec-botoes">
+        <div class="section-header">
+          <div>
+            <h2 class="section-title">
+              <span class="section-num">05</span>
+              Componentes — Botões & Ações
+            </h2>
+            <p class="section-desc">
+              Componentes de interação tátil primários, de ação e utilitários. Alturas mínimas ergonômicas de 42px e 48px para manuseio seguro em ambientes de fábrica.
+            </p>
+          </div>
+        </div>
+
+        <div class="component-meta-panel">
+          <div>
+            <div class="meta-col-title">Variantes</div>
+            <div class="meta-col-val"><code>primary</code> · <code>action</code> · <code>secondary</code> · <code>ghost</code> · <code>danger</code></div>
+          </div>
+          <div>
+            <div class="meta-col-title">Portes de Altura</div>
+            <div class="meta-col-val"><code>lg (48px)</code> · <code>md (42px)</code> · <code>sm (34px)</code></div>
+          </div>
+          <div>
+            <div class="meta-col-title">Estados Suportados</div>
+            <div class="meta-col-val">Default · Hover · Active · Focus · Disabled · Loading</div>
+          </div>
+        </div>
+
+        <div class="demo-box">
+          <div class="demo-label">Matriz Completa de Estilos & Estados</div>
+          <div class="btn-row">
+            <button class="btn btn-primary">⚡ Otimizar Corte</button>
+            <button class="btn btn-action">Calcular Turbo</button>
+            <button class="btn btn-secondary">Exportar G-Code</button>
+            <button class="btn btn-ghost">Configurações</button>
+            <button class="btn btn-danger">Parada de Emergência</button>
+            <button class="btn btn-primary loading">
+              <span class="btn-spinner"></span>
+              <span>Calculando Taylor...</span>
+            </button>
+            <button class="btn btn-primary" disabled>Desabilitado</button>
+          </div>
+        </div>
+
+        <div class="demo-box">
+          <div class="demo-label">Escala de Tamanhos & Split Button</div>
+          <div class="btn-row">
+            <button class="btn btn-primary lg">Porte Grande (48px - Luva)</button>
+            <button class="btn btn-primary">Porte Padrão (42px)</button>
+            <button class="btn btn-primary sm">Porte Compacto (34px)</button>
+
+            <div class="split-btn">
+              <button class="btn btn-action">Gerar Programa CNC</button>
+              <button class="btn btn-action" aria-label="Mais opções">▼</button>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ==========================================================================
+           06. COMPONENTES — FORMULÁRIOS & CONTROLES
+           ========================================================================== -->
+      <section class="ds-section" id="sec-formularios">
+        <div class="section-header">
+          <div>
+            <h2 class="section-title">
+              <span class="section-num">06</span>
+              Componentes — Formulários & Sliders
+            </h2>
+            <p class="section-desc">
+              Controles cirúrgicos com microajuste passo a passo, sliders graduados e campos com validação técnica de limites de segurança mecânica.
+            </p>
+          </div>
+        </div>
+
+        <div class="component-meta-panel">
+          <div>
+            <div class="meta-col-title">Inputs</div>
+            <div class="meta-col-val">Text · Select · PrecisionSlider · Stepper · Switch</div>
+          </div>
+          <div>
+            <div class="meta-col-title">Validação</div>
+            <div class="meta-col-val">Limites Kienzle e verificação de rotação máxima</div>
+          </div>
+          <div>
+            <div class="meta-col-title">Acessibilidade</div>
+            <div class="meta-col-val">Anel cirúrgico <code>:focus-visible</code></div>
+          </div>
+        </div>
+
+        <div class="demo-box">
+          <div class="demo-label">Sliders & Microajuste Stepper</div>
+          <div class="form-grid">
+            <div class="precision-slider-box">
+              <div class="form-label">
+                <span>Velocidade de Corte (Vc)</span>
+                <span class="sub" id="demo-vc-val">160 m/min</span>
+              </div>
+              <div class="slider-scale">
+                <div class="slider-tick major"></div>
+                <div class="slider-tick"></div>
+                <div class="slider-tick"></div>
+                <div class="slider-tick major"></div>
+                <div class="slider-tick"></div>
+                <div class="slider-tick"></div>
+                <div class="slider-tick major"></div>
+              </div>
+              <input type="range" class="precision-range" min="60" max="300" value="160" oninput="document.getElementById('demo-vc-val').textContent = this.value + ' m/min'">
+            </div>
+
+            <div style="display:flex; flex-direction:column; justify-content:center; gap:12px;">
+              <div class="form-label">
+                <span>Número de Cortes (Z)</span>
+                <span class="sub">Arestas ativas da fresa</span>
+              </div>
+              <div class="stepper-field">
+                <button class="stepper-btn" onclick="stepVal('demo-z', -1)" aria-label="Diminuir cortes">−</button>
+                <input type="text" class="stepper-val-input" id="demo-z" value="4" readonly>
+                <button class="stepper-btn" onclick="stepVal('demo-z', 1)" aria-label="Aumentar cortes">+</button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="demo-box">
+          <div class="demo-label">Campos de Entrada & Estados de Validação</div>
+          <div class="form-grid">
+            <div class="form-group">
+              <label class="form-label">Diâmetro da Ferramenta (D) <span class="sub">mm</span></label>
+              <input type="text" class="form-control" value="12.00">
+              <div class="form-helper-text">Tolerância h6 para porta-pinça ER32</div>
+            </div>
+
+            <div class="form-group has-error">
+              <label class="form-label">Avanço por Dente (fz) <span class="sub">mm/z</span></label>
+              <input type="text" class="form-control" value="0.250">
+              <div class="form-helper-text error">
+                <span>⚠️</span>
+                <span>Valor excede o limite crítico de quebra do inserto (máx: 0.140 mm/z)</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="form-grid" style="margin-top:20px;">
+            <div class="form-group">
+              <label class="form-label">Material da Peça (Classificação ISO)</label>
+              <select class="form-control">
+                <option>Aço ABNT 1045 (220 HB) — ISO P</option>
+                <option>Aço Inox AISI 304 (Austenítico) — ISO M</option>
+                <option>Ferro Fundido Cinzento FC 250 — ISO K</option>
+                <option>Alumínio 6061-T6 — ISO N</option>
+              </select>
+            </div>
+
+            <div style="display:flex; align-items:center; gap:24px; padding-top:20px; flex-wrap:wrap;">
+              <label class="switch-label">
+                <input type="checkbox" class="switch-input" checked>
+                <div class="switch-track"><div class="switch-thumb"></div></div>
+                <span>Fluido Refrigerante Ativo</span>
+              </label>
+
+              <label class="switch-label">
+                <input type="checkbox" class="switch-input">
+                <div class="switch-track"><div class="switch-thumb"></div></div>
+                <span>Modo Eco / Desgaste Controlado</span>
+              </label>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ==========================================================================
+           07. COMPONENTES — TELEMETRIA & INDICADORES
+           ========================================================================== -->
+      <section class="ds-section" id="sec-telemetria">
+        <div class="section-header">
+          <div>
+            <h2 class="section-title">
+              <span class="section-num">07</span>
+              Componentes — Telemetria & Indicadores
+            </h2>
+            <p class="section-desc">
+              Cartões analíticos de telemetria com gráficos sparkline vetoriais e badges dinâmicos de status com diagnóstico contínuo de carga e vibração.
+            </p>
+          </div>
+        </div>
+
+        <div class="demo-box">
+          <div class="demo-label">Telemetry Cards (Cartões Analíticos com Sparkline)</div>
+          <div style="display:grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap:18px;">
+            
+            <div class="telemetry-card">
+              <div class="telemetry-card-top">
+                <span class="telemetry-card-title">Rotação do Spindle (n)</span>
+                <span class="telemetry-card-delta up">+12.4%</span>
+              </div>
+              <div class="telemetry-val-row">
+                <span class="telemetry-val">4.244</span>
+                <span class="telemetry-unit">RPM</span>
+              </div>
+              <svg class="sparkline-svg" viewBox="0 0 100 24">
+                <polyline points="0,18 20,16 40,12 60,14 80,6 100,8"/>
+              </svg>
+              <div style="font-size:11px; color:var(--st-normal-ink); font-weight:700;">✓ Estável dentro da curva de torque</div>
+            </div>
+
+            <div class="telemetry-card">
+              <div class="telemetry-card-top">
+                <span class="telemetry-card-title">Potência Absorvida (Pc)</span>
+                <span class="telemetry-card-delta up">45% Carga</span>
+              </div>
+              <div class="telemetry-val-row">
+                <span class="telemetry-val">3.42</span>
+                <span class="telemetry-unit">kW</span>
+              </div>
+              <svg class="sparkline-svg" viewBox="0 0 100 24" style="stroke:var(--action-fill);">
+                <polyline points="0,20 20,17 40,15 60,11 80,9 100,10"/>
+              </svg>
+              <div style="font-size:11px; color:var(--action-fill); font-weight:700;">⚡ Eficiência Kienzle Ótima</div>
+            </div>
+
+            <div class="telemetry-card">
+              <div class="telemetry-card-top">
+                <span class="telemetry-card-title">Taxa de Remoção (Q)</span>
+                <span class="telemetry-card-delta up">+18% Rendimento</span>
+              </div>
+              <div class="telemetry-val-row">
+                <span class="telemetry-val">61.1</span>
+                <span class="telemetry-unit">cm³/min</span>
+              </div>
+              <svg class="sparkline-svg" viewBox="0 0 100 24">
+                <polyline points="0,22 25,18 50,14 75,9 100,6"/>
+              </svg>
+              <div style="font-size:11px; color:var(--tx-3); font-weight:600;">ap=5.0mm · ae=12.0mm</div>
+            </div>
+
+          </div>
+        </div>
+
+        <div class="demo-box">
+          <div class="demo-label">Badges de Diagnóstico & Status de Máquina</div>
+          <div class="btn-row">
+            <span class="badge badge-normal"><span class="badge-dot"></span>OPERACIONAL NOMINAL</span>
+            <span class="badge badge-warn"><span class="badge-dot"></span>CARGA ELEVADA (82%)</span>
+            <span class="badge badge-crit"><span class="badge-dot"></span>SOBRECARGA / PARADA</span>
+          </div>
+        </div>
+      </section>
+
+      <!-- ==========================================================================
+           08. COMPONENTES — NAVEGAÇÃO & GAVETAS
+           ========================================================================== -->
+      <section class="ds-section" id="sec-navegacao">
+        <div class="section-header">
+          <div>
+            <h2 class="section-title">
+              <span class="section-num">08</span>
+              Componentes — Navegação & Gavetas (D11Drawer)
+            </h2>
+            <p class="section-desc">
+              Abas de seleção de processos de usinagem e gavetas de documentação em linha para operadores e engenheiros CAM.
+            </p>
+          </div>
+        </div>
+
+        <div class="demo-box">
+          <div class="demo-label">FamilyNav (Seletor de Famílias de Processo)</div>
+          <div class="family-nav">
+            <button class="family-tab active" onclick="setFamTab(this)">Fresamento (Milling)</button>
+            <button class="family-tab" onclick="setFamTab(this)">Furação (Drilling)</button>
+            <button class="family-tab" onclick="setFamTab(this)">Torneamento (Turning)</button>
+            <button class="family-tab" onclick="setFamTab(this)">Roscamento (Threading)</button>
+          </div>
+        </div>
+
+        <div class="demo-box">
+          <div class="demo-label">D11Drawer (Accordion de Ajuda e Engenharia Técnica)</div>
+          <div class="d11-drawer" id="drawer-vc">
+            <button class="d11-trigger" onclick="toggleDrawer('drawer-vc')">
+              <span>O que a Velocidade de Corte (Vc) altera na prática?</span>
+              <svg class="d11-chevron" viewBox="0 0 24 24"><path d="M6 9l6 6 6-6"/></svg>
+            </button>
+            <div class="d11-body">
+              <p><strong>Definição Mecânica:</strong> Velocidade periférica relativa da aresta cortante da ferramenta contra a peça usinada, expressa em metros por minuto (m/min).</p>
+              <p style="margin-top:8px;"><strong>▲ Aumentar Vc:</strong> Reduz tempo de ciclo e melhora acabamento superficial, porém acelera exponencialmente o desgaste por craterização térmica (fórmula de Taylor: <code>Vc · T^n = C</code>).</p>
+              <p style="margin-top:8px;"><strong>▼ Diminuir Vc:</strong> Preserva a aresta da ferramenta em aços duros, mas pode gerar aresta postiça de corte (BUE) e vibração se a rotação cair abaixo da faixa dinâmica ideal.</p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ==========================================================================
+           09. COMPONENTES — DADOS & FEEDBACK
+           ========================================================================== -->
+      <section class="ds-section" id="sec-dados">
+        <div class="section-header">
+          <div>
+            <h2 class="section-title">
+              <span class="section-num">09</span>
+              Componentes — Tabelas & Feedback
+            </h2>
+            <p class="section-desc">
+              Exibição de parâmetros de materiais com força de corte específica Kienzle ($k_c$), tolerâncias e avisos de contexto operacional com semântica de alerta.
+            </p>
+          </div>
+        </div>
+
+        <div class="demo-box">
+          <div class="alert-banner info">
+            <div style="font-size:18px;">ℹ️</div>
+            <div><strong>Otimização Disponível:</strong> Parâmetros calculados com taxa de remoção volumétrica 18% acima da recomendação padrão do fabricante da pastilha sem ultrapassar 60% da potência do fuso.</div>
+          </div>
+
+          <div class="alert-banner warn">
+            <div style="font-size:18px;">⚠️</div>
+            <div><strong>Atenção ao Balanço da Ferramenta:</strong> Relação L/D = 4.2. Risco moderado de vibração harmônica (chatter). Reduza o avanço por dente em 10% ou utilize fixador térmico hidráulico.</div>
+          </div>
+        </div>
+
+        <div class="demo-box">
+          <div class="demo-label">Tabela de Materiais & Parâmetros Kienzle (ISO 513)</div>
+          <div class="data-table-wrap">
+            <table class="data-table">
+              <thead>
+                <tr>
+                  <th>Grupo ISO</th>
+                  <th>Material / Norma</th>
+                  <th>Dureza</th>
+                  <th>kc 1.1 (N/mm²)</th>
+                  <th>Vc Recomendada</th>
+                  <th>Status de Calibração</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td><span class="badge badge-normal">ISO P</span></td>
+                  <td><strong>Aço ABNT 1045</strong></td>
+                  <td>220 HB</td>
+                  <td>1.850</td>
+                  <td>140–210 m/min</td>
+                  <td><span style="color:var(--st-normal-ink); font-weight:700;">✓ Calibrado</span></td>
+                </tr>
+                <tr>
+                  <td><span class="badge badge-warn">ISO M</span></td>
+                  <td><strong>Aço Inox AISI 304</strong></td>
+                  <td>185 HB</td>
+                  <td>2.100</td>
+                  <td>90–140 m/min</td>
+                  <td><span style="color:var(--st-warn-ink); font-weight:700;">! Atenção Térmica</span></td>
+                </tr>
+                <tr>
+                  <td><span class="badge badge-normal">ISO K</span></td>
+                  <td><strong>Ferro Fundido FC 250</strong></td>
+                  <td>210 HB</td>
+                  <td>1.350</td>
+                  <td>120–180 m/min</td>
+                  <td><span style="color:var(--st-normal-ink); font-weight:700;">✓ Calibrado</span></td>
+                </tr>
+                <tr>
+                  <td><span class="badge badge-normal">ISO N</span></td>
+                  <td><strong>Alumínio 6061-T6</strong></td>
+                  <td>95 HB</td>
+                  <td>700</td>
+                  <td>300–600 m/min</td>
+                  <td><span style="color:var(--st-normal-ink); font-weight:700;">✓ Alta Velocidade (HSC)</span></td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </section>
+
+      <!-- ==========================================================================
+           10. AMBIENTE DE APLICAÇÃO — COCKPIT OPERACIONAL CNC
+           ========================================================================== -->
+      <section class="ds-section" id="sec-cockpit">
+        <div class="section-header">
+          <div>
+            <h2 class="section-title">
+              <span class="section-num">10</span>
+              Cockpit Operacional CNC — Gabarito Canônico Interativo
+            </h2>
+            <p class="section-desc">
+              Demonstração do centro de usinagem operando em tempo real com modelo físico de corte ativo (Kienzle e física CNC). Alterne o tema ou ajuste os sliders para ver a adaptação e o cálculo dinâmico instantâneo!
+            </p>
+          </div>
+          <span class="badge badge-normal">CÁLCULO DINÂMICO REAL</span>
+        </div>
+
+        <div class="cockpit-panel">
+          <div class="cockpit-header">
+            <div>
+              <div style="font-size: 18px; font-weight: 800; color: var(--tx-1);">
+                Fresa Metal Duro Inteiriça Ø 12.0 mm — 4 Cortes (Z=4)
+              </div>
+              <div style="color: var(--tx-3); font-size: 13px; margin-top:4px;">
+                Material: <strong>Aço ABNT 1045 (220 HB)</strong> · Classe ISO P · Fresamento Frontal em Cheio (ap=5.0mm, ae=12.0mm)
+              </div>
+            </div>
+            <div style="display:flex; gap:10px; flex-wrap:wrap;">
+              <button class="btn btn-secondary">Exportar G-Code</button>
+              <button class="btn btn-action" onclick="alert('Parâmetros recalculados com sucesso para Máxima Taxa de Remoção!');">⚡ Recalcular Turbo</button>
+            </div>
+          </div>
+
+          <div class="cockpit-stats-grid">
+            <div class="stat-tile">
+              <div class="stat-sym">n</div>
+              <div class="stat-title">Rotação Spindle</div>
+              <div class="stat-number" id="sim-rpm">4.244<span class="stat-unit">RPM</span></div>
+              <div style="color:var(--st-normal-ink); font-size:11px; margin-top:4px; font-weight:700;">✓ Vc Real: 160 m/min</div>
+            </div>
+
+            <div class="stat-tile">
+              <div class="stat-sym">vf</div>
+              <div class="stat-title">Avanço de Mesa</div>
+              <div class="stat-number" id="sim-vf">1.018<span class="stat-unit">mm/min</span></div>
+              <div style="color:var(--st-normal-ink); font-size:11px; margin-top:4px; font-weight:700;">✓ fz: 0.060 mm/z</div>
+            </div>
+
+            <div class="stat-tile action-tile">
+              <div class="stat-sym action-sym">Pc</div>
+              <div class="stat-title">Potência de Corte</div>
+              <div class="stat-number" id="sim-pc">3.42<span class="stat-unit">kW</span></div>
+              <div style="color:var(--action-fill); font-size:11px; margin-top:4px; font-weight:700;" id="sim-pc-load">⚡ 45% do Motor (7.5 kW)</div>
+            </div>
+
+            <div class="stat-tile">
+              <div class="stat-sym">Q</div>
+              <div class="stat-title">Remoção de Cavaco</div>
+              <div class="stat-number" id="sim-q">61.1<span class="stat-unit">cm³/min</span></div>
+              <div style="color:var(--tx-3); font-size:11px; margin-top:4px; font-weight:600;">Kienzle kc1.1: 1850 N/mm²</div>
+            </div>
+          </div>
+
+          <div class="cockpit-center">
+            <!-- Gauge de Produtividade Dinâmico -->
+            <div class="gauge-display-box">
+              <div style="font-size:12px; font-weight:700; color:var(--tx-3); text-transform:uppercase; letter-spacing:0.06em; margin-bottom:12px;">
+                Rendimento Operacional
+              </div>
+              <svg class="gauge-render" viewBox="0 0 200 160">
+                <!-- Arcos Setoriais -->
+                <path d="M 25 130 A 75 75 0 0 1 65 42" fill="none" stroke="#0D9488" stroke-width="12" stroke-linecap="round" opacity="0.85"/>
+                <path d="M 72 36 A 75 75 0 0 1 128 36" fill="none" stroke="#14B8A6" stroke-width="12" stroke-linecap="round" opacity="0.85"/>
+                <path d="M 135 42 A 75 75 0 0 1 175 130" fill="none" stroke="#4D7C0F" stroke-width="12" stroke-linecap="round" opacity="0.85"/>
+                
+                <!-- Ponteiro Rotativo -->
+                <g id="gauge-needle" transform="rotate(25 100 130)" style="transition: transform 0.25s cubic-bezier(0.16, 1, 0.3, 1);">
+                  <line x1="100" y1="130" x2="100" y2="60" stroke="var(--tx-1)" stroke-width="3.5" stroke-linecap="round"/>
+                  <circle cx="100" cy="130" r="9" fill="var(--tx-1)"/>
+                  <circle cx="100" cy="130" r="4" fill="var(--bg-surface)"/>
+                </g>
+                <text x="100" y="154" text-anchor="middle" font-family="'JetBrains Mono', monospace" font-size="16" font-weight="800" fill="var(--tx-1)" id="gauge-percent">78.5%</text>
+              </svg>
+              <div style="color:var(--brand-fill); font-size:11px; font-weight:700; letter-spacing:0.08em; text-transform:uppercase;" id="gauge-status-label">FAIXA DE ALTO RENDIMENTO</div>
+            </div>
+
+            <!-- Controles Deslizantes do Simulador -->
+            <div style="display:flex; flex-direction:column; gap:20px;">
+              <div class="precision-slider-box">
+                <div class="form-label">
+                  <span>Velocidade de Corte (Vc)</span>
+                  <span class="sub" id="sim-vc-val">160 m/min</span>
+                </div>
+                <input type="range" class="precision-range" id="sim-vc" min="80" max="280" value="160" oninput="updateSim()">
+              </div>
+
+              <div class="precision-slider-box">
+                <div class="form-label">
+                  <span>Avanço por Dente (fz)</span>
+                  <span class="sub" id="sim-fz-val">0.060 mm/dente</span>
+                </div>
+                <input type="range" class="precision-range" id="sim-fz" min="0.020" max="0.140" step="0.005" value="0.060" oninput="updateSim()">
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+    </div>
+  </main>
+</div>
+
+<!-- ==========================================================================
+     SCRIPTS FUNCIONAIS: NAVEGAÇÃO, TEMAS & SIMULAÇÃO INTERATIVA
+     ========================================================================== -->
+<script>
+  // 1. Controle de Temas (Light Padrão / Dark Alternativo)
+  function setTheme(theme) {
+    document.body.setAttribute('data-theme', theme);
+    localStorage.setItem('to_theme', theme);
+
+    const btnClaro = document.getElementById('btn-theme-claro');
+    const btnEscuro = document.getElementById('btn-theme-escuro');
+
+    if (theme === 'claro') {
+      btnClaro.classList.add('active');
+      btnEscuro.classList.remove('active');
+    } else {
+      btnEscuro.classList.add('active');
+      btnClaro.classList.remove('active');
+    }
+  }
+
+  // Carregamento inicial garantindo Light Theme como DEFAULT se nada estiver salvo
+  (function initTheme() {
+    const saved = localStorage.getItem('to_theme') || 'claro';
+    setTheme(saved);
+  })();
+
+  // 2. Responsividade Mobile da Sidebar
+  function toggleMobileSidebar() {
+    const sidebar = document.getElementById('sidebar-nav');
+    const scrim = document.getElementById('sidebar-scrim');
+    sidebar.classList.toggle('open');
+    scrim.classList.toggle('open');
+  }
+
+  // 3. Highlight Automático do Item Ativo na Sidebar ao Rolar
+  const sections = document.querySelectorAll('section.ds-section');
+  const navLinks = document.querySelectorAll('.sidebar-nav a.nav-item');
+
+  window.addEventListener('scroll', () => {
+    let current = '';
+    const scrollPos = window.scrollY + 140;
+
+    sections.forEach(section => {
+      const top = section.offsetTop;
+      const height = section.offsetHeight;
+      if (scrollPos >= top && scrollPos < top + height) {
+        current = section.getAttribute('id');
+      }
+    });
+
+    navLinks.forEach(link => {
+      link.classList.remove('active');
+      if (link.getAttribute('href') === '#' + current) {
+        link.classList.add('active');
+      }
+    });
+  });
+
+  // 4. Funções de Componentes
+  function stepVal(id, delta) {
+    const input = document.getElementById(id);
+    let val = parseInt(input.value) || 0;
+    val = Math.max(1, val + delta);
+    input.value = val;
+  }
+
+  function setFamTab(btn) {
+    document.querySelectorAll('.family-tab').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+  }
+
+  function toggleDrawer(id) {
+    document.getElementById(id).classList.toggle('open');
+  }
+
+  // 5. Simulação Física Interativa do Cockpit
+  function updateSim() {
+    const vc = parseFloat(document.getElementById('sim-vc').value);
+    const fz = parseFloat(document.getElementById('sim-fz').value);
+
+    document.getElementById('sim-vc-val').textContent = vc + ' m/min';
+    document.getElementById('sim-fz-val').textContent = fz.toFixed(3) + ' mm/dente';
+
+    // Fórmulas físicas de fresamento para Fresa D=12mm, Z=4, ap=5mm, ae=12mm
+    const D = 12.0;
+    const Z = 4;
+    const ap = 5.0;
+    const ae = 12.0;
+    const kc = 1850.0; // N/mm²
+
+    const rpm = Math.round((vc * 1000) / (Math.PI * D));
+    const vf = Math.round(rpm * fz * Z);
+    const Q = ((ap * ae * vf) / 1000).toFixed(1);
+    const Pc = ((ap * ae * vf * kc) / (60 * 1000000 * 0.85)).toFixed(2);
+    const motorLoad = Math.min(100, Math.round((parseFloat(Pc) / 7.5) * 100));
+
+    document.getElementById('sim-rpm').innerHTML = rpm.toLocaleString('pt-BR') + '<span class="stat-unit">RPM</span>';
+    document.getElementById('sim-vf').innerHTML = vf.toLocaleString('pt-BR') + '<span class="stat-unit">mm/min</span>';
+    document.getElementById('sim-pc').innerHTML = Pc + '<span class="stat-unit">kW</span>';
+    document.getElementById('sim-q').innerHTML = Q + '<span class="stat-unit">cm³/min</span>';
+    document.getElementById('sim-pc-load').textContent = `⚡ ${motorLoad}% do Motor (7.5 kW)`;
+
+    // Mover agulha do gauge entre -60 e +60 graus
+    const ratio = Math.min(1.0, Math.max(0.15, (parseFloat(Pc) / 5.5)));
+    const deg = -60 + (ratio * 120);
+    const perc = (ratio * 100).toFixed(1) + '%';
+
+    document.getElementById('gauge-needle').setAttribute('transform', `rotate(${deg} 100 130)`);
+    document.getElementById('gauge-percent').textContent = perc;
+
+    const statusLabel = document.getElementById('gauge-status-label');
+    if (motorLoad > 75) {
+      statusLabel.textContent = 'CARGA ELEVADA / LIMITE';
+      statusLabel.style.color = 'var(--st-crit-ink)';
+    } else if (motorLoad > 40) {
+      statusLabel.textContent = 'FAIXA DE ALTO RENDIMENTO';
+      statusLabel.style.color = 'var(--brand-fill)';
+    } else {
+      statusLabel.textContent = 'SUBUTILIZADO / NOMINAL';
+      statusLabel.style.color = 'var(--tx-3)';
+    }
+  }
+
+  // Inicializar simulação no load
+  window.addEventListener('DOMContentLoaded', updateSim);
+</script>
+
+</body>
+</html>

@@ -43,7 +43,7 @@ export default function MobileCalculator({ onOpenSettings }: MobileCalculatorPro
 
   const dInitial = typeof inp.dInitial === 'number' ? inp.dInitial : parseFloat(String(inp.dInitial || 0));
   const dFinal = typeof inp.dFinal === 'number' ? inp.dFinal : parseFloat(String(inp.dFinal || 0));
-  const apDerivadoMandrilar = dFinal > dInitial && dInitial > 0 ? ((dFinal - dInitial) / 2).toFixed(1) : '—';
+  const apDerivadoMandrilar = dFinal > dInitial && dInitial > 0 ? ((dFinal - dInitial) / 2).toFixed(2) : '—';
 
   return (
     <div className="mobile-shell">
@@ -453,9 +453,9 @@ export default function MobileCalculator({ onOpenSettings }: MobileCalculatorPro
                       sym="ap"
                       unit="mm"
                       value={inp.ap}
-                      step={0.5}
-                      decimals={1}
-                      placeholder="Ex: 2.0"
+                      step={0.1}
+                      decimals={2}
+                      placeholder="Ex: 2.00"
                       onChange={(v) => updateField('ap', v)}
                     />
                     <D11Drawer
@@ -470,18 +470,18 @@ export default function MobileCalculator({ onOpenSettings }: MobileCalculatorPro
                   <div>
                     <StepperInput
                       id="input-ae"
-                      label="Penetração lateral"
+                      label="Engajamento radial"
                       sym="ae"
                       unit="mm"
                       value={inp.ae}
-                      step={0.5}
-                      decimals={1}
-                      placeholder="Ex: 2.5"
+                      step={0.1}
+                      decimals={2}
+                      placeholder="Ex: 2.50"
                       onChange={(v) => updateField('ae', v)}
                     />
                     <D11Drawer
                       id="m-ae"
-                      title="a penetração de trabalho"
+                      title="o engajamento radial"
                       oQueE="Largura do corte na lateral da ferramenta."
                       aumentar="Mais volume de cavaco · maior deflexão."
                       diminuir="Carga lateral menor · afinamento de cavaco."

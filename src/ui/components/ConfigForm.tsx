@@ -38,7 +38,7 @@ export function StepperInput({
     if (decimals > 0) {
       const s = String(n);
       if (s.includes('.')) {
-        const decCount = s.split('.')[1].length;
+        const decCount = (s.split('.')[1] || '').length;
         return decCount >= decimals ? s : n.toFixed(decimals);
       }
       return n.toFixed(decimals);
@@ -269,7 +269,7 @@ export default function ConfigForm() {
   // Cálculos derivados visuais
   const dInitial = typeof inp.dInitial === 'number' ? inp.dInitial : parseFloat(String(inp.dInitial || 0));
   const dFinal = typeof inp.dFinal === 'number' ? inp.dFinal : parseFloat(String(inp.dFinal || 0));
-  const apDerivadoMandrilar = dFinal > dInitial && dInitial > 0 ? ((dFinal - dInitial) / 2).toFixed(1) : '—';
+  const apDerivadoMandrilar = dFinal > dInitial && dInitial > 0 ? ((dFinal - dInitial) / 2).toFixed(2) : '—';
 
   return (
     <div className="col-config-inner" style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
@@ -691,6 +691,7 @@ export default function ConfigForm() {
             {inp.fz !== undefined && ` · fz ${inp.fz}`}
             {inp.fn !== undefined && ` · fn ${inp.fn}`}
             {inp.ap !== undefined && ` · ap ${inp.ap}`}
+            {inp.ae !== undefined && ` · ae ${inp.ae}`}
           </span>
         </button>
 
@@ -708,9 +709,9 @@ export default function ConfigForm() {
                     sym="ap"
                     unit="mm"
                     value={inp.ap}
-                    step={0.5}
-                    decimals={1}
-                    placeholder="Ex: 2.0"
+                    step={0.1}
+                    decimals={2}
+                    placeholder="Ex: 2.00"
                     onChange={(v) => updateField('ap', v)}
                   />
                   <D11Drawer
@@ -726,18 +727,18 @@ export default function ConfigForm() {
                 <div>
                   <StepperInput
                     id="input-ae"
-                    label="Penetração"
+                    label="Engajamento radial"
                     sym="ae"
                     unit="mm"
                     value={inp.ae}
-                    step={0.5}
-                    decimals={1}
-                    placeholder="Ex: 2.5"
+                    step={0.1}
+                    decimals={2}
+                    placeholder="Ex: 2.50"
                     onChange={(v) => updateField('ae', v)}
                   />
                   <D11Drawer
                     id="d-ae"
-                    title="a penetração de trabalho"
+                    title="o engajamento radial"
                     oQueE="Largura do corte na lateral da ferramenta · define quanto da periferia corta por passe."
                     aumentar="Mais volume de cavaco · maior carga de deflexão · calor concentrado se ultrapassar 50% de D."
                     diminuir="Carga lateral menor · afinamento de cavaco · necessita de maior avanço (fz) para manter espessura de corte."

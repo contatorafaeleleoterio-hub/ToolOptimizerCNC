@@ -133,7 +133,7 @@ export default function MobileResultsSheet({ isOpen, onClose }: MobileResultsShe
     }
     if (activeFamily === 'mandrilar' && boringResult) {
       return [
-        { lbl: 'Profundidade (ap)', val: `${formatDec(boringResult.ap, 1)} mm` },
+        { lbl: 'Profundidade (ap)', val: `${formatDec(boringResult.ap, 2)} mm` },
         { lbl: 'Diâmetro de corte (Dc)', val: `${formatDec(boringResult.Dc, 1)} mm` },
         { lbl: 'Avanço / rot (fn)', val: `${formatDec(boringResult.fn, 2)} mm/rot` },
         { lbl: 'Balanço / Diâmetro (L/D)', val: formatDec(boringResult.LD, 1), isAlert: boringResult.LD > 4 },

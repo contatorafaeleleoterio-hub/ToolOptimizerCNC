@@ -97,10 +97,10 @@ export default function ResultsPanel() {
     if (!calculado) {
       if (activeFamily === 'fresar') {
         return [
-          { label: 'AP', val: '0,0' },
+          { label: 'AP', val: '0,00' },
           { label: 'VC', val: '0' },
           { label: 'FZ', val: '0,000' },
-          { label: 'AE', val: '0,0' },
+          { label: 'AE', val: '0,00' },
         ];
       }
       if (activeFamily === 'furar') {
@@ -119,17 +119,17 @@ export default function ResultsPanel() {
       return [
         { label: 'Ø INICIAL', val: '0' },
         { label: 'Ø FINAL', val: '0' },
-        { label: 'AP', val: '0,0' },
+        { label: 'AP', val: '0,00' },
         { label: 'FN', val: '0,00' },
       ];
     }
 
     if (activeFamily === 'fresar') {
       return [
-        { label: 'AP', val: formatDec(Number(inp.ap || 0), 1) },
+        { label: 'AP', val: formatDec(Number(inp.ap || 0), 2) },
         { label: 'VC', val: formatInt(Number(inp.vc || 0)) },
         { label: 'FZ', val: formatDec(Number(inp.fz || 0), 3) },
-        { label: 'AE', val: formatDec(Number(inp.ae || 0), 1) },
+        { label: 'AE', val: formatDec(Number(inp.ae || 0), 2) },
       ];
     }
     if (activeFamily === 'furar') {
@@ -149,7 +149,7 @@ export default function ResultsPanel() {
     return [
       { label: 'Ø INICIAL', val: formatInt(Number(inp.dInitial || 18)) },
       { label: 'Ø FINAL', val: formatInt(Number(inp.dFinal || 20)) },
-      { label: 'AP', val: formatDec(boringResult ? boringResult.ap : 1.0, 1) },
+      { label: 'AP', val: formatDec(boringResult ? boringResult.ap : 1.0, 2) },
       { label: 'FN', val: formatDec(Number(inp.fn || 0.08), 2) },
     ];
   })();

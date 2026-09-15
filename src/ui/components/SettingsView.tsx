@@ -58,7 +58,7 @@ function SettingsNumericInput({
     if (decimals > 0) {
       const s = String(n);
       if (s.includes('.')) {
-        const decCount = s.split('.')[1].length;
+        const decCount = (s.split('.')[1] || '').length;
         return decCount >= decimals ? s : n.toFixed(decimals);
       }
       return n.toFixed(decimals);

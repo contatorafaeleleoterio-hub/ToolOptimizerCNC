@@ -83,3 +83,52 @@ describe('Diâmetro efetivo — CANONICO_MOTOR_DE_CALCULO §1.2', () => {
     expect(calculateMilling({ ...referencia, ap: 0.5 }).De).toBe(10);
   });
 });
+
+describe('Precisão de acabamento com AP e AE decimais finos (0,15 mm)', () => {
+  it('processa ap = 0.15 mm e ae = 0.15 mm em topo reto sem perda de precisão ou divisão por zero', () => {
+    const r = calculateMilling({
+      ...referencia,
+      geometry: 'topo-reto',
+      ap: 0.15,
+      ae: 0.15,
+      L: 25,
+    });
+
+    // eps = 0.15 / 10 = 0.015 (1.5% de engajamento)
+    expect(r.eps).toBeCloseTo(0.015, 6);
+    expect(r.phiMax).toBeCloseTo(Math.acos(1 - 2 * 0.015), 6); // ~0.2456 rad
+
+    // Efeito de afinamento de cavaco expressivo
+    expect(r.ctf).toBeGreaterThan(4.0); // ~4.11x
+    expect(r.hex).toBeCloseTo(referencia.fz / r.ctf, 4);
+
+    // Q = (0.15 * 0.15 * vf) / 1000
+    const expectedQ = (0.15 * 0.15 * r.vf) / 1000;
+    expect(r.Q).toBeCloseTo(expectedQ, 5);
+
+    // Potência e Torque finitos e coerentes
+    expect(r.Pc).toBeGreaterThan(0);
+    expect(r.Mc).toBeGreaterThan(0);
+    expect(Number.isFinite(r.kc)).toBe(true);
+  });
+
+  it('calcula diâmetro efetivo de fresa esférica com ap = 0.15 mm', () => {
+    const r = calculateMilling({
+      ...referencia,
+      geometry: 'esferica',
+      D: 10,
+      ap: 0.15,
+      ae: 0.15,
+      L: 25,
+    });
+
+    // De = 2 * sqrt(0.15 * (10 - 0.15)) = 2 * sqrt(1.4775) ~= 2.43105 mm
+    const expectedDe = 2 * Math.sqrt(0.15 * 9.85);
+    expect(r.De).toBeCloseTo(expectedDe, 4);
+
+    // Rotação ajustada para De reduzido
+    const expectedN = (140 * 1000) / (Math.PI * expectedDe);
+    expect(r.n).toBeCloseTo(expectedN, 1);
+  });
+});
+
