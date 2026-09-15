@@ -17,6 +17,140 @@ import { FACTORY_MATERIALS } from '../../core/materials.js';
 import { FACTORY_TOOLS, type ToolGeometry, type Substrate } from '../../core/tools.js';
 import { useCalculator } from '../context/CalculatorContext.js';
 
+interface SettingsNumericInputProps {
+  id?: string;
+  className?: string;
+  style?: React.CSSProperties;
+  'aria-label'?: string;
+  value: number | string | undefined;
+  placeholder?: string;
+  inputMode?: 'decimal' | 'numeric';
+  step?: number;
+  min?: number;
+  max?: number;
+  decimals?: number;
+  fallbackValue?: number;
+  onChange: (val: number) => void;
+}
+
+function SettingsNumericInput({
+  id,
+  className = 'stepnum fin num',
+  style,
+  'aria-label': ariaLabel,
+  value,
+  placeholder,
+  inputMode = 'decimal',
+  min,
+  max,
+  decimals = 0,
+  fallbackValue,
+  onChange,
+}: SettingsNumericInputProps) {
+  const numVal = typeof value === 'number'
+    ? value
+    : (value !== undefined && value !== '' && !isNaN(Number(String(value).replace(',', '.'))))
+      ? Number(String(value).replace(',', '.'))
+      : undefined;
+
+  const formatForDisplay = (n: number | undefined): string => {
+    if (n === undefined) return '';
+    if (decimals > 0) {
+      const s = String(n);
+      if (s.includes('.')) {
+        const decCount = s.split('.')[1].length;
+        return decCount >= decimals ? s : n.toFixed(decimals);
+      }
+      return n.toFixed(decimals);
+    }
+    return String(n);
+  };
+
+  const [isFocused, setIsFocused] = useState(false);
+  const [localText, setLocalText] = useState<string>(() => formatForDisplay(numVal));
+  const lastEmittedRef = React.useRef<number | undefined>(numVal);
+
+  React.useEffect(() => {
+    if (!isFocused || value !== lastEmittedRef.current) {
+      setLocalText(formatForDisplay(numVal));
+      lastEmittedRef.current = numVal;
+    }
+  }, [value, isFocused, decimals]);
+
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const raw = e.target.value;
+    const isValidInput = /^[0-9]*[.,]?[0-9]*$/.test(raw);
+    if (!isValidInput) return;
+
+    setLocalText(raw);
+
+    if (raw === '' || raw === '.' || raw === ',') {
+      return;
+    }
+
+    const normalized = raw.replace(',', '.');
+    const parsed = parseFloat(normalized);
+    if (!isNaN(parsed)) {
+      lastEmittedRef.current = parsed;
+      onChange(parsed);
+    }
+  };
+
+  const handleBlur = () => {
+    setIsFocused(false);
+    if (localText === '' || localText === '.' || localText === ',') {
+      const fb = fallbackValue !== undefined ? fallbackValue : (min !== undefined ? min : 0);
+      lastEmittedRef.current = fb;
+      onChange(fb);
+      setLocalText(formatForDisplay(fb));
+      return;
+    }
+
+    const normalized = localText.replace(',', '.');
+    let parsed = parseFloat(normalized);
+    if (isNaN(parsed)) {
+      const fb = fallbackValue !== undefined ? fallbackValue : (min !== undefined ? min : 0);
+      lastEmittedRef.current = fb;
+      onChange(fb);
+      setLocalText(formatForDisplay(fb));
+    } else {
+      if (min !== undefined && parsed < min) parsed = min;
+      if (max !== undefined && parsed > max) parsed = max;
+      lastEmittedRef.current = parsed;
+      onChange(parsed);
+      setLocalText(formatForDisplay(parsed));
+    }
+  };
+
+  const displayVal = isFocused
+    ? localText
+    : (localText !== '' && numVal !== undefined && Math.abs(Number(localText.replace(',', '.')) - numVal) < 1e-9)
+      ? localText
+      : formatForDisplay(numVal);
+
+  return (
+    <input
+      id={id}
+      type="text"
+      inputMode={inputMode}
+      className={className}
+      style={style}
+      aria-label={ariaLabel}
+      placeholder={placeholder}
+      autoComplete="off"
+      autoCorrect="off"
+      spellCheck={false}
+      value={displayVal}
+      onFocus={() => {
+        setIsFocused(true);
+        setLocalText(localText || (numVal !== undefined ? String(numVal) : ''));
+      }}
+      onBlur={handleBlur}
+      onChange={handleChange}
+    />
+  );
+}
+
 interface SettingsViewProps {
   onClose: () => void;
 }
@@ -144,13 +278,17 @@ export default function SettingsView({ onClose }: SettingsViewProps) {
       return;
     }
 
+    const kcParsed = parseFloat(newMatKc.replace(',', '.'));
+    const mcParsed = parseFloat(newMatMc.replace(',', '.'));
+    const vcParsed = parseFloat(newMatVc.replace(',', '.'));
+
     const mat: Material = {
       id: 'custom-' + Date.now(),
       name: newMatName.trim(),
       isoClass: newMatIso,
-      kc1_1: parseFloat(newMatKc) || 1500,
-      mc: parseFloat(newMatMc) || 0.21,
-      vcReference: parseFloat(newMatVc) || 100,
+      kc1_1: isNaN(kcParsed) ? 1500 : kcParsed,
+      mc: isNaN(mcParsed) ? 0.21 : mcParsed,
+      vcReference: isNaN(vcParsed) ? 100 : vcParsed,
       isCustom: true,
     };
 
@@ -177,7 +315,7 @@ export default function SettingsView({ onClose }: SettingsViewProps) {
       notify('Informe o apelido da ferramenta.', 'erro');
       return;
     }
-    const dVal = parseFloat(newToolD);
+    const dVal = parseFloat(newToolD.replace(',', '.'));
 
     const toolInst: ToolInstance = {
       id: 'tool-' + Date.now(),
@@ -191,11 +329,11 @@ export default function SettingsView({ onClose }: SettingsViewProps) {
     };
 
     if (newToolZ) toolInst.Z = parseInt(newToolZ, 10);
-    if (newToolLc) toolInst.Lc = parseFloat(newToolLc);
-    if (newToolR) toolInst.r = parseFloat(newToolR);
-    if (newToolKappa) toolInst.kappa = parseFloat(newToolKappa);
-    if (newToolPointAngle) toolInst.pointAngle = parseFloat(newToolPointAngle);
-    if (newToolPitch) toolInst.pitch = parseFloat(newToolPitch);
+    if (newToolLc) toolInst.Lc = parseFloat(newToolLc.replace(',', '.'));
+    if (newToolR) toolInst.r = parseFloat(newToolR.replace(',', '.'));
+    if (newToolKappa) toolInst.kappa = parseFloat(newToolKappa.replace(',', '.'));
+    if (newToolPointAngle) toolInst.pointAngle = parseFloat(newToolPointAngle.replace(',', '.'));
+    if (newToolPitch) toolInst.pitch = parseFloat(newToolPitch.replace(',', '.'));
 
     try {
       await saveTool(toolInst);
@@ -415,37 +553,57 @@ export default function SettingsView({ onClose }: SettingsViewProps) {
                 <label htmlFor="cfg-mat-kc" className="lbl">Força específica (kc1.1) N/mm²</label>
                 <input
                   id="cfg-mat-kc"
-                  type="number"
+                  type="text"
+                  inputMode="decimal"
+                  autoComplete="off"
+                  autoCorrect="off"
+                  spellCheck={false}
                   className="fld num"
                   aria-label="Força específica (kc1.1)"
                   placeholder="Ex: 1500"
                   value={newMatKc}
-                  onChange={(e) => setNewMatKc(e.target.value)}
+                  onChange={(e) => {
+                    const v = e.target.value;
+                    if (/^[0-9]*[.,]?[0-9]*$/.test(v)) setNewMatKc(v);
+                  }}
                 />
               </div>
               <div className="field">
                 <label htmlFor="cfg-mat-mc" className="lbl">Expoente Kienzle (mc)</label>
                 <input
                   id="cfg-mat-mc"
-                  type="number"
-                  step="0.01"
+                  type="text"
+                  inputMode="decimal"
+                  autoComplete="off"
+                  autoCorrect="off"
+                  spellCheck={false}
                   className="fld num"
                   aria-label="Expoente Kienzle (mc)"
                   placeholder="Ex: 0.21"
                   value={newMatMc}
-                  onChange={(e) => setNewMatMc(e.target.value)}
+                  onChange={(e) => {
+                    const v = e.target.value;
+                    if (/^[0-9]*[.,]?[0-9]*$/.test(v)) setNewMatMc(v);
+                  }}
                 />
               </div>
               <div className="field">
                 <label htmlFor="cfg-mat-vc" className="lbl">Velocidade de partida (vc) m/min</label>
                 <input
                   id="cfg-mat-vc"
-                  type="number"
+                  type="text"
+                  inputMode="decimal"
+                  autoComplete="off"
+                  autoCorrect="off"
+                  spellCheck={false}
                   className="fld num"
                   aria-label="Velocidade de partida (vc)"
                   placeholder="Ex: 140"
                   value={newMatVc}
-                  onChange={(e) => setNewMatVc(e.target.value)}
+                  onChange={(e) => {
+                    const v = e.target.value;
+                    if (/^[0-9]*[.,]?[0-9]*$/.test(v)) setNewMatVc(v);
+                  }}
                 />
               </div>
             </div>
@@ -524,11 +682,11 @@ export default function SettingsView({ onClose }: SettingsViewProps) {
 
                       <div className="field">
                         <span className="lbl">Força específica de corte (kc1.1) N/mm²</span>
-                        <input
-                          type="number"
+                        <SettingsNumericInput
                           className="fld num"
                           value={m.kc1_1}
-                          onChange={(e) => handleSaveEditedMaterial({ ...m, kc1_1: parseFloat(e.target.value) || 0 })}
+                          fallbackValue={m.kc1_1}
+                          onChange={(val) => handleSaveEditedMaterial({ ...m, kc1_1: val })}
                         />
                         {factoryOrig && factoryOrig.kc1_1 !== m.kc1_1 && (
                           <div className="revert-line">
@@ -546,12 +704,13 @@ export default function SettingsView({ onClose }: SettingsViewProps) {
 
                       <div className="field">
                         <span className="lbl">Expoente (mc)</span>
-                        <input
-                          type="number"
-                          step="0.01"
+                        <SettingsNumericInput
                           className="fld num"
                           value={m.mc}
-                          onChange={(e) => handleSaveEditedMaterial({ ...m, mc: parseFloat(e.target.value) || 0 })}
+                          decimals={2}
+                          step={0.01}
+                          fallbackValue={m.mc}
+                          onChange={(val) => handleSaveEditedMaterial({ ...m, mc: val })}
                         />
                         {factoryOrig && factoryOrig.mc !== m.mc && (
                           <div className="revert-line">
@@ -569,11 +728,11 @@ export default function SettingsView({ onClose }: SettingsViewProps) {
 
                       <div className="field">
                         <span className="lbl">Velocidade de corte ref (vc) m/min</span>
-                        <input
-                          type="number"
+                        <SettingsNumericInput
                           className="fld num"
                           value={m.vcReference}
-                          onChange={(e) => handleSaveEditedMaterial({ ...m, vcReference: parseFloat(e.target.value) || 0 })}
+                          fallbackValue={m.vcReference}
+                          onChange={(val) => handleSaveEditedMaterial({ ...m, vcReference: val })}
                         />
                         {factoryOrig && factoryOrig.vcReference !== m.vcReference && (
                           <div className="revert-line">
@@ -783,12 +942,18 @@ export default function SettingsView({ onClose }: SettingsViewProps) {
                   <label htmlFor="cfg-tool-d" className="lbl">Diâmetro da ferramenta (D) mm</label>
                   <input
                     id="cfg-tool-d"
-                    type="number"
-                    step="0.1"
+                    type="text"
+                    inputMode="decimal"
+                    autoComplete="off"
+                    autoCorrect="off"
+                    spellCheck={false}
                     className="fld num"
                     placeholder="Ex: 10"
                     value={newToolD}
-                    onChange={(e) => setNewToolD(e.target.value)}
+                    onChange={(e) => {
+                      const v = e.target.value;
+                      if (/^[0-9]*[.,]?[0-9]*$/.test(v)) setNewToolD(v);
+                    }}
                   />
                 </div>
 
@@ -797,11 +962,18 @@ export default function SettingsView({ onClose }: SettingsViewProps) {
                     <label htmlFor="cfg-tool-z" className="lbl">Número de arestas (Z)</label>
                     <input
                       id="cfg-tool-z"
-                      type="number"
+                      type="text"
+                      inputMode="numeric"
+                      autoComplete="off"
+                      autoCorrect="off"
+                      spellCheck={false}
                       className="fld num"
                       placeholder={selectedGeom.defaultZ ? String(selectedGeom.defaultZ) : '4'}
                       value={newToolZ}
-                      onChange={(e) => setNewToolZ(e.target.value)}
+                      onChange={(e) => {
+                        const v = e.target.value;
+                        if (/^[0-9]*$/.test(v)) setNewToolZ(v);
+                      }}
                     />
                   </div>
                 )}
@@ -811,12 +983,18 @@ export default function SettingsView({ onClose }: SettingsViewProps) {
                     <label htmlFor="cfg-tool-r" className="lbl">Raio de canto (r) mm</label>
                     <input
                       id="cfg-tool-r"
-                      type="number"
-                      step="0.1"
+                      type="text"
+                      inputMode="decimal"
+                      autoComplete="off"
+                      autoCorrect="off"
+                      spellCheck={false}
                       className="fld num"
                       placeholder="1.0"
                       value={newToolR}
-                      onChange={(e) => setNewToolR(e.target.value)}
+                      onChange={(e) => {
+                        const v = e.target.value;
+                        if (/^[0-9]*[.,]?[0-9]*$/.test(v)) setNewToolR(v);
+                      }}
                     />
                   </div>
                 )}
@@ -826,11 +1004,18 @@ export default function SettingsView({ onClose }: SettingsViewProps) {
                     <label htmlFor="cfg-tool-kappa" className="lbl">Ângulo de posição (κ) graus</label>
                     <input
                       id="cfg-tool-kappa"
-                      type="number"
+                      type="text"
+                      inputMode="decimal"
+                      autoComplete="off"
+                      autoCorrect="off"
+                      spellCheck={false}
                       className="fld num"
                       placeholder="45"
                       value={newToolKappa}
-                      onChange={(e) => setNewToolKappa(e.target.value)}
+                      onChange={(e) => {
+                        const v = e.target.value;
+                        if (/^[0-9]*[.,]?[0-9]*$/.test(v)) setNewToolKappa(v);
+                      }}
                     />
                   </div>
                 )}
@@ -840,11 +1025,18 @@ export default function SettingsView({ onClose }: SettingsViewProps) {
                     <label htmlFor="cfg-tool-angle" className="lbl">Ângulo de ponta</label>
                     <input
                       id="cfg-tool-angle"
-                      type="number"
+                      type="text"
+                      inputMode="decimal"
+                      autoComplete="off"
+                      autoCorrect="off"
+                      spellCheck={false}
                       className="fld num"
                       placeholder={newToolSubstrate === 'HSS-Co' ? '118' : '140'}
                       value={newToolPointAngle}
-                      onChange={(e) => setNewToolPointAngle(e.target.value)}
+                      onChange={(e) => {
+                        const v = e.target.value;
+                        if (/^[0-9]*[.,]?[0-9]*$/.test(v)) setNewToolPointAngle(v);
+                      }}
                     />
                   </div>
                 )}
@@ -854,12 +1046,18 @@ export default function SettingsView({ onClose }: SettingsViewProps) {
                     <label htmlFor="cfg-tool-pitch" className="lbl">Passo da rosca (P) mm</label>
                     <input
                       id="cfg-tool-pitch"
-                      type="number"
-                      step="0.05"
+                      type="text"
+                      inputMode="decimal"
+                      autoComplete="off"
+                      autoCorrect="off"
+                      spellCheck={false}
                       className="fld num"
                       placeholder="1.25"
                       value={newToolPitch}
-                      onChange={(e) => setNewToolPitch(e.target.value)}
+                      onChange={(e) => {
+                        const v = e.target.value;
+                        if (/^[0-9]*[.,]?[0-9]*$/.test(v)) setNewToolPitch(v);
+                      }}
                     />
                   </div>
                 )}
@@ -868,11 +1066,18 @@ export default function SettingsView({ onClose }: SettingsViewProps) {
                   <label htmlFor="cfg-tool-lc" className="lbl">Comprimento de aresta (Lc) mm · opcional</label>
                   <input
                     id="cfg-tool-lc"
-                    type="number"
+                    type="text"
+                    inputMode="decimal"
+                    autoComplete="off"
+                    autoCorrect="off"
+                    spellCheck={false}
                     className="fld num"
                     placeholder="—"
                     value={newToolLc}
-                    onChange={(e) => setNewToolLc(e.target.value)}
+                    onChange={(e) => {
+                      const v = e.target.value;
+                      if (/^[0-9]*[.,]?[0-9]*$/.test(v)) setNewToolLc(v);
+                    }}
                   />
                 </div>
               </div>
@@ -1074,15 +1279,15 @@ export default function SettingsView({ onClose }: SettingsViewProps) {
               −
             </button>
             <div className="stepval">
-              <input
+              <SettingsNumericInput
                 id="cfg-margin"
-                type="number"
                 className="stepnum fin num"
                 aria-label="Margem de segurança (% do calculado)"
                 style={{ width: '80px', textAlign: 'center', height: '44px', border: '1px solid var(--border-control)', borderRadius: '4px' }}
                 value={config.safetyMargin}
-                onChange={(e) => {
-                  const val = parseFloat(e.target.value) || 100;
+                fallbackValue={100}
+                min={1}
+                onChange={(val) => {
                   const next = { ...configRef.current, safetyMargin: val };
                   configRef.current = next;
                   setConfig(next);
@@ -1223,15 +1428,15 @@ export default function SettingsView({ onClose }: SettingsViewProps) {
                 −
               </button>
               <div className="stepval">
-                <input
+                <SettingsNumericInput
                   id="cfg-hss-feed"
-                  type="number"
                   className="stepnum fin num"
                   aria-label="Percentual do avanço (HSS) %"
                   style={{ width: '70px', textAlign: 'center', height: '44px', border: '1px solid var(--border-control)', borderRadius: '4px' }}
                   value={config.hssFeedPercent}
-                  onChange={(e) => {
-                    const val = parseFloat(e.target.value) || 10;
+                  fallbackValue={10}
+                  min={1}
+                  onChange={(val) => {
                     setConfig(prev => ({ ...prev, hssFeedPercent: val }));
                   }}
                 />
@@ -1261,15 +1466,15 @@ export default function SettingsView({ onClose }: SettingsViewProps) {
                 −
               </button>
               <div className="stepval">
-                <input
+                <SettingsNumericInput
                   id="cfg-hss-peck-div"
-                  type="number"
                   className="stepnum fin num"
                   aria-label="Divisor do pica-pau (D / X)"
                   style={{ width: '70px', textAlign: 'center', height: '44px', border: '1px solid var(--border-control)', borderRadius: '4px' }}
                   value={config.hssPeckDivisor}
-                  onChange={(e) => {
-                    const val = parseFloat(e.target.value) || 25;
+                  fallbackValue={25}
+                  min={1}
+                  onChange={(val) => {
                     setConfig(prev => ({ ...prev, hssPeckDivisor: val }));
                   }}
                 />
@@ -1298,15 +1503,17 @@ export default function SettingsView({ onClose }: SettingsViewProps) {
                 −
               </button>
               <div className="stepval">
-                <input
+                <SettingsNumericInput
                   id="cfg-hss-peck-cap"
-                  type="number"
-                  step="0.1"
                   className="stepnum fin num"
+                  aria-label="Teto do incremento (mm)"
                   style={{ width: '70px', textAlign: 'center', height: '44px', border: '1px solid var(--border-control)', borderRadius: '4px' }}
                   value={config.hssPeckCapMm}
-                  onChange={(e) => {
-                    const val = parseFloat(e.target.value) || 0.8;
+                  fallbackValue={0.8}
+                  step={0.1}
+                  decimals={1}
+                  min={0.1}
+                  onChange={(val) => {
                     setConfig(prev => ({ ...prev, hssPeckCapMm: val }));
                   }}
                 />

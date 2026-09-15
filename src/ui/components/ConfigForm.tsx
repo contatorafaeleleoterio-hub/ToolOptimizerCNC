@@ -27,31 +27,110 @@ export function StepperInput({
   placeholder,
   onChange,
 }: StepperInputProps) {
-  const numVal = typeof value === 'number' ? value : value ? parseFloat(String(value)) : undefined;
+  const numVal = typeof value === 'number'
+    ? value
+    : (value !== undefined && value !== '' && !isNaN(Number(String(value).replace(',', '.'))))
+      ? Number(String(value).replace(',', '.'))
+      : undefined;
+
+  const formatForDisplay = (n: number | undefined): string => {
+    if (n === undefined) return '';
+    if (decimals > 0) {
+      const s = String(n);
+      if (s.includes('.')) {
+        const decCount = s.split('.')[1].length;
+        return decCount >= decimals ? s : n.toFixed(decimals);
+      }
+      return n.toFixed(decimals);
+    }
+    return String(n);
+  };
+
+  const [isFocused, setIsFocused] = useState(false);
+  const [localText, setLocalText] = useState<string>(() => formatForDisplay(numVal));
+  const lastEmittedRef = React.useRef<number | undefined>(numVal);
+
+  // Sincroniza localText se o valor externo for alterado por outra fonte (reset, troca de ferramenta, stepper)
+  React.useEffect(() => {
+    if (!isFocused || value !== lastEmittedRef.current) {
+      setLocalText(formatForDisplay(numVal));
+      lastEmittedRef.current = numVal;
+    }
+  }, [value, isFocused, decimals]);
 
   const handleStep = (direction: number) => {
     const current = numVal ?? 0;
     let next = current + direction * step;
     if (min !== undefined && next < min) next = min;
-    if (decimals > 0) {
-      next = parseFloat(next.toFixed(decimals));
-    }
+
+    const stepDecimals = (step.toString().split('.')[1] || '').length;
+    const currentDecimals = (current.toString().split('.')[1] || '').length;
+    const precision = Math.max(decimals, stepDecimals, currentDecimals);
+    next = parseFloat(next.toFixed(precision));
+
+    lastEmittedRef.current = next;
+    setLocalText(formatForDisplay(next));
     onChange(next);
   };
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const v = e.target.value;
-    if (v === '') {
+    const raw = e.target.value;
+
+    // Permite digitação livre: números com no máximo 1 ponto ou vírgula decimal
+    const isValidInput = /^[0-9]*[.,]?[0-9]*$/.test(raw);
+    if (!isValidInput) return;
+
+    setLocalText(raw);
+
+    if (raw === '' || raw === '.' || raw === ',') {
+      lastEmittedRef.current = undefined;
       onChange(undefined);
+      return;
+    }
+
+    const normalized = raw.replace(',', '.');
+    const parsed = parseFloat(normalized);
+
+    if (!isNaN(parsed)) {
+      lastEmittedRef.current = parsed;
+      onChange(parsed);
     } else {
-      const parsed = parseFloat(v.replace(',', '.'));
-      onChange(isNaN(parsed) ? undefined : parsed);
+      lastEmittedRef.current = undefined;
+      onChange(undefined);
     }
   };
 
-  const displayVal = numVal !== undefined
-    ? (decimals > 0 ? numVal.toFixed(decimals) : String(numVal))
-    : (value ?? '');
+  const handleBlur = () => {
+    setIsFocused(false);
+    if (localText === '' || localText === '.' || localText === ',') {
+      setLocalText('');
+      lastEmittedRef.current = undefined;
+      onChange(undefined);
+      return;
+    }
+
+    const normalized = localText.replace(',', '.');
+    let parsed = parseFloat(normalized);
+    if (isNaN(parsed)) {
+      setLocalText('');
+      lastEmittedRef.current = undefined;
+      onChange(undefined);
+    } else {
+      if (min !== undefined && parsed < min) {
+        parsed = min;
+      }
+      lastEmittedRef.current = parsed;
+      onChange(parsed);
+      setLocalText(formatForDisplay(parsed));
+    }
+  };
+
+  // Valor a exibir no input
+  const displayVal = isFocused
+    ? localText
+    : (localText !== '' && numVal !== undefined && Math.abs(Number(localText.replace(',', '.')) - numVal) < 1e-9)
+      ? localText
+      : formatForDisplay(numVal);
 
   return (
     <div className="field">
@@ -73,8 +152,16 @@ export function StepperInput({
             id={id}
             type="text"
             inputMode="decimal"
+            autoComplete="off"
+            autoCorrect="off"
+            spellCheck={false}
             placeholder={placeholder}
             value={displayVal}
+            onFocus={() => {
+              setIsFocused(true);
+              setLocalText(localText || (numVal !== undefined ? String(numVal) : ''));
+            }}
+            onBlur={handleBlur}
             onChange={handleChange}
           />
           {unit && <span className="funit">{unit}</span>}

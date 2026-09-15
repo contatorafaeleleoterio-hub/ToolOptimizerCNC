@@ -105,4 +105,105 @@ describe('ConfigForm & Geometry-based Inputs (TASK-011)', () => {
     const calcBtn = screen.getByRole('button', { name: /calcular/i }) as HTMLButtonElement;
     expect(calcBtn.disabled).toBe(false);
   });
+
+  it('Experiência de Digitação: Permite digitar "0.2" e "0.25" naturalmente sem bloqueio', () => {
+    renderWithProvider();
+
+    const matSelect = screen.getByLabelText(/material/i);
+    const toolSelect = screen.getByLabelText(/ferramenta/i);
+    fireEvent.change(matSelect, { target: { value: '1045' } });
+    fireEvent.change(toolSelect, { target: { value: 'fresa-topo-reto' } });
+
+    const apInput = screen.getByLabelText(/profundidade de corte \(ap\)/i) as HTMLInputElement;
+
+    // Foca no campo
+    fireEvent.focus(apInput);
+
+    // Digita '0'
+    fireEvent.change(apInput, { target: { value: '0' } });
+    expect(apInput.value).toBe('0');
+
+    // Digita '.' (estado intermediário '0.')
+    fireEvent.change(apInput, { target: { value: '0.' } });
+    expect(apInput.value).toBe('0.');
+
+    // Digita '2' -> '0.2'
+    fireEvent.change(apInput, { target: { value: '0.2' } });
+    expect(apInput.value).toBe('0.2');
+
+    // Digita '5' -> '0.25' (não deve truncar para 1 decimal mesmo ap tendo step=0.5)
+    fireEvent.change(apInput, { target: { value: '0.25' } });
+    expect(apInput.value).toBe('0.25');
+
+    // Desfoca (blur)
+    fireEvent.blur(apInput);
+    expect(apInput.value).toBe('0.25');
+  });
+
+  it('Suporte a Teclado Mobile com Vírgula Brasileira: "0,2" e "1,5"', () => {
+    renderWithProvider();
+
+    const matSelect = screen.getByLabelText(/material/i);
+    const toolSelect = screen.getByLabelText(/ferramenta/i);
+    fireEvent.change(matSelect, { target: { value: '1045' } });
+    fireEvent.change(toolSelect, { target: { value: 'fresa-topo-reto' } });
+
+    const apInput = screen.getByLabelText(/profundidade de corte \(ap\)/i) as HTMLInputElement;
+
+    fireEvent.focus(apInput);
+    // Simula teclado virtual que insere vírgula
+    fireEvent.change(apInput, { target: { value: '0,2' } });
+    expect(apInput.value).toBe('0,2');
+
+    fireEvent.blur(apInput);
+    // No blur normaliza para valor numérico formatado
+    expect(apInput.value).toBe('0.2');
+  });
+
+  it('Edição e Limpeza: apagar com Backspace não força restauração involuntária', () => {
+    renderWithProvider();
+
+    const matSelect = screen.getByLabelText(/material/i);
+    const toolSelect = screen.getByLabelText(/ferramenta/i);
+    fireEvent.change(matSelect, { target: { value: '1045' } });
+    fireEvent.change(toolSelect, { target: { value: 'fresa-topo-reto' } });
+
+    const dInput = screen.getByLabelText(/diâmetro nominal/i) as HTMLInputElement;
+
+    fireEvent.focus(dInput);
+    fireEvent.change(dInput, { target: { value: '12' } });
+    expect(dInput.value).toBe('12');
+
+    // Apaga completamente para digitar outro número
+    fireEvent.change(dInput, { target: { value: '' } });
+    expect(dInput.value).toBe('');
+
+    // Digita novo valor decimal (ex: 6.35 mm - fresa 1/4")
+    fireEvent.change(dInput, { target: { value: '6.35' } });
+    expect(dInput.value).toBe('6.35');
+  });
+
+  it('Botões Stepper (+ / -) respeitam precisão sem dízimas de ponto flutuante', () => {
+    renderWithProvider();
+
+    const matSelect = screen.getByLabelText(/material/i);
+    const toolSelect = screen.getByLabelText(/ferramenta/i);
+    fireEvent.change(matSelect, { target: { value: '1045' } });
+    fireEvent.change(toolSelect, { target: { value: 'fresa-topo-reto' } });
+
+    const apInput = screen.getByLabelText(/profundidade de corte \(ap\)/i) as HTMLInputElement;
+    fireEvent.change(apInput, { target: { value: '0.2' } });
+
+    // Clica no botão + (passo de 0.5 em ap)
+    const plusBtn = screen.getByRole('button', { name: /aumentar passo \(ap\)/i });
+    fireEvent.click(plusBtn);
+
+    // 0.2 + 0.5 = 0.7 (sem 0.7000000000000001)
+    expect(apInput.value).toBe('0.7');
+
+    // Clica no botão -
+    const minusBtn = screen.getByRole('button', { name: /diminuir passo \(ap\)/i });
+    fireEvent.click(minusBtn);
+    expect(apInput.value).toBe('0.2');
+  });
 });

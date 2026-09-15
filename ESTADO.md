@@ -4,6 +4,25 @@ Arquivo de retomada e fonte única do estado do produto. É o documento que o op
 
 ---
 
+## ⌨️ Revisão Geral de Inputs & Experiência Decimal Fluida (14/09/2026)
+
+Revisão completa e saneamento de todos os campos de entrada numérica da solução (desktop e mobile), garantindo digitação fluida, previsível e sem bloqueios artificiais:
+- **Diagnóstico das Causas-Raízes:**
+  - `StepperInput`: Ausência de estado local desacoplado de texto fazia com que re-renders intermediários forçassem `toFixed(decimals)` imediatamente ao digitar `0`, destruindo pontos `.` e vírgulas `,` e impedindo a inserção de `0.2`, `0.25`, `6.35`, etc.
+  - `SettingsView`: Fallbacks imediatos com operador falsy (`|| 100`, `|| 10`, `|| 0.8`) impediam apagar o campo com Backspace ou digitar `0`/decimais.
+  - Teclado Mobile: Elementos nativos `<input type="number">` bloqueavam a vírgula brasileira (pt-BR) dos teclados virtuais móveis.
+- **Arquitetura Implementada:**
+  - `StepperInput`: Implementação de estado local `localText`, rastreamento de foco (`isFocused`) e ref de emissão (`lastEmittedRef`). Preserva integralmente estados transitórios (`""`, `"0"`, `"0."`, `"0,"`, `"."`, `","`).
+  - `SettingsNumericInput`: Componente desacoplado em `SettingsView.tsx` para Margem de Segurança, Parâmetros HSS e edição inline de grandezas de materiais (`kc1.1`, `mc`, `vcReference`), com fallbacks aplicados de forma graciosa apenas no `onBlur`.
+  - Formulários de Cadastro: Migração para `type="text"` e `inputMode="decimal"` com sanitização `.replace(',', '.')`, aceitando tanto ponto quanto vírgula sem travamento no mobile e desktop.
+  - Botões Stepper: Aritmética de passo com cálculo dinâmico de precisão decimal máxima, eliminando dízimas de ponto flutuante do JavaScript (ex: `0.1 + 0.2 = 0.3`).
+- **Portão de Qualidade:**
+  - 111 testes automatizados em 16 arquivos de teste passando com 100% de sucesso (incluindo 6 novos testes de digitação de `0.2`, `0.25`, vírgula pt-BR, Backspace e precisão de stepper).
+  - Build de produção Vite limpo e compilado com sucesso.
+- **Deploy em Produção:** Cloudflare Worker atualizado via Wrangler.
+
+---
+
 ## 📱 Experiência Mobile Dedicada & Deploy de Produção (14/09/2026)
 
 Conclusão da investigação de UX e implementação da interface mobile dedicada para o ToolOptimizer CNC, além da publicação em produção na Cloudflare:

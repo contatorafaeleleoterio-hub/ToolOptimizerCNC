@@ -83,4 +83,63 @@ describe('SettingsView & Persistent IndexedDB Storage (TASK-013)', () => {
       expect(customMat?.isCustom).toBe(true);
     });
   });
+
+  it('deve suportar digitação livre na Margem de Segurança sem restauração involuntária', async () => {
+    render(
+      <CalculatorProvider>
+        <SettingsView onClose={() => {}} />
+      </CalculatorProvider>
+    );
+
+    const marginInput = (await screen.findByLabelText(/margem de segurança/i)) as HTMLInputElement;
+
+    // Foca no input
+    fireEvent.focus(marginInput);
+
+    // Apaga todo o valor com Backspace
+    fireEvent.change(marginInput, { target: { value: '' } });
+    expect(marginInput.value).toBe('');
+
+    // Digita '7'
+    fireEvent.change(marginInput, { target: { value: '7' } });
+    expect(marginInput.value).toBe('7');
+
+    // Digita '5' -> '75'
+    fireEvent.change(marginInput, { target: { value: '75' } });
+    expect(marginInput.value).toBe('75');
+
+    // Desfoca
+    fireEvent.blur(marginInput);
+    expect(marginInput.value).toBe('75');
+  });
+
+  it('deve aceitar vírgula decimal brasileira no cadastro de novo material ("0,22")', async () => {
+    render(
+      <CalculatorProvider>
+        <SettingsView onClose={() => {}} />
+      </CalculatorProvider>
+    );
+
+    const nameInput = await screen.findByLabelText(/nome do material/i);
+    const kcInput = screen.getByLabelText(/força específica \(kc1\.1\)/i);
+    const mcInput = screen.getByLabelText(/expoente kienzle \(mc\)/i);
+    const vcInput = screen.getByLabelText(/velocidade de partida \(vc\)/i);
+
+    fireEvent.change(nameInput, { target: { value: 'Material Inox Custom' } });
+    fireEvent.change(kcInput, { target: { value: '1850,5' } });
+    fireEvent.change(mcInput, { target: { value: '0,23' } });
+    fireEvent.change(vcInput, { target: { value: '95,5' } });
+
+    const addBtn = screen.getByRole('button', { name: /cadastrar material/i });
+    fireEvent.click(addBtn);
+
+    await waitFor(async () => {
+      const mats = await getAllMaterials();
+      const customMat = mats.find(m => m.name === 'Material Inox Custom');
+      expect(customMat).toBeDefined();
+      expect(customMat?.kc1_1).toBe(1850.5);
+      expect(customMat?.mc).toBe(0.23);
+      expect(customMat?.vcReference).toBe(95.5);
+    });
+  });
 });
