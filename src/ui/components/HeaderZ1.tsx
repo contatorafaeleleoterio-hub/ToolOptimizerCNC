@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useCalculator } from '../context/CalculatorContext';
+import BrandLogo from './BrandLogo';
 
 interface HeaderZ1Props {
   onOpenSettings: () => void;
@@ -30,15 +31,7 @@ export default function HeaderZ1({ onOpenSettings }: HeaderZ1Props) {
   return (
     <section className="card z1-card" aria-label="Cabeçalho do Sistema">
       <div className="z1-brand-group">
-        <div className="brand-plate" role="img" aria-label="Marca ToolOptimizer CNC" style={{ display: 'inline-flex', alignItems: 'center', gap: '8px' }}>
-          <svg width="22" height="22" viewBox="0 0 500 500" style={{ flexShrink: 0 }}>
-            <path d="M 70 340 A 180 180 0 0 1 116 220 L 179 276 A 95 95 0 0 0 155 340 Z" fill="#16202C" stroke="#19E4BB" strokeWidth="8"/>
-            <path d="M 125 210 A 180 180 0 0 1 370 206 L 314 269 A 95 95 0 0 0 184 272 Z" fill="#0E7C69" stroke="#19E4BB" strokeWidth="8"/>
-            <path d="M 379 215 A 180 180 0 0 1 430 340 L 345 340 A 95 95 0 0 0 318 274 Z" fill="#19E4BB" stroke="#19E4BB" strokeWidth="8"/>
-            <path d="M 115 450 L 210 270 L 248 305 L 345 170 L 330 155 L 410 95 L 385 195 L 368 188 L 262 335 L 222 298 Z" fill="#BDFF4B" stroke="#E4FF94" strokeWidth="6"/>
-          </svg>
-          <span>TOOLOPTIMIZER</span>
-        </div>
+        <BrandLogo />
       </div>
       <div className="zid" id="z1-identidade">
         {/* CHIP DE MATERIAL */}

@@ -34,7 +34,7 @@ describe('Mobile Experience — ToolOptimizer CNC Mobile', () => {
     // Cabeçalho compacto
     const brand = screen.getByRole('img', { name: /marca tooloptimizer/i });
     expect(brand).toBeDefined();
-    expect(brand.textContent).toBe('TOOLOPTIMIZER');
+    expect(brand.textContent).toContain('ToolOptimizer');
 
     // Botão de configurações mobile
     const btnSettings = document.getElementById('btn-nav-configuracoes-mobile');

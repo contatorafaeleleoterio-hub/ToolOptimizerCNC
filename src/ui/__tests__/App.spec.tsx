@@ -8,7 +8,8 @@ describe('App Component — Inicialização da Toolchain UI (TASK-009)', () => {
     render(<App />);
     const brandElement = screen.getByRole('img', { name: /marca tooloptimizer/i });
     expect(brandElement).toBeDefined();
-    expect(brandElement.textContent).toBe('TOOLOPTIMIZER');
+    expect(brandElement.textContent).toContain('ToolOptimizer');
+    expect(brandElement.textContent).toContain('CNC PRECISION SUITE');
   });
 
   it('deve conter a navegação das 4 famílias canônicas', () => {

@@ -149,11 +149,6 @@
   --surface-pressed:     #2A3852;
 }
 
-[data-theme="escuro"] .brand-plate {
-  color: #050B08;
-  box-shadow: 0 0 16px rgba(25, 228, 187, 0.35);
-}
-
 [data-theme="escuro"] .hbtn {
   background: var(--surface-card-subtle);
   color: var(--tx-1);
@@ -162,6 +157,7 @@
 [data-theme="escuro"] .hbtn:hover {
   border-color: var(--brand-fill);
   color: var(--brand-fill);
+  box-shadow: 0 0 12px rgba(25, 228, 187, 0.25);
 }
 
 /* Reset e base */
@@ -330,19 +326,24 @@ button, input, select, textarea { font: inherit; color: inherit; }
 .brand-plate {
   display: inline-flex;
   align-items: center;
-  justify-content: center;
-  gap: 8px;
-  background: #0B0F17;
-  color: #FFFFFF;
-  border: 1px solid rgba(25, 228, 187, 0.4);
-  border-radius: var(--r-field);
-  padding: 6px 14px;
-  font-size: 15px;
-  font-weight: 800;
-  letter-spacing: .08em;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3), 0 0 12px rgba(25, 228, 187, 0.2);
-  min-height: 40px;
+  justify-content: flex-start;
+  text-decoration: none;
+  background: transparent;
+  border: none;
+  padding: 0;
+  min-height: 42px;
   flex: none;
+  line-height: 1;
+}
+.brand-logo-svg {
+  width: 220px;
+  height: 42px;
+  display: block;
+  overflow: visible;
+}
+.brand-logo-svg.compact {
+  width: 165px;
+  height: 32px;
 }
 .brand-subhead {
   display: flex;
@@ -399,21 +400,38 @@ button, input, select, textarea { font: inherit; color: inherit; }
 .hbtn {
   display: inline-flex;
   align-items: center;
+  justify-content: center;
   gap: 8px;
-  min-height: 40px;
-  padding: 0 16px;
+  min-height: 38px;
+  padding: 0 14px;
   flex: none;
   background: var(--surface-card-subtle);
   border: 1px solid var(--border-control);
-  border-radius: 6px;
+  border-radius: var(--r-field);
   color: var(--tx-2);
+  font-family: var(--font-sans);
   font-size: 12px;
   font-weight: 700;
+  letter-spacing: 0.02em;
   text-decoration: none;
   cursor: pointer;
-  transition: all var(--t-control);
+  transition: all var(--t-control) ease;
+  user-select: none;
 }
-.hbtn:hover { background: var(--surface-hover-field); color: var(--tx-1); border-color: var(--tx-2); }
+.hbtn:hover {
+  background: var(--surface-hover-field);
+  color: var(--tx-1);
+  border-color: var(--border-strong);
+  box-shadow: var(--shadow-sm);
+  transform: translateY(-1px);
+}
+.hbtn:active {
+  transform: translateY(0);
+}
+.hbtn:focus-visible {
+  outline: 2px solid var(--brand-fill);
+  outline-offset: 2px;
+}
 
 /* Layout de duas colunas principais */
 .main-layout {
@@ -589,6 +607,112 @@ button, input, select, textarea { font: inherit; color: inherit; }
 .bhead:hover { color: var(--tx-1); }
 .bsum { font-family: var(--font-mono); font-variant-numeric: tabular-nums; color: var(--tx-3); font-size: 11px; font-weight: 600; }
 
+/* ==========================================================================
+   BIBLIOTECA CANÔNICA DE BOTÕES — PRECISION SURGICAL MACHINING
+   Especificação: RECONCILED_DESIGN_SYSTEM.md / showcase.html / Button.prompt.md
+   ========================================================================== */
+.btn-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  align-items: center;
+}
+
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  font-family: var(--font-sans);
+  font-weight: 700;
+  font-size: 13px;
+  letter-spacing: 0.02em;
+  border: 1px solid transparent;
+  border-radius: var(--r-field);
+  padding: 9px 20px;
+  min-height: var(--h-target-md);
+  cursor: pointer;
+  transition: all 0.15s ease;
+  text-decoration: none;
+  outline: none;
+  user-select: none;
+  white-space: nowrap;
+}
+.btn.pill { border-radius: var(--r-pill); }
+.btn.lg { padding: 12px 26px; font-size: 14px; min-height: var(--h-cta); }
+.btn.sm { padding: 6px 14px; font-size: 12px; min-height: var(--h-target-compact); }
+.btn.full-width { width: 100%; }
+
+.btn-primary {
+  background: var(--brand-fill);
+  color: var(--tx-on-brand);
+  box-shadow: var(--shadow-sm);
+}
+.btn-primary:hover {
+  background: var(--brand-hover);
+  box-shadow: var(--glow-active);
+  transform: translateY(-1px);
+}
+.btn-primary:active { background: var(--brand-active); transform: translateY(0); }
+
+.btn-action {
+  background: var(--action-fill);
+  color: var(--tx-on-action);
+  box-shadow: var(--shadow-sm);
+}
+.btn-action:hover {
+  background: var(--action-hover);
+  box-shadow: 0 4px 14px rgba(63, 112, 11, 0.3);
+  transform: translateY(-1px);
+}
+[data-theme="escuro"] .btn-action:hover {
+  box-shadow: 0 0 16px rgba(189, 255, 75, 0.40);
+}
+.btn-action:active { background: var(--action-active); transform: translateY(0); }
+
+.btn-secondary {
+  background: var(--surface-card-subtle);
+  color: var(--tx-1);
+  border-color: var(--border-control);
+}
+.btn-secondary:hover {
+  background: var(--surface-hover-field);
+  border-color: var(--border-strong);
+  transform: translateY(-1px);
+}
+.btn-secondary:active { transform: translateY(0); }
+
+.btn-ghost {
+  background: transparent;
+  color: var(--tx-1);
+  border-color: var(--border-control);
+}
+.btn-ghost:hover {
+  background: var(--surface-card-subtle);
+}
+
+.btn-danger {
+  background: var(--st-crit-bg);
+  color: var(--st-crit-ink);
+  border-color: var(--st-crit-bd);
+}
+.btn-danger:hover {
+  background: var(--st-crit-ink);
+  color: #FFFFFF;
+}
+
+.btn:disabled, .btn[disabled] {
+  opacity: 0.45;
+  cursor: not-allowed;
+  transform: none !important;
+  box-shadow: none !important;
+}
+
+.btn:focus-visible {
+  outline: 2px solid var(--brand-fill);
+  outline-offset: 2px;
+}
+
 /* Grupo de Ações do Formulário */
 .form-actions-group {
   display: flex;
@@ -597,7 +721,7 @@ button, input, select, textarea { font: inherit; color: inherit; }
   margin-top: 4px;
 }
 
-/* Botão principal de ação: Calcular */
+/* Botão principal de ação: Calcular (Harmonizado com .btn-action.lg) */
 .btn-cta {
   display: flex;
   align-items: center;
@@ -607,20 +731,24 @@ button, input, select, textarea { font: inherit; color: inherit; }
   min-height: var(--h-cta);
   background: var(--action-fill);
   color: var(--tx-on-action);
-  border: 1px solid rgba(0, 0, 0, 0.1);
+  border: 1px solid transparent;
   border-radius: var(--r-field);
+  font-family: var(--font-sans);
   font-size: 14px;
   font-weight: 800;
   letter-spacing: .06em;
   text-transform: uppercase;
   cursor: pointer;
-  box-shadow: 0 2px 6px rgba(63, 112, 11, 0.25), 0 4px 14px rgba(63, 112, 11, 0.18);
+  box-shadow: var(--shadow-sm);
   transition: all var(--t-control) ease;
 }
 .btn-cta:hover {
   background: var(--action-hover);
   transform: translateY(-1px);
-  box-shadow: 0 4px 8px rgba(63, 112, 11, 0.3), 0 8px 20px rgba(63, 112, 11, 0.22);
+  box-shadow: 0 4px 14px rgba(63, 112, 11, 0.3);
+}
+[data-theme="escuro"] .btn-cta:hover {
+  box-shadow: 0 0 16px rgba(189, 255, 75, 0.40);
 }
 .btn-cta:active {
   background: var(--action-active);
@@ -632,16 +760,16 @@ button, input, select, textarea { font: inherit; color: inherit; }
   background: var(--action-fill);
 }
 
-/* Estado de Cálculo Concluído / Atualizado */
+/* Estado de Cálculo Concluído / Sincronizado */
 .btn-cta.is-calculated {
   background: var(--brand-fill);
   border-color: var(--brand-hover);
-  color: #FFFFFF;
-  box-shadow: 0 2px 4px rgba(27, 110, 92, 0.25), 0 4px 14px rgba(27, 110, 92, 0.2);
+  color: var(--tx-on-brand);
+  box-shadow: var(--shadow-sm);
 }
 .btn-cta.is-calculated:hover {
-  background: #155849;
-  box-shadow: 0 4px 8px rgba(27, 110, 92, 0.3), 0 8px 20px rgba(27, 110, 92, 0.25);
+  background: var(--brand-hover);
+  box-shadow: var(--glow-active);
 }
 
 .btn-cta:disabled,
@@ -655,7 +783,7 @@ button, input, select, textarea { font: inherit; color: inherit; }
   transform: none !important;
 }
 
-/* Botão Secundário: Restaurar Padrões (Reset) */
+/* Botão Secundário: Restaurar Padrões (Reset) (Harmonizado com .btn-secondary) */
 .btn-reset-main {
   display: inline-flex;
   align-items: center;
@@ -667,19 +795,22 @@ button, input, select, textarea { font: inherit; color: inherit; }
   color: var(--tx-2);
   border: 1px solid var(--border-control);
   border-radius: var(--r-field);
+  font-family: var(--font-sans);
   font-size: 13px;
-  font-weight: 600;
+  font-weight: 700;
   cursor: pointer;
   box-shadow: var(--shadow-sm);
-  transition: all var(--t-control);
+  transition: all var(--t-control) ease;
 }
 .btn-reset-main:hover {
   background: var(--surface-card-subtle);
   color: var(--tx-1);
-  border-color: var(--tx-2);
+  border-color: var(--border-strong);
+  transform: translateY(-1px);
 }
 .btn-reset-main:active {
   background: var(--surface-hover-field);
+  transform: translateY(0);
 }
 
 /* Feedback D10 - Check de cálculo atualizado */
@@ -1117,27 +1248,11 @@ button, input, select, textarea { font: inherit; color: inherit; }
 }
 .btn-undo:hover { color: var(--tx-1); }
 
-.btn-primary {
+/* Botões na área de Configurações herdam o padrão canônico .btn */
+.cfg-actions .btn-primary,
+.cfg-actions .btn-secondary {
   min-height: var(--h-target);
   padding: 0 18px;
-  background: var(--nav-active-bg);
-  color: #FFF;
-  font-weight: 700;
-  border: 0;
-  border-radius: var(--r-field);
-  cursor: pointer;
-  transition: background var(--t-control);
-}
-.btn-primary:hover { background: var(--brand-hover); }
-.btn-secondary {
-  min-height: var(--h-target);
-  padding: 0 16px;
-  background: var(--surface-card);
-  color: var(--tx-1);
-  font-weight: 600;
-  border: 1px solid var(--border-control);
-  border-radius: var(--r-field);
-  cursor: pointer;
 }
 
 /* Linha única de confirmação da área Configurações — acompanha a rolagem para o
@@ -1234,18 +1349,10 @@ button, input, select, textarea { font: inherit; color: inherit; }
   padding: 12px;
 }
 .acts { display: flex; align-items: center; gap: 12px; flex-wrap: wrap; }
-.btn-danger {
+.acts .btn-danger {
   min-height: var(--h-target);
   padding: 0 16px;
-  background: var(--st-crit-ink);
-  color: #FFF;
-  font-weight: 700;
-  border: 0;
-  border-radius: var(--r-field);
-  cursor: pointer;
-  transition: background var(--t-control), opacity var(--t-control);
 }
-.btn-danger:hover { background: var(--st-crit-accent); opacity: 0.9; }
 .btn-undo:disabled { opacity: .45; cursor: not-allowed; }
 
 /* Painel interno de formulário de novo material / ferramenta */
@@ -1326,13 +1433,13 @@ button, input, select, textarea { font: inherit; color: inherit; }
   gap: 8px;
 }
 .mobile-brand-plate {
-  background: var(--brand-fill);
-  color: #FFFFFF;
-  font-size: 13px;
-  font-weight: 800;
-  letter-spacing: .06em;
-  padding: 6px 10px;
-  border-radius: 4px;
+  display: inline-flex;
+  align-items: center;
+  background: transparent;
+  color: inherit;
+  padding: 0;
+  border-radius: 0;
+  border: none;
 }
 .mobile-header-status {
   display: flex;

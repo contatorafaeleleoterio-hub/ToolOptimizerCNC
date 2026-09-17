@@ -1,5 +1,6 @@
 import React from 'react';
 import { useCalculator } from '../../context/CalculatorContext';
+import BrandLogo from '../BrandLogo';
 
 interface MobileHeaderProps {
   onOpenSettings: () => void;
@@ -28,15 +29,7 @@ export default function MobileHeader({ onOpenSettings }: MobileHeaderProps) {
   return (
     <header className="mobile-header" aria-label="Cabeçalho Móvel ToolOptimizer CNC">
       <div className="mobile-header-main">
-        <div className="mobile-brand-plate" role="img" aria-label="Marca ToolOptimizer CNC" style={{ display: 'inline-flex', alignItems: 'center', gap: '6px' }}>
-          <svg width="18" height="18" viewBox="0 0 500 500" style={{ flexShrink: 0 }}>
-            <path d="M 70 340 A 180 180 0 0 1 116 220 L 179 276 A 95 95 0 0 0 155 340 Z" fill="#16202C" stroke="#19E4BB" strokeWidth="8"/>
-            <path d="M 125 210 A 180 180 0 0 1 370 206 L 314 269 A 95 95 0 0 0 184 272 Z" fill="#0E7C69" stroke="#19E4BB" strokeWidth="8"/>
-            <path d="M 379 215 A 180 180 0 0 1 430 340 L 345 340 A 95 95 0 0 0 318 274 Z" fill="#19E4BB" stroke="#19E4BB" strokeWidth="8"/>
-            <path d="M 115 450 L 210 270 L 248 305 L 345 170 L 330 155 L 410 95 L 385 195 L 368 188 L 262 335 L 222 298 Z" fill="#BDFF4B" stroke="#E4FF94" strokeWidth="6"/>
-          </svg>
-          <span>TOOLOPTIMIZER</span>
-        </div>
+        <BrandLogo compact />
 
         <div className="mobile-header-status" style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
           {safetyMargin !== 100 && (
