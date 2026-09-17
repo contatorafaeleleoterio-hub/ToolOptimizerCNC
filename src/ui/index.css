@@ -1,23 +1,28 @@
-:root {
+:root, [data-theme="claro"] {
   /* ==========================================================================
      TOOLOPTIMIZER CNC — CANONICAL DESIGN SYSTEM (PRECISION SURGICAL MACHINING)
      TEMA 1: CLARO (DEFAULT / PADRÃO OPERACIONAL DE FÁBRICA)
      ========================================================================== */
   --bg-page:              #F4F6F9;
+  --bg-surface:           #FFFFFF;
   --surface-card:         #FFFFFF;
   --surface-card-subtle:  #F8FAFC;
   --surface-input:        #FFFFFF;
   --surface-input-muted:  #F1F5F9;
   --border-subtle:        #E2E8F0;
   --border-control:       #CBD5E1;
+  --border-strong:        #94A3B8;
   --border-control-focus: #0F766E;
   --shadow-sm:            0 1px 3px rgba(15, 23, 42, 0.05);
   --shadow-card:          0 4px 16px rgba(15, 23, 42, 0.06);
+  --glow-active:          0 0 14px rgba(15, 118, 110, 0.25);
+  --focus-ring:           rgba(15, 118, 110, 0.25);
 
   /* Texto — três níveis estritos WCAG AA */
   --tx-1: #0F172A;
   --tx-2: #334155;
   --tx-3: #64748B;
+  --tx-muted: #94A3B8;
 
   /* Marca canônica & ações */
   --brand-fill:    #0F766E;  /* Ciano cirúrgico industrial profundo (>5.4:1 WCAG AA) */
@@ -67,10 +72,13 @@
   /* Espaçamento, raios e tempos */
   --sp-1: 4px;  --sp-2: 8px;  --sp-3: 12px; --sp-4: 16px;
   --sp-5: 24px; --sp-6: 32px; --sp-7: 48px;
-  --r-chip: 6px; --r-field: 8px; --r-card: 14px; --r-pill: 999px;
+  --sp-md: 20px; --sp-lg: 24px; --sp-xl: 32px; --sp-2xl: 48px;
+
+  --r-none: 0px; --r-xs: 3px; --r-chip: 6px; --r-field: 8px; --r-card: 14px; --r-panel: 18px; --r-pill: 999px;
   --t-control: 140ms; --t-panel: 200ms;
 
   /* Alvos de toque industriais */
+  --h-target-compact: 34px; --h-target-md: 42px;
   --h-target: 44px; --h-cta: 52px;
 }
 
@@ -79,19 +87,28 @@
    ========================================================================== */
 [data-theme="escuro"] {
   --bg-page:              #080C12;
+  --bg-surface:           #131B29;
   --surface-card:         #131B29;
   --surface-card-subtle:  #182234;
   --surface-input:        #0E141F;
   --surface-input-muted:  #182234;
   --border-subtle:        rgba(255, 255, 255, 0.08);
   --border-control:       rgba(255, 255, 255, 0.16);
+  --border-strong:        rgba(255, 255, 255, 0.28);
   --border-control-focus: #19E4BB;
   --shadow-sm:            0 2px 8px rgba(0, 0, 0, 0.4);
   --shadow-card:          0 8px 30px rgba(0, 0, 0, 0.55);
+  --glow-active:          0 0 16px rgba(25, 228, 187, 0.35);
+  --focus-ring:           rgba(25, 228, 187, 0.25);
+  --glow-cyan:            0 0 16px rgba(25, 228, 187, 0.35);
+  --glow-cyan-lg:         0 0 28px rgba(25, 228, 187, 0.50);
+  --glow-lime:            0 0 16px rgba(189, 255, 75, 0.40);
+  --glow-crit:            0 0 16px rgba(255, 77, 77, 0.40);
 
   --tx-1: #FFFFFF;
   --tx-2: #C7D3E3;
   --tx-3: #8E9FB8;
+  --tx-muted: #627494;
 
   --brand-fill:    #19E4BB;  /* Ciano Cirúrgico Neon */
   --brand-hover:   #42ECD1;
@@ -167,7 +184,7 @@ button, input, select, textarea { font: inherit; color: inherit; }
 :focus-visible {
   outline: 2px solid var(--select-ink);
   outline-offset: 2px;
-  box-shadow: 0 0 0 3px rgba(15, 118, 110, .25);
+  box-shadow: 0 0 0 3px var(--focus-ring);
 }
 
 @media (prefers-reduced-motion: reduce) {
@@ -437,7 +454,7 @@ button, input, select, textarea { font: inherit; color: inherit; }
 }
 .sctl:focus-within {
   border-color: var(--border-control-focus);
-  box-shadow: 0 0 0 3px rgba(15, 118, 110, .25);
+  box-shadow: 0 0 0 3px var(--focus-ring);
 }
 .sctl.error {
   border-color: var(--st-crit-accent) !important;
@@ -491,7 +508,7 @@ button, input, select, textarea { font: inherit; color: inherit; }
 }
 .fbox:focus-within {
   border-color: var(--border-control-focus);
-  box-shadow: 0 0 0 3px rgba(15, 118, 110, .25);
+  box-shadow: 0 0 0 3px var(--focus-ring);
 }
 .fbox.error {
   border-color: var(--st-crit-accent) !important;
@@ -538,7 +555,7 @@ button, input, select, textarea { font: inherit; color: inherit; }
   transition: border-color var(--t-control), box-shadow var(--t-control);
 }
 .fsel:hover { border-color: var(--tx-2); }
-.fsel:focus { outline: none; border-color: var(--border-control-focus); box-shadow: 0 0 0 3px rgba(15, 118, 110, .25); }
+.fsel:focus { outline: none; border-color: var(--border-control-focus); box-shadow: 0 0 0 3px var(--focus-ring); }
 .selcv {
   position: absolute;
   right: 12px;
@@ -559,7 +576,7 @@ button, input, select, textarea { font: inherit; color: inherit; }
   display: flex;
   align-items: center;
   gap: 10px;
-  min-height: 40px;
+  min-height: var(--h-target);
   cursor: pointer;
   width: 100%;
   background: none;
@@ -589,7 +606,7 @@ button, input, select, textarea { font: inherit; color: inherit; }
   width: 100%;
   min-height: var(--h-cta);
   background: var(--action-fill);
-  color: var(--tx-on-brand);
+  color: var(--tx-on-action);
   border: 1px solid rgba(0, 0, 0, 0.1);
   border-radius: var(--r-field);
   font-size: 14px;
@@ -629,7 +646,7 @@ button, input, select, textarea { font: inherit; color: inherit; }
 
 .btn-cta:disabled,
 .btn-cta.btn-cta-disabled {
-  background: var(--bg-card);
+  background: var(--surface-input-muted);
   color: var(--tx-3);
   border-color: var(--border-subtle);
   cursor: not-allowed;
@@ -686,20 +703,22 @@ button, input, select, textarea { font: inherit; color: inherit; }
   justify-content: space-between;
   gap: 10px;
   padding: 8px 14px;
-  border-radius: 6px;
+  border-radius: var(--r-chip);
   font-size: 12px;
   font-weight: 700;
-  border: 1px solid;
+  border: 1px solid var(--border-subtle);
+  background: var(--surface-card-subtle);
+  color: var(--tx-2);
 }
 .calc-status-strip.in-sync {
-  background: #ECF3F1;
-  color: #104237;
-  border-color: #C6DAD6;
+  background: var(--st-normal-bg);
+  color: var(--st-normal-ink);
+  border-color: var(--st-normal-bd);
 }
 .calc-status-strip.outdated {
-  background: #FAF3EB;
-  color: #754406;
-  border-color: #F0DBC1;
+  background: var(--st-warn-bg);
+  color: var(--st-warn-ink);
+  border-color: var(--st-warn-bd);
 }
 
 /* Z2 — Nível de Segurança e Alerta */
@@ -741,13 +760,22 @@ button, input, select, textarea { font: inherit; color: inherit; }
   font-weight: 800;
   letter-spacing: .08em;
   flex: none;
-  border: 1px solid;
+  border: 1px solid var(--border-control);
+  background: var(--surface-card);
+  color: var(--tx-2);
   text-transform: uppercase;
+  transition: all var(--t-control);
 }
 .chip.normal { background: #FFFFFF; color: var(--st-normal-ink); border-color: var(--st-normal-bd); }
 .chip.warning { background: #FFFFFF; color: var(--st-warn-ink); border-color: var(--st-warn-bd); }
 .chip.critical { background: #FFFFFF; color: var(--st-crit-ink); border-color: var(--st-crit-bd); }
 .chip.info { background: #FFFFFF; color: var(--st-info-ink); border-color: var(--st-info-bd); }
+.chip.chip-active {
+  background: var(--nav-active-bg);
+  color: var(--nav-active-tx);
+  border-color: var(--brand-fill);
+  box-shadow: 0 0 10px rgba(25, 228, 187, 0.2);
+}
 
 /* Z3 — Parâmetros de corte aplicados */
 .z3 {
@@ -755,7 +783,7 @@ button, input, select, textarea { font: inherit; color: inherit; }
   align-items: center;
   gap: 12px;
   flex-wrap: wrap;
-  background: #FFFFFF;
+  background: var(--surface-card);
   border: 1px solid var(--border-subtle);
   border-radius: var(--r-field);
   padding: 10px 16px;
@@ -832,7 +860,7 @@ button, input, select, textarea { font: inherit; color: inherit; }
 .rbig {
   font-family: var(--font-mono);
   font-variant-numeric: tabular-nums;
-  font-size: 34px;
+  font-size: 38px;
   font-weight: 800;
   color: var(--tx-1);
   letter-spacing: -0.02em;
@@ -1209,14 +1237,15 @@ button, input, select, textarea { font: inherit; color: inherit; }
 .btn-danger {
   min-height: var(--h-target);
   padding: 0 16px;
-  background: #B8461D;
+  background: var(--st-crit-ink);
   color: #FFF;
   font-weight: 700;
   border: 0;
   border-radius: var(--r-field);
   cursor: pointer;
+  transition: background var(--t-control), opacity var(--t-control);
 }
-.btn-danger:hover { background: #933817; }
+.btn-danger:hover { background: var(--st-crit-accent); opacity: 0.9; }
 .btn-undo:disabled { opacity: .45; cursor: not-allowed; }
 
 /* Painel interno de formulário de novo material / ferramenta */
@@ -1770,4 +1799,17 @@ button, input, select, textarea { font: inherit; color: inherit; }
   background: rgba(255, 77, 77, 0.18);
   color: #FF4D4D;
   border-color: rgba(255, 77, 77, 0.4);
+}
+
+[data-theme="escuro"] .chip.info {
+  background: rgba(25, 228, 187, 0.12);
+  color: #19E4BB;
+  border-color: rgba(25, 228, 187, 0.35);
+}
+
+[data-theme="escuro"] .chip.chip-active {
+  background: rgba(25, 228, 187, 0.2);
+  color: #19E4BB;
+  border-color: #19E4BB;
+  box-shadow: 0 0 12px rgba(25, 228, 187, 0.3);
 }

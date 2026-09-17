@@ -1,6 +1,21 @@
-# Estado — ToolOptimizer CNC — 15/09/2026
+# Estado — ToolOptimizer CNC — 16/09/2026
 
 Arquivo de retomada e fonte única do estado do produto. É o documento que o operador ou qualquer agente carrega ao iniciar uma sessão.
+
+---
+
+## 🎨 Auditoria e Saneamento de Conformidade do Design System (16/09/2026)
+
+Auditoria final de conformidade confrontando o Design System canônico (`RECONCILED_DESIGN_SYSTEM.md`, `TOKEN_RECONCILIATION.md`, `DESIGN_SYSTEM_RECONCILIATION_MATRIX.md`, `COMPONENT_MAPPING.md`, `DECISION_RECORDS.md` e ativos em `brand/`) com o código de produção (`src/ui/`, `index.css`, componentes desktop e mobile):
+- **Diagnóstico e Conformidade:**
+  - Foundations, paleta dual-theme e escala modular 4px em perfeita harmonia normativa.
+  - Saneamento de 10 divergências identificadas (`DIV-01` a `DIV-10`): eliminação do token fantasma `--bg-card` em `.btn-cta:disabled`, adoção de `color: var(--tx-on-action)`, substituição de hexadecimais fixos em `.calc-status-strip` por tokens semânticos (`--st-normal-*`, `--st-warn-*`), implementação da classe `.chip.chip-active` e `.chip.info` para o tema escuro, elevação da tipografia de `.rbig` para os canônicos 38px mono, unificação do token crítico `--st-crit-ink` em `.btn-danger`, padronização do anel de foco `--focus-ring` contextual, substituição de emojis por SVGs vetoriais no `MobileHeader`, e elevação do touch target de `.bhead` para 44px (`--h-target`).
+- **Logomarca Canônica Auditada:**
+  - Logomarca horizontal oficial (`Logo_ToolOptimizer.svg`), símbolo puro (`Logo_Icon.svg`) e metodologia em `brand/BRAND_REFACTORING_METHODOLOGY.md` verificados e confirmados.
+- **Portão de Qualidade Final:**
+  - `npm run check` (typecheck + vitest com `pool: 'forks'`): **114/114 testes passando** com 100% de sucesso.
+  - `npm run build`: Compilação de produção Vite e PWA gerados com sucesso (exit code 0).
+  - Branch pronta e auditada para publicação em produção.
 
 ---
 
