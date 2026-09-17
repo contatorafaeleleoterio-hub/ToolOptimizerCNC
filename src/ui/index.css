@@ -331,19 +331,19 @@ button, input, select, textarea { font: inherit; color: inherit; }
   background: transparent;
   border: none;
   padding: 0;
-  min-height: 42px;
+  margin: 0;
+  min-height: auto;
   flex: none;
   line-height: 1;
 }
 .brand-logo-svg {
-  width: 220px;
-  height: 42px;
+  width: 176px;
+  height: 40px;
   display: block;
-  overflow: visible;
 }
 .brand-logo-svg.compact {
-  width: 165px;
-  height: 32px;
+  width: 124px;
+  height: 28px;
 }
 .brand-subhead {
   display: flex;
@@ -1749,13 +1749,6 @@ button, input, select, textarea { font: inherit; color: inherit; }
   background: var(--surface-card);
   border-color: var(--border-subtle);
   box-shadow: var(--shadow-card);
-}
-
-[data-theme="escuro"] .brand-plate {
-  background: #06090E;
-  color: #FFFFFF;
-  border: 1px solid #19E4BB;
-  box-shadow: 0 0 18px rgba(25, 228, 187, 0.35);
 }
 
 [data-theme="escuro"] .nav-families {

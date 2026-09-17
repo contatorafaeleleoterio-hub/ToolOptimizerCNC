@@ -9,13 +9,15 @@ interface MobileHeaderProps {
 export default function MobileHeader({ onOpenSettings }: MobileHeaderProps) {
   const { selectedMaterial, selectedTool, selectedSubstrate, safetyMargin } = useCalculator();
 
-  const [theme, setTheme] = React.useState<'claro' | 'escuro'>('escuro');
+  const [theme, setTheme] = React.useState<'claro' | 'escuro'>('claro');
 
   React.useEffect(() => {
-    const saved = (localStorage.getItem('to_theme') as 'claro' | 'escuro') || 'escuro';
+    const saved = (localStorage.getItem('to_theme') as 'claro' | 'escuro') || 'claro';
     setTheme(saved);
     document.documentElement.setAttribute('data-theme', saved);
     document.body.setAttribute('data-theme', saved);
+    const meta = document.querySelector('meta[name="theme-color"]');
+    if (meta) meta.setAttribute('content', saved === 'escuro' ? '#080C12' : '#F4F6F9');
   }, []);
 
   const toggleTheme = () => {
@@ -24,6 +26,8 @@ export default function MobileHeader({ onOpenSettings }: MobileHeaderProps) {
     localStorage.setItem('to_theme', next);
     document.documentElement.setAttribute('data-theme', next);
     document.body.setAttribute('data-theme', next);
+    const meta = document.querySelector('meta[name="theme-color"]');
+    if (meta) meta.setAttribute('content', next === 'escuro' ? '#080C12' : '#F4F6F9');
   };
 
   return (

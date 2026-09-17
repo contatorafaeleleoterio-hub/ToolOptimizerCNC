@@ -9,13 +9,15 @@ interface HeaderZ1Props {
 export default function HeaderZ1({ onOpenSettings }: HeaderZ1Props) {
   const { activeFamily, selectedMaterial, selectedTool, selectedSubstrate, currentInputs, safetyMargin } = useCalculator();
 
-  const [theme, setTheme] = useState<'claro' | 'escuro'>('escuro');
+  const [theme, setTheme] = useState<'claro' | 'escuro'>('claro');
 
   useEffect(() => {
-    const saved = (localStorage.getItem('to_theme') as 'claro' | 'escuro') || 'escuro';
+    const saved = (localStorage.getItem('to_theme') as 'claro' | 'escuro') || 'claro';
     setTheme(saved);
     document.documentElement.setAttribute('data-theme', saved);
     document.body.setAttribute('data-theme', saved);
+    const meta = document.querySelector('meta[name="theme-color"]');
+    if (meta) meta.setAttribute('content', saved === 'escuro' ? '#080C12' : '#F4F6F9');
   }, []);
 
   const toggleTheme = () => {
@@ -24,6 +26,8 @@ export default function HeaderZ1({ onOpenSettings }: HeaderZ1Props) {
     localStorage.setItem('to_theme', next);
     document.documentElement.setAttribute('data-theme', next);
     document.body.setAttribute('data-theme', next);
+    const meta = document.querySelector('meta[name="theme-color"]');
+    if (meta) meta.setAttribute('content', next === 'escuro' ? '#080C12' : '#F4F6F9');
   };
 
   const inp = currentInputs;

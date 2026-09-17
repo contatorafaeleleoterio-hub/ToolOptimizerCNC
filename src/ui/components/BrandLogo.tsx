@@ -21,8 +21,8 @@ interface BrandLogoProps {
  * do tema ativo (:root [data-theme=claro] e [data-theme=escuro]).
  */
 export default function BrandLogo({ compact = false, className = '' }: BrandLogoProps) {
-  const width = compact ? 165 : 220;
-  const height = compact ? 32 : 42;
+  const width = compact ? 124 : 176;
+  const height = compact ? 28 : 40;
   const combinedClass = ('brand-plate ' + (className || '')).trim();
   const svgClass = ('brand-logo-svg ' + (compact ? 'compact' : '')).trim();
 
@@ -35,10 +35,10 @@ export default function BrandLogo({ compact = false, className = '' }: BrandLogo
     >
       <svg
         className={svgClass}
-        viewBox="0 0 1000 300"
+        viewBox="38 48 930 212"
         width={width}
         height={height}
-        style={{ display: 'block', overflow: 'visible' }}
+        style={{ display: 'block' }}
         aria-hidden="true"
       >
         <defs>
