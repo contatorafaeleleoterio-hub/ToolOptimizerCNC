@@ -75,6 +75,7 @@ Substituir a paleta legada pelas cores e superfícies consagradas nos tokens at�
 #### Critérios de Contraste e Luminescência
 - Empregar filtros SVG discretos (`feDropShadow` ou `glow` luminescente suave) para dar sensação de instrumento de precisão iluminado, evitando o aspecto de vetor plano e sem vida.
 - Assegurar contraste superior a **3:1** contra o fundo do chassi, mantendo legibilidade em painéis industriais sob incidência direta de luz de oficina.
+- **Regra de Contraste em Fundos Claros/Brancos:** Quando a marca for renderizada sobre superfícies claras (`#FFFFFF` / `#F4F6F9`), quaisquer letras ou siglas originalmente brancas (como o sufixo **CNC**) devem obrigatoriamente comutar para a cor escura de chassi `--tx-1` (`#0F172A`) via token `--brand-cnc`. É terminantemente proibido manter caracteres em branco sobre fundos claros.
 
 ---
 
@@ -84,7 +85,7 @@ Eliminar fontes genéricas do sistema operacional (Arial, Calibri, Helvetica leg
 1. **Wordmark Primário:**
    - Empregar a fonte primária da interface (ex: `Urbanist`), nos pesos `SemiBold (600)` ou `Bold (700)`.
    - Ajustar o kerning ótico para evitar espaçamentos irregulares entre maiúsculas e minúsculas.
-   - Diferenciação semântica inteligente: Se o nome for composto (ex: `Tool` + `Optimizer`), aplicar sutil variação de peso (ex: `Regular 500` no prefixo e `Bold 700` no sufixo, ou aplicar a cor primária no ponto de inflexão).
+   - Diferenciação semântica inteligente: Se o nome for composto (ex: `Tool` + `Optimizer` + `CNC`), aplicar variação de peso e cor semiótica: prefixo em `Bold 700` (`--tx-1`), núcleo em `Medium 500` (`--brand-fill`) e acrônimo de domínio `CNC` em `ExtraBold 800` (`--brand-cnc`), garantindo que o acrônimo seja legível tanto em fundos escuros (`#FFFFFF`) quanto em fundos brancos (`#0F172A`).
 2. **Tagline / Descritor Técnico:**
    - Empregar a fonte monoespaçada de telemetria (ex: `JetBrains Mono`).
    - Aplicar caixa alta integral (`UPPERCASE`) com espaçamento de rastreamento expandido (`letter-spacing: 0.18em` a `0.25em`).

@@ -46,4 +46,15 @@ ToolOptimizerCNC/
 Todos os artefatos anteriores à v2 foram transferidos para `archive/legacy-v1/`:
 - **Código e testes antigos (`src/`, `tests/`):** Utilizavam React 18, Tailwind, Zustand e React-Router com regras dispersas e sem validação mecânica canônica.
 - **Documentações superadas (`docs/`, `DOCS_TREINAMENTO_RAG/`, `blueprint_*.md`):** Metodologias e formulações preliminares que foram superadas pelas especificações do Fenix. O gabarito canônico definitivo reside em `Docs_inicial/`.
-- **Canais móveis descartados (`android/`, Capacitor, Electron):** O produto foca exclusivamente na web como PWA responsivo com suporte a desktop e dispositivos móveis.
+- **Canais móveis legados (`android/`, Capacitor v1, Electron):** Arquivados em `archive/legacy-v1/` para dar lugar à reconstrução v2 limpa. O canal móvel Android atual está em fase de planejamento e reintegração em `development-plan/`.
+
+---
+
+## 5. Distribuição e Publicação Google Play Store
+O produto encontra-se em fase de preparação para publicação oficial como aplicativo Android na **Google Play Store**, com monetização inicial via **Google AdMob**:
+- **Centro de Planejamento:** Diretório [`development-plan/`](development-plan/README.md) e documento mestre [`00_MASTER_PLAN.md`](development-plan/00_MASTER_PLAN.md).
+- **Conta de Desenvolvedor:** Conta de **Pessoa Física (Individual)** no Google Play Console **já existente, ativa, paga e aprovada**.
+- **E-mail Oficial do Projeto:** `tooloptimizercnc@gmail.com`
+- **Modelo de Acesso:** Gratuito, sem cadastro/login (zero atrito, 100% offline-first).
+- **Estratégia de Monetização:** Híbrida — Gratuito com Banner AdMob no topo + Compra Única in-app de R$ 6,90 para remoção permanente de anúncios via Google Play Billing (sem login, cache offline).
+- **Wrapper Android:** Reintegração moderna com Capacitor 6/7 mapeando a compilação estática (`dist/`).

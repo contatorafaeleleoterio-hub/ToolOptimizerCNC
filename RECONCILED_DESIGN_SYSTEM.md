@@ -62,6 +62,7 @@ O sistema opera sob uma **arquitetura dual nativa de altíssima precisão**:
   --brand-hover:   #115E59;
   --brand-active:  #134E4A;
   --brand-accent:  #14B8A6;
+  --brand-cnc:     #0F172A; /* Sigla CNC de alto contraste em fundos claros (>15.4:1 WCAG AAA) */
   --tx-on-brand:   #FFFFFF;
 
   --action-fill:   #3F700B;
@@ -112,6 +113,7 @@ O sistema opera sob uma **arquitetura dual nativa de altíssima precisão**:
   --brand-hover:   #42ECD1;
   --brand-active:  #13C4A0;
   --brand-accent:  #19E4BB;
+  --brand-cnc:     #FFFFFF; /* Sigla CNC em branco puro para fundos escuros (>18.2:1) */
   --tx-on-brand:   #050B08;
 
   --action-fill:   #BDFF4B;
@@ -156,7 +158,7 @@ O sistema opera sob uma **arquitetura dual nativa de altíssima precisão**:
 
 ## 3. Biblioteca Canônica de Componentes
 
-1. **BrandPlate (`HeaderZ1` / `MobileHeader`):** Logotipo canônico oficial com gauge vetorial em arco e tipografia `Urbanist` Bold.
+1. **BrandPlate (`HeaderZ1` / `MobileHeader`):** Logotipo canônico oficial `ToolOptimizer CNC` com gauge vetorial em arco e tipografia `Urbanist`. **Regra Canônica de Contraste da Marca:** A sigla final "CNC" vincula-se obrigatoriamente ao token `--brand-cnc`, comutando para `#0F172A` no tema claro (superfícies brancas, contraste >15.4:1 WCAG AAA) e `#FFFFFF` no tema escuro (>18.2:1). É expressamente vedada a exibição de letras brancas sobre fundos claros.
 2. **StepperInput (`ConfigForm` / `SettingsView`):** Campo de entrada com alvos táteis laterais de 44px ($\pm$), suporte nativo a vírgula brasileira, ponto decimal, digitação livre sem perda de foco e estado inicial zerado.
 3. **Button / BtnCalcular (`#btn-calcular`):** Botão de ação prioritária com estados desabilitado, pronto, loading e sincronizado (`is-calculated`).
 4. **HeroCard (`[data-hero="s"]`, `[data-hero="f"]`):** Destaque de telemetria em 38px mono com botões táteis de ajuste fino bidirecional ±5% e botão de reversão `⟲ Padrão`.

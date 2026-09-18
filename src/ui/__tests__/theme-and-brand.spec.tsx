@@ -88,14 +88,21 @@ describe('Design System Audit — Tema Padrão e Calibração de Logomarca', () 
       expect(brandPlate).not.toBeNull();
     });
 
-    it('deve preservar o texto semântico e a tagline oficial no SVG', () => {
-      render(<BrandLogo />);
+    it('deve preservar o texto semântico, a sigla CNC e a tagline oficial no SVG', () => {
+      const { container } = render(<BrandLogo />);
 
       const brand = screen.getByRole('img', { name: /marca tooloptimizer/i });
       expect(brand.textContent).toContain('Tool');
       expect(brand.textContent).toContain('Optimizer');
+      expect(brand.textContent).toContain('CNC');
       expect(brand.textContent).toContain('CNC PRECISION SUITE');
-      expect(brand.textContent).toContain('TOOLOPTIMIZER');
+      expect(brand.textContent).toContain('TOOLOPTIMIZER CNC');
+
+      // Verifica que a sigla CNC utiliza a variável semântica --brand-cnc
+      const cncSpan = container.querySelector('tspan[dx="10"]');
+      expect(cncSpan).not.toBeNull();
+      expect(cncSpan?.textContent).toBe('CNC');
+      expect(cncSpan?.getAttribute('fill')).toContain('--brand-cnc');
     });
   });
 });

@@ -120,37 +120,40 @@ export default function BrandLogo({ compact = false, className = '' }: BrandLogo
           />
         </g>
 
-        {/* Tipografia Refatorada em Urbanist com diferenciação semântica */}
+        {/* Tipografia Refatorada em Urbanist com diferenciação semântica e CNC de alto contraste */}
         <text
-          x="270"
-          y="180"
+          x="260"
+          y="178"
           fontFamily="'Urbanist', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif"
-          fontSize="88"
+          fontSize="75"
           letterSpacing="-0.02em"
         >
-          <tspan fontWeight="700" fill="var(--tx-1, #FFFFFF)">
+          <tspan fontWeight="700" fill="var(--tx-1, #0F172A)">
             Tool
           </tspan>
-          <tspan fontWeight="500" fill="var(--brand-fill, #19E4BB)">
+          <tspan fontWeight="500" fill="var(--brand-fill, #0F766E)">
             Optimizer
+          </tspan>
+          <tspan dx="10" fontWeight="800" fill="var(--brand-cnc, var(--tx-1, #0F172A))">
+            CNC
           </tspan>
         </text>
 
         {/* Tagline técnica industrial de precisão */}
         <text
-          x="275"
-          y="245"
+          x="265"
+          y="244"
           fontFamily="'Urbanist', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif"
           fontWeight="600"
-          fontSize="19"
-          fill="var(--tx-3, #8E9FB8)"
-          letterSpacing="0.28em"
+          fontSize="18"
+          fill="var(--tx-3, #64748B)"
+          letterSpacing="0.26em"
         >
           CNC PRECISION SUITE
         </text>
       </svg>
       {/* Texto acessível padronizado para leitores de tela e testes */}
-      <span className="sr-only">TOOLOPTIMIZER</span>
+      <span className="sr-only">TOOLOPTIMIZER CNC</span>
     </div>
   );
 }

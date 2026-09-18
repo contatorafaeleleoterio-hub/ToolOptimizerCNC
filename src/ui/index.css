@@ -36,6 +36,7 @@
   --nav-active-bg: #0F766E;
   --nav-active-tx: #FFFFFF;
   --brand-accent:  #14B8A6;
+  --brand-cnc:     #0F172A;  /* Sigla CNC de alto contraste em fundos claros (>15.4:1 WCAG AAA) */
   --accent-blue:   #0F766E;
   --select-ink:    #0F766E;
 
@@ -121,6 +122,7 @@
   --nav-active-bg: rgba(25, 228, 187, 0.16);
   --nav-active-tx: #19E4BB;
   --brand-accent:  #19E4BB;
+  --brand-cnc:     #FFFFFF;  /* Sigla CNC em branco puro para fundos escuros (>18.2:1) */
   --accent-blue:   #19E4BB;
   --select-ink:    #19E4BB;
 

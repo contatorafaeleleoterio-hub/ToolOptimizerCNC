@@ -33,23 +33,30 @@
     .txt-tool {
       font-family: 'Urbanist', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
       font-weight: 700;
-      font-size: 88px;
-      fill: #FFFFFF;
+      font-size: 75px;
+      fill: var(--tx-1, #FFFFFF);
       letter-spacing: -0.02em;
     }
     .txt-opt {
       font-family: 'Urbanist', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
       font-weight: 500;
-      font-size: 88px;
-      fill: #19E4BB;
+      font-size: 75px;
+      fill: var(--brand-fill, #19E4BB);
+      letter-spacing: -0.02em;
+    }
+    .txt-cnc {
+      font-family: 'Urbanist', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      font-weight: 800;
+      font-size: 75px;
+      fill: var(--brand-cnc, var(--tx-1, #FFFFFF));
       letter-spacing: -0.02em;
     }
     .txt-sub {
       font-family: 'Urbanist', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
       font-weight: 600;
-      font-size: 19px;
-      fill: #AEAEAE;
-      letter-spacing: 0.28em;
+      font-size: 18px;
+      fill: var(--tx-3, #8E9FB8);
+      letter-spacing: 0.26em;
       text-transform: uppercase;
     }
   </style>
@@ -72,12 +79,13 @@
     <path d="M 115 450 L 210 270 L 248 305 L 345 170 L 330 155 L 410 95 L 385 195 L 368 188 L 262 335 L 222 298 L 115 450 Z" fill="url(#grad-arrow-lg)" filter="url(#glow-arrow-lg)" stroke="#E4FF94" stroke-width="1.5"/>
   </g>
 
-  <!-- Tipografia Refatorada em Urbanist -->
-  <text x="270" y="180">
+  <!-- Tipografia Refatorada em Urbanist com Sigla CNC Canônica -->
+  <text x="260" y="178">
     <tspan class="txt-tool">Tool</tspan>
     <tspan class="txt-opt">Optimizer</tspan>
+    <tspan class="txt-cnc" dx="10">CNC</tspan>
   </text>
   
   <!-- Tagline técnica industrial -->
-  <text x="275" y="245" class="txt-sub">CNC INDUSTRIAL PRECISION</text>
+  <text x="265" y="244" class="txt-sub">PRECISION MACHINING SUITE</text>
 </svg>
