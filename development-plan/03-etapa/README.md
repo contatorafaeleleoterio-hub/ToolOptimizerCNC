@@ -1,73 +1,77 @@
-# Etapa 03 — Integração do Google AdMob e Consentimento UMP
+# Etapa 03 — Google AdMob & UMP (SDK Nativo & Consentimento)
 
 ## 1. Nome da Etapa
-**Integração do Google AdMob e Consentimento UMP**
+**Google AdMob & UMP (SDK Nativo & Consentimento)**
 
 ---
 
 ## 2. Objetivo da Etapa
-Integrar o SDK oficial do Google Mobile Ads via plugin Capacitor, implementando a camada obrigatória de consentimento do usuário (Google User Messaging Platform - UMP para GDPR/LGPD) e inserindo anúncios em formato e posição que preservem totalmente a ergonomia de trabalho na máquina CNC, evitando cliques acidentais e tráfego inválido.
+Integrar o SDK oficial do Google Mobile Ads (GMA) via plugin nativo do Capacitor, implementando a camada mandatória de consentimento de privacidade do usuário (Google User Messaging Platform - UMP SDK para conformidade com LGPD e GDPR) e configurando a exibição de banners adaptativos discretos no topo do aplicativo, com isolamento absoluto contra cliques acidentais e tratamento de falha silenciosa para quando o operador estiver sem conexão à internet.
 
 > [!NOTE]
-> Para embasamento técnico aprofundado, comparativo entre AdMob vs AdSense, Google Play Billing (remoção de anúncios sem login) e projeções financeiras, consulte o documento: [`MONETIZATION_RESEARCH.md`](../MONETIZATION_RESEARCH.md).
-
+> A implementação da compra in-app para remoção de anúncios (Google Play Billing) é tratada separadamente na [Etapa 04](../04-etapa/README.md).
+> O embasamento de mercado e diretrizes de monetização estão documentados em [`MONETIZATION_RESEARCH.md`](../MONETIZATION_RESEARCH.md).
 
 ---
 
-## 3. Escopo Preliminar
-- Instalação e configuração do plugin `@capacitor-community/admob`;
-- Inserção da meta-tag de `APPLICATION_ID` do AdMob em `android/app/src/main/AndroidManifest.xml`;
-- Criação de um módulo desacoplado `src/ui/services/admobService.ts` que:
-  - Detecta se a aplicação está rodando em plataforma nativa (`Capacitor.isNativePlatform()`);
-  - No ambiente web/desktop, desativa completamente qualquer chamada a anúncios sem gerar erros no console;
-  - No ambiente Android nativo, inicializa o SDK do AdMob e gerencia o fluxo de consentimento UMP;
-- Implementação do fluxo de verificação de consentimento UMP (`requestConsentInfo` e `showConsentForm`) no boot do aplicativo;
-- Posicionamento de container de anúncio tipo **Banner Adaptativo no topo** da tela mobile (abaixo do cabeçalho), a uma distância segura da barra inferior fixa (`MobileStickyBar`);
-- Utilização estrita de **Ad Unit IDs de teste oficiais do Google** durante desenvolvimento e testes;
-- Configuração de fallback gracioso: se o dispositivo estiver offline (sem conexão), o componente oculta o espaço de anúncio sem travar a interface e sem prejudicar os cálculos físicos.
+## 3. Escopo Detalhado
+1. **Instalação do Plugin Nativo:**
+   - Adicionar `@capacitor-community/admob` ao `package.json`;
+   - Inserir a meta-tag `com.google.android.gms.ads.APPLICATION_ID` no `android/app/src/main/AndroidManifest.xml`.
+2. **Camada de Consentimento UMP (LGPD / GDPR):**
+   - Configuração do formulário de consentimento via `AdMob.requestConsentInfo()` e `AdMob.showConsentForm()`;
+   - O consentimento é solicitado no primeiro acesso em regiões reguladas antes de inicializar o carregamento de anúncios personalizados.
+3. **Módulo Desacoplado `src/ui/services/admobService.ts`:**
+   - Verificação de plataforma: se executado no navegador web (desktop ou PWA), o módulo permanece inerte e não faz chamadas ao AdMob;
+   - No Android nativo, inicializa o SDK após resolução de consentimento;
+   - Tratamento de status: escuta o estado de compra do [billingService.ts](../04-etapa/README.md). Se o usuário possuir o status `isAdsRemoved = true`, o AdMob nunca é inicializado ou exibe banners.
+4. **Posicionamento e Ergonomia Industrial do Banner:**
+   - Formato: **Adaptive Banner** fixado no topo da visualização mobile (abaixo do `MobileHeader`);
+   - Distanciamento total da barra inferior de ação rápida (`MobileStickyBar`), eliminando qualquer possibilidade de cliques acidentais na *thumb zone* do operador;
+   - Suporte a modo offline: se não houver internet no chão de fábrica, a requisição de anúncio expira silenciosamente sem exibir caixas cinzas ou quebrar o fluxo de cálculo.
+5. **IDs de Teste Seguros:**
+   - Uso exclusivo dos IDs de teste universais fornecidos pelo Google durante toda a fase de desenvolvimento e testes fechados, prevenindo suspensão de conta por tráfego inválido.
 
 ---
 
 ## 4. Estado Atual Conhecido
-- Nenhuma dependência de publicidade existe atualmente no repositório;
+- Nenhuma dependência de publicidade existe no repositório;
 - A aplicação é puramente web/PWA e opera offline;
-- O layout mobile possui a barra inferior de ações (`MobileStickyBar`) na *thumb zone*, tornando a área inferior inadequada para anúncios devido a riscos severos de cliques acidentais.
+- O layout mobile foi otimizado com touch targets de 44px, mas precisa reservar o espaço visual do banner sem empurrar componentes de forma brusca (evitando Cumulative Layout Shift - CLS).
 
 ---
 
-## 5. Principais Entregáveis já Identificados
-1. Plugin `@capacitor-community/admob` instalado e sincronizado com o projeto Android;
-2. Serviço `admobService.ts` com inicialização condicional e tratamento de erros;
-3. Fluxo de consentimento UMP ativo no primeiro carregamento em regiões reguladas;
-4. Componente de UI para exibição de Banner no topo com suporte a modo offline;
-5. Configuração validada com IDs de teste do AdMob (sem uso de IDs reais nesta etapa).
+## 5. Principais Entregáveis
+1. Plugin `@capacitor-community/admob` instalado e sincronizado com `android/`;
+2. Meta-tags de aplicação AdMob presentes no manifesto Android;
+3. Serviço `src/ui/services/admobService.ts` encapsulado, resiliente e reativo ao status de compra in-app;
+4. Componente de banner adaptativo no topo do layout mobile;
+5. Fluxo UMP funcional para coleta de consentimento LGPD.
 
 ---
 
 ## 6. Dependências Conhecidas
-- **Pré-requisitos:** Etapa 02 (Wrapper Android configurado).
-- **Etapas dependentes:** Etapa 05 (Pipeline de Build), Etapa 06 (Consoles) e Etapa 08 (IDs de Produção).
+- **Pré-requisitos:** Etapa 02 (Capacitor configurado).
+- **Etapas dependentes:** Etapa 04 (Play Billing), Etapa 06 (Pipeline de Build) e Etapa 07 (Configuração de Consoles).
 
 ---
 
-## 7. Critérios de Conclusão Preliminares
+## 7. Critérios de Conclusão e Aceite
 - [ ] No navegador web (`npm run dev`), a aplicação abre normalmente sem erros de AdMob no console.
-- [ ] No emulador ou dispositivo Android, o SDK do AdMob inicializa e exibe o banner de teste do Google.
-- [ ] O banner não sobrepõe campos de entrada de dados nem compete com os botões da `MobileStickyBar`.
-- [ ] Em modo avião/offline, a interface não quebra e os cálculos continuam operando normalmente.
-- [ ] A suíte de testes automatizados (`npm run check`) permanece 100% verde.
+- [ ] No dispositivo Android com internet, o banner de teste oficial do Google é exibido no topo.
+- [ ] O banner não sobrepõe campos de entrada de dados nem compete com a `MobileStickyBar`.
+- [ ] Em modo avião (sem internet), o app abre instantaneamente, os cálculos funcionam e nenhum erro visível é emitido.
+- [ ] A suíte de testes (`npm run check`) permanece 100% aprovada (120/120 testes).
 
 ---
 
-- **Decisão D03-1 (Formato e Posição Principal):** Banner Adaptativo fixado no topo ou logo abaixo da navegação de famílias, garantindo visibilidade para os anunciantes e afastamento físico dos controles operacionais inferiores.
-- **Decisão D03-3 (Modelo Híbrido e Compra Única de R$ 6,90):** **HOMOLOGADO.** O aplicativo oferecerá compra única in-app (não-consumível) gerenciada via Google Play Billing pelo valor definitivo de **R$ 6,90**, que desativa permanentemente a exibição de banners no dispositivo. O item será publicado de forma limpa e direta, sem qualquer menção promocional de lançamento. A validação opera sem login, associada à conta Google Play do aparelho com cache offline no cliente e restauração automática.
-- *Demais decisões:* Pendente de refinamento na abertura da etapa.
-
-
+## 8. Decisões da Etapa
+- **D03-1 (Banner no Topo):** Posicionamento fixado no topo para proteção contra cliques acidentais e conformidade com as diretrizes do Google AdMob.
+- **D03-2 (Isolamento Web):** Nenhum script de AdMob/AdSense é carregado na versão web ou PWA.
+- **D03-3 (IDs de Teste Obrigatórios):** Proibição de uso de IDs de produção nesta fase para proteger a conta AdMob recém-criada.
 
 ---
 
 ## 9. Pendências da Etapa
-- [ ] Definir se haverá ponto secundário para exibição de banner (ex: rodapé da tela de Configurações Gerais `SettingsView.tsx`);
-- [ ] Avaliar viabilidade de anúncio intersticial com frequência máxima controlada (frequency capping de 1 a cada 10 min) apenas ao alternar entre famílias de usinagem;
-- [ ] *Demais pendências:* Pendente de refinamento ao iniciar a execução da Etapa 03.
+- [ ] Validar compatibilidade do `@capacitor-community/admob` com Capacitor 7;
+- [ ] Testar renderização do banner adaptativo em telas de diferentes larguras (360px a 440px).

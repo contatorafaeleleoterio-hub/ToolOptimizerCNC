@@ -58,3 +58,11 @@ O ecossistema opera em **Dual-Domain**:
 2. **Offline-First:** O aplicativo não depende de APIs ou backend para calcular. Persistência de configurações e materiais customizados é estritamente local em IndexedDB (`tooloptimizer_db`).
 3. **Design System & Acessibilidade:** Uso exclusivo de CSS nativo com design tokens em `src/ui/index.css`. Todos os contrastes de texto e controles devem cumprir WCAG AA (mínimo 4.5:1 para texto normal, 3.0:1 para controles).
 4. **Sem frameworks desnecessários:** Tailwind, Zustand e React-Router foram removidos e não devem ser reintroduzidos. O estado reativo é gerido por React Context (`CalculatorContext.tsx`).
+
+---
+
+## 5. Skills de Agentes
+
+| Skill | Gatilho de Ativação | Localização e Descrição |
+|---|---|---|
+| **Prompt Architect** | `"Ative o criador de prompt"` ou `"Prompt Architect"` | `.agents/skills/prompt-architect/SKILL.md` (e `.claude/skills/prompt-architect/`) — Metodologia especializada em arquitetura e refinamento de prompts profissionais para agentes de IA. Opera com análise de intenção, separação ontológica (Fato, Requisito, Restrição, Preferência, Inferência, Hipótese), nível de intervenção cirúrgico (N0–N3) e contexto local do projeto (`references/contexto-projeto.md`). |

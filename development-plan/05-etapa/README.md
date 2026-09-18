@@ -1,69 +1,85 @@
-# Etapa 05 — Pipeline de Build Release e Assinatura Digital
+# Etapa 05 — UX Mobile, Hardware Back Button & Suporte In-App
 
 ## 1. Nome da Etapa
-**Pipeline de Build Release e Assinatura Digital**
+**UX Mobile, Hardware Back Button & Suporte In-App**
 
 ---
 
 ## 2. Objetivo da Etapa
-Estruturar um processo de compilação automatizado, seguro e reproduzível para geração do pacote de produção **Android App Bundle (.aab)** assinado digitalmente, contornando limitações do ambiente local (ausência de Android SDK e JDK 17) por meio de um workflow de CI/CD no GitHub Actions.
+Polir a experiência nativa do operador em dispositivos Android, garantindo que interações físicas do sistema operacional — em especial o botão nativo "Voltar" (Hardware Back Button e gestos de borda) — fechem gavetas e modais abertos antes de encerrar o aplicativo, integrando suporte nativo a entalhes de tela (notches), barra de status customizada e canal direto de suporte e feedback técnico via e-mail diretamente da tela de configurações.
 
 ---
 
-## 3. Escopo Preliminar
-- Geração da chave criptográfica de assinatura de release (`.keystore` ou `.jks`) via ferramenta padrão `keytool`, com definição segura de alias e senhas;
-- Armazenamento dos dados da chave nos segredos do repositório GitHub (`ANDROID_KEYSTORE_BASE64`, `KEYSTORE_PASSWORD`, `KEY_ALIAS`, `KEY_PASSWORD`);
-- Configuração de assinatura no `android/app/build.gradle` (signingConfigs para release);
-- Criação do workflow de automação `.github/workflows/build-android.yml` configurado para:
-  1. Executar em runner Ubuntu com JDK 17 e Android SDK pré-instalados;
-  2. Instalar dependências (`npm ci`);
-  3. Executar o quality gate (`npm run check`);
-  4. Gerar o build estático de produção do Vite (`npm run build`);
-  5. Sincronizar o projeto nativo (`npx cap sync android`);
-  6. Compilar o bundle de produção via Gradle (`./gradlew bundleRelease`);
-  7. Assinar o arquivo `.aab` resultante;
-  8. Disponibilizar o arquivo final assinado como artefato para download no GitHub Actions ou release tag;
-- Estabelecer rotina de versionamento (`versionCode` incremental e `versionName` semântico).
+## 3. Escopo Detalhado
+1. **Interceptação Hierárquica do Botão Voltar Nativo:**
+   - Integração do plugin `@capacitor/app` para escutar o evento `backButton`;
+   - Implementação de máquina de estados de fechamento:
+     1. Se a folha de resultados (`MobileResultsSheet`) estiver expandida: recolhe/fecha a folha;
+     2. Se o painel de configurações (`SettingsView`) estiver aberto: fecha o painel e retorna à calculadora;
+     3. Se a calculadora estiver na raiz sem modais: permite o fechamento/minimização do app pelo Android.
+2. **Integração com a Barra de Status (`@capacitor/status-bar`):**
+   - Configuração dinâmica da cor da status bar de acordo com o tema:
+     - Tema Escuro: `#080C12` (estilo de ícones claros);
+     - Tema Claro: `#F4F6F9` (estilo de ícones escuros);
+   - Prevenção de sobreposição de elementos do topo (`MobileHeader` e Banner de Anúncios).
+3. **Ajuste Fino de Safe Areas e Notches no CSS:**
+   - Garantir que `env(safe-area-inset-top)` e `env(safe-area-inset-bottom)` protejam a visualização em aparelhos com ilha dinâmica ou entalhe de câmera;
+   - Garantir que a barra fixa inferior (`MobileStickyBar`) nunca seja coberta pela linha de navegação por gestos do Android.
+4. **Canal de Suporte e Feedback no Aplicativo:**
+   - Inclusão de botão em `SettingsView.tsx`:
+     - Título: *"Suporte & Feedback"*
+     - Ação: Abrir cliente de e-mail padrão do aparelho direcionado para `tooloptimizercnc@gmail.com`;
+     - Assunto e corpo pré-formatados com metadados do aparelho:
+       ```
+       Para: tooloptimizercnc@gmail.com
+       Assunto: [Suporte ToolOptimizer CNC] Relato de Operação
+       Corpo:
+       --- Informações Técnicas ---
+       Versão do App: 2.0.0
+       Dispositivo: [Modelo detectado]
+       Versão do Android: [Versão do SO]
+       ----------------------------
+       Descreva sua dúvida, sugestão ou parâmetro observado na máquina:
+       ```
 
 ---
 
 ## 4. Estado Atual Conhecido
-- O repositório possui workflows de CI para web (`ci.yml` e `deploy-cloudflare.yml`);
-- A máquina local do desenvolvedor opera com Java 1.8 e sem Android SDK/Studio instalado, o que impede a compilação local direta do Gradle 8+ sem instalação de ferramentas volumosas;
-- Ainda não existe keystore de release nem configuração de assinatura ativa para a v2.
+- No navegador, a navegação depende de botões na tela; no Android, sem listener, o botão voltar do celular fecha a aplicação instantaneamente;
+- Não há botão de contato direto ou suporte integrado na interface do aplicativo;
+- O layout mobile foi recentemente auditado com altura de toque de 44px (`--h-target`), necessitando apenas do tratamento de eventos do SO.
 
 ---
 
-## 5. Principais Entregáveis já Identificados
-1. Par de chaves criptográficas de release gerado e salvo em local seguro com backup offline;
-2. Segredos configurados no GitHub Actions;
-3. Arquivo de automação `.github/workflows/build-android.yml` operacional;
-4. Primeiro arquivo `.aab` assinado gerado com sucesso via pipeline.
+## 5. Principais Entregáveis
+1. Listener de `backButton` em `@capacitor/app` com fechamento hierárquico testado;
+2. Ajuste de tema nativo da status bar via `@capacitor/status-bar`;
+3. CSS calibrado com proteção para barras de gestos e entalhes de tela;
+4. Botão funcional de Suporte Técnico por e-mail em `SettingsView.tsx`.
 
 ---
 
 ## 6. Dependências Conhecidas
-- **Pré-requisitos:** Etapa 02 (Capacitor), Etapa 03 (AdMob) e Etapa 04 (UX Android).
-- **Etapas dependentes:** Etapa 06 (Consoles) e Etapa 07 (Closed Testing).
+- **Pré-requisitos:** Etapa 02 (Capacitor) e Etapa 04 (Play Billing / Telas atualizadas).
+- **Etapas dependentes:** Etapa 06 (Pipeline de Build) e Etapa 08 (Ciclo de Testes Fechados).
 
 ---
 
-## 7. Critérios de Conclusão Preliminares
-- [ ] O workflow `.github/workflows/build-android.yml` roda e conclui com sucesso (status verde).
-- [ ] O artefato gerado é um arquivo `.aab` válido, assinado e com tamanho otimizado (alvo: < 10 MB).
-- [ ] O manifesto embutido no `.aab` confirma `applicationId "br.com.tooloptimizercnc"` e `targetSdkVersion` compatível com a Play Store.
-- [ ] As senhas e o arquivo bruto da keystore permanecem 100% protegidos e nunca são commitados no repositório git público.
+## 7. Critérios de Conclusão e Aceite
+- [ ] Pressionar o botão físico "Voltar" com a folha de resultados aberta recolhe a folha sem fechar o app.
+- [ ] Pressionar "Voltar" dentro das Configurações fecha a tela e volta para a calculadora.
+- [ ] O toque no botão "Suporte & Feedback" abre o Gmail/cliente do aparelho com `tooloptimizercnc@gmail.com` preenchido.
+- [ ] A status bar e a área inferior respeitam as margens do aparelho sem cortes de conteúdo.
+- [ ] A suíte de testes de UI mobile (`src/ui/__tests__/mobile.spec.tsx`) permanece 100% verde.
 
 ---
 
 ## 8. Decisões da Etapa
-- **Decisão D05-1 (Ambiente de Build na Nuvem):** Utilizar o GitHub Actions (runner Ubuntu padrão) para compilação do Android, dispensando a necessidade de instalar 3 a 5 GB de ferramentas de SDK/Android Studio na máquina local Windows.
-- **Decisão D05-2 (Formato de Pacote Obrigatório):** Adotar exclusivamente o formato **Android App Bundle (.aab)**, conforme exigência mandatória do Google Play para novos lançamentos.
-- *Demais decisões:* Pendente de refinamento na abertura da etapa.
+- **D05-1 (Hierarquia Rígida de Retorno):** Evitar perda acidental de parâmetros de cálculo durante a digitação na máquina mantendo o retorno sempre em camadas.
+- **D05-2 (Suporte Simplificado por E-mail):** Utilizar link `mailto:` nativo para evitar a necessidade de SDKs de chat ou plataformas pagas de helpdesk, mantendo a simplicidade operacional.
 
 ---
 
 ## 9. Pendências da Etapa
-- [ ] Definir o procedimento de backup frio da keystore (disco externo criptografado / cofre de senhas);
-- [ ] Testar a extração e instalação de APK a partir do `.aab` via `bundletool` em um aparelho de teste;
-- [ ] *Demais pendências:* Pendente de refinamento ao iniciar a execução da Etapa 05.
+- [ ] Testar navegação por gestos em aparelhos Samsung One UI e Xiaomi MIUI/HyperOS;
+- [ ] Testar comportamento em orientação horizontal (landscape) se aplicável.

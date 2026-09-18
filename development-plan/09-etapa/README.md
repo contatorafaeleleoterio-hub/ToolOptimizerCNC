@@ -1,68 +1,78 @@
-# Etapa 09 — Operação e Monitoramento Pós-Lançamento
+# Etapa 09 — Troca para IDs de Produção & Publicação Final
 
 ## 1. Nome da Etapa
-**Operação e Monitoramento Pós-Lançamento**
+**Troca para IDs de Produção & Publicação Final**
 
 ---
 
 ## 2. Objetivo da Etapa
-Estabelecer a rotina operacional contínua após a publicação pública na Google Play Store, assegurando acompanhamento diário da saúde técnica do aplicativo via **Android Vitals**, monitoramento do desempenho de monetização no **Google AdMob** e governança do ciclo de vida de atualizações para evitar qualquer degradação na experiência dos operadores e usuários industriais.
+Substituir os identificadores de blocos de anúncios de teste pelos IDs definitivos de produção do Google AdMob, compilar e assinar o pacote Android App Bundle (.aab) definitivo, submeter a versão para a faixa de **Produção** no Google Play Console, acompanhar o processo de revisão da equipe do Google e homologar a disponibilidade pública do aplicativo na loja, ativando o selo de download na landing page oficial.
 
 ---
 
-## 3. Escopo Preliminar
-- **Monitoramento Técnico (Android Vitals):**
-  - Acompanhamento do Crash Rate (meta: < 1.09% geral e < 8% por modelo específico de aparelho);
-  - Acompanhamento do ANR Rate - Application Not Responding (meta: < 0.47%);
-  - Monitoramento de lentidão de renderização (*slow rendering frames*);
-- **Monitoramento de Monetização (Google AdMob):**
-  - Acompanhamento da taxa de preenchimento (fill rate) das requisições de anúncio;
-  - Monitoramento de impressões reais, eCPM e receita acumulada;
-  - Verificação de ausência de restrições por tráfego inválido ou problemas no `app-ads.txt`;
-- **Suporte e Feedback da Comunidade:**
-  - Triagem diária de avaliações e comentários recebidos na Play Store;
-  - Canal direto de resposta aos usuários para dúvidas operacionais de chão de fábrica;
-- **Ciclo de Atualizações Futuras:**
-  - Padronização de branches e tags para patches rápidos (hotfixes);
-  - Garantia de que atualizações de versão preservem 100% dos dados gravados no IndexedDB do usuário sem corrupção ou perda de materiais customizados.
+## 3. Escopo Detalhado
+1. **Configuração de IDs de Produção no AdMob:**
+   - Inserção dos identificadores reais de blocos de anúncio (Ad Unit IDs) nos segredos de compilação ou variáveis de ambiente de produção;
+   - Verificação de segurança: garantir que nenhum ID de teste do Google permaneça ativo na versão de produção.
+2. **Compilação da Versão de Lançamento (Release Candidate):**
+   - Incremento formal de versão: `versionCode` (ex: 201) e `versionName` ("2.0.0");
+   - Disparo do workflow de produção no GitHub Actions para compilação e assinatura com a Keystore oficial;
+   - Download e validação de integridade do artefato `app-release.aab`.
+3. **Submissão para a Faixa de Produção:**
+   - No Google Play Console, criação de nova versão na faixa de **Produção**;
+   - Upload do arquivo `.aab` de produção assinado;
+   - Inserção das Notas de Versão (Release Notes) em português brasileiro:
+     ```
+     Lançamento oficial do ToolOptimizer CNC 2.0.0!
+     - Cálculos precisos de corte baseados no modelo físico de Kienzle;
+     - Suporte completo a Fresamento, Furação, Roscamento e Mandrilamento;
+     - Operação 100% offline no chão de fábrica;
+     - Interface rápida e ergonômica para operadores e programadores CNC.
+     ```
+   - Revisão final de todos os itens e clique em "Enviar para análise".
+4. **Acompanhamento da Revisão do Google:**
+   - Monitoramento diário do status no Play Console (geralmente entre 1 a 5 dias úteis);
+   - Prontidão técnica para responder a qualquer questionamento de conformidade da equipe de revisão do Google.
+5. **Ativação dos Canais Públicos:**
+   - Assim que o status mudar para "Publicado", verificar a indexação na Google Play Store;
+   - Adicionar o botão oficial "Disponível no Google Play" na landing page (`www.tooloptimizercnc.com.br`) com o link canônico do aplicativo.
 
 ---
 
 ## 4. Estado Atual Conhecido
-- O sistema já possui monitoramento web via Cloudflare Web Analytics ativo em produção;
-- As métricas de telemetria Android nativas só começarão a ser geradas a partir do momento em que houver downloads ativos na Play Store.
+- O aplicativo utiliza IDs de teste durante o desenvolvimento;
+- A faixa de produção estará liberada pelo Google após a conclusão com êxito do Closed Testing da Etapa 08.
 
 ---
 
-## 5. Principais Entregáveis já Identificados
-1. Rotina periódica de inspeção do painel Android Vitals estabelecida;
-2. Painel de relatórios do Google AdMob operacional com recebimento de pagamentos configurado;
-3. Procedimento documentado para lançamento de atualizações de versão sem regressões;
-4. Canal de suporte pós-lançamento ativo.
+## 5. Principais Entregáveis
+1. Pacote definitivo de produção `.aab` compilado com IDs oficiais do AdMob;
+2. Versão submetida e aprovada pela equipe de engenharia e conformidade do Google Play;
+3. Aplicativo ativo, público e instalável a partir da Google Play Store;
+4. Landing page atualizada com link direto para a página do app na Play Store.
 
 ---
 
 ## 6. Dependências Conhecidas
-- **Pré-requisitos:** Etapa 08 (Aplicativo aprovado e publicado na Google Play Store).
-- **Etapas dependentes:** Nenhuma (esta é a fase de sustentação contínua do produto).
+- **Pré-requisitos:** Etapa 08 (Closed Testing aprovado e liberação de produção concedida).
+- **Etapas dependentes:** Etapa 10 (Operação, Monitoramento & Suporte Contínuo).
 
 ---
 
-## 7. Critérios de Conclusão Preliminares
-- [ ] O aplicativo opera há pelo menos 30 dias na Play Store sem registros de problemas no Android Vitals acima dos limiares de penalização.
-- [ ] A receita e as impressões do Google AdMob são registradas regularmente sem advertências de política.
-- [ ] Pelo menos uma atualização de manutenção menor foi distribuída com sucesso, preservando os dados locais do usuário.
+## 7. Critérios de Conclusão e Aceite
+- [ ] O arquivo `.aab` submetido em Produção não gera nenhum alerta impeditivo no console.
+- [ ] A Google Play Store aprova a versão e exibe o status "Publicado".
+- [ ] Ao pesquisar "ToolOptimizer CNC" na Play Store em um dispositivo qualquer, o app é localizado e instalado com sucesso.
+- [ ] No app instalado da loja, os anúncios reais do AdMob são requisitados e o fluxo de compra de R$ 6,90 processa via Google Play Billing.
+- [ ] O link na landing page direciona perfeitamente para a ficha oficial do app na loja.
 
 ---
 
 ## 8. Decisões da Etapa
-- **Decisão D09-1 (Prioridade Zero para Crashes):** Qualquer erro reportado no Android Vitals que eleve a taxa de crash acima de 1% tem prioridade máxima imediata sobre novas funcionalidades.
-- **Decisão D09-2 (Invariância do IndexedDB):** Migrações de esquema do banco local `tooloptimizer_db` devem sempre conter lógica de upgrade não destrutiva.
-- *Demais decisões:* Pendente de refinamento na abertura da etapa.
+- **D09-1 (Lançamento Direto a 100%):** Como o aplicativo já terá passado por 14 dias de validação intensiva com testadores reais em aparelhos diversos, a versão será distribuída diretamente a 100% dos usuários.
 
 ---
 
 ## 9. Pendências da Etapa
-- [ ] Configuração de dados bancários/fiscais no AdMob para recebimento dos repasses de publicidade;
-- [ ] Definição da cadência de revisões operacionais (ex: semanal durante o primeiro mês, mensal em seguida);
-- [ ] *Demais pendências:* Pendente de refinamento ao iniciar a execução da Etapa 09.
+- [ ] Extração dos IDs de produção do painel AdMob;
+- [ ] Inclusão do link da Play Store no HTML da landing page.
