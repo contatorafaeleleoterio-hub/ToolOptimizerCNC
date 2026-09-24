@@ -1,4 +1,4 @@
-name: Deploy to Cloudflare Pages
+name: Deploy to Cloudflare
 
 on:
   push:
@@ -6,9 +6,12 @@ on:
   workflow_dispatch:
 
 jobs:
-  # Deploy main app as a Cloudflare Worker (uses wrangler.jsonc config)
+  # ─────────────────────────────────────────────────────────────────────────────
+  # Job 1: Deploy da Calculadora (app.tooloptimizercnc.com.br)
+  # Servido via Cloudflare Worker Static Assets (wrangler.jsonc)
+  # ─────────────────────────────────────────────────────────────────────────────
   deploy-app:
-    name: Deploy App (Worker → app.tooloptimizercnc.com.br)
+    name: "Deploy Calculadora → app.tooloptimizercnc.com.br"
     runs-on: ubuntu-latest
     permissions:
       contents: read
@@ -25,7 +28,10 @@ jobs:
       - name: Install dependencies
         run: npm ci
 
-      - name: Build
+      - name: Quality Gate (TypeCheck + Tests)
+        run: npm run check
+
+      - name: Build web assets
         run: npm run build
         env:
           VITE_BASE_URL: /
@@ -38,13 +44,22 @@ jobs:
           wranglerVersion: "4.68.0"
           command: deploy
 
-  # Landing page deploy (requires Cloudflare Pages project "tooloptimizer-landing" to exist)
-  # TODO: create project manually at dash.cloudflare.com → Pages → Create project
-  # TODO: token needs "Cloudflare Pages: Edit" permission to deploy landing
+  # ─────────────────────────────────────────────────────────────────────────────
+  # Job 2: Deploy da Landing Page / Site de Vendas
+  # Destino: www.tooloptimizercnc.com.br (Cloudflare Pages)
+  # tooloptimizercnc.com.br redireciona para www via regra no painel Cloudflare
+  #
+  # PRÉ-REQUISITOS para este job funcionar:
+  #   1. Criar o projeto Pages "tooloptimizer-landing" em dash.cloudflare.com
+  #   2. Vincular o domínio www.tooloptimizercnc.com.br ao projeto Pages
+  #   3. Configurar redirect 301 do naked domain (tooloptimizercnc.com.br → www)
+  #      via Cloudflare Rules > Redirect Rules no painel (não no _redirects)
+  #   4. CF_API_TOKEN deve ter permissão "Cloudflare Pages: Edit"
+  # ─────────────────────────────────────────────────────────────────────────────
   deploy-landing:
-    name: Deploy Landing (Pages → www.tooloptimizercnc.com.br)
+    name: "Deploy Landing → www.tooloptimizercnc.com.br"
     runs-on: ubuntu-latest
-    continue-on-error: true  # non-blocking: Pages project + token perms still pending
+    continue-on-error: true   # Não bloqueia o deploy da calculadora se o Pages falhar
     permissions:
       contents: read
       deployments: write

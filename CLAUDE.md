@@ -15,7 +15,7 @@
 | `src/harness/` | Governança multi-agente, validação de grafos de execução DAG |
 | `Docs_inicial/` | Documentação técnica oficial e canônica (fórmulas, requisitos, relatórios de auditoria) |
 | `public/` | Favicons, manifest PWA, ícones, robots.txt, sitemap.xml |
-| `landing/` | Landing page institucional (Cloudflare Pages: `www.tooloptimizercnc.com.br`) |
+| `landing/` | Landing page / site de vendas (Cloudflare Pages: `www.tooloptimizercnc.com.br` — domínio principal de marketing e SEO) |
 | `archive/legacy-v1/` | Histórico v1 arquivado (sem autoridade decisória) |
 | `DOCUMENTACAO_MARKETING_MONETIZACAO/` | Estratégia de SEO, posicionamento e monetização |
 | `wrangler.jsonc` | Configuração do Cloudflare Worker (Static Assets SPA) |
@@ -43,12 +43,25 @@
 
 ## 3. Arquitetura de Deploy e Domínios (Cloudflare)
 
-O ecossistema opera em **Dual-Domain**:
-- **Calculadora (App):** `https://app.tooloptimizercnc.com.br/`
+O ecossistema opera em **Dual-Domain** com hierarquia clara:
+
+```
+tooloptimizercnc.com.br  ──── 301 redirect ────► www.tooloptimizercnc.com.br
+www.tooloptimizercnc.com.br ─────────────────────► Cloudflare Pages (landing/)
+app.tooloptimizercnc.com.br ─────────────────────► Cloudflare Worker (dist/)
+```
+
+- **Landing Page / Site de Vendas (domínio principal de marketing e SEO):**
+  - URL: `https://www.tooloptimizercnc.com.br/`
+  - Naked domain `tooloptimizercnc.com.br` redireciona 301 permanente para `www` via regra no painel Cloudflare.
+  - Servido via **Cloudflare Pages** (projeto `tooloptimizer-landing`) a partir do diretório `landing/`.
+  - Este é o domínio indexado pelos buscadores e usado em materiais de marketing.
+
+- **Calculadora / Aplicação (subdomínio funcional):**
+  - URL: `https://app.tooloptimizercnc.com.br/`
   - Servido via **Cloudflare Worker Static Assets** com `not_found_handling: single-page-application` configurado em `wrangler.jsonc`.
-  - Deploy automatizado via GitHub Actions ([.github/workflows/deploy-cloudflare.yml](.github/workflows/deploy-cloudflare.yml)) no push para a branch `main`.
-- **Landing Page Institucional:** `https://www.tooloptimizercnc.com.br/`
-  - Servido via **Cloudflare Pages** a partir do diretório `landing/`.
+  - Deploy automatizado via GitHub Actions no push para `main`.
+  - Configurado com `noindex` — não deve aparecer separado nos buscadores.
 
 ---
 

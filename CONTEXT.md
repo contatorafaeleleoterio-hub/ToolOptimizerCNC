@@ -30,7 +30,7 @@ ToolOptimizerCNC/
 │   └── assets/         # Imagens e logotipos de interface
 ├── Docs_inicial/       # Documentação técnica OFICIAL e CANÔNICA (fórmulas, requisitos, relatórios)
 ├── public/             # Ativos estáticos públicos (favicons, ícones PWA, og-image, robots, sitemap)
-├── landing/            # Landing page institucional (Pages: www.tooloptimizercnc.com.br)
+├── landing/            # Landing page / site de vendas (Pages: www.tooloptimizercnc.com.br — domínio principal)
 ├── archive/legacy-v1/  # Acervo histórico v1 arquivado (sem autoridade decisória)
 ├── DOCUMENTACAO_MARKETING_MONETIZACAO/ # Estratégia de posicionamento, marketing e monetização
 ├── wrangler.jsonc      # Configuração do Cloudflare Worker (Static Assets SPA)
